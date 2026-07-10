@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Gorgon r1 — concept panel</title>
+<style>
+:root {
+  --bg:#101014; --card:#17171c; --line:#26262e; --ink:#e8e6ea; --dim:#98939f;
+  --accent:#d5338f; --ok:#3fa46a; --bad:#d4484f; --warn:#c98a2d;
+}
+@media (prefers-color-scheme: light) {
+  :root { --bg:#f6f5f7; --card:#ffffff; --line:#e2dfe6; --ink:#221f26; --dim:#6d6876;
+           --ok:#237a48; --bad:#b13238; --warn:#96650f; }
+}
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.1rem; margin:2.2rem 0 .8rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:65ch }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px; margin:1.2rem 0; max-width:70ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px; overflow:hidden;
+  display:flex; flex-direction:column }
+.imgwrap { background:#0a0a0c; display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:520px; object-fit:contain }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:1rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.rank { margin-left:auto; color:var(--accent); font-size:.72rem; font-weight:700;
+  letter-spacing:.08em; text-transform:uppercase }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line); vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem; border-top:1px solid var(--line); padding-top:1rem }
+/* lightbox */
+#lbx { position:fixed; inset:0; background:rgba(8,8,10,.92); display:none;
+  align-items:center; justify-content:center; z-index:10; cursor:zoom-out }
+#lbx.open { display:flex }
+#lbx img { max-width:96vw; max-height:96vh; object-fit:contain }
+#lbx .cap { position:fixed; bottom:10px; left:0; right:0; text-align:center;
+  color:#cfccd4; font-size:.8rem }
+@media (hover:hover) { .imgwrap:hover img { filter:brightness(1.06) } }
+</style></head><body>
+<main>
+<p class="eyebrow">Firewall FC · Blocker #2 · round 1 · 2026-07-10</p>
+<h1>GORGON — 10-model concept panel</h1>
+<p class="sub">Jason picked Gorgon (Blocker #2) as the next model. Round 1 = photoreal-first front-view concept (the track that won on Mace r2/r3): one pinned prompt through the 10-model panel, then a fresh-context audit that cropped and 2×-zoomed head/torso/hands/feet on every image. Spec: tall V-tapered juicer, both arms sleek mil-spec chrome, cable-dreads swept back, three-pin socket at her right temple (viewer&#x27;s left in front view), stiff-arm advance, both feet flat.</p>
+<div class="callout"><strong>Verdict wanted:</strong> Pick the DESIGN KEEPER (Claude pre-read: riverflow25, the only chirality-correct one) and optionally a POSE/ENERGY reference (pre-read: pro2k). r2 converts the keeper to monochrome clay via flash31 and fixes the three systematic misses at prompt level: the temple socket (9/10 wrong side/shape/place), the stiff-arm collapsing to a bent &#x27;stop&#x27; gesture (7/10), and raised rear heels vs the flat-plant basing rule (6/10). Jersey #4 is provisional — veto welcome.</div>
+<h2>Claude pre-read — ranked picks</h2>
+<div class="tablewrap"><table>
+<tr><th>Pick</th><th>Model</th><th>Why</th></tr>
+<tr><td>Design #1</td><td>riverflow25</td><td>Only image where EVERY chirality anchor lands correctly (numbered pad viewer&#x27;s right, open palm viewer&#x27;s left, fist viewer&#x27;s right). Massive-yet-sleek build, flesh legs, real cleats, clean of text/props. One fix: socket shrank to a forehead stud — needs the eye-sized temple triangle. (Caveat: priciest model, $0.34/roll — fine for a one-time keeper, not for iteration.)</td></tr><tr><td>Design #2</td><td>flash31</td><td>Cleanest sleek mil-spec styling and correct single pad; but socket is mirrored AND wrong shape (two pin-studs), arm went sideways T-pose, mass under brief.</td></tr><tr><td>Design #3</td><td>gptimage2</td><td>Best-constructed 3-pin triangular socket in the set — on the WRONG temple (a keeper would force a flip step). Glamour hourglass proportions need de-emphasizing toward the military V-taper.</td></tr><tr><td>Pose #1</td><td>pro2k</td><td>The only true extended shoulder-height stiff-arm mid-stride. Near-profile camera, so treat as POSE-ONLY reference (chirality unusable as-is).</td></tr><tr><td>Pose #2</td><td>riverflow25</td><td>Frontal advancing march with stop-palm + fist, both feet grounded — the pose that best survives the basing rule.</td></tr><tr><td>Pose #3</td><td>seedream45</td><td>Most dynamic grounded stride — but fully MIRRORED (pad left, arms swapped); using it forces a horizontal flip first, like Mace&#x27;s mai25.</td></tr>
+</table></div>
+<h2>The panel</h2>
+<p class="sub">Hover a render to preview it at full resolution; click to pin (click again or press Esc to close). Chips are the fresh-context audit's verdicts on the spec's key checks (viewer-frame sides), verified on 2× region crops.</p>
+<div class="grid">
+
+<article class="card" id="riverflow25">
+  <a class="imgwrap lb" href="full/riverflow25.jpg" aria-label="Full-resolution riverflow25 render">
+    <img src="thumbs/riverflow25.jpg" alt="Gorgon r1 concept by riverflow25" loading="lazy" data-full="full/riverflow25.jpg">
+  </a>
+  <div class="meta">
+    <header><h3>riverflow25</h3><span class="cost">$0.34</span><span class="rank">design pick</span></header>
+    <div class="chips"><span class="chip ok">front view</span><span class="chip ok">pad side</span><span class="chip warn">socket</span><span class="chip warn">stiff-arm</span><span class="chip ok">chrome arms</span><span class="chip ok">mass</span><span class="chip ok">feet flat</span></div>
+    <p>Every side correct; massive yet sleek; flesh legs + cleats; nothing held, no stray text. Socket undersized and drifted to the forehead — the one ordered fix. Stiff-arm is a raised stop rather than full extension.</p>
+  </div>
+</article>
+<article class="card" id="pro2k">
+  <a class="imgwrap lb" href="full/pro2k.jpg" aria-label="Full-resolution pro2k render">
+    <img src="thumbs/pro2k.jpg" alt="Gorgon r1 concept by pro2k" loading="lazy" data-full="full/pro2k.jpg">
+  </a>
+  <div class="meta">
+    <header><h3>pro2k</h3><span class="cost">$0.14</span><span class="rank">pose pick</span></header>
+    <div class="chips"><span class="chip bad">front view</span><span class="chip ok">pad side</span><span class="chip warn">socket</span><span class="chip warn">stiff-arm</span><span class="chip ok">chrome arms</span><span class="chip warn">mass</span><span class="chip warn">feet flat</span></div>
+    <p>Walking near-profile shot — wrong assignment but the best stiff-arm-in-motion energy of the set. Sleeker than brief; rear heel raised. Pose-only candidate.</p>
+  </div>
+</article>
+<article class="card" id="flash31">
+  <a class="imgwrap lb" href="full/flash31.jpg" aria-label="Full-resolution flash31 render">
+    <img src="thumbs/flash31.jpg" alt="Gorgon r1 concept by flash31" loading="lazy" data-full="full/flash31.jpg">
+  </a>
+  <div class="meta">
+    <header><h3>flash31</h3><span class="cost">$0.10</span></header>
+    <div class="chips"><span class="chip ok">front view</span><span class="chip ok">pad side</span><span class="chip bad">socket</span><span class="chip warn">stiff-arm</span><span class="chip ok">chrome arms</span><span class="chip warn">mass</span><span class="chip warn">feet flat</span></div>
+    <p>Cleanest true front view and on-palette mil-spec styling. Temple hardware = two pin-plugs on the mirrored temple; arm went lateral T-pose; the off-hand hangs open instead of a fist; mass under brief.</p>
+  </div>
+</article>
+<article class="card" id="gptimage2">
+  <a class="imgwrap lb" href="full/gptimage2.jpg" aria-label="Full-resolution gptimage2 render">
+    <img src="thumbs/gptimage2.jpg" alt="Gorgon r1 concept by gptimage2" loading="lazy" data-full="full/gptimage2.jpg">
+  </a>
+  <div class="meta">
+    <header><h3>gptimage2</h3><span class="cost">$0.13</span></header>
+    <div class="chips"><span class="chip ok">front view</span><span class="chip ok">pad side</span><span class="chip bad">socket</span><span class="chip warn">stiff-arm</span><span class="chip warn">chrome arms</span><span class="chip warn">mass</span><span class="chip ok">feet flat</span></div>
+    <p>Strong menace and the best socket geometry — mirrored to the wrong temple. Hourglass glamour proportions rather than V-taper; the stiff-arm-side upper arm reads suited, not chrome.</p>
+  </div>
+</article>
+<article class="card" id="grokq">
+  <a class="imgwrap lb" href="full/grokq.jpg" aria-label="Full-resolution grokq render">
+    <img src="thumbs/grokq.jpg" alt="Gorgon r1 concept by grokq" loading="lazy" data-full="full/grokq.jpg">
+  </a>
+  <div class="meta">
+    <header><h3>grokq</h3><span class="cost">$0.07</span></header>
+    <div class="chips"><span class="chip ok">front view</span><span class="chip bad">pad side</span><span class="chip bad">socket</span><span class="chip bad">stiff-arm</span><span class="chip ok">chrome arms</span><span class="chip warn">mass</span><span class="chip warn">feet flat</span></div>
+    <p>Best pure photorealism and facial menace, but the socket became a chrome eyepatch, pauldrons landed on BOTH shoulders, and there&#x27;s no stiff-arm — she just stands there. Digits verified clean.</p>
+  </div>
+</article>
+<article class="card" id="recraft41pro">
+  <a class="imgwrap lb" href="full/recraft41pro.jpg" aria-label="Full-resolution recraft41pro render">
+    <img src="thumbs/recraft41pro.jpg" alt="Gorgon r1 concept by recraft41pro" loading="lazy" data-full="full/recraft41pro.jpg">
+  </a>
+  <div class="meta">
+    <header><h3>recraft41pro</h3><span class="cost">$0.21</span></header>
+    <div class="chips"><span class="chip ok">front view</span><span class="chip warn">pad side</span><span class="chip warn">socket</span><span class="chip warn">stiff-arm</span><span class="chip ok">chrome arms</span><span class="chip warn">mass</span><span class="chip warn">feet flat</span></div>
+    <p>Striking studio shot, enormous dread mane. Socket drifted to mid-forehead plus stray brow piercings; a second chrome pauldron appeared; catwalk in-line stance reads fashion-editorial, not blocker.</p>
+  </div>
+</article>
+<article class="card" id="seedream45">
+  <a class="imgwrap lb" href="full/seedream45.jpg" aria-label="Full-resolution seedream45 render">
+    <img src="thumbs/seedream45.jpg" alt="Gorgon r1 concept by seedream45" loading="lazy" data-full="full/seedream45.jpg">
+  </a>
+  <div class="meta">
+    <header><h3>seedream45</h3><span class="cost">$0.04</span></header>
+    <div class="chips"><span class="chip warn">front view</span><span class="chip bad">pad side</span><span class="chip warn">socket</span><span class="chip bad">stiff-arm</span><span class="chip ok">chrome arms</span><span class="chip warn">mass</span><span class="chip warn">feet flat</span></div>
+    <p>Fully mirrored: pad and socket viewer&#x27;s left, arms swapped. Only image with clearly bare flesh legs + real cleats; most dynamic stride; leanest build. Flip-first if used.</p>
+  </div>
+</article>
+<article class="card" id="mai25">
+  <a class="imgwrap lb" href="full/mai25.jpg" aria-label="Full-resolution mai25 render">
+    <img src="thumbs/mai25.jpg" alt="Gorgon r1 concept by mai25" loading="lazy" data-full="full/mai25.jpg">
+  </a>
+  <div class="meta">
+    <header><h3>mai25</h3><span class="cost">$0.05</span></header>
+    <div class="chips"><span class="chip ok">front view</span><span class="chip bad">pad side</span><span class="chip warn">socket</span><span class="chip bad">stiff-arm</span><span class="chip ok">chrome arms</span><span class="chip warn">mass</span><span class="chip warn">feet flat</span></div>
+    <p>Mirrored numbered pad, swapped arms, softest render of the set (airbrushed CG, mushy fingertips). Socket triangle is on the correct side but grew ~6 studs.</p>
+  </div>
+</article>
+<article class="card" id="gptmini">
+  <a class="imgwrap lb" href="full/gptmini.jpg" aria-label="Full-resolution gptmini render">
+    <img src="thumbs/gptmini.jpg" alt="Gorgon r1 concept by gptmini" loading="lazy" data-full="full/gptmini.jpg">
+  </a>
+  <div class="meta">
+    <header><h3>gptmini</h3><span class="cost">$0.05</span></header>
+    <div class="chips"><span class="chip ok">front view</span><span class="chip bad">pad side</span><span class="chip bad">socket</span><span class="chip warn">stiff-arm</span><span class="chip warn">chrome arms</span><span class="chip warn">mass</span><span class="chip ok">feet flat</span></div>
+    <p>Power-armor trooper drift: pads on both shoulders, no socket at all, squat-bulky silhouette invading Breaker&#x27;s lane, lug boots instead of cleats, accents nearly invisible.</p>
+  </div>
+</article>
+<article class="card" id="flux2pro">
+  <a class="imgwrap lb" href="full/flux2pro.jpg" aria-label="Full-resolution flux2pro render">
+    <img src="thumbs/flux2pro.jpg" alt="Gorgon r1 concept by flux2pro" loading="lazy" data-full="full/flux2pro.jpg">
+  </a>
+  <div class="meta">
+    <header><h3>flux2pro</h3><span class="cost">$0.03</span></header>
+    <div class="chips"><span class="chip ok">front view</span><span class="chip warn">pad side</span><span class="chip bad">socket</span><span class="chip bad">stiff-arm</span><span class="chip ok">chrome arms</span><span class="chip warn">mass</span><span class="chip warn">feet flat</span></div>
+    <p>Most off-brief: no number 4 anywhere, no stiff-arm, ROBOTIC lower legs (spec: flesh), barrel plugs on the wrong temple, an earring, and logo glyphs on the boots.</p>
+  </div>
+</article>
+</div>
+<footer>Round cost $1.16 · prompt: gorgon/prompts/r1-front-photoreal.txt · lineage: gorgon/lineage.json · audit: fresh-context subagent, crop-and-look protocol.</footer>
+</main>
+<div id="lbx" role="dialog" aria-label="Full-resolution image viewer"><img alt=""><div class="cap"></div></div>
+<script>
+(function () {
+  var lbx = document.getElementById('lbx');
+  var big = lbx.querySelector('img');
+  var cap = lbx.querySelector('.cap');
+  var pinned = false;
+  var canHover = window.matchMedia('(hover:hover)').matches;
+
+  function show(src, label) {
+    big.src = src; cap.textContent = label + ' — full resolution';
+    lbx.classList.add('open');
+  }
+  function hide() { lbx.classList.remove('open'); pinned = false; }
+
+  document.querySelectorAll('.lb').forEach(function (a) {
+    var img = a.querySelector('img');
+    var full = img.getAttribute('data-full');
+    var label = a.closest('.card').querySelector('h3').textContent;
+    if (canHover) {
+      a.addEventListener('mouseenter', function () { if (!pinned) show(full, label); });
+      a.addEventListener('mouseleave', function () { if (!pinned) hide(); });
+    }
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (pinned) { hide(); } else { show(full, label); pinned = true; }
+    });
+  });
+  lbx.addEventListener('click', hide);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hide(); });
+})();
+</script>
+</body></html>
