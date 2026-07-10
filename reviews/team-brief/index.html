@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Firewall FC — Team Brief</title>
+<style>
+ body{font-family:system-ui,sans-serif;max-width:46rem;margin:3rem auto;
+      padding:0 1rem;color:#1a1a1a;background:#fff;line-height:1.55}
+ h1{font-size:1.6em} h2{margin-top:2em;border-bottom:1px solid #ddd;
+      padding-bottom:.2em} h3{margin-top:1.6em}
+ code{background:#f0f0f2;padding:.1em .3em;border-radius:3px;font-size:.9em}
+ .tw{overflow-x:auto}
+ table{border-collapse:collapse;font-size:.85em;margin:1em 0}
+ th,td{border:1px solid #ccc;padding:.35em .55em;text-align:left;
+      white-space:nowrap}
+ th{background:#f5f5f7}
+ .dl{display:inline-block;margin:.5em 0 1.5em;padding:.45em .9em;
+      border:1px solid #888;border-radius:6px;text-decoration:none;
+      font-size:.9em;color:inherit}
+ .dl:hover{background:#f0f0f2}
+ @media (prefers-color-scheme: dark){
+  body{color:#e8e8e8;background:#16161a} a{color:#8ab4ff}
+  h2{border-color:#333} code{background:#26262c}
+  th,td{border-color:#444} th{background:#222228}
+  .dl{border-color:#666} .dl:hover{background:#26262c}}
+</style></head><body>
+<p><a class="dl" href="team-brief.md" download="firewall-fc-team-brief.md">⬇ Download as Markdown</a></p>
+<h1>Team Brief: All-Femme Cyberpunk Blood Bowl Team (Amazon roster)</h1>
+<p><em>Draft v1.2 — 2026-07-10. Companion to <code>PROJECT.md</code> (process/pipeline state).
+v1.2 syncs the brief with Mace&rsquo;s production run (pose revision, gang-mark
+print lesson, emblem placement, status).</em></p>
+<p><em>For: Jason — our resident Amazon specialist coach, gamer, and cyberpunk
+lover. This brief is being shared with him for review; his feedback may
+revise character blocks before their models are specced.</em></p>
+<p>This is the master context document for the whole team. Each miniature gets
+its own spec when we start it, derived from its character block in §6 — the
+per-model spec is where poses and props get pinned to pipeline standard
+(explicit prop geometry, every hand accounted for, provable camera angles).</p>
+<h2>1. Project overview</h2>
+<p>A full 14-model, all-femme, cyberpunk-styled Blood Bowl team built on the
+BB2025 <strong>Amazon</strong> roster, produced via the established AI pipeline (Gemini
+clay-sculpt turnarounds → Meshy multi-view → trimesh validation → resin).</p>
+<p>Design goals, in priority order:</p>
+<ol>
+<li><strong>Reads as a Blood Bowl team at arm&rsquo;s length.</strong> Positional roles must be
+   distinguishable across the table (blockers bulkiest, blitzers most
+   dynamic, throwers with the ball).</li>
+<li><strong>Proxy-friendly.</strong> Straight cyberpunk, no fantasy/jungle motifs — the
+   team should proxy cleanly for other rosters (esp. Humans). Nothing on a
+   model should scream &ldquo;Amazons only&rdquo;.</li>
+<li><strong>14 genuinely distinct individuals.</strong> No two models share a silhouette.
+   Distinctness is geometric (build, hair, chrome placement, signature mass,
+   pose) — NOT paint-dependent, because the pipeline works in monochrome
+   clay-sculpt renders.</li>
+<li><strong>Cool, not comedy.</strong> Stylish, athletic, dangerous. Humor lives in names
+   and fluff only, never in the sculpt.</li>
+</ol>
+<h2>2. Roster reference (BB2025 Amazon, bloodbowlbase.ru)</h2>
+<p>Tier 1, Lustrian Superleague. Re-roll 60K, Apothecary 50K.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Position</th>
+<th>Qty</th>
+<th>MA</th>
+<th>ST</th>
+<th>AG</th>
+<th>PA</th>
+<th>AV</th>
+<th>Skills</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Eagle Warrior (Lineman)</td>
+<td>0-16</td>
+<td>6</td>
+<td>3</td>
+<td>3+</td>
+<td>4+</td>
+<td>8+</td>
+<td>Dodge</td>
+<td>50K</td>
+</tr>
+<tr>
+<td>Python Warrior (Thrower)</td>
+<td>0-2</td>
+<td>6</td>
+<td>3</td>
+<td>3+</td>
+<td>3+</td>
+<td>8+</td>
+<td>Dodge, On the Ball, Pass, Safe Pass</td>
+<td>80K</td>
+</tr>
+<tr>
+<td>Piranha Warrior (Blitzer)</td>
+<td>0-2</td>
+<td>7</td>
+<td>3</td>
+<td>3+</td>
+<td>4+</td>
+<td>8+</td>
+<td>Dodge, Hit and Run, Jump Up</td>
+<td>90K</td>
+</tr>
+<tr>
+<td>Jaguar Warrior (Blocker)</td>
+<td>0-2</td>
+<td>6</td>
+<td>4</td>
+<td>3+</td>
+<td>4+</td>
+<td>9+</td>
+<td>Defensive, Dodge</td>
+<td>110K</td>
+</tr>
+</tbody>
+</table></div>
+<p>The cyberpunk reading of the stat line: everyone has Dodge and light armour —
+this is a <strong>reflex-boosted</strong> team. Speed, wired reactions, and slipperiness
+over bulk. The blockers are the one exception: ST4/AV9+ juiced heavies.</p>
+<p><strong>Model set (14):</strong> 8 linewomen + 2 throwers + 2 blitzers + 2 blockers —
+every legal positional slot filled.</p>
+<h2>3. Team concept</h2>
+<p><strong>The team IS a street gang.</strong> The eight linewomen are the gang&rsquo;s core; the
+specialists are the gang&rsquo;s own talent, not hired guns:</p>
+<ul>
+<li><strong>Linewomen → Gangers.</strong> One gang, shared identity (kit, iconography,
+  jack ports), eight strongly distinct members. Reflex boosts are the gang&rsquo;s
+  one universal augment — every member has visible interface hardware
+  (temple studs / neck ports) even when the rest of her chrome is minimal.</li>
+<li><strong>Throwers → Fixers.</strong> The playmakers who move the goods and call the
+  shots. Smart-link arms, field-general poise. On the Ball / Safe Pass as
+  personality: the ball arrives where it needs to be, always.</li>
+<li><strong>Blitzers → Netrunners.</strong> Fast, slippery, impossible to pin down (Hit
+  and Run, Jump Up). Light kit, decks and interface cables, poses mid-juke.
+  They read the field like ICE and slide through gaps.</li>
+<li><strong>Blockers → Juicers.</strong> The muscle. Openly on the juice AND heavily
+  chromed for strength — hypertrophied builds with industrial/military-grade
+  cyberlimbs. The two most massive silhouettes on the roster by a wide
+  margin.</li>
+</ul>
+<h2>4. Team-wide visual language</h2>
+<p><strong>Kit (every model):</strong> cyber sports kit — recognizable fantasy-football
+elements built from cyberpunk materials.</p>
+<ul>
+<li><strong>Asymmetric armored shoulder pad</strong> (team-standard shape: layered plasteel
+  plates with a beveled rim) on the <em>left</em> shoulder for all 14 — the single
+  strongest unifying element. Specialists may add gear on top, never
+  replace it.</li>
+<li>Armored boots with gridiron cleat soles; knee/shin plates optional per
+  character.</li>
+<li><strong>Jack ports</strong>: a visible cluster of 2–3 interface studs at the right
+  temple or neck on every model — the gang mark. Raised (paintable), never
+  fragile pins. <strong>Print-survival caveat (m1 lesson, 2026-07-10):</strong> small
+  studs vanish in mesh reconstruction — Jason caught it on Mace&rsquo;s first
+  mesh. Her fix is a roughly eye-sized triangular three-pin socket plate
+  (proven bold enough to survive). Studs stay the team default on paper;
+  each model&rsquo;s spec picks studs-vs-socket at spec time, sized to survive.</li>
+<li><strong>Position iconography (Jason, 2026-07-10):</strong> each position wears its
+  BB2025 totem animal as a flat stencil-style emblem — <strong>EAGLE</strong>
+  (linewomen), <strong>PYTHON</strong> (throwers), <strong>PIRANHA</strong> (blitzers), <strong>JAGUAR</strong>
+  (blockers). Only the Fixers actually wear jackets, so the default
+  placement is the <strong>top plate of the team-standard left shoulder pad,
+  directly below the player number</strong> (revised on Mace&rsquo;s run, 2026-07-10 —
+  lower plates stay plain) — the one surface every model has;
+  jacket/coat wearers (Broker, Dime) can
+  carry it larger as a back patch instead. Style: spray-stencil / gang-tag
+  silhouette, not fantasy heraldry. Engraved ≥0.15mm and simple enough to
+  read at 32mm. Bonus: positions become identifiable at the table, which
+  strengthens proxy use.</li>
+<li>Player number engraved on the left pad&rsquo;s top plate, above the position
+  emblem (assign at spec time; engraved ≥0.15mm so it survives printing
+  and paints easily). Mace wears <strong>8</strong>.</li>
+<li>Athletic base layer: armored bodysuits / compression gear / reinforced
+  fatigues per character. <strong>Athletic, not cheesecake</strong> — these are pro
+  athletes/streetfighters; muscle tone yes, pin-up posing no.</li>
+<li>The ball (where held): classic spiked/laced Blood Bowl ball silhouette —
+  do not gadget-ify it; ball readability is sacred for proxy play.</li>
+</ul>
+<p><strong>Chrome grading (niche rule):</strong> cyberlimbs are fine on any position —
+several linos have them (Sable&rsquo;s piston cyberleg, Volt&rsquo;s cyberarm, Dice&rsquo;s
+chrome hand), as do the specialists. But <strong>mil-spec grade and/or oversized
+chrome is exclusive to the Blockers</strong>: nobody else gets military plating,
+hypertrophied builds, or augments bigger than the flesh limb they replace.
+Everyone else&rsquo;s chrome is street/sport-grade and body-proportioned.</p>
+<p><strong>Body diversity is load-bearing:</strong> builds range petite → athletic → heavy
+across the roster (see the distinctness matrix, §7). This is both
+characterful and the main anti-look-alike lever.</p>
+<p><strong>Palette</strong> (paint stage only — sculpts are monochrome): gunmetal/matte
+black armour, ONE hot neon accent (magenta recommended; cyan alternate),
+white numbers. Neutral enough to sit next to any opponent as a proxy.</p>
+<p><strong>IP guardrails:</strong> original sculpts only. No GW iconography or trademarks
+(no &ldquo;Blood Bowl&rdquo; text anywhere). No CD Projekt / R. Talsorian marks either —
+no Arasaka/Militech/Samurai logos, no &ldquo;Night City&rdquo;. Genre, not brand.</p>
+<h2>5. Team name (chosen 2026-07-10)</h2>
+<p><strong>Firewall FC, a.k.a. &ldquo;the Furies.&rdquo;</strong> Official club name Firewall FC —
+sports-club framing, &ldquo;you shall not pass&rdquo; energy for a Dodge/Defensive
+team. The Furies is the street name: the linewomen&rsquo;s gang at the team&rsquo;s
+core, and what everyone actually calls them at the table. Both names are
+fair game for kit flavour (engraved &ldquo;FFC&rdquo; crest, Fury iconography).</p>
+<h2>6. The fourteen</h2>
+<p>Format: <strong>HANDLE</strong> — position. Concept. <em>Silhouette hooks</em> (the geometric
+features that make her unmistakable in monochrome). Pose sketch (pinned
+properly at per-model spec time).</p>
+<h3>Blockers / Juicers (Jaguar Warriors)</h3>
+<p><strong>BREAKER</strong> — Blocker #1. Ex-dockworker who kept the industrial loader
+chrome and added juice on top. The gang&rsquo;s immovable object. <em>Hooks:</em>
+top-heavy gorilla silhouette — oversized hydraulic cyberarms (both),
+knuckles like tow-hitches, subdermal plate ridges across trapezius,
+injector rig strapped to one thigh. Shortest-and-widest heavy. Pose: low
+wide braced stance, arms flexed outward, weight forward — a wall mid-set.</p>
+<p><strong>GORGON</strong> — Blocker #2. Washout from a corpo super-soldier program; sleek
+mil-spec grafts instead of Breaker&rsquo;s industrial slabs. Colder, quieter,
+scarier. <em>Hooks:</em> tall and V-tapered rather than squat; symmetric chromed
+arms with clean panel lines; thick cable-dreads swept back (her namesake —
+sculpted as chunky, print-safe locks); glowing spinal stack implied by a
+raised vertebral ridge. Pose: upright, mid-stride advance, one arm raised
+palm-out to stiff-arm.</p>
+<h3>Blitzers / Netrunners (Piranha Warriors)</h3>
+<p><strong>GLITCH</strong> — Blitzer #1. Wiry, twitchy, brilliant; runs hot and talks
+faster. <em>Hooks:</em> smallest frame among the specialists; asymmetric
+half-shaved bob; AR goggles pushed up on forehead; slim cyberdeck slung at
+the right hip with its interface cable coiled tight around her left
+forearm (coiled = print-safe, no floating loops). Pose: full sprint, deep
+lean — one of the team&rsquo;s ≤3 dynamic slots; both cleats still reach ground
+level (basing rule, §8).</p>
+<p><strong>WRAITH</strong> — Blitzer #2. The ghost — nobody remembers tackling her because
+nobody has. <em>Hooks:</em> hood up over a mirrored full-face visor (hood gives a
+unique head silhouette and prints clean); long-limbed; matte bodysuit with
+minimal plating; blade-runner sprinter&rsquo;s cyberlegs below the knee. Pose:
+low sliding juke, one hand skimming the turf.</p>
+<h3>Throwers / Fixers (Python Warriors)</h3>
+<p><strong>BROKER</strong> — Thrower #1. The senior fixer; owns every favour in the
+district. Calm is her whole brand. <em>Hooks:</em> knee-length armored coat
+(unique big-mass silhouette; sculpts and prints well); smart-link right
+arm with visible targeting vanes at the wrist; slicked-back undercut.
+Pose: classic quarterback — ball gripped high in the smart-link hand,
+off-hand pointing downfield, coat mid-swirl.</p>
+<p><strong>DIME</strong> — Thrower #2. The up-and-comer; drops the perfect pass and lets
+you know about it. <em>Hooks:</em> cropped bomber jacket over kit (contrast with
+Broker&rsquo;s long coat); high ponytail through a gearhead headband; cyber-eye
+with a slim brow-mounted rangefinder; ball tucked under one arm. Pose:
+scanning mid-jog, head turned sharply left, free hand signalling a route.</p>
+<h3>Linewomen / Gangers (Eagle Warriors) — the gang core</h3>
+<p><strong>STITCH</strong> — Lino #1. Gang med-tech; patches the crew between drives and
+hits exactly as hard as she heals. <em>Hooks:</em> trauma-kit satchel on the hip,
+one forearm freshly chromed with the bandage wrap still on; practical
+short crop. Pose: watchful guard — weight back, hands open, reading the
+field. (Sharpened v1.2 to stay distinct from Mace&rsquo;s revised wide-ready.)</p>
+<p><strong>MACE</strong> — Lino #2, jersey #8. The brawler; the one who starts it.
+<em>Hooks:</em> plated knuckle guards on both fists, flattened nose, heavy jaw,
+buzzcut; densest build of the eight; eye-sized triangular three-pin
+socket at her right temple as her gang mark (see §4 caveat). Pose
+(revised 2026-07-10): wide &ldquo;wrestle-you-down&rdquo; ready — stance wider than
+shoulders, both feet planted, weight forward, arms wide, open palms out
+front. (Her original mid-shove goes back in the pose pool for a future
+lino.) <em>Niche guard:</em> she must NOT eat into the blockers&rsquo; lane — dense
+but human-scale athlete, no hypertrophy, and (as her personal style, see
+§4 chrome grading) no cyberlimbs at all: street-grade knuckle guards are
+her whole statement. Mace is just the meanest normal person on the pitch.
+<em>Status (2026-07-10, end of day):</em> full pipeline exercised concept→STL in
+one day — first mesh (m1) is a clean watertight print candidate, but it
+ate the temple studs (→ socket redesign) and squeezed her wide stance
+(→ pose-matched turnaround templates, now standard). Retake sheet
+(r8-A1-final) is the m2 candidate awaiting Dimitri&rsquo;s sign-off. Full spec
+in <code>mace/spec.md</code>; keepers in <code>mace/concept-art/</code>.</p>
+<p><strong>JINX</strong> — Lino #3. The street kid; youngest, fastest mouth, oversized
+hand-me-down kit. <em>Hooks:</em> smallest and lankiest of the eight; jersey too
+big and half-untucked; mismatched shin guards; short twin buns. Pose:
+flat-out scramble, arms pumping.</p>
+<p><strong>SABLE</strong> — Lino #4. The quiet veteran; ten seasons, one expression.
+<em>Hooks:</em> single thick braid over the shoulder (chunky, print-safe); left
+leg is a full piston-calf cyberleg; sleeve of old gang tattoos implied as
+low relief. Pose: three-point sprinter&rsquo;s stance.</p>
+<p><strong>VOLT</strong> — Lino #5. The live wire; taunts the opposing blitzer by name.
+<em>Hooks:</em> tall mohawk (the loudest head silhouette in the roster); left
+cyberarm with arc-scarring texture; lean and long. Pose: upright taunt,
+one hand beckoning, the other cocked back — both hands clearly empty.</p>
+<p><strong>BRICK</strong> — Lino #6. The anchor of the line; goes exactly nowhere she
+doesn&rsquo;t choose to. <em>Hooks:</em> widest lino, near-blocker mass but zero
+cyberlimbs — she&rsquo;s just built like that; scavenged extra-heavy right
+shoulder pad over the team-standard left one; hair in a tight knot. Pose:
+planted square block stance, arms locked in a wedge.</p>
+<p><strong>ECHO</strong> — Lino #7. The listener; calls out plays she shouldn&rsquo;t be able to
+hear. <em>Hooks:</em> fully shaved head with twin rows of interface ports over
+the scalp; audio collar array around the neck (raised ring, print-safe);
+average build — her head hardware IS the silhouette. Pose: lateral
+defensive shuffle, arms wide.</p>
+<p><strong>DICE</strong> — Lino #8. The gambler; plays the odds, on and off the pitch.
+<em>Hooks:</em> string of luck charms on the belt (sculpted chunky); asymmetric
+chin-length bob; one full-chrome hand, fingers splayed showing it off.
+Pose: easy jog, head turned calling for the pass — both hands visibly
+empty.</p>
+<h2>7. Distinctness matrix</h2>
+<p>No two rows may converge during generation. If a generated sheet drifts
+toward another character&rsquo;s column entries, that&rsquo;s a reject.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Handle</th>
+<th>Pos</th>
+<th>Build</th>
+<th>Head/hair</th>
+<th>Chrome focus</th>
+<th>Signature mass</th>
+<th>Pose family</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Breaker</td>
+<td>Blocker</td>
+<td>squat-massive</td>
+<td>short crop</td>
+<td>both arms, industrial</td>
+<td>hydraulic arms</td>
+<td>braced wall</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Gorgon</td>
+<td>Blocker</td>
+<td>tall-massive</td>
+<td>cable-dreads</td>
+<td>both arms, mil-spec</td>
+<td>dread mane</td>
+<td>stiff-arm advance</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Glitch</td>
+<td>Blitzer</td>
+<td>petite-wiry</td>
+<td>half-shaved bob</td>
+<td>deck + cable arm</td>
+<td>hip deck</td>
+<td>full sprint</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Wraith</td>
+<td>Blitzer</td>
+<td>long-limbed</td>
+<td>hood + visor</td>
+<td>runner cyberlegs</td>
+<td>hood</td>
+<td>sliding juke</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Broker</td>
+<td>Thrower</td>
+<td>athletic</td>
+<td>slick undercut</td>
+<td>smart-link R arm</td>
+<td>long coat</td>
+<td>QB throw</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Dime</td>
+<td>Thrower</td>
+<td>athletic-compact</td>
+<td>high ponytail</td>
+<td>cyber-eye</td>
+<td>bomber jacket</td>
+<td>scan + tuck</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Stitch</td>
+<td>Lino</td>
+<td>average</td>
+<td>short crop + satchel</td>
+<td>fresh forearm</td>
+<td>med satchel</td>
+<td>watchful guard</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Mace</td>
+<td>Lino</td>
+<td>dense</td>
+<td>buzzcut</td>
+<td>knuckle plates</td>
+<td>none (fists)</td>
+<td>wide ready</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Jinx</td>
+<td>Lino</td>
+<td>small-lanky</td>
+<td>twin buns</td>
+<td>ports only</td>
+<td>baggy jersey</td>
+<td>scramble</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Sable</td>
+<td>Lino</td>
+<td>athletic</td>
+<td>thick braid</td>
+<td>piston cyberleg L</td>
+<td>braid</td>
+<td>3-point stance</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Volt</td>
+<td>Lino</td>
+<td>tall-lean</td>
+<td>mohawk</td>
+<td>cyberarm L</td>
+<td>mohawk</td>
+<td>taunt</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Brick</td>
+<td>Lino</td>
+<td>widest lino</td>
+<td>tight knot</td>
+<td>none</td>
+<td>double pads</td>
+<td>square block</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Echo</td>
+<td>Lino</td>
+<td>average</td>
+<td>shaved + scalp ports</td>
+<td>audio collar</td>
+<td>collar array</td>
+<td>lateral shuffle</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Dice</td>
+<td>Lino</td>
+<td>average</td>
+<td>asym bob</td>
+<td>chrome hand R</td>
+<td>charm belt</td>
+<td>jog + look back</td>
+</tr>
+</tbody>
+</table></div>
+<p>Build spread: 2 massive, 1 dense, 1 widest-lino, 5 athletic/average, 2
+small/petite, 3 tall/long. Head silhouettes: all 14 distinct.</p>
+<h2>8. Technical specs</h2>
+<ul>
+<li><strong>Scale:</strong> 32mm heroic, matching the Igor set — chunky hands/features so
+  they don&rsquo;t look spindly next to GW-adjacent minis. Target height ~37mm
+  eye-level-scaled for athletic femme builds (confirm against a printed
+  Igor before batch production).</li>
+<li><strong>Bases:</strong> 32mm round (standard BB).</li>
+<li><strong>Print target:</strong> resin, one-piece per model strongly preferred. Thin
+  elements ≥0.6mm, engraved details ≥0.15mm.</li>
+<li><strong>Basing rule (Jason, 2026-07-10):</strong> minimum TWO contact points per
+  model — default pose is both feet planted at ground level, flat is
+  best, one foot slightly behind is fine. <strong>Dynamic-pose budget: at most
+  ~3 especially dynamic poses on the whole team</strong> (current allocation:
+  Glitch&rsquo;s sprint, Wraith&rsquo;s slide, one slot reserved), and even those
+  must have both feet bottoming out at ground level — a lifted foot
+  can&rsquo;t be glued to a base without pinning.</li>
+<li><strong>Cyberpunk-specific print hazards</strong> (flag at spec time, every model):
+  cables (always coiled/against-body, never free loops), antennae/vanes
+  (≥0.6mm, short), mohawks/braids (chunky, connected), visor edges,
+  splayed fingers (Dice), coat hems (thicken).</li>
+<li><strong>Left/right convention (global policy, 2026-07-10):</strong> every side
+  reference in prompts, specs, and audits is the <strong>VIEWER&rsquo;S left/right</strong>,
+  anchored to a named view (&ldquo;front view: pad on the viewer&rsquo;s right&rdquo;);
+  profile views are named by visible feature (&ldquo;the pad side&rdquo;). Character
+  anatomy is stated once per spec as ground truth, then translated.</li>
+<li><strong>Pipeline:</strong> per the <code>miniature-concept-pipeline</code> skill — monochrome
+  clay-sculpt 4-view turnarounds (Gemini via <code>tools/gemini_gen.py</code>), Meshy
+  multi-view (API, ~20 credits/run), trimesh validation, fresh-context
+  subagent audits, lineage naming + <code>lineage.json</code>, per-round markdown log.
+  14 models × multiple rounds each = budget attention on Meshy credits and
+  Gemini spend; audit inputs before every paid run.</li>
+</ul>
+<h2>9. Production order (proposal)</h2>
+<p>Start with ONE model to establish the team-standard kit (shoulder pad
+shape, jack ports, boot design) as a visual exemplar, then reuse its
+approved sheet as the kit reference for the rest.</p>
+<p>First model: <strong>MACE</strong> (Lino #2) — average-complexity, no coat/hood/deck
+to complicate reconstruction, easy hands, dense build (forgiving
+geometry). She locks the kit standard; she already has a first mesh, with
+a refined m2 sheet in review (see her block in §6). Original proposal was
+then one specialist of each type (Breaker → Broker → Glitch) to
+stress-test the extremes before the remaining linos — but <strong>Jason picks
+which character he wants to see next.</strong></p>
+</body></html>
