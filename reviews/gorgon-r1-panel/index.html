@@ -61,14 +61,14 @@ footer { color:var(--dim); font-size:.8rem; margin-top:3rem; border-top:1px soli
 <p class="eyebrow">Firewall FC · Blocker #2 · round 1 · 2026-07-10</p>
 <h1>GORGON — 10-model concept panel</h1>
 <p class="sub">Jason picked Gorgon (Blocker #2) as the next model. Round 1 = photoreal-first front-view concept (the track that won on Mace r2/r3): one pinned prompt through the 10-model panel, then a fresh-context audit that cropped and 2×-zoomed head/torso/hands/feet on every image. Spec: tall V-tapered juicer, both arms sleek mil-spec chrome, cable-dreads swept back, three-pin socket at her right temple (viewer&#x27;s left in front view), stiff-arm advance, both feet flat.</p>
-<div class="callout"><strong>Verdict wanted:</strong> Pick the DESIGN KEEPER (Claude pre-read: riverflow25, the only chirality-correct one) and optionally a POSE/ENERGY reference (pre-read: pro2k). r2 converts the keeper to monochrome clay via flash31 and fixes the three systematic misses at prompt level: the temple socket (9/10 wrong side/shape/place), the stiff-arm collapsing to a bent &#x27;stop&#x27; gesture (7/10), and raised rear heels vs the flat-plant basing rule (6/10). Jersey #4 is provisional — veto welcome.</div>
+<div class="callout"><strong>Verdict wanted — two equally valid answers:</strong> (1) Pick a DESIGN KEEPER (Claude pre-read: riverflow25, the only chirality-correct one) and optionally a POSE/ENERGY reference (pre-read: pro2k); or (2) reject the whole panel and just give feedback — &#x27;none of these; open the stance up, more mass in the shoulders, different dread length&#x27; etc. is every bit as useful, and goes straight into the r1.5 prompt for a fresh sweep. With a keeper, r2 converts it to monochrome clay via flash31. Either way the next round also fixes the three systematic misses at prompt level: the temple socket (9/10 wrong side/shape/place), the stiff-arm collapsing to a bent &#x27;stop&#x27; gesture (7/10), and raised rear heels vs the flat-plant basing rule (6/10). Jersey #4 is provisional — veto welcome.</div>
 <h2>Claude pre-read — ranked picks</h2>
 <div class="tablewrap"><table>
 <tr><th>Pick</th><th>Model</th><th>Why</th></tr>
 <tr><td>Design #1</td><td>riverflow25</td><td>Only image where EVERY chirality anchor lands correctly (numbered pad viewer&#x27;s right, open palm viewer&#x27;s left, fist viewer&#x27;s right). Massive-yet-sleek build, flesh legs, real cleats, clean of text/props. One fix: socket shrank to a forehead stud — needs the eye-sized temple triangle. (Caveat: priciest model, $0.34/roll — fine for a one-time keeper, not for iteration.)</td></tr><tr><td>Design #2</td><td>flash31</td><td>Cleanest sleek mil-spec styling and correct single pad; but socket is mirrored AND wrong shape (two pin-studs), arm went sideways T-pose, mass under brief.</td></tr><tr><td>Design #3</td><td>gptimage2</td><td>Best-constructed 3-pin triangular socket in the set — on the WRONG temple (a keeper would force a flip step). Glamour hourglass proportions need de-emphasizing toward the military V-taper.</td></tr><tr><td>Pose #1</td><td>pro2k</td><td>The only true extended shoulder-height stiff-arm mid-stride. Near-profile camera, so treat as POSE-ONLY reference (chirality unusable as-is).</td></tr><tr><td>Pose #2</td><td>riverflow25</td><td>Frontal advancing march with stop-palm + fist, both feet grounded — the pose that best survives the basing rule.</td></tr><tr><td>Pose #3</td><td>seedream45</td><td>Most dynamic grounded stride — but fully MIRRORED (pad left, arms swapped); using it forces a horizontal flip first, like Mace&#x27;s mai25.</td></tr>
 </table></div>
 <h2>The panel</h2>
-<p class="sub">Hover a render to preview it at full resolution; click to pin (click again or press Esc to close). Chips are the fresh-context audit's verdicts on the spec's key checks (viewer-frame sides), verified on 2× region crops.</p>
+<p class="sub">Click a render to view it at full resolution (click anywhere or press Esc to close). Chips are the fresh-context audit's verdicts on the spec's key checks (viewer-frame sides), verified on 2× region crops.</p>
 <div class="grid">
 
 <article class="card" id="riverflow25">
@@ -180,26 +180,20 @@ footer { color:var(--dim); font-size:.8rem; margin-top:3rem; border-top:1px soli
   var lbx = document.getElementById('lbx');
   var big = lbx.querySelector('img');
   var cap = lbx.querySelector('.cap');
-  var pinned = false;
-  var canHover = window.matchMedia('(hover:hover)').matches;
 
   function show(src, label) {
     big.src = src; cap.textContent = label + ' — full resolution';
     lbx.classList.add('open');
   }
-  function hide() { lbx.classList.remove('open'); pinned = false; }
+  function hide() { lbx.classList.remove('open'); }
 
   document.querySelectorAll('.lb').forEach(function (a) {
     var img = a.querySelector('img');
     var full = img.getAttribute('data-full');
     var label = a.closest('.card').querySelector('h3').textContent;
-    if (canHover) {
-      a.addEventListener('mouseenter', function () { if (!pinned) show(full, label); });
-      a.addEventListener('mouseleave', function () { if (!pinned) hide(); });
-    }
     a.addEventListener('click', function (e) {
       e.preventDefault();
-      if (pinned) { hide(); } else { show(full, label); pinned = true; }
+      show(full, label);
     });
   });
   lbx.addEventListener('click', hide);
