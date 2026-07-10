@@ -1,8 +1,8 @@
 # Team Brief: All-Femme Cyberpunk Blood Bowl Team (Amazon roster)
 
-*Draft v1.2 — 2026-07-10. Companion to `PROJECT.md` (process/pipeline state).
-v1.2 syncs the brief with Mace's production run (pose revision, gang-mark
-print lesson, emblem placement, status).*
+*Draft v1.3 — 2026-07-10. Companion to `PROJECT.md` (process/pipeline state).
+v1.2–v1.3 sync the brief with Mace's production run (pose revision, emblem
+placement, status) and standardize the gang mark as the three-pin socket.*
 
 *For: Jason — our resident Amazon specialist coach, gamer, and cyberpunk
 lover. This brief is being shared with him for review; his feedback may
@@ -58,9 +58,9 @@ every legal positional slot filled.
 specialists are the gang's own talent, not hired guns:
 
 - **Linewomen → Gangers.** One gang, shared identity (kit, iconography,
-  jack ports), eight strongly distinct members. Reflex boosts are the gang's
-  one universal augment — every member has visible interface hardware
-  (temple studs / neck ports) even when the rest of her chrome is minimal.
+  jack sockets), eight strongly distinct members. Reflex boosts are the
+  gang's one universal augment — every member wears the temple socket
+  (§4) even when the rest of her chrome is minimal.
 - **Throwers → Fixers.** The playmakers who move the goods and call the
   shots. Smart-link arms, field-general poise. On the Ball / Safe Pass as
   personality: the ball arrives where it needs to be, always.
@@ -83,13 +83,14 @@ elements built from cyberpunk materials.
   replace it.
 - Armored boots with gridiron cleat soles; knee/shin plates optional per
   character.
-- **Jack ports**: a visible cluster of 2–3 interface studs at the right
-  temple or neck on every model — the gang mark. Raised (paintable), never
-  fragile pins. **Print-survival caveat (m1 lesson, 2026-07-10):** small
-  studs vanish in mesh reconstruction — Jason caught it on Mace's first
-  mesh. Her fix is a roughly eye-sized triangular three-pin socket plate
-  (proven bold enough to survive). Studs stay the team default on paper;
-  each model's spec picks studs-vs-socket at spec time, sized to survive.
+- **Jack socket (the gang mark)**: an interface socket at the right
+  temple on every model. Team standard (2026-07-10): a raised flat
+  triangular plate, roughly eye-sized, with three cylindrical socket pins
+  recessed one per corner — the design proven on Mace after the m1
+  lesson (the original small interface studs vanished in mesh
+  reconstruction; Jason caught it). Bold enough to survive the mesh,
+  paintable, never fragile pins. Per-player socket variants are a
+  possible later riff; for now the triangular three-pin IS the mark.
 - **Position iconography (Jason, 2026-07-10):** each position wears its
   BB2025 totem animal as a flat stencil-style emblem — **EAGLE**
   (linewomen), **PYTHON** (throwers), **PIRANHA** (blitzers), **JAGUAR**
@@ -202,8 +203,8 @@ field. (Sharpened v1.2 to stay distinct from Mace's revised wide-ready.)
 
 **MACE** — Lino #2, jersey #8. The brawler; the one who starts it.
 *Hooks:* plated knuckle guards on both fists, flattened nose, heavy jaw,
-buzzcut; densest build of the eight; eye-sized triangular three-pin
-socket at her right temple as her gang mark (see §4 caveat). Pose
+buzzcut; densest build of the eight; the team-standard three-pin socket
+at her right temple — she defined it (§4). Pose
 (revised 2026-07-10): wide "wrestle-you-down" ready — stance wider than
 shoulders, both feet planted, weight forward, arms wide, open palms out
 front. (Her original mid-shove goes back in the pose pool for a future
@@ -311,7 +312,7 @@ small/petite, 3 tall/long. Head silhouettes: all 14 distinct.
 ## 9. Production order (proposal)
 
 Start with ONE model to establish the team-standard kit (shoulder pad
-shape, jack ports, boot design) as a visual exemplar, then reuse its
+shape, jack socket, boot design) as a visual exemplar, then reuse its
 approved sheet as the kit reference for the rest.
 
 First model: **MACE** (Lino #2) — average-complexity, no coat/hood/deck
