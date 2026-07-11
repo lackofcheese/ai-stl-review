@@ -19,6 +19,14 @@ h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
   text-transform:uppercase; font-weight:600 }
 .sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
 .blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.vhead { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.9rem;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--accent);
+  margin:1.6rem 0 .45rem; font-weight:700 }
+.verdicts ol { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); border-radius:6px; margin:0; max-width:75ch;
+  padding:.85rem 1rem .85rem 2.4rem }
+.verdicts li { margin:.35rem 0 }
+.verdicts li::marker { color:var(--accent); font-weight:700 }
 .callout { border:1px solid var(--line); border-left:3px solid var(--accent);
   background:var(--card); padding:.8rem 1rem; border-radius:6px;
   margin:1.2rem 0; max-width:75ch }
@@ -102,7 +110,8 @@ details.fullaudit p { margin:.3rem 0 0 }
 <div class="eyebrow">Firewall FC — Gorgon · round 6 (hair-movement pass) · 2026-07-11</div>
 <h1>Gorgon r6 — hair to the far shoulder, nape implant exposed: three routes compared</h1>
 <p class="sub">One goal, three arms (Dimitri): move the dread mane over her LEFT (far, stiff-arm) shoulder so the spinal implant's neck portion reads from the main view, and rotate the camera a bit toward her front (torso, palm, far leg). ARM A = riverflow25 text-only regen with a dedicated hair negative (2 rolls). ARM B = riverflow25 fed its OWN r4 gold and asked for exactly the two changes (2 rolls). ARM C = five non-riverflow models, same reference + edit prompt (1 roll each). 9 rolls, ~$1.99. Verdicts are Claude's fresh-context crop-audit pre-read — Dimitri's call is the gate. Click any chip to open its evidence; each card's long audit sits behind "full audit".</p>
-<div class="callout"><strong>Verdicts wanted (Dimitri + Jason):</strong> (1) <strong>Champion</strong> — B2 or B1 (Claude pre-read: B2, a touch more frontal; both are clean self-edits of the r4 gold), or keep the r4 gold as-is, or reject all nine with fresh direction. (2) <strong>Recipe</strong> — bless self-edit img2img (base model + "exactly N changes, everything else identical") as the standard base-fix mechanism? It went 2/2 here on a property that per-panel text lost 12/12 at t1/t2. (3) <strong>Next steps off the new base</strong> — t3 turnaround-prompting experiment, then clay + Meshy two-roll protocol? (4) <strong>Knee-kit swap</strong> (arm A's 2/2 systematic): worth a spec-language fix before any future text regen, or moot now that the lineage continues by editing? (5) <strong>pro2k</strong> — mirrored an img2img reference (first seen anywhere): keep it on img2img duty at all?</div>
+<div class="callout"><strong>Headline:</strong> the self-edit recipe wins outright — riverflow25 editing its own r4 gold went <strong>2/2 keeper-candidates</strong> (hair moved, nape implant exposed, camera opened ~20–30°, zero regressions). Text regen also moved the hair but re-rolled the knee kit; cross-model edits went 1/5.</div>
+<section class="verdicts"><h2 class="vhead">Verdicts / Info Needed</h2><ol><li><strong>Champion (Dimitri):</strong> B2 or B1 (Claude pre-read: B2, a touch more frontal; both are clean self-edits of the r4 gold) — or keep the r4 gold as-is, or reject all nine with fresh direction.</li><li><strong>Recipe:</strong> bless self-edit img2img (base model + "exactly N changes, everything else identical") as the standard base-fix mechanism? It went 2/2 on a property per-panel text lost 12/12 at t1/t2.</li><li><strong>Next steps off the new base:</strong> t3 turnaround-prompting experiment, then clay + Meshy two-roll protocol?</li><li><strong>Knee-kit swap</strong> (arm A's 2/2 systematic): worth a spec-language fix before any future text regen, or moot now that the lineage continues by editing?</li><li><strong>pro2k:</strong> mirrored an img2img reference (first seen anywhere) — keep it on img2img duty at all?</li></ol></section>
 <h2>Claude pre-read — ranked picks</h2>
 <div class="tablewrap"><table>
 <tr><th>Pick</th><th>Roll</th><th>Why</th></tr>
