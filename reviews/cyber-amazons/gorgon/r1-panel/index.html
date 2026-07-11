@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>GORGON — 10-model concept panel</title>
+<style>
+:root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:92vh; object-fit:contain }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+</style></head><body><main>
+<div class="eyebrow">Firewall FC · Blocker #2 · round 1 · 2026-07-10</div>
+<h1>GORGON — 10-model concept panel</h1>
+<p class="sub">Jason picked Gorgon (Blocker #2) as the next model. Round 1 = photoreal-first front-view concept (the track that won on Mace r2/r3): one pinned prompt through the 10-model panel, then a fresh-context audit that cropped and 2×-zoomed head/torso/hands/feet on every image. Spec: tall V-tapered juicer, both arms sleek mil-spec chrome, cable-dreads swept back, three-pin socket at her right temple (viewer&#x27;s left in front view), stiff-arm advance, both feet flat.</p>
+<div class="callout"><strong>Verdict wanted — two equally valid answers:</strong> (1) Pick a DESIGN KEEPER (Claude pre-read: riverflow25, the only chirality-correct one) and optionally a POSE/ENERGY reference (pre-read: pro2k); or (2) reject the whole panel and just give feedback — &#x27;none of these; open the stance up, more mass in the shoulders, different dread length&#x27; etc. is every bit as useful, and goes straight into the r1.5 prompt for a fresh sweep. With a keeper, r2 converts it to monochrome clay via flash31. Either way the next round also fixes the three systematic misses at prompt level: the temple socket (9/10 wrong side/shape/place), the stiff-arm collapsing to a bent &#x27;stop&#x27; gesture (7/10), and raised rear heels vs the flat-plant basing rule (6/10). Jersey #4 is provisional — veto welcome.</div>
+<h2>Claude pre-read — ranked picks</h2>
+<div class="tablewrap"><table>
+<tr><th>Pick</th><th>Model</th><th>Why</th></tr>
+<tr><td>Design #1</td><td>riverflow25</td><td>Only image where EVERY chirality anchor lands correctly (numbered pad viewer&#x27;s right, open palm viewer&#x27;s left, fist viewer&#x27;s right). Massive-yet-sleek build, flesh legs, real cleats, clean of text/props. One fix: socket shrank to a forehead stud — needs the eye-sized temple triangle. (Caveat: priciest model, $0.34/roll — fine for a one-time keeper, not for iteration.)</td></tr><tr><td>Design #2</td><td>flash31</td><td>Cleanest sleek mil-spec styling and correct single pad; but socket is mirrored AND wrong shape (two pin-studs), arm went sideways T-pose, mass under brief.</td></tr><tr><td>Design #3</td><td>gptimage2</td><td>Best-constructed 3-pin triangular socket in the set — on the WRONG temple (a keeper would force a flip step). Glamour hourglass proportions need de-emphasizing toward the military V-taper.</td></tr><tr><td>Pose #1</td><td>pro2k</td><td>The only true extended shoulder-height stiff-arm mid-stride. Near-profile camera, so treat as POSE-ONLY reference (chirality unusable as-is).</td></tr><tr><td>Pose #2</td><td>riverflow25</td><td>Frontal advancing march with stop-palm + fist, both feet grounded — the pose that best survives the basing rule.</td></tr><tr><td>Pose #3</td><td>seedream45</td><td>Most dynamic grounded stride — but fully MIRRORED (pad left, arms swapped); using it forces a horizontal flip first, like Mace&#x27;s mai25.</td></tr>
+</table></div>
+<h2>The panel</h2>
+<p class="blurb">Click a render to view it at full resolution (click anywhere or press Esc to close). Chips are the fresh-context audit's verdicts on the spec's key checks (viewer-frame sides), verified on 2× region crops.</p>
+<div class="grid">
+<div class="card"><div class="imgwrap" data-full="full/gorgon-r1-A-riverflow25.png" data-cap="riverflow25"><img src="thumb/gorgon-r1-A-riverflow25.jpg" alt="riverflow25" loading="lazy"></div><div class="meta"><header><h3>riverflow25</h3><span class="cost">$0.34</span><span class="call pick">DESIGN PICK</span></header><div class="chips"><span class="chip ok">front view</span><span class="chip ok">pad side</span><span class="chip warn">socket</span><span class="chip warn">stiff-arm</span><span class="chip ok">chrome arms</span><span class="chip ok">mass</span><span class="chip ok">feet flat</span></div><p>Every side correct; massive yet sleek; flesh legs + cleats; nothing held, no stray text. Socket undersized and drifted to the forehead — the one ordered fix. Stiff-arm is a raised stop rather than full extension.</p><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="full/gorgon-r1-A-pro2k.png" data-cap="pro2k"><img src="thumb/gorgon-r1-A-pro2k.jpg" alt="pro2k" loading="lazy"></div><div class="meta"><header><h3>pro2k</h3><span class="cost">~$0.14</span><span class="call pick">POSE PICK</span></header><div class="chips"><span class="chip bad">front view</span><span class="chip ok">pad side</span><span class="chip warn">socket</span><span class="chip warn">stiff-arm</span><span class="chip ok">chrome arms</span><span class="chip warn">mass</span><span class="chip warn">feet flat</span></div><p>Walking near-profile shot — wrong assignment but the best stiff-arm-in-motion energy of the set. Sleeker than brief; rear heel raised. Pose-only candidate.</p><button class="ibtn" data-inputs="in-1">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="full/gorgon-r1-A-flash31.png" data-cap="flash31"><img src="thumb/gorgon-r1-A-flash31.jpg" alt="flash31" loading="lazy"></div><div class="meta"><header><h3>flash31</h3><span class="cost">~$0.10</span></header><div class="chips"><span class="chip ok">front view</span><span class="chip ok">pad side</span><span class="chip bad">socket</span><span class="chip warn">stiff-arm</span><span class="chip ok">chrome arms</span><span class="chip warn">mass</span><span class="chip warn">feet flat</span></div><p>Cleanest true front view and on-palette mil-spec styling. Temple hardware = two pin-plugs on the mirrored temple; arm went lateral T-pose; the off-hand hangs open instead of a fist; mass under brief.</p><button class="ibtn" data-inputs="in-2">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="full/gorgon-r1-A-gptimage2.png" data-cap="gptimage2"><img src="thumb/gorgon-r1-A-gptimage2.jpg" alt="gptimage2" loading="lazy"></div><div class="meta"><header><h3>gptimage2</h3><span class="cost">$0.13</span></header><div class="chips"><span class="chip ok">front view</span><span class="chip ok">pad side</span><span class="chip bad">socket</span><span class="chip warn">stiff-arm</span><span class="chip warn">chrome arms</span><span class="chip warn">mass</span><span class="chip ok">feet flat</span></div><p>Strong menace and the best socket geometry — mirrored to the wrong temple. Hourglass glamour proportions rather than V-taper; the stiff-arm-side upper arm reads suited, not chrome.</p><button class="ibtn" data-inputs="in-3">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="full/gorgon-r1-A-grokq.png" data-cap="grokq"><img src="thumb/gorgon-r1-A-grokq.jpg" alt="grokq" loading="lazy"></div><div class="meta"><header><h3>grokq</h3><span class="cost">$0.07</span></header><div class="chips"><span class="chip ok">front view</span><span class="chip bad">pad side</span><span class="chip bad">socket</span><span class="chip bad">stiff-arm</span><span class="chip ok">chrome arms</span><span class="chip warn">mass</span><span class="chip warn">feet flat</span></div><p>Best pure photorealism and facial menace, but the socket became a chrome eyepatch, pauldrons landed on BOTH shoulders, and there&#x27;s no stiff-arm — she just stands there. Digits verified clean.</p><button class="ibtn" data-inputs="in-4">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="full/gorgon-r1-A-recraft41pro.png" data-cap="recraft41pro"><img src="thumb/gorgon-r1-A-recraft41pro.jpg" alt="recraft41pro" loading="lazy"></div><div class="meta"><header><h3>recraft41pro</h3><span class="cost">$0.21</span></header><div class="chips"><span class="chip ok">front view</span><span class="chip warn">pad side</span><span class="chip warn">socket</span><span class="chip warn">stiff-arm</span><span class="chip ok">chrome arms</span><span class="chip warn">mass</span><span class="chip warn">feet flat</span></div><p>Striking studio shot, enormous dread mane. Socket drifted to mid-forehead plus stray brow piercings; a second chrome pauldron appeared; catwalk in-line stance reads fashion-editorial, not blocker.</p><button class="ibtn" data-inputs="in-5">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="full/gorgon-r1-A-seedream45.png" data-cap="seedream45"><img src="thumb/gorgon-r1-A-seedream45.jpg" alt="seedream45" loading="lazy"></div><div class="meta"><header><h3>seedream45</h3><span class="cost">$0.04</span></header><div class="chips"><span class="chip warn">front view</span><span class="chip bad">pad side</span><span class="chip warn">socket</span><span class="chip bad">stiff-arm</span><span class="chip ok">chrome arms</span><span class="chip warn">mass</span><span class="chip warn">feet flat</span></div><p>Fully mirrored: pad and socket viewer&#x27;s left, arms swapped. Only image with clearly bare flesh legs + real cleats; most dynamic stride; leanest build. Flip-first if used.</p><button class="ibtn" data-inputs="in-6">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="full/gorgon-r1-A-mai25.png" data-cap="mai25"><img src="thumb/gorgon-r1-A-mai25.jpg" alt="mai25" loading="lazy"></div><div class="meta"><header><h3>mai25</h3><span class="cost">$0.05</span></header><div class="chips"><span class="chip ok">front view</span><span class="chip bad">pad side</span><span class="chip warn">socket</span><span class="chip bad">stiff-arm</span><span class="chip ok">chrome arms</span><span class="chip warn">mass</span><span class="chip warn">feet flat</span></div><p>Mirrored numbered pad, swapped arms, softest render of the set (airbrushed CG, mushy fingertips). Socket triangle is on the correct side but grew ~6 studs.</p><button class="ibtn" data-inputs="in-7">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="full/gorgon-r1-A-gptmini.png" data-cap="gptmini"><img src="thumb/gorgon-r1-A-gptmini.jpg" alt="gptmini" loading="lazy"></div><div class="meta"><header><h3>gptmini</h3><span class="cost">$0.05</span></header><div class="chips"><span class="chip ok">front view</span><span class="chip bad">pad side</span><span class="chip bad">socket</span><span class="chip warn">stiff-arm</span><span class="chip warn">chrome arms</span><span class="chip warn">mass</span><span class="chip ok">feet flat</span></div><p>Power-armor trooper drift: pads on both shoulders, no socket at all, squat-bulky silhouette invading Breaker&#x27;s lane, lug boots instead of cleats, accents nearly invisible.</p><button class="ibtn" data-inputs="in-8">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="full/gorgon-r1-A-flux2pro.png" data-cap="flux2pro"><img src="thumb/gorgon-r1-A-flux2pro.jpg" alt="flux2pro" loading="lazy"></div><div class="meta"><header><h3>flux2pro</h3><span class="cost">$0.03</span></header><div class="chips"><span class="chip ok">front view</span><span class="chip warn">pad side</span><span class="chip bad">socket</span><span class="chip bad">stiff-arm</span><span class="chip ok">chrome arms</span><span class="chip warn">mass</span><span class="chip warn">feet flat</span></div><p>Most off-brief: no number 4 anywhere, no stiff-arm, ROBOTIC lower legs (spec: flesh), barrel plugs on the wrong temple, an earring, and logo glyphs on the boots.</p><button class="ibtn" data-inputs="in-9">inputs — prompt &amp; refs</button></div></div>
+</div>
+<footer>Round cost $1.16 · prompt: gorgon/prompts/r1-front-photoreal.txt · lineage: gorgon/lineage.json · audit: fresh-context subagent, crop-and-look protocol.</footer>
+</main>
+<div id="lb" hidden><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+<template id="in-0"><h2>riverflow25</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K · $0.34 · 2026-07-10T08:01:19</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon/prompts/r1-front-photoreal.txt</p><pre>A photorealistic full-body studio render of a female cyberpunk gridiron-football blocker, standing on a plain neutral gray studio backdrop with even soft studio lighting, her entire body visible from head to toe, front view. High-detail character concept art.
+
+She is a washout from a corporate super-soldier program turned street-team enforcer: cold, quiet, and scary — disciplined military menace, never a pin-up. She is one of the most massive figures on her team, but TALL and V-tapered rather than squat: very broad shoulders and back tapering to the waist, a hypertrophied physique that reads engineered and sleek, not bulky.
+
+Head: femme features with high cheekbones and a cold, level stare — her menace is stillness, not a snarl. Her hair is thick cable-dreadlocks swept straight back from a high hairline and gathered behind her shoulders: heavy chunky locks that read as sculpted cords, with the temples shaved clear. At her temple on the VIEWER&#x27;S LEFT in this front view sits a chrome interface socket: a raised flat triangular plate about the size of her eye, with three cylindrical socket pins recessed one per corner.
+
+Chrome: BOTH of her arms are full military-grade cyberarms from the shoulder down — symmetric, sleek gunmetal chrome with clean recessed panel lines and beveled armor plates, slightly oversized compared to flesh arms but precise and engineered, NOT crude industrial hydraulics. Her hands are fully articulated chrome, four fingers and a thumb each. Her legs are flesh and muscle under her kit.
+
+Kit: cyberpunk sports armor in matte black and gunmetal with hot magenta neon accent trim. A single asymmetric armored shoulder pad on ONE shoulder only — on the VIEWER&#x27;S RIGHT in this front view — made of two or three layered angular plasteel plates with a beveled rim, worn OVER that cyberarm&#x27;s shoulder, with a white number 4 on the top plate. A snug armored compression bodysuit with reinforced panels on the torso and thighs; armored knee pads and shin guards; heavy armored boots with cleated soles.
+
+Pose: upright mid-stride advance, walking straight toward the camera with unhurried menace. BOTH feet are planted flat at ground level, the foot on the VIEWER&#x27;S RIGHT half a step behind. Her torso is upright, shoulders square, chin level. The arm on the VIEWER&#x27;S LEFT is extended forward at shoulder height in a stiff-arm, elbow slightly bent, the forearm angled about 20 degrees downward, palm OPEN and facing forward with fingers together and thumb visible. The other arm hangs at her side, slightly flexed, its hand a loose chrome fist. Both hands are clearly EMPTY.
+
+No weapons, no ball, no other people, no base or pedestal, and no text or logos anywhere except the number 4 on the shoulder pad.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-1"><h2>pro2k</h2><p class="gmeta">gemini-3-pro-image · size=2K · ~$0.14 · 2026-07-10T07:54:25</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon/prompts/r1-front-photoreal.txt</p><pre>A photorealistic full-body studio render of a female cyberpunk gridiron-football blocker, standing on a plain neutral gray studio backdrop with even soft studio lighting, her entire body visible from head to toe, front view. High-detail character concept art.
+
+She is a washout from a corporate super-soldier program turned street-team enforcer: cold, quiet, and scary — disciplined military menace, never a pin-up. She is one of the most massive figures on her team, but TALL and V-tapered rather than squat: very broad shoulders and back tapering to the waist, a hypertrophied physique that reads engineered and sleek, not bulky.
+
+Head: femme features with high cheekbones and a cold, level stare — her menace is stillness, not a snarl. Her hair is thick cable-dreadlocks swept straight back from a high hairline and gathered behind her shoulders: heavy chunky locks that read as sculpted cords, with the temples shaved clear. At her temple on the VIEWER&#x27;S LEFT in this front view sits a chrome interface socket: a raised flat triangular plate about the size of her eye, with three cylindrical socket pins recessed one per corner.
+
+Chrome: BOTH of her arms are full military-grade cyberarms from the shoulder down — symmetric, sleek gunmetal chrome with clean recessed panel lines and beveled armor plates, slightly oversized compared to flesh arms but precise and engineered, NOT crude industrial hydraulics. Her hands are fully articulated chrome, four fingers and a thumb each. Her legs are flesh and muscle under her kit.
+
+Kit: cyberpunk sports armor in matte black and gunmetal with hot magenta neon accent trim. A single asymmetric armored shoulder pad on ONE shoulder only — on the VIEWER&#x27;S RIGHT in this front view — made of two or three layered angular plasteel plates with a beveled rim, worn OVER that cyberarm&#x27;s shoulder, with a white number 4 on the top plate. A snug armored compression bodysuit with reinforced panels on the torso and thighs; armored knee pads and shin guards; heavy armored boots with cleated soles.
+
+Pose: upright mid-stride advance, walking straight toward the camera with unhurried menace. BOTH feet are planted flat at ground level, the foot on the VIEWER&#x27;S RIGHT half a step behind. Her torso is upright, shoulders square, chin level. The arm on the VIEWER&#x27;S LEFT is extended forward at shoulder height in a stiff-arm, elbow slightly bent, the forearm angled about 20 degrees downward, palm OPEN and facing forward with fingers together and thumb visible. The other arm hangs at her side, slightly flexed, its hand a loose chrome fist. Both hands are clearly EMPTY.
+
+No weapons, no ball, no other people, no base or pedestal, and no text or logos anywhere except the number 4 on the shoulder pad.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-2"><h2>flash31</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-10T07:54:40</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon/prompts/r1-front-photoreal.txt</p><pre>A photorealistic full-body studio render of a female cyberpunk gridiron-football blocker, standing on a plain neutral gray studio backdrop with even soft studio lighting, her entire body visible from head to toe, front view. High-detail character concept art.
+
+She is a washout from a corporate super-soldier program turned street-team enforcer: cold, quiet, and scary — disciplined military menace, never a pin-up. She is one of the most massive figures on her team, but TALL and V-tapered rather than squat: very broad shoulders and back tapering to the waist, a hypertrophied physique that reads engineered and sleek, not bulky.
+
+Head: femme features with high cheekbones and a cold, level stare — her menace is stillness, not a snarl. Her hair is thick cable-dreadlocks swept straight back from a high hairline and gathered behind her shoulders: heavy chunky locks that read as sculpted cords, with the temples shaved clear. At her temple on the VIEWER&#x27;S LEFT in this front view sits a chrome interface socket: a raised flat triangular plate about the size of her eye, with three cylindrical socket pins recessed one per corner.
+
+Chrome: BOTH of her arms are full military-grade cyberarms from the shoulder down — symmetric, sleek gunmetal chrome with clean recessed panel lines and beveled armor plates, slightly oversized compared to flesh arms but precise and engineered, NOT crude industrial hydraulics. Her hands are fully articulated chrome, four fingers and a thumb each. Her legs are flesh and muscle under her kit.
+
+Kit: cyberpunk sports armor in matte black and gunmetal with hot magenta neon accent trim. A single asymmetric armored shoulder pad on ONE shoulder only — on the VIEWER&#x27;S RIGHT in this front view — made of two or three layered angular plasteel plates with a beveled rim, worn OVER that cyberarm&#x27;s shoulder, with a white number 4 on the top plate. A snug armored compression bodysuit with reinforced panels on the torso and thighs; armored knee pads and shin guards; heavy armored boots with cleated soles.
+
+Pose: upright mid-stride advance, walking straight toward the camera with unhurried menace. BOTH feet are planted flat at ground level, the foot on the VIEWER&#x27;S RIGHT half a step behind. Her torso is upright, shoulders square, chin level. The arm on the VIEWER&#x27;S LEFT is extended forward at shoulder height in a stiff-arm, elbow slightly bent, the forearm angled about 20 degrees downward, palm OPEN and facing forward with fingers together and thumb visible. The other arm hangs at her side, slightly flexed, its hand a loose chrome fist. Both hands are clearly EMPTY.
+
+No weapons, no ball, no other people, no base or pedestal, and no text or logos anywhere except the number 4 on the shoulder pad.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-3"><h2>gptimage2</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=high · $0.13 · 2026-07-10T07:56:29</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon/prompts/r1-front-photoreal.txt</p><pre>A photorealistic full-body studio render of a female cyberpunk gridiron-football blocker, standing on a plain neutral gray studio backdrop with even soft studio lighting, her entire body visible from head to toe, front view. High-detail character concept art.
+
+She is a washout from a corporate super-soldier program turned street-team enforcer: cold, quiet, and scary — disciplined military menace, never a pin-up. She is one of the most massive figures on her team, but TALL and V-tapered rather than squat: very broad shoulders and back tapering to the waist, a hypertrophied physique that reads engineered and sleek, not bulky.
+
+Head: femme features with high cheekbones and a cold, level stare — her menace is stillness, not a snarl. Her hair is thick cable-dreadlocks swept straight back from a high hairline and gathered behind her shoulders: heavy chunky locks that read as sculpted cords, with the temples shaved clear. At her temple on the VIEWER&#x27;S LEFT in this front view sits a chrome interface socket: a raised flat triangular plate about the size of her eye, with three cylindrical socket pins recessed one per corner.
+
+Chrome: BOTH of her arms are full military-grade cyberarms from the shoulder down — symmetric, sleek gunmetal chrome with clean recessed panel lines and beveled armor plates, slightly oversized compared to flesh arms but precise and engineered, NOT crude industrial hydraulics. Her hands are fully articulated chrome, four fingers and a thumb each. Her legs are flesh and muscle under her kit.
+
+Kit: cyberpunk sports armor in matte black and gunmetal with hot magenta neon accent trim. A single asymmetric armored shoulder pad on ONE shoulder only — on the VIEWER&#x27;S RIGHT in this front view — made of two or three layered angular plasteel plates with a beveled rim, worn OVER that cyberarm&#x27;s shoulder, with a white number 4 on the top plate. A snug armored compression bodysuit with reinforced panels on the torso and thighs; armored knee pads and shin guards; heavy armored boots with cleated soles.
+
+Pose: upright mid-stride advance, walking straight toward the camera with unhurried menace. BOTH feet are planted flat at ground level, the foot on the VIEWER&#x27;S RIGHT half a step behind. Her torso is upright, shoulders square, chin level. The arm on the VIEWER&#x27;S LEFT is extended forward at shoulder height in a stiff-arm, elbow slightly bent, the forearm angled about 20 degrees downward, palm OPEN and facing forward with fingers together and thumb visible. The other arm hangs at her side, slightly flexed, its hand a loose chrome fist. Both hands are clearly EMPTY.
+
+No weapons, no ball, no other people, no base or pedestal, and no text or logos anywhere except the number 4 on the shoulder pad.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-4"><h2>grokq</h2><p class="gmeta">x-ai/grok-imagine-image-quality via openrouter · resolution=2K · $0.07 · 2026-07-10T07:58:03</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon/prompts/r1-front-photoreal.txt</p><pre>A photorealistic full-body studio render of a female cyberpunk gridiron-football blocker, standing on a plain neutral gray studio backdrop with even soft studio lighting, her entire body visible from head to toe, front view. High-detail character concept art.
+
+She is a washout from a corporate super-soldier program turned street-team enforcer: cold, quiet, and scary — disciplined military menace, never a pin-up. She is one of the most massive figures on her team, but TALL and V-tapered rather than squat: very broad shoulders and back tapering to the waist, a hypertrophied physique that reads engineered and sleek, not bulky.
+
+Head: femme features with high cheekbones and a cold, level stare — her menace is stillness, not a snarl. Her hair is thick cable-dreadlocks swept straight back from a high hairline and gathered behind her shoulders: heavy chunky locks that read as sculpted cords, with the temples shaved clear. At her temple on the VIEWER&#x27;S LEFT in this front view sits a chrome interface socket: a raised flat triangular plate about the size of her eye, with three cylindrical socket pins recessed one per corner.
+
+Chrome: BOTH of her arms are full military-grade cyberarms from the shoulder down — symmetric, sleek gunmetal chrome with clean recessed panel lines and beveled armor plates, slightly oversized compared to flesh arms but precise and engineered, NOT crude industrial hydraulics. Her hands are fully articulated chrome, four fingers and a thumb each. Her legs are flesh and muscle under her kit.
+
+Kit: cyberpunk sports armor in matte black and gunmetal with hot magenta neon accent trim. A single asymmetric armored shoulder pad on ONE shoulder only — on the VIEWER&#x27;S RIGHT in this front view — made of two or three layered angular plasteel plates with a beveled rim, worn OVER that cyberarm&#x27;s shoulder, with a white number 4 on the top plate. A snug armored compression bodysuit with reinforced panels on the torso and thighs; armored knee pads and shin guards; heavy armored boots with cleated soles.
+
+Pose: upright mid-stride advance, walking straight toward the camera with unhurried menace. BOTH feet are planted flat at ground level, the foot on the VIEWER&#x27;S RIGHT half a step behind. Her torso is upright, shoulders square, chin level. The arm on the VIEWER&#x27;S LEFT is extended forward at shoulder height in a stiff-arm, elbow slightly bent, the forearm angled about 20 degrees downward, palm OPEN and facing forward with fingers together and thumb visible. The other arm hangs at her side, slightly flexed, its hand a loose chrome fist. Both hands are clearly EMPTY.
+
+No weapons, no ball, no other people, no base or pedestal, and no text or logos anywhere except the number 4 on the shoulder pad.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-5"><h2>recraft41pro</h2><p class="gmeta">recraft/recraft-v4.1-pro via openrouter · $0.21 · 2026-07-10T08:01:36</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon/prompts/r1-front-photoreal.txt</p><pre>A photorealistic full-body studio render of a female cyberpunk gridiron-football blocker, standing on a plain neutral gray studio backdrop with even soft studio lighting, her entire body visible from head to toe, front view. High-detail character concept art.
+
+She is a washout from a corporate super-soldier program turned street-team enforcer: cold, quiet, and scary — disciplined military menace, never a pin-up. She is one of the most massive figures on her team, but TALL and V-tapered rather than squat: very broad shoulders and back tapering to the waist, a hypertrophied physique that reads engineered and sleek, not bulky.
+
+Head: femme features with high cheekbones and a cold, level stare — her menace is stillness, not a snarl. Her hair is thick cable-dreadlocks swept straight back from a high hairline and gathered behind her shoulders: heavy chunky locks that read as sculpted cords, with the temples shaved clear. At her temple on the VIEWER&#x27;S LEFT in this front view sits a chrome interface socket: a raised flat triangular plate about the size of her eye, with three cylindrical socket pins recessed one per corner.
+
+Chrome: BOTH of her arms are full military-grade cyberarms from the shoulder down — symmetric, sleek gunmetal chrome with clean recessed panel lines and beveled armor plates, slightly oversized compared to flesh arms but precise and engineered, NOT crude industrial hydraulics. Her hands are fully articulated chrome, four fingers and a thumb each. Her legs are flesh and muscle under her kit.
+
+Kit: cyberpunk sports armor in matte black and gunmetal with hot magenta neon accent trim. A single asymmetric armored shoulder pad on ONE shoulder only — on the VIEWER&#x27;S RIGHT in this front view — made of two or three layered angular plasteel plates with a beveled rim, worn OVER that cyberarm&#x27;s shoulder, with a white number 4 on the top plate. A snug armored compression bodysuit with reinforced panels on the torso and thighs; armored knee pads and shin guards; heavy armored boots with cleated soles.
+
+Pose: upright mid-stride advance, walking straight toward the camera with unhurried menace. BOTH feet are planted flat at ground level, the foot on the VIEWER&#x27;S RIGHT half a step behind. Her torso is upright, shoulders square, chin level. The arm on the VIEWER&#x27;S LEFT is extended forward at shoulder height in a stiff-arm, elbow slightly bent, the forearm angled about 20 degrees downward, palm OPEN and facing forward with fingers together and thumb visible. The other arm hangs at her side, slightly flexed, its hand a loose chrome fist. Both hands are clearly EMPTY.
+
+No weapons, no ball, no other people, no base or pedestal, and no text or logos anywhere except the number 4 on the shoulder pad.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-6"><h2>seedream45</h2><p class="gmeta">bytedance-seed/seedream-4.5 via openrouter · resolution=2K · $0.04 · 2026-07-10T07:57:34</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon/prompts/r1-front-photoreal.txt</p><pre>A photorealistic full-body studio render of a female cyberpunk gridiron-football blocker, standing on a plain neutral gray studio backdrop with even soft studio lighting, her entire body visible from head to toe, front view. High-detail character concept art.
+
+She is a washout from a corporate super-soldier program turned street-team enforcer: cold, quiet, and scary — disciplined military menace, never a pin-up. She is one of the most massive figures on her team, but TALL and V-tapered rather than squat: very broad shoulders and back tapering to the waist, a hypertrophied physique that reads engineered and sleek, not bulky.
+
+Head: femme features with high cheekbones and a cold, level stare — her menace is stillness, not a snarl. Her hair is thick cable-dreadlocks swept straight back from a high hairline and gathered behind her shoulders: heavy chunky locks that read as sculpted cords, with the temples shaved clear. At her temple on the VIEWER&#x27;S LEFT in this front view sits a chrome interface socket: a raised flat triangular plate about the size of her eye, with three cylindrical socket pins recessed one per corner.
+
+Chrome: BOTH of her arms are full military-grade cyberarms from the shoulder down — symmetric, sleek gunmetal chrome with clean recessed panel lines and beveled armor plates, slightly oversized compared to flesh arms but precise and engineered, NOT crude industrial hydraulics. Her hands are fully articulated chrome, four fingers and a thumb each. Her legs are flesh and muscle under her kit.
+
+Kit: cyberpunk sports armor in matte black and gunmetal with hot magenta neon accent trim. A single asymmetric armored shoulder pad on ONE shoulder only — on the VIEWER&#x27;S RIGHT in this front view — made of two or three layered angular plasteel plates with a beveled rim, worn OVER that cyberarm&#x27;s shoulder, with a white number 4 on the top plate. A snug armored compression bodysuit with reinforced panels on the torso and thighs; armored knee pads and shin guards; heavy armored boots with cleated soles.
+
+Pose: upright mid-stride advance, walking straight toward the camera with unhurried menace. BOTH feet are planted flat at ground level, the foot on the VIEWER&#x27;S RIGHT half a step behind. Her torso is upright, shoulders square, chin level. The arm on the VIEWER&#x27;S LEFT is extended forward at shoulder height in a stiff-arm, elbow slightly bent, the forearm angled about 20 degrees downward, palm OPEN and facing forward with fingers together and thumb visible. The other arm hangs at her side, slightly flexed, its hand a loose chrome fist. Both hands are clearly EMPTY.
+
+No weapons, no ball, no other people, no base or pedestal, and no text or logos anywhere except the number 4 on the shoulder pad.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-7"><h2>mai25</h2><p class="gmeta">microsoft/mai-image-2.5 via openrouter · $0.05 · 2026-07-10T07:58:45</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon/prompts/r1-front-photoreal.txt</p><pre>A photorealistic full-body studio render of a female cyberpunk gridiron-football blocker, standing on a plain neutral gray studio backdrop with even soft studio lighting, her entire body visible from head to toe, front view. High-detail character concept art.
+
+She is a washout from a corporate super-soldier program turned street-team enforcer: cold, quiet, and scary — disciplined military menace, never a pin-up. She is one of the most massive figures on her team, but TALL and V-tapered rather than squat: very broad shoulders and back tapering to the waist, a hypertrophied physique that reads engineered and sleek, not bulky.
+
+Head: femme features with high cheekbones and a cold, level stare — her menace is stillness, not a snarl. Her hair is thick cable-dreadlocks swept straight back from a high hairline and gathered behind her shoulders: heavy chunky locks that read as sculpted cords, with the temples shaved clear. At her temple on the VIEWER&#x27;S LEFT in this front view sits a chrome interface socket: a raised flat triangular plate about the size of her eye, with three cylindrical socket pins recessed one per corner.
+
+Chrome: BOTH of her arms are full military-grade cyberarms from the shoulder down — symmetric, sleek gunmetal chrome with clean recessed panel lines and beveled armor plates, slightly oversized compared to flesh arms but precise and engineered, NOT crude industrial hydraulics. Her hands are fully articulated chrome, four fingers and a thumb each. Her legs are flesh and muscle under her kit.
+
+Kit: cyberpunk sports armor in matte black and gunmetal with hot magenta neon accent trim. A single asymmetric armored shoulder pad on ONE shoulder only — on the VIEWER&#x27;S RIGHT in this front view — made of two or three layered angular plasteel plates with a beveled rim, worn OVER that cyberarm&#x27;s shoulder, with a white number 4 on the top plate. A snug armored compression bodysuit with reinforced panels on the torso and thighs; armored knee pads and shin guards; heavy armored boots with cleated soles.
+
+Pose: upright mid-stride advance, walking straight toward the camera with unhurried menace. BOTH feet are planted flat at ground level, the foot on the VIEWER&#x27;S RIGHT half a step behind. Her torso is upright, shoulders square, chin level. The arm on the VIEWER&#x27;S LEFT is extended forward at shoulder height in a stiff-arm, elbow slightly bent, the forearm angled about 20 degrees downward, palm OPEN and facing forward with fingers together and thumb visible. The other arm hangs at her side, slightly flexed, its hand a loose chrome fist. Both hands are clearly EMPTY.
+
+No weapons, no ball, no other people, no base or pedestal, and no text or logos anywhere except the number 4 on the shoulder pad.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-8"><h2>gptmini</h2><p class="gmeta">openai/gpt-5-image-mini via openrouter · quality=high · $0.05 · 2026-07-10T07:57:15</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon/prompts/r1-front-photoreal.txt</p><pre>A photorealistic full-body studio render of a female cyberpunk gridiron-football blocker, standing on a plain neutral gray studio backdrop with even soft studio lighting, her entire body visible from head to toe, front view. High-detail character concept art.
+
+She is a washout from a corporate super-soldier program turned street-team enforcer: cold, quiet, and scary — disciplined military menace, never a pin-up. She is one of the most massive figures on her team, but TALL and V-tapered rather than squat: very broad shoulders and back tapering to the waist, a hypertrophied physique that reads engineered and sleek, not bulky.
+
+Head: femme features with high cheekbones and a cold, level stare — her menace is stillness, not a snarl. Her hair is thick cable-dreadlocks swept straight back from a high hairline and gathered behind her shoulders: heavy chunky locks that read as sculpted cords, with the temples shaved clear. At her temple on the VIEWER&#x27;S LEFT in this front view sits a chrome interface socket: a raised flat triangular plate about the size of her eye, with three cylindrical socket pins recessed one per corner.
+
+Chrome: BOTH of her arms are full military-grade cyberarms from the shoulder down — symmetric, sleek gunmetal chrome with clean recessed panel lines and beveled armor plates, slightly oversized compared to flesh arms but precise and engineered, NOT crude industrial hydraulics. Her hands are fully articulated chrome, four fingers and a thumb each. Her legs are flesh and muscle under her kit.
+
+Kit: cyberpunk sports armor in matte black and gunmetal with hot magenta neon accent trim. A single asymmetric armored shoulder pad on ONE shoulder only — on the VIEWER&#x27;S RIGHT in this front view — made of two or three layered angular plasteel plates with a beveled rim, worn OVER that cyberarm&#x27;s shoulder, with a white number 4 on the top plate. A snug armored compression bodysuit with reinforced panels on the torso and thighs; armored knee pads and shin guards; heavy armored boots with cleated soles.
+
+Pose: upright mid-stride advance, walking straight toward the camera with unhurried menace. BOTH feet are planted flat at ground level, the foot on the VIEWER&#x27;S RIGHT half a step behind. Her torso is upright, shoulders square, chin level. The arm on the VIEWER&#x27;S LEFT is extended forward at shoulder height in a stiff-arm, elbow slightly bent, the forearm angled about 20 degrees downward, palm OPEN and facing forward with fingers together and thumb visible. The other arm hangs at her side, slightly flexed, its hand a loose chrome fist. Both hands are clearly EMPTY.
+
+No weapons, no ball, no other people, no base or pedestal, and no text or logos anywhere except the number 4 on the shoulder pad.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-9"><h2>flux2pro</h2><p class="gmeta">black-forest-labs/flux.2-pro via openrouter · $0.03 · 2026-07-10T07:57:50</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon/prompts/r1-front-photoreal.txt</p><pre>A photorealistic full-body studio render of a female cyberpunk gridiron-football blocker, standing on a plain neutral gray studio backdrop with even soft studio lighting, her entire body visible from head to toe, front view. High-detail character concept art.
+
+She is a washout from a corporate super-soldier program turned street-team enforcer: cold, quiet, and scary — disciplined military menace, never a pin-up. She is one of the most massive figures on her team, but TALL and V-tapered rather than squat: very broad shoulders and back tapering to the waist, a hypertrophied physique that reads engineered and sleek, not bulky.
+
+Head: femme features with high cheekbones and a cold, level stare — her menace is stillness, not a snarl. Her hair is thick cable-dreadlocks swept straight back from a high hairline and gathered behind her shoulders: heavy chunky locks that read as sculpted cords, with the temples shaved clear. At her temple on the VIEWER&#x27;S LEFT in this front view sits a chrome interface socket: a raised flat triangular plate about the size of her eye, with three cylindrical socket pins recessed one per corner.
+
+Chrome: BOTH of her arms are full military-grade cyberarms from the shoulder down — symmetric, sleek gunmetal chrome with clean recessed panel lines and beveled armor plates, slightly oversized compared to flesh arms but precise and engineered, NOT crude industrial hydraulics. Her hands are fully articulated chrome, four fingers and a thumb each. Her legs are flesh and muscle under her kit.
+
+Kit: cyberpunk sports armor in matte black and gunmetal with hot magenta neon accent trim. A single asymmetric armored shoulder pad on ONE shoulder only — on the VIEWER&#x27;S RIGHT in this front view — made of two or three layered angular plasteel plates with a beveled rim, worn OVER that cyberarm&#x27;s shoulder, with a white number 4 on the top plate. A snug armored compression bodysuit with reinforced panels on the torso and thighs; armored knee pads and shin guards; heavy armored boots with cleated soles.
+
+Pose: upright mid-stride advance, walking straight toward the camera with unhurried menace. BOTH feet are planted flat at ground level, the foot on the VIEWER&#x27;S RIGHT half a step behind. Her torso is upright, shoulders square, chin level. The arm on the VIEWER&#x27;S LEFT is extended forward at shoulder height in a stiff-arm, elbow slightly bent, the forearm angled about 20 degrees downward, palm OPEN and facing forward with fingers together and thumb visible. The other arm hangs at her side, slightly flexed, its hand a loose chrome fist. Both hands are clearly EMPTY.
+
+No weapons, no ball, no other people, no base or pedestal, and no text or logos anywhere except the number 4 on the shoulder pad.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),ilb=document.getElementById('ilb'),
+      ibody=document.getElementById('ilb-body');
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+document.addEventListener('click',function(e){
+  if(!lb.hidden){closeTop();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+        lb.hidden=false;return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeTop();});
+</script>
+</body></html>
