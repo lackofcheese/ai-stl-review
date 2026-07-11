@@ -5,6 +5,7 @@
   "gorgon-r3-panel": "cyber-amazons/gorgon/r3-panel",
   "gorgon-r3x-panel": "cyber-amazons/gorgon/r3x-panel",
   "gorgon-r4-panel": "cyber-amazons/gorgon/r4-panel",
+  "gorgon-r5-panel": "cyber-amazons/gorgon/r5-panel",
   "team-brief": "cyber-amazons/team-brief"
  },
  "cyber-amazons/gorgon/r1-panel": {
@@ -31,6 +32,11 @@
   "published": "2026-07-10T21:37:27.069249+00:00",
   "title": "Gorgon r4 \u2014 planted-foot re-sweep + t1 photoreal turnarounds",
   "updated": "2026-07-10T21:37:27.069249+00:00"
+ },
+ "cyber-amazons/gorgon/r5-panel": {
+  "published": "2026-07-11T01:25:04.104628+00:00",
+  "title": "Gorgon r5 \u2014 mirrored-frame sweep + t2 turnarounds",
+  "updated": "2026-07-11T01:25:04.104628+00:00"
  },
  "cyber-amazons/team-brief": {
   "published": "2026-07-10T06:30:40.873322+00:00",
