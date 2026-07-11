@@ -89,7 +89,9 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 #lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
   touch-action:pan-y }
 #lb[hidden], #ilb[hidden] { display:none }
-#lb img { max-width:100%; max-height:92vh; object-fit:contain }
+#lb img { max-width:100%; max-height:92vh; object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
 #lb .cap { color:var(--dim); font-size:.85rem }
 .lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
   border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
@@ -342,7 +344,11 @@ const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
       lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
       lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
       ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
-let gal=[],idx=-1,touchX=null,touchY=null,justSwiped=false;
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
 // The gallery is scoped to where the opened image lives: reference thumbs
 // inside an inputs panel cycle among themselves; every other [data-full]
 // (the review's card images) forms the main gallery.
@@ -352,17 +358,45 @@ function galleryFor(el){
   if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
   return list;
 }
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
 function updateNav(){
   const multi=gal.length>1;
   lbPrev.style.display=multi?'':'none';
   lbNext.style.display=multi?'':'none';
-  lbCount.textContent=multi?(idx+1)+' / '+gal.length:'';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
 }
 function showAt(i){
   if(i<0||i>=gal.length)return;
   idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
   lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
-  updateNav();
+  applyT();
 }
 function nav(d){
   if(lb.hidden||gal.length<2)return;
@@ -373,15 +407,16 @@ function openFrom(z){
   lb.hidden=false;showAt(idx<0?0:idx);
 }
 function closeTop(){
-  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');gal=[];idx=-1;}
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
   else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
 }
 document.addEventListener('click',function(e){
   if(!lb.hidden){
     const nb=e.target.closest('[data-nav]');
     if(nb){nav(parseInt(nb.dataset.nav,10));return;}
-    if(justSwiped){justSwiped=false;return;}  // a swipe emits a trailing click; don't close on it
-    closeTop();return;
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
   }
   const z=e.target.closest('[data-full]');
   if(z){openFrom(z);return;}
@@ -396,21 +431,58 @@ document.addEventListener('keydown',function(e){
   if(lb.hidden)return;
   if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
   else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
 });
-// Horizontal swipe on touch cycles the gallery; a vertical or tiny drag falls
-// through to the normal tap-to-close.
-lb.addEventListener('touchstart',function(e){
-  if(e.touches.length!==1){touchX=null;return;}
-  touchX=e.touches[0].clientX;touchY=e.touches[0].clientY;
-},{passive:true});
-lb.addEventListener('touchend',function(e){
-  if(touchX===null)return;
-  const t=e.changedTouches[0],dx=t.clientX-touchX,dy=t.clientY-touchY;
-  touchX=null;
-  if(gal.length>1&&Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3){
-    justSwiped=true;nav(dx<0?1:-1);
-    setTimeout(function(){justSwiped=false;},400);
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
   }
-},{passive:true});
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
 </script>
 </body></html>
