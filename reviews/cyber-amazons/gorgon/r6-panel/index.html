@@ -114,6 +114,18 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 .x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
   border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
 .x:hover { color:var(--ink) }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+#lb { touch-action:pan-y }
 </style></head><body><main>
 <div class="eyebrow">Firewall FC — Gorgon · round 6 (hair-movement pass) · 2026-07-11</div>
 <h1>Gorgon r6 — hair to the far shoulder, nape implant exposed: three routes compared</h1>
@@ -154,7 +166,7 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 <div class="callout steps"><p class="boxhead">Proposed next steps</p><p class="intro">Step 1 depends on the champion verdict; 2–4 follow in order either way.</p><ol><li><span class="t">Promote the champion to the new gold / edit base</span><span class="when">on the champion verdict</span><p class="d">Curate it to concept-art/, update the spec's gold-standard pointer, and retire the r4 gold as the edit base (it stays in the lineage). If reject-all: fresh self-edit pass on the r4 gold with revised change text.</p></li><li><span class="t">t3 turnaround experiment off the new base</span><span class="when">queued (r5 verdicts)</span><p class="d">Camera-ONLY vs view-ONLY vs camera+view per-panel prompting, all arms opening with the high-level 4-view breakdown; primary observable = slot-2 (mirrored-side view) success. Settles whether the never-ask-in-sheet rule stays.</p></li><li><span class="t">Clay conversion + Meshy</span><span class="when">once a turnaround passes</span><p class="d">flash31 img2img clay conversion (standard track) → meshy_crops → TWO parallel Meshy runs (standard double-roll) → trimesh validation + thin-parts probe → comparative per-feature review → Dimitri's live-3D gate.</p></li><li><span class="t">Standalone asset rounds</span><span class="when">before the final sheet</span><p class="d">Temple socket exemplar/stencil pass (still explicitly OMITTED from generation) and the '4' + jaguar stencils after final orientation (un-mirror mechanism S7.1 still open).</p></li></ol></div>
 <footer>r6 ~$1.99 (A $0.72 · B $0.72 · C $0.55) · prompts: gorgon/prompts/r6-A-regen.txt, r6-BC-hairmove-edit.txt · reference: the r4 gold (in every img2img card's inputs lightbox) · verdicts: gorgon/reviews.json · binaries: Drive minis-pipeline/projects/cyber-amazons/gorgon/generated/</footer>
 </main>
-<div id="lb" hidden><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div></div>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
 <div id="ilb" hidden><div class="panel">
 <button class="x" data-close aria-label="close">&times;</button>
 <div id="ilb-body"></div></div></div>
@@ -248,23 +260,78 @@ Everything else stays IDENTICAL to the attached image: same pose — mid-stride,
 </pre><h3>Reference images</h3><div class="refs"><figure><img src="refs/71d936ec-t.jpg" data-full="refs/71d936ec.png" data-cap="gorgon-r4-side-riverflow25-1.png" alt="gorgon-r4-side-riverflow25-1.png"><figcaption>gorgon-r4-side-riverflow25-1.png</figcaption></figure></div></template>
 <script>
 const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
-      lbCap=document.getElementById('lb-cap'),ilb=document.getElementById('ilb'),
-      ibody=document.getElementById('ilb-body');
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+let gal=[],idx=-1,touchX=null,touchY=null,justSwiped=false;
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  lbCount.textContent=multi?(idx+1)+' / '+gal.length:'';
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  updateNav();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
 function closeTop(){
-  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');}
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');gal=[];idx=-1;}
   else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
 }
 document.addEventListener('click',function(e){
-  if(!lb.hidden){closeTop();return;}
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(justSwiped){justSwiped=false;return;}  // a swipe emits a trailing click; don't close on it
+    closeTop();return;
+  }
   const z=e.target.closest('[data-full]');
-  if(z){lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
-        lb.hidden=false;return;}
+  if(z){openFrom(z);return;}
   const b=e.target.closest('[data-inputs]');
   if(b){ibody.innerHTML='';
         ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
         ilb.hidden=false;return;}
   if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
 });
-document.addEventListener('keydown',function(e){if(e.key==='Escape')closeTop();});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+});
+// Horizontal swipe on touch cycles the gallery; a vertical or tiny drag falls
+// through to the normal tap-to-close.
+lb.addEventListener('touchstart',function(e){
+  if(e.touches.length!==1){touchX=null;return;}
+  touchX=e.touches[0].clientX;touchY=e.touches[0].clientY;
+},{passive:true});
+lb.addEventListener('touchend',function(e){
+  if(touchX===null)return;
+  const t=e.changedTouches[0],dx=t.clientX-touchX,dy=t.clientY-touchY;
+  touchX=null;
+  if(gal.length>1&&Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3){
+    justSwiped=true;nav(dx<0?1:-1);
+    setTimeout(function(){justSwiped=false;},400);
+  }
+},{passive:true});
 </script>
 </body></html>
