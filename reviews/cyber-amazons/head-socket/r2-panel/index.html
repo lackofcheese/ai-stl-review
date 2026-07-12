@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Head Socket — Round 2 (seating / profile study)</title>
+<style>
+:root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:92vh; object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+</style></head><body><main>
+<div class="eyebrow">cyber-amazons · head-socket · round 2</div>
+<h1>Head Socket — Round 2 (seating / profile study)</h1>
+<a class="crosslink" href="../r2-runbook/">&#128214; Round runbook &rarr;</a>
+<p class="sub">The team-wide right-temple socket, re-rendered with the new set-in construction — a raised rim that is always the highest edge, with the field the sockets sit in at one of three levels. Answers Dimitri's r1 'relief too proud' note. Two shapes (P1 incumbent triangle, P6 mecha-wolf); P1 also tried with a centre 'U-I' gang emblem. Engines: flash31 + gptimage2med. Verdicts are fresh-context crop audits; the human eye-call is open.</p>
+<div class="callout"><b>Pre-read.</b> The headline decision is the <b>field level</b>: <b>flush</b> (face at skin level), <b>recessed</b> (~0.3–0.5 mm dug in), or <b>raised</b> (~0.3–0.5 mm proud plateau) — the rim stands proud above the field in all three. Judge which seating reads best against the skin. Secondary: <b>P1 vs P6</b> for the mark, and whether the incumbent triangle carries the <b>U-I centre emblem</b> (IP-checked, no clash found). Size stays tunable at authoring (the other half of the r1 note). Delivery is an authored STL fused per character, so field level and size are free parameters — judge the read, not the exact millimetres.</div>
+<div class="callout asks"><p class="boxhead">Verdicts / info needed</p><p class="intro">Answer any subset — partial answers unblock partial work. Rejecting the set with fresh direction is as valid as picking.</p><ol><li><span class="q">Which FIELD LEVEL becomes the standard — flush (skin level), slightly recessed (dug in), or slightly raised (proud plateau)?</span><span class="who">Dimitri + Jason</span><p class="d">The headline of this round and a direct answer to the r1 'too proud' note. The rim is always the highest edge; this only sets where the socket field sits vs. the skin.</p><ul><li><strong>Flush</strong> — face at skin level, rim the only proud part.</li><li><strong>Recessed</strong> — face dug ~0.3–0.5 mm into the head.</li><li><strong>Raised</strong> — face a low proud plateau, rim still stepping above it.</li></ul></li><li><span class="q">Which shape becomes the team mark — P1 (incumbent triangle) or P6 (mecha-wolf)?</span><span class="who">Dimitri + Jason</span><p class="d">Narrowed from the r1 shortlist to these two. Unseat the incumbent triangle only for a clear win.</p></li><li><span class="q">Does the incumbent triangle carry the centre 'U-I' gang emblem, or stay plain?</span><span class="who">Dimitri</span><p class="d">The raised 'U with an I inside' mark you liked off r1's P2 roll. IP-checked 2026-07-12: no famous-trademark clash found (original mark, not a formal legal clearance).</p></li><li><span class="q">Size: dial the plate down from one-eye-width, or hold it?</span><span class="who">Jason + Dimitri</span><p class="d">The other half of the r1 read ('too big vs the heads'). It's an authoring parameter now — say the target and it's set on the STL master, not re-rendered.</p></li></ol></div>
+<h2>P1 — triangle (plain), three field levels</h2>
+<p class="blurb">The incumbent, with the new set-in construction. Compare the three seating depths: flush / recessed / raised.</p>
+<div class="grid">
+<div class="card"><div class="imgwrap" data-full="../../../../assets/2e4940b07ebe9304.jpg" data-cap="P1 flush · flash31"><img src="../../../../assets/398f86cf4bbeaaa6.jpg" alt="P1 flush · flash31" loading="lazy"></div><div class="meta"><header><h3>P1 flush · flash31</h3><span class="cost">~$0.10</span><span class="call keeper">KEEPER-CANDIDATE — clean…</span></header><div class="chips"><span class="chip ok" title="both · two-panel — Two panels, same right-temple head, ear visible bottom-left of each; socket at right temple.">two-panel</span><span class="chip ok" title="right raking panel · seating — Genuine set-in socket: bevelled bezel rim is the brightest/highest edge, standing proud of skin AND a step above the inner field, which sits ~skin level (FLUSH target); collars proud within field, holes recessed dark. RIM&gt;FIELD&gt;HOLES all read under grazing light. No slab reversion.">seating</span><span class="chip ok" title="left flat-on panel · silhouette — Crisp equilateral triangle, point-up, ~one eye-width, bold and legible.">silhouette</span><span class="chip ok" title="plate centre · extra-glyph — Field is empty — no centre emblem/letter. Correct for P1 PLAIN.">extra-glyph</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip ok" title="both · two-panel — Two panels, same right-temple head, ear visible bottom-left of each; socket at right temple.">two-panel</span><span class="chip ok" title="right raking panel · seating — Genuine set-in socket: bevelled bezel rim is the brightest/highest edge, standing proud of skin AND a step above the inner field, which sits ~skin level (FLUSH target); collars proud within field, holes recessed dark. RIM&gt;FIELD&gt;HOLES all read under grazing light. No slab reversion.">seating</span><span class="chip ok" title="left flat-on panel · silhouette — Crisp equilateral triangle, point-up, ~one eye-width, bold and legible.">silhouette</span><span class="chip ok" title="plate centre · extra-glyph — Field is empty — no centre emblem/letter. Correct for P1 PLAIN.">extra-glyph</span><span class="chip ok" title="both · collared-socket-holes — Exactly three, one per corner; collars proud but clearly shorter than rim; holes recessed, wide, generously spaced, not merging.">collared-socket-h…</span><span class="chip ok" title="both · glyph-vs-hardware — Reads as a clean triangular emblem flat-on and a 3-jack plug-in socket in relief.">glyph-vs-hardware</span><span class="chip ok" title="both · mesh-survival — Opaque matte clay, all features chunky/thick, no thin spikes; holes shallow-and-wide, collars short.">mesh-survival</span><span class="chip ok" title="both · placement — Right temple, above and forward of the ear.">placement</span><span class="chip ok" title="both · artifacts — No SynthID sparkle, no caption text, single head per panel, no doubled/ghost features.">artifacts</span></div></details><p>Clean set-in FLUSH socket: proud bezel rim, field at skin, recessed holes, no emblem; three depth levels read under raking.</p><details class="more"><summary>full note</summary><p class="chipnote">Flash31&#x27;s flush variant nails the round&#x27;s headline: it is a true set-in socket, not the r1 proud slab. The bevelled triangular rim is unmistakably the highest, brightest part, standing proud of the skin and a clear step above the inner field, which sits at skin level as the FLUSH target requires. Three collared holes, one per corner, sit recessed below a proud-but-short collar, and under the raking light the RIM&gt;FIELD&gt;HOLES stack reads cleanly. Silhouette is a crisp point-up equilateral of about one eye-width, the plate centre is empty (correct for P1 PLAIN), material is opaque matte clay with print-safe thickness. Strong keeper candidate.</p></details><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="../../../../assets/82962fbc108e33b5.jpg" data-cap="P1 flush · gptimage2med"><img src="../../../../assets/37709248aba48eca.jpg" alt="P1 flush · gptimage2med" loading="lazy"></div><div class="meta"><header><h3>P1 flush · gptimage2med</h3><span class="cost">$0.05</span><span class="call fixable">FIXABLE — proud-slab reve…</span></header><div class="chips"><span class="chip bad" title="right raking panel · seating — Reverts to the r1 problem: the entire triangular plate is a raised TILE sitting on top of the skin with a bevelled edge dropping to skin. Field is proud, NOT flush with skin as the FLUSH target demands. Only a thin groove just inside the rim separates rim from field, so RIM&gt;FIELD&gt;HOLES barely differentiates. Wrong field level = seating fail.">seating</span><span class="chip warn" title="both · collared-socket-holes — Three collared holes, one per corner, well spaced; collars stand quite tall (near rim height) but still &lt;= rim; holes recessed.">collared-socket-h…</span><span class="chip ok" title="both · two-panel — Two photoreal panels, same head, ear visible at bottom for orientation; socket at right temple.">two-panel</span><span class="chip ok" title="left flat-on panel · silhouette — Crisp equilateral triangle, point-up, ~one eye-width.">silhouette</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip bad" title="right raking panel · seating — Reverts to the r1 problem: the entire triangular plate is a raised TILE sitting on top of the skin with a bevelled edge dropping to skin. Field is proud, NOT flush with skin as the FLUSH target demands. Only a thin groove just inside the rim separates rim from field, so RIM&gt;FIELD&gt;HOLES barely differentiates. Wrong field level = seating fail.">seating</span><span class="chip warn" title="both · collared-socket-holes — Three collared holes, one per corner, well spaced; collars stand quite tall (near rim height) but still &lt;= rim; holes recessed.">collared-socket-h…</span><span class="chip ok" title="both · two-panel — Two photoreal panels, same head, ear visible at bottom for orientation; socket at right temple.">two-panel</span><span class="chip ok" title="left flat-on panel · silhouette — Crisp equilateral triangle, point-up, ~one eye-width.">silhouette</span><span class="chip ok" title="plate centre · extra-glyph — No centre emblem — correct for P1 PLAIN.">extra-glyph</span><span class="chip ok" title="both · glyph-vs-hardware — Reads as triangular emblem flat-on and plug-in jack in relief, but the proud-tile look weakens the set-in jack read.">glyph-vs-hardware</span><span class="chip ok" title="both · mesh-survival — Opaque matte clay, thick features, no spikes, holes wide/shallow.">mesh-survival</span><span class="chip ok" title="both · placement — Right temple, above the ear.">placement</span><span class="chip ok" title="both · artifacts — No SynthID sparkle, no caption, single head, no doubled features.">artifacts</span></div></details><p>FLUSH target but the whole plate is a proud tile on the skin (r1 slab reversion); field is proud, not flush.</p><details class="more"><summary>full note</summary><p class="chipnote">Photoreal and on-brief on every element — point-up equilateral, three corner collared holes, empty centre, matte clay — but it fails the headline seating test. Instead of a set-in socket with the field at skin level and only the rim proud, the entire triangular plate reads as a raised tile bevelling down to the skin, so the field is proud rather than flush. That is exactly the r1 uniform-slab reversion this round is meant to eliminate, and only a shallow groove inside the rim provides any RIM&gt;FIELD&gt;HOLES separation. Collars also stand tall, near rim height. The idea is right and the fix is a known lever (dig the field down to skin), so FIXABLE rather than reject.</p></details><button class="ibtn" data-inputs="in-1">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="../../../../assets/11b7c7e368a6c08d.jpg" data-cap="P1 recessed · flash31"><img src="../../../../assets/80c1c30bcb8d7d19.jpg" alt="P1 recessed · flash31" loading="lazy"></div><div class="meta"><header><h3>P1 recessed · flash31</h3><span class="cost">~$0.10</span><span class="call keeper">KEEPER-CANDIDATE — textbo…</span></header><div class="chips"><span class="chip ok" title="both · two-panel — Two panels, same right-temple head, ear visible; socket at right temple.">two-panel</span><span class="chip ok" title="right raking panel · seating — Best-in-set recessed read: bevelled rim is the highest/brightest ring, proud of skin; the inner field is clearly dished BELOW the skin (RECESSED target); collars sit proud within the sunk field and holes are lowest/darkest. RIM&gt;FIELD&gt;HOLES crisply resolved under grazing light.">seating</span><span class="chip ok" title="left flat-on panel · silhouette — Crisp equilateral triangle, point-up, ~one eye-width, bold.">silhouette</span><span class="chip ok" title="plate centre · extra-glyph — Empty field, no emblem — correct for P1 PLAIN.">extra-glyph</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip ok" title="both · two-panel — Two panels, same right-temple head, ear visible; socket at right temple.">two-panel</span><span class="chip ok" title="right raking panel · seating — Best-in-set recessed read: bevelled rim is the highest/brightest ring, proud of skin; the inner field is clearly dished BELOW the skin (RECESSED target); collars sit proud within the sunk field and holes are lowest/darkest. RIM&gt;FIELD&gt;HOLES crisply resolved under grazing light.">seating</span><span class="chip ok" title="left flat-on panel · silhouette — Crisp equilateral triangle, point-up, ~one eye-width, bold.">silhouette</span><span class="chip ok" title="plate centre · extra-glyph — Empty field, no emblem — correct for P1 PLAIN.">extra-glyph</span><span class="chip ok" title="both · collared-socket-holes — Exactly three, one per corner; collars proud but shorter than rim; holes recessed, wide, well spaced.">collared-socket-h…</span><span class="chip ok" title="both · glyph-vs-hardware — Clean triangular emblem flat-on, convincing recessed plug-in socket in relief.">glyph-vs-hardware</span><span class="chip ok" title="both · mesh-survival — Opaque matte clay, chunky features, no thin spikes, holes shallow-and-wide.">mesh-survival</span><span class="chip ok" title="both · placement — Right temple, above and forward of the ear.">placement</span><span class="chip ok" title="both · artifacts — No SynthID sparkle, no caption text, single head per panel, no doubled features.">artifacts</span></div></details><p>Textbook RECESSED socket: proud bezel rim, field clearly dug below skin, collars proud, holes lowest; three levels crisp.</p><details class="more"><summary>full note</summary><p class="chipnote">The cleanest seating read in the whole set. This is an unambiguous set-in recessed socket: the bevelled triangular rim is the highest, brightest element and stands proud of the skin, while the inner field is visibly dished below skin level exactly as the RECESSED target specifies. Proud short collars sit inside the sunk field with the holes lowest, so the RIM&gt;FIELD&gt;HOLES hierarchy is textbook under raking light. Silhouette is a bold point-up equilateral of about one eye-width, centre is empty (correct P1 PLAIN), material is opaque matte clay with safe thickness. Strong keeper candidate.</p></details><button class="ibtn" data-inputs="in-2">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="../../../../assets/da74995160658a36.jpg" data-cap="P1 recessed · gptimage2med"><img src="../../../../assets/42becac3b951606e.jpg" alt="P1 recessed · gptimage2med" loading="lazy"></div><div class="meta"><header><h3>P1 recessed · gptimage2med</h3><span class="cost">$0.05</span><span class="call fixable">FIXABLE — right direction…</span></header><div class="chips"><span class="chip warn" title="right raking panel · seating — Set-in read is present — rim is proud and there is a groove inside it — but the field only dips marginally below skin; it reads near-FLUSH rather than the clearly dug-in RECESSED target. RIM&gt;FIELD&gt;HOLES ordering holds but the FIELD-below-skin step is under-scaled; collars stand tall relative to rim.">seating</span><span class="chip warn" title="both · collared-socket-holes — Three collared holes, one per corner, well spaced; collars quite tall (near rim height) though still &lt;= rim; holes recessed.">collared-socket-h…</span><span class="chip ok" title="both · two-panel — Two photoreal panels, same head, ear visible bottom-right; socket at right temple.">two-panel</span><span class="chip ok" title="left flat-on panel · silhouette — Crisp equilateral triangle, point-up, ~one eye-width.">silhouette</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip warn" title="right raking panel · seating — Set-in read is present — rim is proud and there is a groove inside it — but the field only dips marginally below skin; it reads near-FLUSH rather than the clearly dug-in RECESSED target. RIM&gt;FIELD&gt;HOLES ordering holds but the FIELD-below-skin step is under-scaled; collars stand tall relative to rim.">seating</span><span class="chip warn" title="both · collared-socket-holes — Three collared holes, one per corner, well spaced; collars quite tall (near rim height) though still &lt;= rim; holes recessed.">collared-socket-h…</span><span class="chip ok" title="both · two-panel — Two photoreal panels, same head, ear visible bottom-right; socket at right temple.">two-panel</span><span class="chip ok" title="left flat-on panel · silhouette — Crisp equilateral triangle, point-up, ~one eye-width.">silhouette</span><span class="chip ok" title="plate centre · extra-glyph — No centre emblem — correct for P1 PLAIN.">extra-glyph</span><span class="chip ok" title="both · glyph-vs-hardware — Reads as triangular emblem flat-on and plug-in jack in relief.">glyph-vs-hardware</span><span class="chip ok" title="both · mesh-survival — Opaque matte clay, thick features, no spikes; holes wide, moderately deep but not needles.">mesh-survival</span><span class="chip ok" title="both · placement — Right temple, above the ear.">placement</span><span class="chip ok" title="both · artifacts — No SynthID sparkle, no caption, single head, no doubled features.">artifacts</span></div></details><p>RECESSED direction is right but the field only barely dips below skin — reads near-flush; recess needs deepening.</p><details class="more"><summary>full note</summary><p class="chipnote">Photoreal and correct on all the discrete features — point-up equilateral, three corner collared holes, empty centre, matte clay, right temple. It does move the right way versus the flush gptimage render (field is lowered, not a proud tile), but the recess is under-scaled: the inner field only marginally dips below skin, so under raking light it reads closer to FLUSH than the clearly dug-in RECESSED target. The rim stays proud and the RIM&gt;FIELD&gt;HOLES order survives, but the key FIELD-below-skin step is too shallow and the collars stand tall near rim height. Right idea, correctable depth defect — FIXABLE.</p></details><button class="ibtn" data-inputs="in-3">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="../../../../assets/d25b211304a50ef9.jpg" data-cap="P1 raised · flash31"><img src="../../../../assets/3548f8a3c978d5f7.jpg" alt="P1 raised · flash31" loading="lazy"></div><div class="meta"><header><h3>P1 raised · flash31</h3><span class="cost">~$0.10</span><span class="call keeper">KEEPER-CANDIDATE — clear…</span></header><div class="chips"><span class="chip ok" title="both · two-panel — Two panels, same right-temple head, ear visible; eye visible far right for orientation.">two-panel</span><span class="chip ok" title="right raking panel · seating — RAISED target read clearly: the field is a low plateau standing ABOVE the surrounding skin, and the bevelled rim rises a further step above that plateau as the highest/brightest edge; collars proud, holes lowest. RIM&gt;FIELD&gt;HOLES all read, with the field-above-skin plateau correctly present.">seating</span><span class="chip ok" title="left flat-on panel · silhouette — Crisp equilateral triangle, point-up, ~one eye-width.">silhouette</span><span class="chip ok" title="plate centre · extra-glyph — Empty field, no emblem — correct for P1 PLAIN.">extra-glyph</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip ok" title="both · two-panel — Two panels, same right-temple head, ear visible; eye visible far right for orientation.">two-panel</span><span class="chip ok" title="right raking panel · seating — RAISED target read clearly: the field is a low plateau standing ABOVE the surrounding skin, and the bevelled rim rises a further step above that plateau as the highest/brightest edge; collars proud, holes lowest. RIM&gt;FIELD&gt;HOLES all read, with the field-above-skin plateau correctly present.">seating</span><span class="chip ok" title="left flat-on panel · silhouette — Crisp equilateral triangle, point-up, ~one eye-width.">silhouette</span><span class="chip ok" title="plate centre · extra-glyph — Empty field, no emblem — correct for P1 PLAIN.">extra-glyph</span><span class="chip ok" title="both · collared-socket-holes — Exactly three, one per corner; collars proud but shorter than rim; holes recessed, wide, well spaced.">collared-socket-h…</span><span class="chip ok" title="both · glyph-vs-hardware — Triangular emblem flat-on, plug-in jack in relief.">glyph-vs-hardware</span><span class="chip ok" title="both · mesh-survival — Opaque matte clay, thick features, no thin spikes, holes shallow-and-wide.">mesh-survival</span><span class="chip ok" title="both · placement — Right temple, above and forward of the ear.">placement</span><span class="chip ok" title="both · artifacts — No SynthID sparkle, no caption, single head per panel, no doubled features.">artifacts</span></div></details><p>Clear RAISED socket: field is a plateau above skin, rim steps a further level higher, holes lowest; three levels read.</p><details class="more"><summary>full note</summary><p class="chipnote">A convincing raised variant. The inner field reads as a low plateau standing proud of the surrounding skin, and the bevelled triangular rim rises a further distinct step above that plateau as the highest, brightest element — so all three intended levels (rim above field above skin, holes lowest) resolve under raking light exactly as the RAISED target specifies. Three corner collared holes with short proud collars, empty centre (correct P1 PLAIN), bold point-up equilateral of about one eye-width, opaque matte clay with print-safe thickness. Keeper candidate.</p></details><button class="ibtn" data-inputs="in-4">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="../../../../assets/8f42c2f80c54125a.jpg" data-cap="P1 raised · gptimage2med"><img src="../../../../assets/eccb5d3bb4ff7821.jpg" alt="P1 raised · gptimage2med" loading="lazy"></div><div class="meta"><header><h3>P1 raised · gptimage2med</h3><span class="cost">$0.04</span><span class="call keeper">KEEPER-CANDIDATE — photor…</span></header><div class="chips"><span class="chip warn" title="both · mesh-survival — Opaque matte clay, thick features, no spikes; hole bores read a touch deep, but diameters are generous so not needle-holes — watch depth on the mesh.">mesh-survival</span><span class="chip ok" title="both · two-panel — Two photoreal panels, same head, ear visible bottom-right; socket at right temple.">two-panel</span><span class="chip ok" title="right raking panel · seating — RAISED target read: the plate is a low plateau clearly proud of the skin and the rounded bezel rim rises a further step above the field as the highest edge; collars proud, holes recessed lowest. RIM&gt;FIELD&gt;HOLES all differentiate, field-above-skin plateau present.">seating</span><span class="chip ok" title="left flat-on panel · silhouette — Crisp equilateral triangle, point-up, ~one eye-width.">silhouette</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip warn" title="both · mesh-survival — Opaque matte clay, thick features, no spikes; hole bores read a touch deep, but diameters are generous so not needle-holes — watch depth on the mesh.">mesh-survival</span><span class="chip ok" title="both · two-panel — Two photoreal panels, same head, ear visible bottom-right; socket at right temple.">two-panel</span><span class="chip ok" title="right raking panel · seating — RAISED target read: the plate is a low plateau clearly proud of the skin and the rounded bezel rim rises a further step above the field as the highest edge; collars proud, holes recessed lowest. RIM&gt;FIELD&gt;HOLES all differentiate, field-above-skin plateau present.">seating</span><span class="chip ok" title="left flat-on panel · silhouette — Crisp equilateral triangle, point-up, ~one eye-width.">silhouette</span><span class="chip ok" title="plate centre · extra-glyph — No centre emblem — correct for P1 PLAIN.">extra-glyph</span><span class="chip ok" title="both · collared-socket-holes — Three collared holes, one per corner, well spaced; collars proud but &lt;= rim; holes recessed and wide.">collared-socket-h…</span><span class="chip ok" title="both · glyph-vs-hardware — Triangular emblem flat-on, convincing plug-in jack in relief.">glyph-vs-hardware</span><span class="chip ok" title="both · placement — Right temple, above the ear.">placement</span><span class="chip ok" title="both · artifacts — No SynthID sparkle, no caption, single head, no doubled features.">artifacts</span></div></details><p>Photoreal RAISED socket: field plateau proud of skin, rim a step higher, holes lowest; holes read a touch deep.</p><details class="more"><summary>full note</summary><p class="chipnote">The photoreal raised render matches the flash31 raised on the headline: the field is a low plateau standing clearly proud of the skin and the rounded bezel rim rises a further step above it, giving a clean RIM&gt;FIELD&gt;HOLES stack with the field-above-skin plateau correctly present. All discrete features check out — point-up equilateral of about one eye-width, three corner collared holes with short proud collars, empty centre (correct P1 PLAIN), opaque matte clay. The only caution is that the hole bores read a touch deep; diameters stay generous so they are not needle-holes, but depth is worth watching at mesh stage. Keeper candidate.</p></details><button class="ibtn" data-inputs="in-5">inputs — prompt &amp; refs</button></div></div>
+</div>
+<h2>P1 — triangle + U-I emblem, three field levels</h2>
+<p class="blurb">The incumbent carrying the raised 'U with an I inside' centre mark. Same three seating depths.</p>
+<div class="grid">
+<div class="card"><div class="imgwrap" data-full="../../../../assets/d06e4ca1bc602f90.jpg" data-cap="P1+emblem flush · flash31"><img src="../../../../assets/793edff2877db73a.jpg" alt="P1+emblem flush · flash31" loading="lazy"></div><div class="meta"><header><h3>P1+emblem flush · flash31</h3><span class="cost">~$0.10</span><span class="call keeper">KEEPER-CANDIDATE — cleane…</span></header><div class="chips"><span class="chip ok" title="full sheet · two-panel — Two panels present, left flat-on / right raking; right-temple head, ear at panel edges.">two-panel</span><span class="chip ok" title="socket · seating — Raking panel: bevelled triangle rim is unambiguously the highest part, steps down to field, holes recessed below field. Rim&gt;field&gt;holes reads. Field sits close to skin, only slightly proud of dead-flush — acceptable flush.">seating</span><span class="chip ok" title="plate · silhouette — Crisp equilateral triangle, point-UP (apex hole top, two holes bottom), ~one eye-width.">silhouette</span><span class="chip ok" title="centre field · emblem — Bold rounded U (horseshoe, opening up) with a short vertical I bar standing inside; chunky, raised above field but below rim. Reads clearly, well above 0.6mm.">emblem</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip ok" title="full sheet · two-panel — Two panels present, left flat-on / right raking; right-temple head, ear at panel edges.">two-panel</span><span class="chip ok" title="socket · seating — Raking panel: bevelled triangle rim is unambiguously the highest part, steps down to field, holes recessed below field. Rim&gt;field&gt;holes reads. Field sits close to skin, only slightly proud of dead-flush — acceptable flush.">seating</span><span class="chip ok" title="plate · silhouette — Crisp equilateral triangle, point-UP (apex hole top, two holes bottom), ~one eye-width.">silhouette</span><span class="chip ok" title="centre field · emblem — Bold rounded U (horseshoe, opening up) with a short vertical I bar standing inside; chunky, raised above field but below rim. Reads clearly, well above 0.6mm.">emblem</span><span class="chip ok" title="corners · collared-socket-holes — Exactly three collared holes, one per corner, well spaced; collars proud but below rim, holes recessed.">collared-socket-h…</span><span class="chip ok" title="socket · glyph-vs-hardware — Reads as an emblem flat-on and as a jack/relief under raking light.">glyph-vs-hardware</span><span class="chip ok" title="all · mesh-survival — Opaque matte clay, all features chunky, no thin spikes or needle holes.">mesh-survival</span><span class="chip ok" title="head · placement — Right temple.">placement</span><span class="chip ok" title="full sheet · artifacts — No SynthID sparkle, no caption, single head, no doubled features.">artifacts</span></div></details><p>Best flush read: rim highest, field near skin, holes recessed, clean U-with-I emblem, point-up triangle.</p><details class="more"><summary>full note</summary><p class="chipnote">Strong keeper candidate and the cleanest set-in construction in the flush pair. Under raking light the bevelled triangle rim is plainly the highest element, stepping down to the field and then down again to the three recessed collared corner holes, so the intended rim&gt;field&gt;holes hierarchy reads. The field sits at or only marginally above skin level, which is acceptable for the FLUSH target. Silhouette is a crisp point-up equilateral triangle about one eye-width; the centre emblem is a bold rounded U with a short vertical I bar inside, raised above the field but not above the rim, and comfortably print-safe. No mesh-survival or artifact concerns.</p></details><button class="ibtn" data-inputs="in-6">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="../../../../assets/50211329091800dc.jpg" data-cap="P1+emblem flush · gptimage2med"><img src="../../../../assets/9be60e9ef54d9986.jpg" alt="P1+emblem flush · gptimage2med" loading="lazy"></div><div class="meta"><header><h3>P1+emblem flush · gptimage2med</h3><span class="cost">$0.05</span><span class="call fixable">FIXABLE — whole plate rea…</span></header><div class="chips"><span class="chip warn" title="socket · seating — Rim&gt;field&gt;holes ordering exists locally (thin rim bead highest, field, recessed holes) but the entire plate sits proud of the skin as a slab in the raking panel — field is NOT at skin level, so FLUSH intent is not met. Partial slab reversion.">seating</span><span class="chip ok" title="full sheet · two-panel — Two panels present, flat-on + raking; right-temple head, ear visible lower-right.">two-panel</span><span class="chip ok" title="plate · silhouette — Rounded equilateral triangle, point-UP, ~one eye-width.">silhouette</span><span class="chip ok" title="centre field · emblem — Rounded U with a vertical I bar inside, well-formed, chunky, raised above field and below rim; reads clearly, print-safe.">emblem</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip warn" title="socket · seating — Rim&gt;field&gt;holes ordering exists locally (thin rim bead highest, field, recessed holes) but the entire plate sits proud of the skin as a slab in the raking panel — field is NOT at skin level, so FLUSH intent is not met. Partial slab reversion.">seating</span><span class="chip ok" title="full sheet · two-panel — Two panels present, flat-on + raking; right-temple head, ear visible lower-right.">two-panel</span><span class="chip ok" title="plate · silhouette — Rounded equilateral triangle, point-UP, ~one eye-width.">silhouette</span><span class="chip ok" title="centre field · emblem — Rounded U with a vertical I bar inside, well-formed, chunky, raised above field and below rim; reads clearly, print-safe.">emblem</span><span class="chip ok" title="corners · collared-socket-holes — Three collared holes one per corner, holes recessed, collars below rim, good spacing.">collared-socket-h…</span><span class="chip ok" title="socket · glyph-vs-hardware — Reads as emblem flat-on and jack in relief.">glyph-vs-hardware</span><span class="chip ok" title="all · mesh-survival — Opaque matte clay, chunky features, no spikes/needles.">mesh-survival</span><span class="chip ok" title="head · placement — Right temple.">placement</span><span class="chip ok" title="full sheet · artifacts — No sparkle, caption, or doubled features; single head.">artifacts</span></div></details><p>Clean U-I emblem and triangle, but plate is a proud slab — field above skin, misses the flush level.</p><details class="more"><summary>full note</summary><p class="chipnote">The emblem, three collared holes and point-up triangle are all good, but the seating misses the FLUSH target: in the raking panel the entire triangular plate stands proud of the skin as a slab, with only a thin rim bead as the highest element. The rim&gt;field&gt;holes hierarchy is present within the plate, yet the field is clearly above skin rather than at skin level, so this reads as a raised plate, not flush. Fixable by regenerating with a stronger flush cue that drops the field to skin while keeping the rim proud.</p></details><button class="ibtn" data-inputs="in-7">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="../../../../assets/d8a9df99d5da1f0b.jpg" data-cap="P1+emblem recessed · flash31"><img src="../../../../assets/dad2819ce0c9512e.jpg" alt="P1+emblem recessed · flash31" loading="lazy"></div><div class="meta"><header><h3>P1+emblem recessed · flash31</h3><span class="cost">~$0.10</span><span class="call fixable">FIXABLE — field is proud…</span></header><div class="chips"><span class="chip bad" title="socket · seating — HEADLINE FAIL for the recessed target: raking panel shows the plate standing proud of the skin, field ABOVE skin — the opposite of dug-in. Rim is highest and there is an inner groove giving a set-in look, but the field is not recessed below skin as RECESSED requires.">seating</span><span class="chip ok" title="full sheet · two-panel — Two panels, flat-on + raking; right-temple head.">two-panel</span><span class="chip ok" title="plate · silhouette — Crisp equilateral triangle, point-UP, ~one eye-width.">silhouette</span><span class="chip ok" title="centre field · emblem — Bold rounded U with a clear vertical I bar inside; chunky, raised above field, below rim, print-safe.">emblem</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip bad" title="socket · seating — HEADLINE FAIL for the recessed target: raking panel shows the plate standing proud of the skin, field ABOVE skin — the opposite of dug-in. Rim is highest and there is an inner groove giving a set-in look, but the field is not recessed below skin as RECESSED requires.">seating</span><span class="chip ok" title="full sheet · two-panel — Two panels, flat-on + raking; right-temple head.">two-panel</span><span class="chip ok" title="plate · silhouette — Crisp equilateral triangle, point-UP, ~one eye-width.">silhouette</span><span class="chip ok" title="centre field · emblem — Bold rounded U with a clear vertical I bar inside; chunky, raised above field, below rim, print-safe.">emblem</span><span class="chip ok" title="corners · collared-socket-holes — Three collared holes, one per corner, recessed holes, good spacing.">collared-socket-h…</span><span class="chip ok" title="socket · glyph-vs-hardware — Emblem flat-on, jack in relief.">glyph-vs-hardware</span><span class="chip ok" title="all · mesh-survival — Matte clay, chunky, no thin spikes/needles.">mesh-survival</span><span class="chip ok" title="head · placement — Right temple.">placement</span><span class="chip ok" title="full sheet · artifacts — No sparkle/caption/doubling; single head.">artifacts</span></div></details><p>Great emblem and rim, but field is proud not recessed — misses the dug-in RECESSED level.</p><details class="more"><summary>full note</summary><p class="chipnote">Emblem, triangle and collared holes are clean, but the defining seating level is wrong: RECESSED requires the field ~0.3-0.5mm below skin, and here the whole plate stands proud of the skin with the field clearly above skin level. A crisp rim bevel and an inner groove give a set-in impression, so it is closer to correct than the gptimage recessed attempt, but it still reverts to a proud plate rather than digging in. Fixable with a stronger recessed cue that sinks the field below skin while keeping the rim proud.</p></details><button class="ibtn" data-inputs="in-8">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="../../../../assets/d4e914bd9e539c5f.jpg" data-cap="P1+emblem recessed · gptimage2med"><img src="../../../../assets/83b7223bccc24c90.jpg" alt="P1+emblem recessed · gptimage2med" loading="lazy"></div><div class="meta"><header><h3>P1+emblem recessed · gptimage2med</h3><span class="cost">$0.05</span><span class="call reject">REJECT — puffy proud pill…</span></header><div class="chips"><span class="chip bad" title="socket · seating — HEADLINE FAIL: raking panel shows a soft puffy slab standing well proud of the skin; field is high above skin and the corner collars are proud raised bosses. No dug-in field at all — actively opposite of the RECESSED target and the weakest set-in read of all six.">seating</span><span class="chip warn" title="centre field · emblem — U-with-I present and readable but rendered as thinner outline strokes (U as a narrow groove-line with a vertical I bar inside); still above ~0.6mm but less chunky than the flash31 versions.">emblem</span><span class="chip warn" title="corners · collared-socket-holes — Three holes present, one per corner, but collars are proud raised bosses standing above the field rather than sitting within a recessed field.">collared-socket-h…</span><span class="chip ok" title="full sheet · two-panel — Two panels, flat-on + raking; right-temple head, ear visible.">two-panel</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip bad" title="socket · seating — HEADLINE FAIL: raking panel shows a soft puffy slab standing well proud of the skin; field is high above skin and the corner collars are proud raised bosses. No dug-in field at all — actively opposite of the RECESSED target and the weakest set-in read of all six.">seating</span><span class="chip warn" title="centre field · emblem — U-with-I present and readable but rendered as thinner outline strokes (U as a narrow groove-line with a vertical I bar inside); still above ~0.6mm but less chunky than the flash31 versions.">emblem</span><span class="chip warn" title="corners · collared-socket-holes — Three holes present, one per corner, but collars are proud raised bosses standing above the field rather than sitting within a recessed field.">collared-socket-h…</span><span class="chip ok" title="full sheet · two-panel — Two panels, flat-on + raking; right-temple head, ear visible.">two-panel</span><span class="chip ok" title="plate · silhouette — Rounded equilateral triangle, point-UP, ~one eye-width, but edges are soft/pillowy.">silhouette</span><span class="chip ok" title="socket · glyph-vs-hardware — Reads as emblem flat-on and jack in relief.">glyph-vs-hardware</span><span class="chip ok" title="all · mesh-survival — Opaque matte clay, no thin spikes/needles.">mesh-survival</span><span class="chip ok" title="head · placement — Right temple.">placement</span><span class="chip ok" title="full sheet · artifacts — No sparkle/caption; single head, no doubling.">artifacts</span></div></details><p>Puffy proud slab, field way above skin, proud collar bosses — worst recessed read; reject.</p><details class="more"><summary>full note</summary><p class="chipnote">Worst seating of the six and a clear reject for the RECESSED target. The plate is a soft, pillowy slab sitting well proud of the skin, the field is high above skin, and the corner collars read as proud raised bosses rather than holes sunk into a recessed field, so there is essentially no dug-in level. The emblem is readable but thinner and less chunky than the flash31 versions. Point-up triangle and three holes are present, but the headline seating fails completely.</p></details><button class="ibtn" data-inputs="in-9">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="../../../../assets/1fc945478d6975bc.jpg" data-cap="P1+emblem raised · flash31"><img src="../../../../assets/555120b74ade96bb.jpg" alt="P1+emblem raised · flash31" loading="lazy"></div><div class="meta"><header><h3>P1+emblem raised · flash31</h3><span class="cost">~$0.10</span><span class="call fixable">FIXABLE — triangle is INV…</span></header><div class="chips"><span class="chip bad" title="plate · silhouette — Triangle is POINT-DOWN (two holes at the top corners, single apex hole at the bottom) — inverted vs the required point-UP orientation. Otherwise equilateral, ~one eye-width.">silhouette</span><span class="chip ok" title="full sheet · two-panel — Two panels, flat-on + raking; right-temple head, ear visible lower-left.">two-panel</span><span class="chip ok" title="socket · seating — RAISED target well met: plate is a low plateau standing above skin, bevelled rim rising further above the field, holes recessed below field. Rim&gt;field&gt;holes reads cleanly under raking light.">seating</span><span class="chip ok" title="centre field · emblem — Bold rounded U (opening up) with a vertical I bar inside; chunky, raised above field, below rim, print-safe and clearly readable.">emblem</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip bad" title="plate · silhouette — Triangle is POINT-DOWN (two holes at the top corners, single apex hole at the bottom) — inverted vs the required point-UP orientation. Otherwise equilateral, ~one eye-width.">silhouette</span><span class="chip ok" title="full sheet · two-panel — Two panels, flat-on + raking; right-temple head, ear visible lower-left.">two-panel</span><span class="chip ok" title="socket · seating — RAISED target well met: plate is a low plateau standing above skin, bevelled rim rising further above the field, holes recessed below field. Rim&gt;field&gt;holes reads cleanly under raking light.">seating</span><span class="chip ok" title="centre field · emblem — Bold rounded U (opening up) with a vertical I bar inside; chunky, raised above field, below rim, print-safe and clearly readable.">emblem</span><span class="chip ok" title="corners · collared-socket-holes — Three collared holes, one per corner, recessed, well spaced.">collared-socket-h…</span><span class="chip ok" title="socket · glyph-vs-hardware — Emblem flat-on, jack in relief.">glyph-vs-hardware</span><span class="chip ok" title="all · mesh-survival — Matte clay, chunky features, no spikes/needles.">mesh-survival</span><span class="chip ok" title="head · placement — Right temple.">placement</span><span class="chip ok" title="full sheet · artifacts — No sparkle/caption/doubling; single head.">artifacts</span></div></details><p>Excellent raised-plateau seating and clean U-I emblem, but triangle is point-DOWN (inverted) — fixable.</p><details class="more"><summary>full note</summary><p class="chipnote">Seating is the best expression of the RAISED target in the set: the plate is a distinct low plateau above skin with the bevelled rim rising further above the field and holes recessed below it, so rim&gt;field&gt;holes reads convincingly under raking light. The emblem is a bold, well-formed U-with-I. The disqualifier is silhouette orientation: the triangle is inverted (point-DOWN, two holes at top and the apex hole at the bottom) where the spec requires point-up. Fixable by regenerating with the correct point-up orientation while keeping the strong raised seating.</p></details><button class="ibtn" data-inputs="in-10">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="../../../../assets/de6dcbc984989736.jpg" data-cap="P1+emblem raised · gptimage2med"><img src="../../../../assets/1199898541596cf5.jpg" alt="P1+emblem raised · gptimage2med" loading="lazy"></div><div class="meta"><header><h3>P1+emblem raised · gptimage2med</h3><span class="cost">$0.05</span><span class="call keeper">KEEPER-CANDIDATE — clean…</span></header><div class="chips"><span class="chip ok" title="full sheet · two-panel — Two panels, flat-on + raking; right-temple head, ear visible lower-right.">two-panel</span><span class="chip ok" title="socket · seating — RAISED target met: raking panel shows the plate as a low plateau above skin with the rim rising further above the field and holes recessed below it. Rim&gt;field&gt;holes hierarchy reads clearly.">seating</span><span class="chip ok" title="plate · silhouette — Crisp equilateral triangle, point-UP (apex hole top, two holes bottom), ~one eye-width.">silhouette</span><span class="chip ok" title="centre field · emblem — Bold rounded U with a vertical I bar standing inside; chunky, raised above field, below rim, readable and print-safe.">emblem</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip ok" title="full sheet · two-panel — Two panels, flat-on + raking; right-temple head, ear visible lower-right.">two-panel</span><span class="chip ok" title="socket · seating — RAISED target met: raking panel shows the plate as a low plateau above skin with the rim rising further above the field and holes recessed below it. Rim&gt;field&gt;holes hierarchy reads clearly.">seating</span><span class="chip ok" title="plate · silhouette — Crisp equilateral triangle, point-UP (apex hole top, two holes bottom), ~one eye-width.">silhouette</span><span class="chip ok" title="centre field · emblem — Bold rounded U with a vertical I bar standing inside; chunky, raised above field, below rim, readable and print-safe.">emblem</span><span class="chip ok" title="corners · collared-socket-holes — Three collared holes, one per corner, holes recessed, collars below rim, well spaced.">collared-socket-h…</span><span class="chip ok" title="socket · glyph-vs-hardware — Reads as emblem flat-on and jack in relief.">glyph-vs-hardware</span><span class="chip ok" title="all · mesh-survival — Opaque matte clay, chunky features, no thin spikes/needle holes.">mesh-survival</span><span class="chip ok" title="head · placement — Right temple.">placement</span><span class="chip ok" title="full sheet · artifacts — No sparkle/caption/doubling; single head.">artifacts</span></div></details><p>Point-up triangle, convincing raised plateau, rim highest, holes recessed, clean U-I emblem — keeper.</p><details class="more"><summary>full note</summary><p class="chipnote">Strong keeper candidate for the RAISED target. The plate reads as a proper low plateau standing above skin, with the bevelled rim rising further above the field and the three collared corner holes recessed below the field, so the rim&gt;field&gt;holes hierarchy is clear under raking light. Unlike the flash31 raised attempt, the triangle here is correctly point-up and equilateral at about one eye-width. The centre emblem is a bold rounded U with a vertical I bar inside, raised above the field and below the rim, and comfortably print-safe. No mesh-survival or artifact concerns.</p></details><button class="ibtn" data-inputs="in-11">inputs — prompt &amp; refs</button></div></div>
+</div>
+<h2>P6 — mecha-wolf, three field levels</h2>
+<p class="blurb">The characterful bet (eyes + snout = the three sockets), with the new set-in construction at three seating depths.</p>
+<div class="grid">
+<div class="card"><div class="imgwrap" data-full="../../../../assets/5b6d1345ecbc60fe.jpg" data-cap="P6 flush · flash31"><img src="../../../../assets/ffe07b3e12f68b28.jpg" alt="P6 flush · flash31" loading="lazy"></div><div class="meta"><header><h3>P6 flush · flash31</h3><span class="cost">~$0.10</span><span class="call fixable">FIXABLE — flat-on panel r…</span></header><div class="chips"><span class="chip bad" title="eyes · three-sockets — Only the snout reads as a collared hole in the flat-on panel; the two eyes there are decorative almond incisions, not sockets. Raking panel does show two collared eye-holes — panels disagree.">three-sockets</span><span class="chip warn" title="wolf plate · seating — Rim (wolf outline) is clearly the highest/proud element; field inside near skin level (flush target OK); holes recessed. Rim&gt;field&gt;holes reads in the raking panel, so structure survived — but see three-sockets defect.">seating</span><span class="chip warn" title="flat-on panel · double-read — Reads as a wolf, but the jack read fails in the glyph (flat-on) panel because eyes are not holes there.">double-read</span><span class="chip ok" title="both panels · two-panel — Left flat-on and right raking 3/4 both present; right temple; ear visible in both.">two-panel</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip bad" title="eyes · three-sockets — Only the snout reads as a collared hole in the flat-on panel; the two eyes there are decorative almond incisions, not sockets. Raking panel does show two collared eye-holes — panels disagree.">three-sockets</span><span class="chip warn" title="wolf plate · seating — Rim (wolf outline) is clearly the highest/proud element; field inside near skin level (flush target OK); holes recessed. Rim&gt;field&gt;holes reads in the raking panel, so structure survived — but see three-sockets defect.">seating</span><span class="chip warn" title="flat-on panel · double-read — Reads as a wolf, but the jack read fails in the glyph (flat-on) panel because eyes are not holes there.">double-read</span><span class="chip ok" title="both panels · two-panel — Left flat-on and right raking 3/4 both present; right temple; ear visible in both.">two-panel</span><span class="chip ok" title="plate · silhouette — Angular chunky wolf head, ~one eye-width, blunt ears; not ornate.">silhouette</span><span class="chip ok" title="ear tips · ears — Thick blunt rim-formed ear points; no thin sharp spikes.">ears</span><span class="chip ok" title="whole plate · mesh-survival — Opaque matte clay, thick features, no needle ridges/spikes; not over-sculpted.">mesh-survival</span><span class="chip ok" title="temple · placement — Right temple, above/forward of ear.">placement</span><span class="chip ok" title="whole · artifacts — Single head, no SynthID sparkle, no caption; but the eye treatment differs between the two panels (inconsistency).">artifacts</span></div></details><p>Solid set-in flush plate, but flat-on eyes are decorative incisions not sockets — jack read breaks in the glyph panel.</p><details class="more"><summary>full note</summary><p class="chipnote">The set-in construction survives: the wolf-outline rim is proud and highest, the field sits near skin (flush), and holes recess below in the raking panel. The disqualifying issue is inconsistency between panels — the flat-on (glyph) panel renders the two eyes as incised almond wolf-eyes rather than collared sockets, so the three-socket jack read fails exactly where the glyph is supposed to read; the raking panel by contrast shows proper collared eye-holes. Wolf silhouette, ears, and mesh-survival are all fine. Fixable by forcing all three features to be identical collared sockets in both panels.</p></details><button class="ibtn" data-inputs="in-12">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="../../../../assets/f4db4e0878f5271e.jpg" data-cap="P6 flush · gptimage2med"><img src="../../../../assets/6413a6458372e8b8.jpg" alt="P6 flush · gptimage2med" loading="lazy"></div><div class="meta"><header><h3>P6 flush · gptimage2med</h3><span class="cost">$0.04</span><span class="call keeper">KEEPER-CANDIDATE — clean…</span></header><div class="chips"><span class="chip ok" title="both panels · two-panel — Flat-on and raking both present; right temple; ear visible in raking panel.">two-panel</span><span class="chip ok" title="wolf plate · seating — Rim traces wolf outline and is highest; field flush at skin; three holes recess below field. Rim&gt;field&gt;holes reads cleanly under raking light. Collars proud but not above rim.">seating</span><span class="chip ok" title="plate · silhouette — Chunky simple angular wolf head, ~one eye-width; not ornate.">silhouette</span><span class="chip ok" title="eyes+snout · three-sockets — Exactly three collared socket-holes (two eyes upper, snout lower), well spaced, recessed holes with proud collar rings; consistent in both panels.">three-sockets</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip ok" title="both panels · two-panel — Flat-on and raking both present; right temple; ear visible in raking panel.">two-panel</span><span class="chip ok" title="wolf plate · seating — Rim traces wolf outline and is highest; field flush at skin; three holes recess below field. Rim&gt;field&gt;holes reads cleanly under raking light. Collars proud but not above rim.">seating</span><span class="chip ok" title="plate · silhouette — Chunky simple angular wolf head, ~one eye-width; not ornate.">silhouette</span><span class="chip ok" title="eyes+snout · three-sockets — Exactly three collared socket-holes (two eyes upper, snout lower), well spaced, recessed holes with proud collar rings; consistent in both panels.">three-sockets</span><span class="chip ok" title="whole · double-read — Reads as a wolf head AND a three-socket jack simultaneously.">double-read</span><span class="chip ok" title="ear tips · ears — Thick blunt rim-formed ears; no thin sharp spikes.">ears</span><span class="chip ok" title="whole plate · mesh-survival — Opaque matte clay, thick collars/rim, shallow-wide holes, no thin ridges or needle holes.">mesh-survival</span><span class="chip ok" title="temple · placement — Right temple, above/forward of ear.">placement</span><span class="chip ok" title="whole · artifacts — Single head, no sparkle/caption/ghosting.">artifacts</span></div></details><p>Clean set-in flush wolf, three consistent collared sockets, rim&gt;field&gt;holes reads well. Best flush.</p><details class="more"><summary>full note</summary><p class="chipnote">A textbook flush execution. The wolf-outline rim is the highest element and proud of the skin, the field sits at skin level, and the three collared holes (two eyes plus snout) recess below the field, giving a clean rim&gt;field&gt;holes reading under grazing light. The three sockets are consistent across both panels, so it reads unambiguously as both an angular mecha-wolf and a three-socket jack. Ears are thick and blunt, all features are chunky matte clay with no fragile detail. Strongest flush candidate.</p></details><button class="ibtn" data-inputs="in-13">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="../../../../assets/a9bd5c2ad0bfef35.jpg" data-cap="P6 recessed · flash31"><img src="../../../../assets/5c8f02d8f9e9e990.jpg" alt="P6 recessed · flash31" loading="lazy"></div><div class="meta"><header><h3>P6 recessed · flash31</h3><span class="cost">~$0.10</span><span class="call fixable">FIXABLE — three collared…</span></header><div class="chips"><span class="chip warn" title="field level · seating — Rim (double-lined outline) proud and highest, holes recessed — structure OK, but the field does not clearly sit below surrounding skin; the plate reads near-flush/slightly proud, missing the recessed (dug-in) target level.">seating</span><span class="chip warn" title="eyes · three-sockets — Three collared holes present (two eyes + snout), but the eye holes are on the small side, drifting toward animal-eye dots that weaken the jack read; snout hole is well sized.">three-sockets</span><span class="chip ok" title="both panels · two-panel — Flat-on and raking both present; right temple; ear visible.">two-panel</span><span class="chip ok" title="plate · silhouette — Angular wolf head, chunky; double-outline rim is slightly busy but still simple.">silhouette</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip warn" title="field level · seating — Rim (double-lined outline) proud and highest, holes recessed — structure OK, but the field does not clearly sit below surrounding skin; the plate reads near-flush/slightly proud, missing the recessed (dug-in) target level.">seating</span><span class="chip warn" title="eyes · three-sockets — Three collared holes present (two eyes + snout), but the eye holes are on the small side, drifting toward animal-eye dots that weaken the jack read; snout hole is well sized.">three-sockets</span><span class="chip ok" title="both panels · two-panel — Flat-on and raking both present; right temple; ear visible.">two-panel</span><span class="chip ok" title="plate · silhouette — Angular wolf head, chunky; double-outline rim is slightly busy but still simple.">silhouette</span><span class="chip ok" title="whole · double-read — Reads as both a wolf and a three-socket jack, though small eyes soften the jack read.">double-read</span><span class="chip ok" title="ear tips · ears — Thick blunt rim ears; no thin spikes.">ears</span><span class="chip ok" title="whole plate · mesh-survival — Opaque matte clay, thick features; double outline is still well above min thickness, no needle detail.">mesh-survival</span><span class="chip ok" title="temple · placement — Right temple, forward of ear.">placement</span><span class="chip ok" title="whole · artifacts — Single head, no sparkle/caption/ghosting.">artifacts</span></div></details><p>Wolf + three sockets read, but field is not clearly below skin — recessed level under-reads; eyes a bit small.</p><details class="more"><summary>full note</summary><p class="chipnote">The set-in structure is intact (proud double-lined rim highest, holes lowest), and it reads as a wolf and a three-socket jack. The problem for a RECESSED target is level: the field does not clearly dig below the surrounding skin — the plate reads near-flush to slightly proud, so the intended 0.3-0.5mm sunken field is not achieved. The eye holes also run small, nudging toward decorative animal-eyes and softening the jack read. Fixable by dropping the field below skin and opening the eye holes.</p></details><button class="ibtn" data-inputs="in-14">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="../../../../assets/38fbba02068af28c.jpg" data-cap="P6 recessed · gptimage2med"><img src="../../../../assets/4cb418e9edde6ad2.jpg" alt="P6 recessed · gptimage2med" loading="lazy"></div><div class="meta"><header><h3>P6 recessed · gptimage2med</h3><span class="cost">$0.04</span><span class="call keeper">KEEPER-CANDIDATE — clean…</span></header><div class="chips"><span class="chip warn" title="field level · seating — Rim traces wolf outline and is highest/proud; field set in below rim; three holes recess below field, so rim&gt;field&gt;holes reads. Recess of the FIELD below surrounding skin is present but subtle — reads more set-in than deeply dug-in.">seating</span><span class="chip ok" title="both panels · two-panel — Flat-on and raking both present; right temple; ear visible in raking panel.">two-panel</span><span class="chip ok" title="plate · silhouette — Chunky simple angular wolf head, ~one eye-width.">silhouette</span><span class="chip ok" title="eyes+snout · three-sockets — Exactly three collared socket-holes (two eyes + snout), well spaced and sized, proud collar rings, recessed holes, consistent across panels.">three-sockets</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip warn" title="field level · seating — Rim traces wolf outline and is highest/proud; field set in below rim; three holes recess below field, so rim&gt;field&gt;holes reads. Recess of the FIELD below surrounding skin is present but subtle — reads more set-in than deeply dug-in.">seating</span><span class="chip ok" title="both panels · two-panel — Flat-on and raking both present; right temple; ear visible in raking panel.">two-panel</span><span class="chip ok" title="plate · silhouette — Chunky simple angular wolf head, ~one eye-width.">silhouette</span><span class="chip ok" title="eyes+snout · three-sockets — Exactly three collared socket-holes (two eyes + snout), well spaced and sized, proud collar rings, recessed holes, consistent across panels.">three-sockets</span><span class="chip ok" title="whole · double-read — Reads clearly as both a wolf and a three-socket jack.">double-read</span><span class="chip ok" title="ear tips · ears — Thick blunt angular rim ears; no thin spikes.">ears</span><span class="chip ok" title="whole plate · mesh-survival — Opaque matte clay, thick rim/collars, shallow-wide holes, no thin ridges or needle holes.">mesh-survival</span><span class="chip ok" title="temple · placement — Right temple, above/forward of ear.">placement</span><span class="chip ok" title="whole · artifacts — Single head, no sparkle/caption/ghosting.">artifacts</span></div></details><p>Clean set-in recessed wolf, three consistent collared sockets, rim&gt;field&gt;holes; recess depth is subtle. Best recessed.</p><details class="more"><summary>full note</summary><p class="chipnote">The strongest recessed candidate. The wolf-outline rim is proud and highest, the field is set in below the rim, and the three collared holes (two eyes + snout) recess below the field, giving a clean rim&gt;field&gt;holes reading. The three sockets are consistent across both panels for a solid wolf-and-jack double read, ears are thick and blunt, and every feature is chunky matte clay with no fragile detail. The only reservation is that the field&#x27;s dip below the surrounding skin reads subtle rather than clearly dug-in, so the recessed level is on the shallow side of the 0.3-0.5mm target.</p></details><button class="ibtn" data-inputs="in-15">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="../../../../assets/00907b4975148aa5.jpg" data-cap="P6 raised · flash31"><img src="../../../../assets/c750b402ab722032.jpg" alt="P6 raised · flash31" loading="lazy"></div><div class="meta"><header><h3>P6 raised · flash31</h3><span class="cost">~$0.10</span><span class="call reject">REJECT — full sculptural…</span></header><div class="chips"><span class="chip bad" title="whole plate · seating — Reverts to a full sculptural muzzle: a raised 3D snout/brow with modeled contours, NOT a flat set-in field with a proud outline rim. No rim&gt;field&gt;holes staging; the intended raised-plateau construction is absent.">seating</span><span class="chip bad" title="eyes+snout · three-sockets — The two eyes are sculpted almond wolf-eyes with tiny recessed pupil holes, not collared sockets; only the snout has a real hole. Fails the three-socket requirement.">three-sockets</span><span class="chip bad" title="whole · double-read — Reads purely as a decorative wolf face; the three-socket jack read is lost entirely.">double-read</span><span class="chip bad" title="eyes / muzzle · mesh-survival — Over-sculpted; tiny pinhole pupils are near-needle features that would not survive; sculptural muzzle contradicts the shallow-and-wide hole requirement.">mesh-survival</span><span class="chip warn" title="plate · silhouette — Reads as an ornate sculpted wolf face rather than a chunky simple angular head plate; over-detailed.">silhouette</span></div><details class="more"><summary>all 9 detectors (4 more)</summary><div class="chips"><span class="chip bad" title="whole plate · seating — Reverts to a full sculptural muzzle: a raised 3D snout/brow with modeled contours, NOT a flat set-in field with a proud outline rim. No rim&gt;field&gt;holes staging; the intended raised-plateau construction is absent.">seating</span><span class="chip bad" title="eyes+snout · three-sockets — The two eyes are sculpted almond wolf-eyes with tiny recessed pupil holes, not collared sockets; only the snout has a real hole. Fails the three-socket requirement.">three-sockets</span><span class="chip bad" title="whole · double-read — Reads purely as a decorative wolf face; the three-socket jack read is lost entirely.">double-read</span><span class="chip bad" title="eyes / muzzle · mesh-survival — Over-sculpted; tiny pinhole pupils are near-needle features that would not survive; sculptural muzzle contradicts the shallow-and-wide hole requirement.">mesh-survival</span><span class="chip warn" title="plate · silhouette — Reads as an ornate sculpted wolf face rather than a chunky simple angular head plate; over-detailed.">silhouette</span><span class="chip ok" title="both panels · two-panel — Flat-on and raking both present; right temple; ear visible — layout fine, but content fails.">two-panel</span><span class="chip ok" title="ear tips · ears — Ears themselves are thick/blunt, but moot given the muzzle reversion.">ears</span><span class="chip ok" title="temple · placement — Right temple, forward of ear.">placement</span><span class="chip ok" title="whole · artifacts — Single head, no sparkle/caption/ghosting.">artifacts</span></div></details><p>Full sculptural muzzle reversion; eyes are decorative almonds with pinhole pupils, jack read dead, over-sculpted. Reject.</p><details class="more"><summary>full note</summary><p class="chipnote">This is the classic wolf failure mode. Instead of a set-in raised-plateau plate with a proud outline rim over a flat field, the design reverts to a full sculptural wolf muzzle — a domed 3D snout, modeled brow, and almond eyes with tiny pupil pinholes. There is no rim&gt;field&gt;holes staging, the two eyes are decorative rather than collared sockets, and the three-socket jack read is lost completely. The tiny pupil holes and over-sculpted relief also fail mesh-survival. Reject.</p></details><button class="ibtn" data-inputs="in-16">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="../../../../assets/0f2584aba5f6975b.jpg" data-cap="P6 raised · gptimage2med"><img src="../../../../assets/4e59d3c8a54ee848.jpg" alt="P6 raised · gptimage2med" loading="lazy"></div><div class="meta"><header><h3>P6 raised · gptimage2med</h3><span class="cost">$0.04</span><span class="call keeper">KEEPER-CANDIDATE — textbo…</span></header><div class="chips"><span class="chip ok" title="both panels · two-panel — Flat-on and raking both present; right temple; ear visible in raking panel.">two-panel</span><span class="chip ok" title="wolf plate · seating — Best set-in read of all six: the plate is a low plateau clearly proud of surrounding skin (raised target), the wolf-outline rim rises further above the field, and the three holes recess below. Rim (highest) &gt; field plateau (above skin) &gt; holes (lowest) all read distinctly under grazing light.">seating</span><span class="chip ok" title="plate · silhouette — Chunky simple angular wolf head, ~one eye-width; not ornate.">silhouette</span><span class="chip ok" title="eyes+snout · three-sockets — Exactly three collared socket-holes (two eyes + snout), well spaced and sized, proud collars below rim height, recessed holes, consistent across both panels.">three-sockets</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip ok" title="both panels · two-panel — Flat-on and raking both present; right temple; ear visible in raking panel.">two-panel</span><span class="chip ok" title="wolf plate · seating — Best set-in read of all six: the plate is a low plateau clearly proud of surrounding skin (raised target), the wolf-outline rim rises further above the field, and the three holes recess below. Rim (highest) &gt; field plateau (above skin) &gt; holes (lowest) all read distinctly under grazing light.">seating</span><span class="chip ok" title="plate · silhouette — Chunky simple angular wolf head, ~one eye-width; not ornate.">silhouette</span><span class="chip ok" title="eyes+snout · three-sockets — Exactly three collared socket-holes (two eyes + snout), well spaced and sized, proud collars below rim height, recessed holes, consistent across both panels.">three-sockets</span><span class="chip ok" title="whole · double-read — Reads clearly as both an angular wolf head and a three-socket jack.">double-read</span><span class="chip ok" title="ear tips · ears — Thick blunt angular rim ears; no thin sharp spikes.">ears</span><span class="chip ok" title="whole plate · mesh-survival — Opaque matte clay, thick rim/collars/field, shallow-wide holes, no thin ridges or needle detail.">mesh-survival</span><span class="chip ok" title="temple · placement — Right temple, above/forward of ear.">placement</span><span class="chip ok" title="whole · artifacts — Single head, no sparkle/caption/ghosting.">artifacts</span></div></details><p>Textbook raised: plateau proud of skin, rim above field, holes below; three consistent collared sockets. Best set-in overall.</p><details class="more"><summary>full note</summary><p class="chipnote">The cleanest set-in execution in the batch and the best raised. The entire wolf plate is a low plateau proud of the surrounding skin, the wolf-outline rim rises further above that field plateau, and the three collared holes (two eyes plus snout) recess below the field — so all three levels (rim &gt; field &gt; holes) read distinctly under raking light, exactly matching the raised target. Three consistent collared sockets give a strong wolf-and-jack double read, ears are thick and blunt, and every feature is chunky matte clay with no fragile detail. Clear keeper candidate.</p></details><button class="ibtn" data-inputs="in-17">inputs — prompt &amp; refs</button></div></div>
+</div>
+<div class="callout steps"><p class="boxhead">Proposed next steps</p><p class="intro">Sequences off the field-level + shape verdict. Delivery is the authored STL fused per character (decided r1).</p><ol><li><span class="t">Author the socket STL master at the chosen field level</span><span class="when">on the field-level + shape verdict</span><p class="d">Author the winner as a clean STL — trimesh primitives for the triangle (rim ring + recessed/flush/raised field + three collars − three bores; no Meshy), Meshy or a sculpt for P6. Honour features ≥0.6 mm; validate watertight at 32 mm.</p><ul><li>the geometric triangle skips the Meshy lottery entirely</li><li>if the emblem advances, add the raised U-I glyph to the field</li></ul></li><li><span class="t">Prove the per-character fuse (incl. the recess carve if recessed wins)</span><span class="when">after the master validates</span><p class="d">Boolean-union/conform the master onto one real character mesh (e.g. Gorgon). A recessed field also carves a shallow pocket (union of proud rim + subtract of the recess) — re-validate that extension of the proven over-embed-and-union.</p><ul><li>only the synthetic-dome proud-plate case is proven so far</li></ul></li><li><span class="t">Fold the standard into the team brief + character specs</span><span class="when">after the fuse is proven</span><p class="d">Update team-brief §4 and give each character round the exemplar + authored master for its late socket-fuse pass.</p></li></ol></div>
+<div class="callout"><b>Your eye-call, Dimitri (with Jason).</b> Which field level and shape become the Furies' mark — or reject the set with fresh direction (an explicitly valid answer)?</div>
+<footer>Round cost: ~$1.5 (18 rolls, flash31 + gptimage2med) · prompt files in head-socket/prompts/</footer>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+<template id="in-0"><h2>P1 flush · flash31</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-12T15:36:56</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r2-P1-flush.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the SEATING and depth read clearly — shadows show the raised rim, the field, and the recessed holes.
+
+THE ASSET — a single interface socket set into the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+
+- PLATE OUTLINE: an equilateral TRIANGLE, point up. The raised rim traces this triangle; a collared socket-hole sits in the field at each of the three corners.
+
+SEATING / PROFILE — how the asset sits against the skin (THE KEY POINT OF THIS STUDY):
+- The plate has a RAISED RIM / EDGE — a bevelled bezel ring tracing the outline — that ALWAYS stands proud of the skin and is the HIGHEST part, standing a bit further out than the inner field.
+- The inner FIELD (the top face the sockets sit in) is the level that varies: the field sits at SKIN LEVEL — flush with the surrounding skin — while only the rim stands proud above it. The rim rises above the field in every case.
+- This is a SET-IN socket with a proud rim, NOT a slab or tile stuck flat on top of the skin.
+- The three COLLARED SOCKET-HOLES sit in the field: each a small round hole ringed by a short raised collar; the collar rises no higher than the rim, the hole is recessed below the field. NOT pins, NOT studs.
+- In the raking panel the light must read the levels clearly: the proud RIM (highest/brightest), then the FIELD, then the recessed HOLES (darkest).
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The rim is a chunky bevelled ring (≥0.6 mm wide, ≥0.6 mm proud); the three collared socket-holes are generously spaced so they stay separate; every feature ≥0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-1"><h2>P1 flush · gptimage2med</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=medium · $0.05 · 2026-07-12T15:37:21</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r2-P1-flush.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the SEATING and depth read clearly — shadows show the raised rim, the field, and the recessed holes.
+
+THE ASSET — a single interface socket set into the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+
+- PLATE OUTLINE: an equilateral TRIANGLE, point up. The raised rim traces this triangle; a collared socket-hole sits in the field at each of the three corners.
+
+SEATING / PROFILE — how the asset sits against the skin (THE KEY POINT OF THIS STUDY):
+- The plate has a RAISED RIM / EDGE — a bevelled bezel ring tracing the outline — that ALWAYS stands proud of the skin and is the HIGHEST part, standing a bit further out than the inner field.
+- The inner FIELD (the top face the sockets sit in) is the level that varies: the field sits at SKIN LEVEL — flush with the surrounding skin — while only the rim stands proud above it. The rim rises above the field in every case.
+- This is a SET-IN socket with a proud rim, NOT a slab or tile stuck flat on top of the skin.
+- The three COLLARED SOCKET-HOLES sit in the field: each a small round hole ringed by a short raised collar; the collar rises no higher than the rim, the hole is recessed below the field. NOT pins, NOT studs.
+- In the raking panel the light must read the levels clearly: the proud RIM (highest/brightest), then the FIELD, then the recessed HOLES (darkest).
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The rim is a chunky bevelled ring (≥0.6 mm wide, ≥0.6 mm proud); the three collared socket-holes are generously spaced so they stay separate; every feature ≥0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-2"><h2>P1 recessed · flash31</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-12T15:38:08</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r2-P1-recessed.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the SEATING and depth read clearly — shadows show the raised rim, the field, and the recessed holes.
+
+THE ASSET — a single interface socket set into the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+
+- PLATE OUTLINE: an equilateral TRIANGLE, point up. The raised rim traces this triangle; a collared socket-hole sits in the field at each of the three corners.
+
+SEATING / PROFILE — how the asset sits against the skin (THE KEY POINT OF THIS STUDY):
+- The plate has a RAISED RIM / EDGE — a bevelled bezel ring tracing the outline — that ALWAYS stands proud of the skin and is the HIGHEST part, standing a bit further out than the inner field.
+- The inner FIELD (the top face the sockets sit in) is the level that varies: the field sits SLIGHTLY BELOW SKIN LEVEL — dug in about 0.3–0.5 mm — with the rim proud above both the field and the surrounding skin. The rim rises above the field in every case.
+- This is a SET-IN socket with a proud rim, NOT a slab or tile stuck flat on top of the skin.
+- The three COLLARED SOCKET-HOLES sit in the field: each a small round hole ringed by a short raised collar; the collar rises no higher than the rim, the hole is recessed below the field. NOT pins, NOT studs.
+- In the raking panel the light must read the levels clearly: the proud RIM (highest/brightest), then the FIELD, then the recessed HOLES (darkest).
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The rim is a chunky bevelled ring (≥0.6 mm wide, ≥0.6 mm proud); the three collared socket-holes are generously spaced so they stay separate; every feature ≥0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-3"><h2>P1 recessed · gptimage2med</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=medium · $0.05 · 2026-07-12T15:38:37</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r2-P1-recessed.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the SEATING and depth read clearly — shadows show the raised rim, the field, and the recessed holes.
+
+THE ASSET — a single interface socket set into the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+
+- PLATE OUTLINE: an equilateral TRIANGLE, point up. The raised rim traces this triangle; a collared socket-hole sits in the field at each of the three corners.
+
+SEATING / PROFILE — how the asset sits against the skin (THE KEY POINT OF THIS STUDY):
+- The plate has a RAISED RIM / EDGE — a bevelled bezel ring tracing the outline — that ALWAYS stands proud of the skin and is the HIGHEST part, standing a bit further out than the inner field.
+- The inner FIELD (the top face the sockets sit in) is the level that varies: the field sits SLIGHTLY BELOW SKIN LEVEL — dug in about 0.3–0.5 mm — with the rim proud above both the field and the surrounding skin. The rim rises above the field in every case.
+- This is a SET-IN socket with a proud rim, NOT a slab or tile stuck flat on top of the skin.
+- The three COLLARED SOCKET-HOLES sit in the field: each a small round hole ringed by a short raised collar; the collar rises no higher than the rim, the hole is recessed below the field. NOT pins, NOT studs.
+- In the raking panel the light must read the levels clearly: the proud RIM (highest/brightest), then the FIELD, then the recessed HOLES (darkest).
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The rim is a chunky bevelled ring (≥0.6 mm wide, ≥0.6 mm proud); the three collared socket-holes are generously spaced so they stay separate; every feature ≥0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-4"><h2>P1 raised · flash31</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-12T15:38:54</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r2-P1-raised.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the SEATING and depth read clearly — shadows show the raised rim, the field, and the recessed holes.
+
+THE ASSET — a single interface socket set into the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+
+- PLATE OUTLINE: an equilateral TRIANGLE, point up. The raised rim traces this triangle; a collared socket-hole sits in the field at each of the three corners.
+
+SEATING / PROFILE — how the asset sits against the skin (THE KEY POINT OF THIS STUDY):
+- The plate has a RAISED RIM / EDGE — a bevelled bezel ring tracing the outline — that ALWAYS stands proud of the skin and is the HIGHEST part, standing a bit further out than the inner field.
+- The inner FIELD (the top face the sockets sit in) is the level that varies: the field sits SLIGHTLY ABOVE SKIN LEVEL — a low proud plateau about 0.3–0.5 mm above the skin — and the rim rises a further step higher above the field. The rim rises above the field in every case.
+- This is a SET-IN socket with a proud rim, NOT a slab or tile stuck flat on top of the skin.
+- The three COLLARED SOCKET-HOLES sit in the field: each a small round hole ringed by a short raised collar; the collar rises no higher than the rim, the hole is recessed below the field. NOT pins, NOT studs.
+- In the raking panel the light must read the levels clearly: the proud RIM (highest/brightest), then the FIELD, then the recessed HOLES (darkest).
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The rim is a chunky bevelled ring (≥0.6 mm wide, ≥0.6 mm proud); the three collared socket-holes are generously spaced so they stay separate; every feature ≥0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-5"><h2>P1 raised · gptimage2med</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=medium · $0.04 · 2026-07-12T15:39:16</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r2-P1-raised.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the SEATING and depth read clearly — shadows show the raised rim, the field, and the recessed holes.
+
+THE ASSET — a single interface socket set into the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+
+- PLATE OUTLINE: an equilateral TRIANGLE, point up. The raised rim traces this triangle; a collared socket-hole sits in the field at each of the three corners.
+
+SEATING / PROFILE — how the asset sits against the skin (THE KEY POINT OF THIS STUDY):
+- The plate has a RAISED RIM / EDGE — a bevelled bezel ring tracing the outline — that ALWAYS stands proud of the skin and is the HIGHEST part, standing a bit further out than the inner field.
+- The inner FIELD (the top face the sockets sit in) is the level that varies: the field sits SLIGHTLY ABOVE SKIN LEVEL — a low proud plateau about 0.3–0.5 mm above the skin — and the rim rises a further step higher above the field. The rim rises above the field in every case.
+- This is a SET-IN socket with a proud rim, NOT a slab or tile stuck flat on top of the skin.
+- The three COLLARED SOCKET-HOLES sit in the field: each a small round hole ringed by a short raised collar; the collar rises no higher than the rim, the hole is recessed below the field. NOT pins, NOT studs.
+- In the raking panel the light must read the levels clearly: the proud RIM (highest/brightest), then the FIELD, then the recessed HOLES (darkest).
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The rim is a chunky bevelled ring (≥0.6 mm wide, ≥0.6 mm proud); the three collared socket-holes are generously spaced so they stay separate; every feature ≥0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-6"><h2>P1+emblem flush · flash31</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-12T15:39:32</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r2-P1logo-flush.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the SEATING and depth read clearly — shadows show the raised rim, the field, and the recessed holes.
+
+THE ASSET — a single interface socket set into the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+
+- PLATE OUTLINE: an equilateral TRIANGLE, point up. The raised rim traces this triangle; a collared socket-hole sits in the field at each of the three corners.
+- CENTER EMBLEM: in the middle of the field, a single bold raised glyph — a chunky rounded &quot;U&quot; (like a horseshoe) with a short vertical bar (an &quot;I&quot;) standing inside the U. It is the gang mark: simple, rounded, at least 0.6 mm, raised clearly above the field but NOT higher than the rim.
+
+SEATING / PROFILE — how the asset sits against the skin (THE KEY POINT OF THIS STUDY):
+- The plate has a RAISED RIM / EDGE — a bevelled bezel ring tracing the outline — that ALWAYS stands proud of the skin and is the HIGHEST part, standing a bit further out than the inner field.
+- The inner FIELD (the top face the sockets sit in) is the level that varies: the field sits at SKIN LEVEL — flush with the surrounding skin — while only the rim stands proud above it. The rim rises above the field in every case.
+- This is a SET-IN socket with a proud rim, NOT a slab or tile stuck flat on top of the skin.
+- The three COLLARED SOCKET-HOLES sit in the field: each a small round hole ringed by a short raised collar; the collar rises no higher than the rim, the hole is recessed below the field. NOT pins, NOT studs.
+- In the raking panel the light must read the levels clearly: the proud RIM (highest/brightest), then the FIELD, then the recessed HOLES (darkest).
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The rim is a chunky bevelled ring (≥0.6 mm wide, ≥0.6 mm proud); the three collared socket-holes are generously spaced so they stay separate; every feature ≥0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-7"><h2>P1+emblem flush · gptimage2med</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=medium · $0.05 · 2026-07-12T15:39:59</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r2-P1logo-flush.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the SEATING and depth read clearly — shadows show the raised rim, the field, and the recessed holes.
+
+THE ASSET — a single interface socket set into the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+
+- PLATE OUTLINE: an equilateral TRIANGLE, point up. The raised rim traces this triangle; a collared socket-hole sits in the field at each of the three corners.
+- CENTER EMBLEM: in the middle of the field, a single bold raised glyph — a chunky rounded &quot;U&quot; (like a horseshoe) with a short vertical bar (an &quot;I&quot;) standing inside the U. It is the gang mark: simple, rounded, at least 0.6 mm, raised clearly above the field but NOT higher than the rim.
+
+SEATING / PROFILE — how the asset sits against the skin (THE KEY POINT OF THIS STUDY):
+- The plate has a RAISED RIM / EDGE — a bevelled bezel ring tracing the outline — that ALWAYS stands proud of the skin and is the HIGHEST part, standing a bit further out than the inner field.
+- The inner FIELD (the top face the sockets sit in) is the level that varies: the field sits at SKIN LEVEL — flush with the surrounding skin — while only the rim stands proud above it. The rim rises above the field in every case.
+- This is a SET-IN socket with a proud rim, NOT a slab or tile stuck flat on top of the skin.
+- The three COLLARED SOCKET-HOLES sit in the field: each a small round hole ringed by a short raised collar; the collar rises no higher than the rim, the hole is recessed below the field. NOT pins, NOT studs.
+- In the raking panel the light must read the levels clearly: the proud RIM (highest/brightest), then the FIELD, then the recessed HOLES (darkest).
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The rim is a chunky bevelled ring (≥0.6 mm wide, ≥0.6 mm proud); the three collared socket-holes are generously spaced so they stay separate; every feature ≥0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-8"><h2>P1+emblem recessed · flash31</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-12T15:40:14</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r2-P1logo-recessed.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the SEATING and depth read clearly — shadows show the raised rim, the field, and the recessed holes.
+
+THE ASSET — a single interface socket set into the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+
+- PLATE OUTLINE: an equilateral TRIANGLE, point up. The raised rim traces this triangle; a collared socket-hole sits in the field at each of the three corners.
+- CENTER EMBLEM: in the middle of the field, a single bold raised glyph — a chunky rounded &quot;U&quot; (like a horseshoe) with a short vertical bar (an &quot;I&quot;) standing inside the U. It is the gang mark: simple, rounded, at least 0.6 mm, raised clearly above the field but NOT higher than the rim.
+
+SEATING / PROFILE — how the asset sits against the skin (THE KEY POINT OF THIS STUDY):
+- The plate has a RAISED RIM / EDGE — a bevelled bezel ring tracing the outline — that ALWAYS stands proud of the skin and is the HIGHEST part, standing a bit further out than the inner field.
+- The inner FIELD (the top face the sockets sit in) is the level that varies: the field sits SLIGHTLY BELOW SKIN LEVEL — dug in about 0.3–0.5 mm — with the rim proud above both the field and the surrounding skin. The rim rises above the field in every case.
+- This is a SET-IN socket with a proud rim, NOT a slab or tile stuck flat on top of the skin.
+- The three COLLARED SOCKET-HOLES sit in the field: each a small round hole ringed by a short raised collar; the collar rises no higher than the rim, the hole is recessed below the field. NOT pins, NOT studs.
+- In the raking panel the light must read the levels clearly: the proud RIM (highest/brightest), then the FIELD, then the recessed HOLES (darkest).
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The rim is a chunky bevelled ring (≥0.6 mm wide, ≥0.6 mm proud); the three collared socket-holes are generously spaced so they stay separate; every feature ≥0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-9"><h2>P1+emblem recessed · gptimage2med</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=medium · $0.05 · 2026-07-12T15:40:39</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r2-P1logo-recessed.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the SEATING and depth read clearly — shadows show the raised rim, the field, and the recessed holes.
+
+THE ASSET — a single interface socket set into the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+
+- PLATE OUTLINE: an equilateral TRIANGLE, point up. The raised rim traces this triangle; a collared socket-hole sits in the field at each of the three corners.
+- CENTER EMBLEM: in the middle of the field, a single bold raised glyph — a chunky rounded &quot;U&quot; (like a horseshoe) with a short vertical bar (an &quot;I&quot;) standing inside the U. It is the gang mark: simple, rounded, at least 0.6 mm, raised clearly above the field but NOT higher than the rim.
+
+SEATING / PROFILE — how the asset sits against the skin (THE KEY POINT OF THIS STUDY):
+- The plate has a RAISED RIM / EDGE — a bevelled bezel ring tracing the outline — that ALWAYS stands proud of the skin and is the HIGHEST part, standing a bit further out than the inner field.
+- The inner FIELD (the top face the sockets sit in) is the level that varies: the field sits SLIGHTLY BELOW SKIN LEVEL — dug in about 0.3–0.5 mm — with the rim proud above both the field and the surrounding skin. The rim rises above the field in every case.
+- This is a SET-IN socket with a proud rim, NOT a slab or tile stuck flat on top of the skin.
+- The three COLLARED SOCKET-HOLES sit in the field: each a small round hole ringed by a short raised collar; the collar rises no higher than the rim, the hole is recessed below the field. NOT pins, NOT studs.
+- In the raking panel the light must read the levels clearly: the proud RIM (highest/brightest), then the FIELD, then the recessed HOLES (darkest).
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The rim is a chunky bevelled ring (≥0.6 mm wide, ≥0.6 mm proud); the three collared socket-holes are generously spaced so they stay separate; every feature ≥0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-10"><h2>P1+emblem raised · flash31</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-12T15:40:53</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r2-P1logo-raised.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the SEATING and depth read clearly — shadows show the raised rim, the field, and the recessed holes.
+
+THE ASSET — a single interface socket set into the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+
+- PLATE OUTLINE: an equilateral TRIANGLE, point up. The raised rim traces this triangle; a collared socket-hole sits in the field at each of the three corners.
+- CENTER EMBLEM: in the middle of the field, a single bold raised glyph — a chunky rounded &quot;U&quot; (like a horseshoe) with a short vertical bar (an &quot;I&quot;) standing inside the U. It is the gang mark: simple, rounded, at least 0.6 mm, raised clearly above the field but NOT higher than the rim.
+
+SEATING / PROFILE — how the asset sits against the skin (THE KEY POINT OF THIS STUDY):
+- The plate has a RAISED RIM / EDGE — a bevelled bezel ring tracing the outline — that ALWAYS stands proud of the skin and is the HIGHEST part, standing a bit further out than the inner field.
+- The inner FIELD (the top face the sockets sit in) is the level that varies: the field sits SLIGHTLY ABOVE SKIN LEVEL — a low proud plateau about 0.3–0.5 mm above the skin — and the rim rises a further step higher above the field. The rim rises above the field in every case.
+- This is a SET-IN socket with a proud rim, NOT a slab or tile stuck flat on top of the skin.
+- The three COLLARED SOCKET-HOLES sit in the field: each a small round hole ringed by a short raised collar; the collar rises no higher than the rim, the hole is recessed below the field. NOT pins, NOT studs.
+- In the raking panel the light must read the levels clearly: the proud RIM (highest/brightest), then the FIELD, then the recessed HOLES (darkest).
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The rim is a chunky bevelled ring (≥0.6 mm wide, ≥0.6 mm proud); the three collared socket-holes are generously spaced so they stay separate; every feature ≥0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-11"><h2>P1+emblem raised · gptimage2med</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=medium · $0.05 · 2026-07-12T15:41:19</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r2-P1logo-raised.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the SEATING and depth read clearly — shadows show the raised rim, the field, and the recessed holes.
+
+THE ASSET — a single interface socket set into the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+
+- PLATE OUTLINE: an equilateral TRIANGLE, point up. The raised rim traces this triangle; a collared socket-hole sits in the field at each of the three corners.
+- CENTER EMBLEM: in the middle of the field, a single bold raised glyph — a chunky rounded &quot;U&quot; (like a horseshoe) with a short vertical bar (an &quot;I&quot;) standing inside the U. It is the gang mark: simple, rounded, at least 0.6 mm, raised clearly above the field but NOT higher than the rim.
+
+SEATING / PROFILE — how the asset sits against the skin (THE KEY POINT OF THIS STUDY):
+- The plate has a RAISED RIM / EDGE — a bevelled bezel ring tracing the outline — that ALWAYS stands proud of the skin and is the HIGHEST part, standing a bit further out than the inner field.
+- The inner FIELD (the top face the sockets sit in) is the level that varies: the field sits SLIGHTLY ABOVE SKIN LEVEL — a low proud plateau about 0.3–0.5 mm above the skin — and the rim rises a further step higher above the field. The rim rises above the field in every case.
+- This is a SET-IN socket with a proud rim, NOT a slab or tile stuck flat on top of the skin.
+- The three COLLARED SOCKET-HOLES sit in the field: each a small round hole ringed by a short raised collar; the collar rises no higher than the rim, the hole is recessed below the field. NOT pins, NOT studs.
+- In the raking panel the light must read the levels clearly: the proud RIM (highest/brightest), then the FIELD, then the recessed HOLES (darkest).
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The rim is a chunky bevelled ring (≥0.6 mm wide, ≥0.6 mm proud); the three collared socket-holes are generously spaced so they stay separate; every feature ≥0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-12"><h2>P6 flush · flash31</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-12T15:41:35</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r2-P6-flush.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the SEATING and depth read clearly — shadows show the raised rim, the field, and the recessed holes.
+
+THE ASSET — a single interface socket set into the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+
+- PLATE OUTLINE: an angular mecha-WOLF head — chunky and simple, blunt ears, not ornate. The raised rim traces the wolf-head outline; its two eyes and snout ARE the three collared socket-holes, sunk in the field.
+
+SEATING / PROFILE — how the asset sits against the skin (THE KEY POINT OF THIS STUDY):
+- The plate has a RAISED RIM / EDGE — a bevelled bezel ring tracing the outline — that ALWAYS stands proud of the skin and is the HIGHEST part, standing a bit further out than the inner field.
+- The inner FIELD (the top face the sockets sit in) is the level that varies: the field sits at SKIN LEVEL — flush with the surrounding skin — while only the rim stands proud above it. The rim rises above the field in every case.
+- This is a SET-IN socket with a proud rim, NOT a slab or tile stuck flat on top of the skin.
+- The three COLLARED SOCKET-HOLES sit in the field: each a small round hole ringed by a short raised collar; the collar rises no higher than the rim, the hole is recessed below the field. NOT pins, NOT studs.
+- In the raking panel the light must read the levels clearly: the proud RIM (highest/brightest), then the FIELD, then the recessed HOLES (darkest).
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The rim is a chunky bevelled ring (≥0.6 mm wide, ≥0.6 mm proud); the three collared socket-holes are generously spaced so they stay separate; every feature ≥0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-13"><h2>P6 flush · gptimage2med</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=medium · $0.04 · 2026-07-12T15:42:00</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r2-P6-flush.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the SEATING and depth read clearly — shadows show the raised rim, the field, and the recessed holes.
+
+THE ASSET — a single interface socket set into the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+
+- PLATE OUTLINE: an angular mecha-WOLF head — chunky and simple, blunt ears, not ornate. The raised rim traces the wolf-head outline; its two eyes and snout ARE the three collared socket-holes, sunk in the field.
+
+SEATING / PROFILE — how the asset sits against the skin (THE KEY POINT OF THIS STUDY):
+- The plate has a RAISED RIM / EDGE — a bevelled bezel ring tracing the outline — that ALWAYS stands proud of the skin and is the HIGHEST part, standing a bit further out than the inner field.
+- The inner FIELD (the top face the sockets sit in) is the level that varies: the field sits at SKIN LEVEL — flush with the surrounding skin — while only the rim stands proud above it. The rim rises above the field in every case.
+- This is a SET-IN socket with a proud rim, NOT a slab or tile stuck flat on top of the skin.
+- The three COLLARED SOCKET-HOLES sit in the field: each a small round hole ringed by a short raised collar; the collar rises no higher than the rim, the hole is recessed below the field. NOT pins, NOT studs.
+- In the raking panel the light must read the levels clearly: the proud RIM (highest/brightest), then the FIELD, then the recessed HOLES (darkest).
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The rim is a chunky bevelled ring (≥0.6 mm wide, ≥0.6 mm proud); the three collared socket-holes are generously spaced so they stay separate; every feature ≥0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-14"><h2>P6 recessed · flash31</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-12T15:42:14</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r2-P6-recessed.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the SEATING and depth read clearly — shadows show the raised rim, the field, and the recessed holes.
+
+THE ASSET — a single interface socket set into the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+
+- PLATE OUTLINE: an angular mecha-WOLF head — chunky and simple, blunt ears, not ornate. The raised rim traces the wolf-head outline; its two eyes and snout ARE the three collared socket-holes, sunk in the field.
+
+SEATING / PROFILE — how the asset sits against the skin (THE KEY POINT OF THIS STUDY):
+- The plate has a RAISED RIM / EDGE — a bevelled bezel ring tracing the outline — that ALWAYS stands proud of the skin and is the HIGHEST part, standing a bit further out than the inner field.
+- The inner FIELD (the top face the sockets sit in) is the level that varies: the field sits SLIGHTLY BELOW SKIN LEVEL — dug in about 0.3–0.5 mm — with the rim proud above both the field and the surrounding skin. The rim rises above the field in every case.
+- This is a SET-IN socket with a proud rim, NOT a slab or tile stuck flat on top of the skin.
+- The three COLLARED SOCKET-HOLES sit in the field: each a small round hole ringed by a short raised collar; the collar rises no higher than the rim, the hole is recessed below the field. NOT pins, NOT studs.
+- In the raking panel the light must read the levels clearly: the proud RIM (highest/brightest), then the FIELD, then the recessed HOLES (darkest).
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The rim is a chunky bevelled ring (≥0.6 mm wide, ≥0.6 mm proud); the three collared socket-holes are generously spaced so they stay separate; every feature ≥0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-15"><h2>P6 recessed · gptimage2med</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=medium · $0.04 · 2026-07-12T15:42:37</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r2-P6-recessed.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the SEATING and depth read clearly — shadows show the raised rim, the field, and the recessed holes.
+
+THE ASSET — a single interface socket set into the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+
+- PLATE OUTLINE: an angular mecha-WOLF head — chunky and simple, blunt ears, not ornate. The raised rim traces the wolf-head outline; its two eyes and snout ARE the three collared socket-holes, sunk in the field.
+
+SEATING / PROFILE — how the asset sits against the skin (THE KEY POINT OF THIS STUDY):
+- The plate has a RAISED RIM / EDGE — a bevelled bezel ring tracing the outline — that ALWAYS stands proud of the skin and is the HIGHEST part, standing a bit further out than the inner field.
+- The inner FIELD (the top face the sockets sit in) is the level that varies: the field sits SLIGHTLY BELOW SKIN LEVEL — dug in about 0.3–0.5 mm — with the rim proud above both the field and the surrounding skin. The rim rises above the field in every case.
+- This is a SET-IN socket with a proud rim, NOT a slab or tile stuck flat on top of the skin.
+- The three COLLARED SOCKET-HOLES sit in the field: each a small round hole ringed by a short raised collar; the collar rises no higher than the rim, the hole is recessed below the field. NOT pins, NOT studs.
+- In the raking panel the light must read the levels clearly: the proud RIM (highest/brightest), then the FIELD, then the recessed HOLES (darkest).
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The rim is a chunky bevelled ring (≥0.6 mm wide, ≥0.6 mm proud); the three collared socket-holes are generously spaced so they stay separate; every feature ≥0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-16"><h2>P6 raised · flash31</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-12T15:42:52</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r2-P6-raised.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the SEATING and depth read clearly — shadows show the raised rim, the field, and the recessed holes.
+
+THE ASSET — a single interface socket set into the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+
+- PLATE OUTLINE: an angular mecha-WOLF head — chunky and simple, blunt ears, not ornate. The raised rim traces the wolf-head outline; its two eyes and snout ARE the three collared socket-holes, sunk in the field.
+
+SEATING / PROFILE — how the asset sits against the skin (THE KEY POINT OF THIS STUDY):
+- The plate has a RAISED RIM / EDGE — a bevelled bezel ring tracing the outline — that ALWAYS stands proud of the skin and is the HIGHEST part, standing a bit further out than the inner field.
+- The inner FIELD (the top face the sockets sit in) is the level that varies: the field sits SLIGHTLY ABOVE SKIN LEVEL — a low proud plateau about 0.3–0.5 mm above the skin — and the rim rises a further step higher above the field. The rim rises above the field in every case.
+- This is a SET-IN socket with a proud rim, NOT a slab or tile stuck flat on top of the skin.
+- The three COLLARED SOCKET-HOLES sit in the field: each a small round hole ringed by a short raised collar; the collar rises no higher than the rim, the hole is recessed below the field. NOT pins, NOT studs.
+- In the raking panel the light must read the levels clearly: the proud RIM (highest/brightest), then the FIELD, then the recessed HOLES (darkest).
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The rim is a chunky bevelled ring (≥0.6 mm wide, ≥0.6 mm proud); the three collared socket-holes are generously spaced so they stay separate; every feature ≥0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-17"><h2>P6 raised · gptimage2med</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=medium · $0.04 · 2026-07-12T15:43:12</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r2-P6-raised.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the SEATING and depth read clearly — shadows show the raised rim, the field, and the recessed holes.
+
+THE ASSET — a single interface socket set into the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+
+- PLATE OUTLINE: an angular mecha-WOLF head — chunky and simple, blunt ears, not ornate. The raised rim traces the wolf-head outline; its two eyes and snout ARE the three collared socket-holes, sunk in the field.
+
+SEATING / PROFILE — how the asset sits against the skin (THE KEY POINT OF THIS STUDY):
+- The plate has a RAISED RIM / EDGE — a bevelled bezel ring tracing the outline — that ALWAYS stands proud of the skin and is the HIGHEST part, standing a bit further out than the inner field.
+- The inner FIELD (the top face the sockets sit in) is the level that varies: the field sits SLIGHTLY ABOVE SKIN LEVEL — a low proud plateau about 0.3–0.5 mm above the skin — and the rim rises a further step higher above the field. The rim rises above the field in every case.
+- This is a SET-IN socket with a proud rim, NOT a slab or tile stuck flat on top of the skin.
+- The three COLLARED SOCKET-HOLES sit in the field: each a small round hole ringed by a short raised collar; the collar rises no higher than the rim, the hole is recessed below the field. NOT pins, NOT studs.
+- In the raking panel the light must read the levels clearly: the proud RIM (highest/brightest), then the FIELD, then the recessed HOLES (darkest).
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The rim is a chunky bevelled ring (≥0.6 mm wide, ≥0.6 mm proud); the three collared socket-holes are generously spaced so they stay separate; every feature ≥0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+document.addEventListener('click',function(e){
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+</body></html>
