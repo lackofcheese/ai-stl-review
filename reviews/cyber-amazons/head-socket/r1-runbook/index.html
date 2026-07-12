@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Head Socket — Round 1 runbook</title>
+<style>
+:root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:92vh; object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+
+.md h2 { font-size:1.15rem; margin:2.2rem 0 .3rem }
+.md h3 { font-size:1rem; margin:1.6rem 0 .3rem }
+.md h4 { font-size:.9rem; margin:1.2rem 0 .3rem; color:var(--dim) }
+.md p { max-width:78ch }
+.md ul, .md ol { max-width:78ch; padding-left:1.4rem }
+.md li { margin:.25rem 0 }
+.md a { color:var(--accent) }
+.md code { background:var(--pre); border:1px solid var(--line); border-radius:4px;
+  padding:.05rem .3rem; font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
+.md pre.code { background:var(--pre); border:1px solid var(--line); border-radius:6px;
+  padding:.75rem 1rem; overflow-x:auto; font-size:.82rem; line-height:1.5 }
+.md pre.code code { background:none; border:0; padding:0 }
+.md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+</style></head><body><main>
+<div class="eyebrow">cyber-amazons · head-socket · round 1</div>
+<h1>Head Socket — Round 1 runbook</h1>
+<a class="crosslink" href="../r1-panel/">&#128203; Review panel &rarr;</a>
+<div class="md"><p><strong>Round type:</strong> concept sweep (fresh standalone asset — design selection) <strong>Owner:</strong> Claude (cloud) → Dimitri (+ Jason) review <strong>Date opened:</strong> 2026-07-12 <strong>Branch:</strong> <code>claude/firewall-head-socket-design-zp117y</code></p>
+<h2>Goal</h2>
+<p>Design the <strong>head socket</strong> — the right-temple interface socket every Firewall FC model wears, which doubles as the gang emblem — as a standalone, mesh-proven asset, and pick one base design to become the team-wide exemplar. This unblocks the socket that character rounds have been deferring (gorgon r5 punted it &quot;until its standalone asset exists&quot;; mace m1 ate the original studs). Scope this round: <strong>explore a variety of plate silhouettes, incumbent triangle as the baseline to beat (1a); the socket silhouette IS the whole gang mark, one asset (2a).</strong></p>
+<p>Failure modes being pre-empted (from the skill&#x27;s hard-won rules):</p>
+<ul>
+<li>micro-hardware vanishes in mesh reconstruction (mace m1 studs) → everything</li>
+</ul>
+<p>designed <strong>bold + geometric</strong>, ≥0.6 mm, one-eye-width plate;</p>
+<ul>
+<li>micro-hardware dies in novel-view synthesis (0/16 gorgon turnaround panels) →</li>
+</ul>
+<p>generate the socket <strong>isolated</strong> as a temple hero-crop, never inside a character round;</p>
+<ul>
+<li>male/female term ambiguity (&quot;recessed pins&quot;) → a **locked controlled</li>
+</ul>
+<p>vocabulary** (spec.md).</p>
+<h2>What changed going in (spec / prompt / process deltas)</h2>
+<ul>
+<li><strong>New shared sub-project</strong> <code>projects/cyber-amazons/head-socket/</code> — the socket</li>
+</ul>
+<p>is team-wide, not per-character (canonical per-project layout, applied to a shared asset).</p>
+<ul>
+<li><strong>Controlled connector vocabulary locked</strong> (spec.md): plate · socket-hole</li>
+</ul>
+<p>(recessed) · pin (raised) · collared socket-hole (hybrid). Banned: bore, post, studs, &quot;recessed pins&quot;. Verified against connector-industry sources (VIAVI; Wikipedia *Gender of connectors and fasteners*).</p>
+<ul>
+<li><strong>Default port construction = collared socket-hole</strong> (Dimitri, r1) — truest</li>
+</ul>
+<p>neural-jack read + collar relief survives the mesh. Pin↔hole is a cheap late flip; not testing both this round.</p>
+<ul>
+<li><strong>Generation target = temple hero-crop</strong> — tight two-panel close-up of only</li>
+</ul>
+<p>the right temple on a neutral bald clay head (flat-on to read the glyph + raking 3/4 to read the relief). Maximises pixels on the hardware.</p>
+<ul>
+<li><strong>Model policy</strong> made explicit below (the built-in <code>concept</code> panel string in</li>
+</ul>
+<p><code>compare_gen.py</code> is stale — still lists struck-out models — so pass explicit variant lists, not <code>--variants concept</code>).</p>
+<h2>Experiment matrix</h2>
+<p>Two stages so we compare <strong>designs</strong> apples-to-apples before spending the wide panel on <strong>rendering</strong> the finalist.</p>
+<h3>Stage 1 — design bake-off (picks the design)</h3>
+<p>All 4 plate silhouettes × <strong>3 cheap, reliable, distinct engines</strong> (<code>flash31</code> = Gemini workhorse &amp; eventual edit model; <code>gptimage2</code> = best hardware/build detail, on elevated scrutiny; <code>grokq</code> = cheap Grok wildcard). No Gemini-lineage purity concern here (fresh concept), so mixing engines is fine. One roll per cell = <strong>12 images</strong>. Port construction fixed = collared socket-hole.</p>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Design</th><th>Plate silhouette</th><th>Prompt</th><th>Out stem</th><th>Variants</th></tr></thead><tbody><tr><td>1</td><td>P1 incumbent</td><td>equilateral triangle</td><td><code>prompts/r1-P1-incumbent.txt</code></td><td><code>hsocket-r1-P1</code></td><td>flash31,gptimage2,grokq</td></tr><tr><td>2</td><td>P2 nested-tri</td><td>triangle w/ 3 nested rounded-triangle holes</td><td><code>prompts/r1-P2-nested-triangles.txt</code></td><td><code>hsocket-r1-P2</code></td><td>flash31,gptimage2,grokq</td></tr><tr><td>3</td><td>P4 delta/chevron</td><td>downward chevron tag</td><td><code>prompts/r1-P4-delta-chevron.txt</code></td><td><code>hsocket-r1-P4</code></td><td>flash31,gptimage2,grokq</td></tr><tr><td>4</td><td>P5 keyed disc</td><td>disc w/ key notch</td><td><code>prompts/r1-P5-round-keyed-jack.txt</code></td><td><code>hsocket-r1-P5</code></td><td>flash31,gptimage2,grokq</td></tr></tbody></table></div>
+<h3>Stage 2 — exemplar sweep (picks the render)</h3>
+<p>After Dimitri picks 1–2 winning designs, sweep each across the <strong>full working cyber-amazons concept panel</strong> — <code>pro2k, flash31, gptimage2, seedream45, grokq, riverflow25</code> (add pro2k/seedream45/riverflow25 to stage 1&#x27;s three). ~6–12 images. Seedream ignores clay-style and renders photoreal metal — kept to stage 2 deliberately, where a photoreal read helps judge the chosen geometry. The best roll becomes the canonical exemplar crop that gets composited/stencilled into every character.</p>
+<p><strong>Dependencies:</strong> Stage 2 waits on Dimitri&#x27;s stage-1 design verdict. Audit each roll as it lands (per-design: glyph reads as a bold mark flat-on; three port features distinct + ≥0.6 mm; collar proud / hole recessed; opaque, no thin spikes; plate ~one-eye-width, proud).</p>
+<h2>Setup checklist (cloud sandbox)</h2>
+<ol>
+<li>Deps: <code>python3 -m pip install -r requirements.txt</code></li>
+<li>Secrets: <code>OP_SERVICE_ACCOUNT_TOKEN</code> in env → <code>op</code> CLI (<code>cloud/setup.sh</code>)</li>
+</ol>
+<p>resolves <code>OPENROUTER_API_KEY</code> / <code>GEMINI_API_KEY</code> from the <code>minis-pipeline</code> vault.</p>
+<ol>
+<li>No base binaries to pull — this is a net-new asset (no ancestor images).</li>
+</ol>
+<h2>Execution</h2>
+<p>Generation runs <strong>after Dimitri signs off on this runbook</strong> (runbook-before- generation). Stage 1, all four designs (parallel across the three engines):</p>
+<pre class="code"><code>H=projects/cyber-amazons/head-socket
+G=$H/generated
+for P in P1-incumbent P2-nested-triangles P4-delta-chevron P5-round-keyed-jack; do
+  STEM=hsocket-r1-$(echo $P | cut -d- -f1)
+  python3 tools/compare_gen.py --prompt-file $H/prompts/r1-$P.txt \
+    --out-dir $G --out-stem $STEM \
+    --variants flash31,gptimage2,grokq --jobs 3 \
+    --lineage $H/lineage.json
+done</code></pre>
+<p>Audit each of the 12 as it lands (fresh-context crop subagent + eye), logging verdicts to <code>reviews.json</code> via <code>tools/review_log.py</code>. Then build the review page (<code>tools/review_page.py --inline</code> → claude.ai artifact for Dimitri; the <code>r1-panel.json</code> config is already stubbed with the asks/next-steps). Stage 2 fires on the design verdict.</p>
+<p>Close-out: update <code>rounds.md</code>, push text keepers to the branch, push binaries to Drive (<code>tools/drive_sync.sh push $G</code>).</p>
+<h2>Cost estimate</h2>
+<p>Stage 1: 12 rolls — flash31 ~$0.07, gptimage2 ~$0.18, grokq ~$0.07 → ~$0.32 per design × 4 ≈ <strong>$1.3</strong>. Stage 2: ~6–12 rolls ≈ <strong>$0.7–1.4</strong>. Round total ≈ <strong>$2–2.7</strong>.</p>
+<h2>Session status / results</h2>
+<ul>
+<li>2026-07-12: runbook written; sub-project scaffolded (spec, 4 prompts, lineage</li>
+</ul>
+<p>seed, r1-panel config stub). Published to Pages at round start (standard step) and PR&#x27;d to both repos. <strong>Awaiting Dimitri&#x27;s sign-off on the plan before any generation.</strong></p>
+<ul>
+<li>_(design bake-off results filled in here as stage 1 lands.)_</li>
+</ul></div>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+document.addEventListener('click',function(e){
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+</body></html>
