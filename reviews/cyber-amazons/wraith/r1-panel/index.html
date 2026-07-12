@@ -17,6 +17,14 @@ h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
 h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
 .eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
   text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
 .sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
 .blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
 .callout { border:1px solid var(--line); border-left:3px solid var(--accent);
@@ -86,12 +94,24 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 .ibtn:hover { color:var(--ink); border-color:var(--dim) }
 #lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
   justify-content:center; align-items:center; z-index:9; padding:12px }
-#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
 #lb[hidden], #ilb[hidden] { display:none }
 #lb img { max-width:100%; max-height:92vh; object-fit:contain;
   transform-origin:center center; will-change:transform; touch-action:none;
   user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
 #lb .cap { color:var(--dim); font-size:.85rem }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
 .panel { position:relative; background:var(--card); color:var(--ink);
   border:1px solid var(--line); border-radius:8px; max-width:46rem;
   width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
@@ -116,19 +136,8 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 .x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
   border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
 .x:hover { color:var(--ink) }
-.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
-  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
-  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  -webkit-tap-highlight-color:transparent }
-.lb-nav:hover { background:rgba(45,45,56,.8) }
-.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
-.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
-.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
-  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
-  font-size:.8rem; pointer-events:none }
-#lb { touch-action:pan-y }
 </style></head><body><main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Cyber-Amazons</a><span class="sep">&rsaquo;</span><a href="../">Wraith</a></nav>
 <div class="eyebrow">Firewall FC · Blitzer #2 · round 1 · 2026-07-10</div>
 <h1>WRAITH — 10-model concept panel (demon half-mask debut)</h1>
 <p class="sub">Wraith starts in parallel with Gorgon, with Jason's design change pinned before any generation: a DEMON HALF-MASK (oni menpō, lower face, fangs in bold relief, her human eyes visible in the hood's shadow) replaces the brief's mirrored full-face visor. The spec bakes in the Gorgon learnings from day one: MIRRORED GENERATION FRAME (she slides toward the viewer's RIGHT, pad her right shoulder, socket her left temple; one late flip restores team chirality), leading-leg-NEAR camera, mirror-cheap (no numbers/glyphs at concept stage), and a real-motion frame for her low sliding juke — both blade-cleats grounded, one hand skimming the turf. Round 1 = photoreal-first, one pinned prompt through the 10-model panel, then fresh-context crop audits (travel via nose+toes zooms, relation-based pad checks, per-foot contact-shadow calls).</p>
