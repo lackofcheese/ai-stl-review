@@ -150,112 +150,75 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
   padding:.75rem 1rem; overflow-x:auto; font-size:.82rem; line-height:1.5 }
 .md pre.code code { background:none; border:0; padding:0 }
 .md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+.md dl.rb-meta { display:grid; grid-template-columns:auto 1fr; gap:.3rem 1.1rem;
+  max-width:60ch; margin:.2rem 0 1.8rem; padding:.9rem 1.15rem; background:var(--pre);
+  border:1px solid var(--line); border-radius:8px; font-size:.9rem }
+.md dl.rb-meta dt { color:var(--dim); font-weight:600; white-space:nowrap }
+.md dl.rb-meta dd { margin:0 }
+.md details { max-width:78ch; margin:1.8rem 0; border:1px solid var(--line);
+  border-radius:8px; background:var(--pre); padding:0 1.15rem }
+.md details[open] { padding-bottom:.4rem }
+.md details > summary { cursor:pointer; padding:.85rem 0; font-weight:600;
+  color:var(--accent); list-style:none }
+.md details > summary::-webkit-details-marker { display:none }
+.md details > summary::before { content:'\25B8\A0' }
+.md details[open] > summary::before { content:'\25BE\A0' }
+.md details > summary + * { margin-top:.2rem }
 </style></head><body><main>
-<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Cyber-Amazons</a><span class="sep">&rsaquo;</span><a href="../">Gorgon</a></nav>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">cyber-amazons</a><span class="sep">&rsaquo;</span><a href="../">gorgon</a></nav>
 <h1>Gorgon — Round 8 runbook</h1>
 <a class="crosslink" href="../r8-panel/">&#128203; Review panel &rarr;</a>
 <h2>Base assets — what this round builds on</h2>
 <p class="blurb">The source image(s) every generation in this round starts from. Click to zoom; open “inputs” for the prompt and reference images that produced each one.</p>
 <div class="grid">
-<div class="card"><div class="imgwrap" data-full="../../../../assets/f7ae6a6ddad6ecd8.jpg" data-cap="gorgon-r6-B1-riverflow25"><img src="../../../../assets/acbd5d59fb093d58.jpg" alt="gorgon-r6-B1-riverflow25" loading="lazy"></div><div class="meta"><header><h3>gorgon-r6-B1-riverflow25</h3></header><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
-<div class="card"><div class="imgwrap" data-full="../../../../assets/17433209b39ec3e8.jpg" data-cap="gorgon-r6-B2-riverflow25"><img src="../../../../assets/0868f3be750b3277.jpg" alt="gorgon-r6-B2-riverflow25" loading="lazy"></div><div class="meta"><header><h3>gorgon-r6-B2-riverflow25</h3></header><button class="ibtn" data-inputs="in-1">inputs — prompt &amp; refs</button></div></div>
-<div class="card"><div class="imgwrap" data-full="../../../../assets/017c0e805dd3d97f.jpg" data-cap="gorgon-r6-C-flash31"><img src="../../../../assets/156284b59f32a4cf.jpg" alt="gorgon-r6-C-flash31" loading="lazy"></div><div class="meta"><header><h3>gorgon-r6-C-flash31</h3></header><button class="ibtn" data-inputs="in-2">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="../../../../assets/4e45f60dfbcc299c.jpg" data-cap="gorgon-r6-B1-riverflow25"><img src="../../../../assets/354b286dccf5d95c.jpg" alt="gorgon-r6-B1-riverflow25" loading="lazy"></div><div class="meta"><header><h3>gorgon-r6-B1-riverflow25</h3></header><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="../../../../assets/cd67f8ed42467c41.jpg" data-cap="gorgon-r6-B2-riverflow25"><img src="../../../../assets/9756ce040e95925a.jpg" alt="gorgon-r6-B2-riverflow25" loading="lazy"></div><div class="meta"><header><h3>gorgon-r6-B2-riverflow25</h3></header><button class="ibtn" data-inputs="in-1">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="../../../../assets/212820ac8c9729ea.jpg" data-cap="gorgon-r6-C-flash31"><img src="../../../../assets/89e1651a78a9df0f.jpg" alt="gorgon-r6-C-flash31" loading="lazy"></div><div class="meta"><header><h3>gorgon-r6-C-flash31</h3></header><button class="ibtn" data-inputs="in-2">inputs — prompt &amp; refs</button></div></div>
 </div>
-<div class="md"><p><strong>Round type:</strong> turnaround sweep (+ base fix) <strong>Owner:</strong> Claude (cloud) → Dimitri review <strong>Date opened:</strong> 2026-07-11 <strong>Branch:</strong> <code>claude/gorgon-round-8-turnaround-m5xyip</code></p>
+<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>turnaround sweep (+ base fix)</dd><dt>Status</dt><dd>Executed 2026-07-11 · outcome + verdicts in rounds.md (Round 8)</dd><dt>Owner</dt><dd>Claude (cloud) → Dimitri review</dd><dt>Date opened</dt><dd>2026-07-11</dd><dt>Branch</dt><dd><code>claude/gorgon-round-8-turnaround-m5xyip</code></dd></dl>
 <h2>Goal</h2>
-<p>Produce clean four-view turnaround sheets for a Meshy run, fixing the two problems Round 7 surfaced:</p>
-<ol>
-<li><strong>flash31 keeps leaving the covered (her LEFT) leg&#x27;s upper thigh bare.</strong></li>
-</ol>
-<p>Part of the cause is that the R6 <code>gorgon-r6-C-flash31</code> base itself has a bare-thigh gap (a thigh-high, not a full legging). Fix: strengthen the leg-coverage language in the spec + every prompt (full-length leather legging, hip crease into boot, no bare skin, actively negated), AND repair the flash31 base before turning it around.</p>
-<ol>
-<li><strong>Panels were not in a rotational order</strong> (r7 used front / non-pad-3/4 /</li>
-</ol>
-<p>pad-profile / rear-3/4 — arbitrary camera jumps), a suspected source of per-panel inconsistency. Fix: strict 90° turntable order, with the current reference view (pad-side profile) anchoring slot 2.</p>
-<p><strong>Model policy this round:</strong> <code>flash31</code> is the reliable workhorse; <code>pro2k</code> (Gemini 3 Pro) is run alongside as an experiment. <strong>Riverflow is NOT used for turnarounds this round — too expensive.</strong> (It still made the B1/B2 *bases* in R6; we only turn those around here.)</p>
-<h2>New rotational panel order (adopted this round, now in spec.md)</h2>
-<div class="tablewrap"><table><thead><tr><th>Slot</th><th>Angle</th><th>View</th><th>Notes</th></tr></thead><tbody><tr><td>1</td><td>0°</td><td>FRONT</td><td>faces camera</td></tr><tr><td>2</td><td>90°</td><td>HER RHS = PAD-SIDE near-profile</td><td>the reference-camera view the base is already in; strides viewer-right</td></tr><tr><td>3</td><td>180°</td><td>TRUE BACK</td><td>spine stack visible, face NOT drawn</td></tr><tr><td>4</td><td>270°</td><td>HER LHS = STIFF-ARM / non-pad profile</td><td>strides viewer-left</td></tr></tbody></table></div>
-<p>Same prompt drives both a 2×2 and a 1×4 template (the prompt defers to &quot;the attached template, reading order&quot;); the template file chooses the layout.</p>
-<h2>Experiment matrix</h2>
-<p>Four turnaround SOURCES, each generated with <strong>flash31 AND pro2k</strong>, and each in <strong>2×2 AND 1×4</strong> layout → 4 × 2 × 2 = <strong>16 turnaround images</strong>. Plus 2 base fixes.</p>
+<p>Produce clean four-view turnaround sheets for a Meshy run, fixing the two problems Round 7 surfaced: (1) flash31 keeps leaving the covered (her LEFT) leg&#x27;s upper thigh bare — partly because the R6 <code>gorgon-r6-C-flash31</code> base itself has a bare-thigh gap; and (2) panels were not in a rotational order (arbitrary camera jumps), a suspected source of per-panel inconsistency.</p>
+<h2>Outcome</h2>
+<p><strong>3 keepers:</strong> <code>B1-turnaround-2x2-pro2k</code>, <code>B2-turnaround-2x2-flash31</code>, <code>f31base-turnaround-1x4-flash31</code>. Rotational (90° turntable) order works and cleanly solved the curtained-spine problem; leg coverage much improved but still stochastic per-panel; <strong>flash31 ≥ pro2k</strong> overall (and pro2k ignores a wide 1×4 template — feed it 2×2 only). The base-fix experiment was a NEGATIVE result (fixing the near-profile base symmetrised the leg) → pivoted to turning the original base around directly. Full per-sheet verdict table + 7 lessons: <code>../rounds.md</code> (Round 8).</p>
+<h2>Cost</h2>
+<p>flash31 ≈ $0.10/img, pro2k ≈ $0.14/img. 12 turnarounds ≈ $1.9; 4 base-fix rolls ≈ $0.41. Round ≈ <strong>$2.3</strong>.</p>
+<details>
+<summary>Technical plan — models, prompts, commands (pipeline detail)</summary>
+<h3>What changed going in (spec / prompt / process deltas)</h3>
+<ul>
+<li>Strengthen leg-coverage language in the spec + every prompt (full-length leather legging, hip crease into boot, no bare skin, actively negated), AND repair the flash31 base before turning it around.</li>
+<li>Strict <strong>90° turntable</strong> panel order, with the reference view (pad-side profile) anchoring slot 2.</li>
+</ul>
+<p><strong>Model policy:</strong> <code>flash31</code> is the reliable workhorse; <code>pro2k</code> (Gemini 3 Pro) runs alongside as an experiment. <strong>Riverflow is NOT used for turnarounds this round — too expensive</strong> (it still made the B1/B2 *bases* in R6; we only turn those around here).</p>
+<h3>Rotational panel order (adopted this round, now in spec.md)</h3>
+<div class="tablewrap"><table><thead><tr><th>Slot</th><th>Angle</th><th>View</th><th>Notes</th></tr></thead><tbody><tr><td>1</td><td>0°</td><td>FRONT</td><td>faces camera</td></tr><tr><td>2</td><td>90°</td><td>HER RHS = PAD-SIDE near-profile</td><td>reference-camera view the base is in; strides viewer-right</td></tr><tr><td>3</td><td>180°</td><td>TRUE BACK</td><td>spine stack visible, face NOT drawn</td></tr><tr><td>4</td><td>270°</td><td>HER LHS = STIFF-ARM / non-pad profile</td><td>strides viewer-left</td></tr></tbody></table></div>
+<p>Same prompt drives both a 2×2 and a 1×4 template; the template file chooses the layout.</p>
+<h3>Experiment matrix</h3>
+<p>Four turnaround SOURCES, each generated with <strong>flash31 AND pro2k</strong>, and each in <strong>2×2 AND 1×4</strong> layout → 4 × 2 × 2 = <strong>16 turnaround images</strong>, plus 2 base fixes.</p>
 <div class="tablewrap"><table><thead><tr><th>#</th><th>Source base</th><th>Hair variant</th><th>Turnaround prompt</th><th>Out stem</th></tr></thead><tbody><tr><td>1</td><td><code>gorgon-r6-B1-riverflow25-1</code></td><td>dreads over stiff-arm shoulder</td><td><code>prompts/r8-B-turnaround.txt</code></td><td><code>gorgon-r8-B1-turnaround</code></td></tr><tr><td>2</td><td><code>gorgon-r6-B2-riverflow25-1</code></td><td>dreads over stiff-arm shoulder</td><td><code>prompts/r8-B-turnaround.txt</code></td><td><code>gorgon-r8-B2-turnaround</code></td></tr><tr><td>3</td><td><code>gorgon-r8-f31fix-reprompt-flash31-1</code> (fix A)</td><td>dreads over PAD shoulder</td><td><code>prompts/r8-f31alt-turnaround.txt</code></td><td><code>gorgon-r8-f31reprompt-turnaround</code></td></tr><tr><td>4</td><td><code>gorgon-r8-f31fix-img2img-flash31-1</code> (fix B)</td><td>dreads over PAD shoulder</td><td><code>prompts/r8-f31alt-turnaround.txt</code></td><td><code>gorgon-r8-f31img2img-turnaround</code></td></tr></tbody></table></div>
-<p><strong>Base fixes (flash31, off <code>gorgon-r6-C-flash31-1</code>):</strong></p>
-<div class="tablewrap"><table><thead><tr><th>Fix</th><th>Approach</th><th>Prompt</th><th>Out stem</th></tr></thead><tbody><tr><td>A</td><td>re-prompt / full redraw (whole figure re-rendered with the corrected leg)</td><td><code>prompts/r8-f31fix-reprompt.txt</code></td><td><code>gorgon-r8-f31fix-reprompt</code></td></tr><tr><td>B</td><td>surgical img2img (only the bare thigh extended to full leather)</td><td><code>prompts/r8-f31fix-img2img.txt</code></td><td><code>gorgon-r8-f31fix-img2img</code></td></tr></tbody></table></div>
-<p>Fix A and B must be audited (covered leg now fully covered, everything else preserved) BEFORE their turnarounds are worth spending on.</p>
-<h2>Setup checklist (cloud sandbox)</h2>
-<ol>
-<li>Install deps (if setup.sh hasn&#x27;t): <code>python3 -m pip install -r requirements.txt</code></li>
-<li>Secrets: <code>OP_SERVICE_ACCOUNT_TOKEN</code> in env → install the <code>op</code> CLI (see</li>
-</ol>
-<p><code>cloud/setup.sh</code>; it apt-installs <code>1password-cli</code>), which resolves <code>OPENROUTER_API_KEY</code> / <code>GEMINI_API_KEY</code> from the <code>minis-pipeline</code> vault. (Or <code>.secrets/*</code> local, or plain env vars.)</p>
-<ol>
-<li>Pull binaries + make templates:</li>
-</ol>
-<pre class="code"><code>   tools/drive_sync.sh pull projects/cyber-amazons/gorgon/generated
-   G=projects/cyber-amazons/gorgon/generated
-   python3 tools/make_turnaround_template.py --grid 2x2 --match-image $G/gorgon-r6-B2-riverflow25-1.png --out $G/gorgon-r8-template-2x2.png
-   python3 tools/make_turnaround_template.py --panels 4  --match-image $G/gorgon-r6-B2-riverflow25-1.png --out $G/gorgon-r8-template-1x4.png</code></pre>
-<h2>Execution</h2>
-<h3>Step 1 — base fixes (flash31 only)</h3>
-<pre class="code"><code>G=projects/cyber-amazons/gorgon/generated
+<p><strong>Base fixes (flash31, off <code>gorgon-r6-C-flash31-1</code>):</strong> A = re-prompt / full redraw (<code>prompts/r8-f31fix-reprompt.txt</code>); B = surgical img2img (<code>prompts/r8-f31fix-img2img.txt</code>). Both must be audited (covered leg fully covered, everything else preserved) BEFORE their turnarounds are worth spending on. (Both symmetrised the leg in practice — see Outcome / rounds.md.)</p>
+<h3>Commands (setup + execution)</h3>
+<pre class="code"><code># setup: deps + secrets (OP_SERVICE_ACCOUNT_TOKEN -&gt; op CLI -&gt; minis-pipeline vault)
+tools/drive_sync.sh pull projects/cyber-amazons/gorgon/generated
+G=projects/cyber-amazons/gorgon/generated
+python3 tools/make_turnaround_template.py --grid 2x2 --match-image $G/gorgon-r6-B2-riverflow25-1.png --out $G/gorgon-r8-template-2x2.png
+python3 tools/make_turnaround_template.py --panels 4  --match-image $G/gorgon-r6-B2-riverflow25-1.png --out $G/gorgon-r8-template-1x4.png
+
+# base fixes (flash31 only), then audit before turnarounds
 python3 tools/compare_gen.py --prompt-file projects/cyber-amazons/gorgon/prompts/r8-f31fix-reprompt.txt \
-  --image $G/gorgon-r6-C-flash31-1.png \
-  --out-dir $G --out-stem gorgon-r8-f31fix-reprompt --variants flash31
+  --image $G/gorgon-r6-C-flash31-1.png --out-dir $G --out-stem gorgon-r8-f31fix-reprompt --variants flash31
 python3 tools/compare_gen.py --prompt-file projects/cyber-amazons/gorgon/prompts/r8-f31fix-img2img.txt \
-  --image $G/gorgon-r6-C-flash31-1.png \
-  --out-dir $G --out-stem gorgon-r8-f31fix-img2img --variants flash31</code></pre>
-<p>Audit both (fresh-context subagent + eye): covered leg fully covered hip→boot, no bare gap; identity/pose/kit otherwise preserved.</p>
-<h3>Step 2 — turnaround matrix (flash31 + pro2k, 2×2 + 1×4)</h3>
-<p>For each of the 4 sources, run the source&#x27;s prompt against BOTH templates, with <code>--variants flash31,pro2k --jobs 2</code>. Naming: <code>&lt;stem&gt;-&lt;layout&gt;</code>. Example (B2, both layouts):</p>
-<pre class="code"><code>G=projects/cyber-amazons/gorgon/generated
+  --image $G/gorgon-r6-C-flash31-1.png --out-dir $G --out-stem gorgon-r8-f31fix-img2img --variants flash31
+
+# turnaround matrix: each source&#x27;s prompt against BOTH templates, flash31 + pro2k
 P=projects/cyber-amazons/gorgon/prompts/r8-B-turnaround.txt
 python3 tools/compare_gen.py --prompt-file $P --image $G/gorgon-r6-B2-riverflow25-1.png \
   --image $G/gorgon-r8-template-2x2.png --out-dir $G --out-stem gorgon-r8-B2-turnaround-2x2 --variants flash31,pro2k --jobs 2
 python3 tools/compare_gen.py --prompt-file $P --image $G/gorgon-r6-B2-riverflow25-1.png \
-  --image $G/gorgon-r8-template-1x4.png --out-dir $G --out-stem gorgon-r8-B2-turnaround-1x4 --variants flash31,pro2k --jobs 2</code></pre>
-<p>Repeat for B1 (same prompt/base B1), and for the two f31-fix bases (prompt <code>r8-f31alt-turnaround.txt</code>). Audit each sheet as it lands (per-panel: rotational order correct, leg coverage, chirality, hair side, spine on back).</p>
-<h3>Step 3 — curate + hand off</h3>
-<ul>
-<li>Record every verdict to <code>reviews.json</code> via <code>tools/review_log.py</code>.</li>
-<li>Build the review page: <code>tools/review_page.py --inline</code> → publish as a</li>
-</ul>
-<p>claude.ai artifact (the standard end-of-round handoff to Dimitri).</p>
-<ul>
-<li>Update <code>rounds.md</code> (round log) + <code>lineage.json</code> (auto-appended by</li>
-</ul>
-<p>compare_gen; add curation notes).</p>
-<ul>
-<li>Push binaries to Drive (<code>tools/drive_sync.sh push ...</code>) and text keepers to</li>
-</ul>
-<p>the branch.</p>
-<h2>Cost estimate</h2>
-<p>flash31 ≈ $0.10/img, pro2k ≈ $0.14/img. 16 turnarounds (8×$0.10 + 8×$0.14) ≈ $1.92; 2 base fixes ≈ $0.20. Round ≈ <strong>$2.1</strong>.</p>
-<h2>Session status / results</h2>
-<p><strong>Runbook shared:</strong> claude.ai artifact <code>58d2e30a-d4e6-4ce8-91a7-8232fb96778f</code>.</p>
-<h3>Base-fix experiment — NEGATIVE RESULT (flash31 profile base symmetrizes)</h3>
-<p>Both fix approaches, at TWO attempts each (4 flash31 rolls, ~$0.41), collapsed the leg asymmetry — they covered BOTH legs in leather and erased the bare garter leg (the &quot;asymmetric kit erodes toward symmetry&quot; attractor). Files: <code>gorgon-r8-f31fix-{reprompt,img2img}-flash31-1</code> (attempt 1), <code>gorgon-r8-f31fix-{reprompt,img2img}-v2-flash31-1</code> (attempt 2, prompts rebalanced to hold &quot;exactly one bare leg + one covered leg&quot; — still symmetrized).</p>
-<p>Root cause (geometry): the C-flash31 base is a near-PROFILE, so the covered (far) leg is almost entirely OCCLUDED — there is no visible bare-far-thigh to surgically fix, and every &quot;cover the leg fully&quot; instruction just erodes the clearly-visible NEAR bare leg toward symmetry. The covered leg is under-determined in the profile; its bare-ness shows up in TURNAROUNDS (novel views), not the profile. So base-fixing the profile is the wrong lever.</p>
-<p><strong>Pivot:</strong> run the flash31-lineage turnaround directly off the ORIGINAL <code>gorgon-r6-C-flash31-1</code> base (near bare garter leg is correct; pad-side hair variant), and let the STRENGTHENED rotational turnaround prompt enforce full coverage on the covered leg where it is actually visible. This directly tests the round&#x27;s core hypothesis. Revised turnaround sources: <strong>B1, B2, and C-flash31 (original)</strong> — 3 sources × {flash31, pro2k} × {2×2, 1×4} = 12 sheets.</p>
-<h3>Turnaround matrix results</h3>
-<p>12 sheets generated (~$1.9) and audited by 6 fresh-context crop subagents. Review artifact: <code>claude.ai/code/artifact/d2ab971a-f799-4a96-b809-ad092ca78aca</code>.</p>
-<p><strong>3 KEEPERs:</strong> <code>B1-turnaround-2x2-pro2k</code>, <code>B2-turnaround-2x2-flash31</code>, <code>f31base-turnaround-1x4-flash31</code>. Full per-sheet verdict table + 7 lessons in <code>../rounds.md</code> (Round 8). Headlines:</p>
-<ul>
-<li><strong>Rotational order works</strong> — every honored sheet kept the front→her-RHS→back→</li>
-</ul>
-<p>her-LHS turntable with correct chirality, and the true-back slot cleanly solved r7&#x27;s chronic curtained-spine problem.</p>
-<ul>
-<li><strong>Leg coverage much improved but still stochastic per-panel</strong> — covered leg</li>
-</ul>
-<p>fully covered in most panels (all 4 of f31base-flash31-1×4); slips remain in both directions (both-covered / bare-thigh-gap), worst in front+back views.</p>
-<ul>
-<li><strong>pro2k ignores a wide 1×4 template</strong> (inherits the base portrait, renders a</li>
-</ul>
-<p>2×2, sometimes jumbled order); flash31 honors both layouts. Feed pro2k a 2×2 template only.</p>
-<ul>
-<li><strong>flash31 ≥ pro2k</strong> overall (better on the ambiguous f31 base; handles 1×4).</li>
-</ul>
-<p>Confirms r7&#x27;s &quot;flash31 is the reliable workhorse&quot;.</p>
-<p>Open: Dimitri&#x27;s champion pick for a Meshy run, or reject-with-direction.</p></div>
+  --image $G/gorgon-r8-template-1x4.png --out-dir $G --out-stem gorgon-r8-B2-turnaround-1x4 --variants flash31,pro2k --jobs 2
+# repeat for B1 (same prompt/base B1) and the two f31-fix bases (prompt r8-f31alt-turnaround.txt).</code></pre>
+<p>Audit each sheet as it lands (per-panel: rotational order, leg coverage, chirality, hair side, spine on back), verdicts to <code>reviews.json</code>.</p>
+</details></div>
 </main>
 <div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
 <div id="ilb" hidden><div class="panel">
@@ -268,7 +231,7 @@ CHANGE 1 — HAIR. In the attached image her thick cable-dreadlocks are swept ba
 CHANGE 2 — CAMERA. Rotate the camera about 20 degrees further around toward her FRONT, keeping the same distance and height, so the view becomes slightly more of a three-quarter: more of the FRONT of her torso turns toward the camera, the OPEN PALM of her extended far hand becomes clearly visible to the camera, and her FAR trailing leg is clearly visible past her near leg instead of hiding behind it. She still strides toward the VIEWER&#x27;S RIGHT with the armored pad shoulder nearest the camera; the view stays side-biased, never a head-on front view.
 
 Everything else stays IDENTICAL to the attached image: same pose — mid-stride, the NEAR bare leg leading with its combat boot planted flat on the ground, the FAR covered leg trailing with toes down and heel raised; the FAR arm fully extended forward at shoulder height with the open palm facing forward, fingers together, thumb visible; the NEAR chrome arm hanging at her side in a loose empty fist. Same kit — a single armored shoulder pad with the white number 4 on the NEAR shoulder only; the far shoulder stays the bare smooth chrome ball of the cyberarm joint with NO pad, NO strap, NO armor (the draped hair is hair, not armor); both arms full gunmetal military cyberarms; one CONTINUOUS intact legging on the covered trailing leg only, joining the suit at the hip with no bare-skin gap, no rips and no holes; exactly ONE wide studded leather garter, high on the bare near thigh; a hard armored knee pad on the covered leg and a strapped leather knee pad on the bare leg; bulky buckled combat boots on both feet. Same heavyweight V-tapered build, same cold level stare, both temples shaved with NO socket, stud or jewel on the visible temple or forehead. No weapons, no ball, no other people, no base or pedestal, and no text or logos anywhere except the number 4 on the shoulder pad and strictly illegible spray-stencil tags. Full figure head to toe, nothing cropped.
-</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/ab885b424ac004d1.jpg" data-full="../../../../assets/c601f0a78083ad2a.jpg" data-cap="gorgon-r4-side-riverflow25-1.png" alt="gorgon-r4-side-riverflow25-1.png"><figcaption>gorgon-r4-side-riverflow25-1.png</figcaption></figure></div></template>
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/3f5210ff808565b5.jpg" data-full="../../../../assets/bc8b327f52ad96d1.jpg" data-cap="gorgon-r4-side-riverflow25-1.png" alt="gorgon-r4-side-riverflow25-1.png"><figcaption>gorgon-r4-side-riverflow25-1.png</figcaption></figure></div></template>
 <template id="in-1"><h2>gorgon-r6-B2-riverflow25</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K · $0.36 · 2026-07-11T03:45:24</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon/prompts/r6-BC-hairmove-edit.txt</p><pre>The attached image shows a female cyberpunk gridiron-football blocker frozen mid-stride in a stiff-arm pose — a photorealistic full-body studio render on a plain gray backdrop, seen in near-profile from her armored-shoulder side as she strides toward the VIEWER&#x27;S RIGHT. Recreate THIS EXACT image — the SAME character, same face, same massive heavyweight build, same pose, same kit, same materials, same styling and lighting — with EXACTLY TWO CHANGES and nothing else changed:
 
 CHANGE 1 — HAIR. In the attached image her thick cable-dreadlocks are swept back and hang down BEHIND her, down her back. Move them: gather the ENTIRE mass of dreadlocks and drape it forward over her FAR shoulder — the shoulder of the extended stiff-arm, the shoulder AWAY from the camera, the one WITHOUT the armored pad — so the whole bundle of thick sculpted cords hangs down the FRONT of that far shoulder toward her chest. After this change NO dreadlocks hang down her back: her upper back, the BACK OF HER NECK and her near pad-shoulder are completely clear of hair. On the newly exposed back of her neck, add the raised segmented SPINAL IMPLANT that the hair was hiding: a vertebral ridge of chunky bold chrome segments running from the back of her skull down the back of her neck and disappearing under the bodysuit&#x27;s collar, clearly visible in profile against the background.
@@ -276,7 +239,7 @@ CHANGE 1 — HAIR. In the attached image her thick cable-dreadlocks are swept ba
 CHANGE 2 — CAMERA. Rotate the camera about 20 degrees further around toward her FRONT, keeping the same distance and height, so the view becomes slightly more of a three-quarter: more of the FRONT of her torso turns toward the camera, the OPEN PALM of her extended far hand becomes clearly visible to the camera, and her FAR trailing leg is clearly visible past her near leg instead of hiding behind it. She still strides toward the VIEWER&#x27;S RIGHT with the armored pad shoulder nearest the camera; the view stays side-biased, never a head-on front view.
 
 Everything else stays IDENTICAL to the attached image: same pose — mid-stride, the NEAR bare leg leading with its combat boot planted flat on the ground, the FAR covered leg trailing with toes down and heel raised; the FAR arm fully extended forward at shoulder height with the open palm facing forward, fingers together, thumb visible; the NEAR chrome arm hanging at her side in a loose empty fist. Same kit — a single armored shoulder pad with the white number 4 on the NEAR shoulder only; the far shoulder stays the bare smooth chrome ball of the cyberarm joint with NO pad, NO strap, NO armor (the draped hair is hair, not armor); both arms full gunmetal military cyberarms; one CONTINUOUS intact legging on the covered trailing leg only, joining the suit at the hip with no bare-skin gap, no rips and no holes; exactly ONE wide studded leather garter, high on the bare near thigh; a hard armored knee pad on the covered leg and a strapped leather knee pad on the bare leg; bulky buckled combat boots on both feet. Same heavyweight V-tapered build, same cold level stare, both temples shaved with NO socket, stud or jewel on the visible temple or forehead. No weapons, no ball, no other people, no base or pedestal, and no text or logos anywhere except the number 4 on the shoulder pad and strictly illegible spray-stencil tags. Full figure head to toe, nothing cropped.
-</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/ab885b424ac004d1.jpg" data-full="../../../../assets/c601f0a78083ad2a.jpg" data-cap="gorgon-r4-side-riverflow25-1.png" alt="gorgon-r4-side-riverflow25-1.png"><figcaption>gorgon-r4-side-riverflow25-1.png</figcaption></figure></div></template>
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/3f5210ff808565b5.jpg" data-full="../../../../assets/bc8b327f52ad96d1.jpg" data-cap="gorgon-r4-side-riverflow25-1.png" alt="gorgon-r4-side-riverflow25-1.png"><figcaption>gorgon-r4-side-riverflow25-1.png</figcaption></figure></div></template>
 <template id="in-2"><h2>gorgon-r6-C-flash31</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-11T03:46:03</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon/prompts/r6-BC-hairmove-edit.txt</p><pre>The attached image shows a female cyberpunk gridiron-football blocker frozen mid-stride in a stiff-arm pose — a photorealistic full-body studio render on a plain gray backdrop, seen in near-profile from her armored-shoulder side as she strides toward the VIEWER&#x27;S RIGHT. Recreate THIS EXACT image — the SAME character, same face, same massive heavyweight build, same pose, same kit, same materials, same styling and lighting — with EXACTLY TWO CHANGES and nothing else changed:
 
 CHANGE 1 — HAIR. In the attached image her thick cable-dreadlocks are swept back and hang down BEHIND her, down her back. Move them: gather the ENTIRE mass of dreadlocks and drape it forward over her FAR shoulder — the shoulder of the extended stiff-arm, the shoulder AWAY from the camera, the one WITHOUT the armored pad — so the whole bundle of thick sculpted cords hangs down the FRONT of that far shoulder toward her chest. After this change NO dreadlocks hang down her back: her upper back, the BACK OF HER NECK and her near pad-shoulder are completely clear of hair. On the newly exposed back of her neck, add the raised segmented SPINAL IMPLANT that the hair was hiding: a vertebral ridge of chunky bold chrome segments running from the back of her skull down the back of her neck and disappearing under the bodysuit&#x27;s collar, clearly visible in profile against the background.
@@ -284,7 +247,7 @@ CHANGE 1 — HAIR. In the attached image her thick cable-dreadlocks are swept ba
 CHANGE 2 — CAMERA. Rotate the camera about 20 degrees further around toward her FRONT, keeping the same distance and height, so the view becomes slightly more of a three-quarter: more of the FRONT of her torso turns toward the camera, the OPEN PALM of her extended far hand becomes clearly visible to the camera, and her FAR trailing leg is clearly visible past her near leg instead of hiding behind it. She still strides toward the VIEWER&#x27;S RIGHT with the armored pad shoulder nearest the camera; the view stays side-biased, never a head-on front view.
 
 Everything else stays IDENTICAL to the attached image: same pose — mid-stride, the NEAR bare leg leading with its combat boot planted flat on the ground, the FAR covered leg trailing with toes down and heel raised; the FAR arm fully extended forward at shoulder height with the open palm facing forward, fingers together, thumb visible; the NEAR chrome arm hanging at her side in a loose empty fist. Same kit — a single armored shoulder pad with the white number 4 on the NEAR shoulder only; the far shoulder stays the bare smooth chrome ball of the cyberarm joint with NO pad, NO strap, NO armor (the draped hair is hair, not armor); both arms full gunmetal military cyberarms; one CONTINUOUS intact legging on the covered trailing leg only, joining the suit at the hip with no bare-skin gap, no rips and no holes; exactly ONE wide studded leather garter, high on the bare near thigh; a hard armored knee pad on the covered leg and a strapped leather knee pad on the bare leg; bulky buckled combat boots on both feet. Same heavyweight V-tapered build, same cold level stare, both temples shaved with NO socket, stud or jewel on the visible temple or forehead. No weapons, no ball, no other people, no base or pedestal, and no text or logos anywhere except the number 4 on the shoulder pad and strictly illegible spray-stencil tags. Full figure head to toe, nothing cropped.
-</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/ab885b424ac004d1.jpg" data-full="../../../../assets/c601f0a78083ad2a.jpg" data-cap="gorgon-r4-side-riverflow25-1.png" alt="gorgon-r4-side-riverflow25-1.png"><figcaption>gorgon-r4-side-riverflow25-1.png</figcaption></figure></div></template>
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/3f5210ff808565b5.jpg" data-full="../../../../assets/bc8b327f52ad96d1.jpg" data-cap="gorgon-r4-side-riverflow25-1.png" alt="gorgon-r4-side-riverflow25-1.png"><figcaption>gorgon-r4-side-riverflow25-1.png</figcaption></figure></div></template>
 <script>
 const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
       lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
