@@ -150,88 +150,59 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
   padding:.75rem 1rem; overflow-x:auto; font-size:.82rem; line-height:1.5 }
 .md pre.code code { background:none; border:0; padding:0 }
 .md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+.md dl.rb-meta { display:grid; grid-template-columns:auto 1fr; gap:.3rem 1.1rem;
+  max-width:60ch; margin:.2rem 0 1.8rem; padding:.9rem 1.15rem; background:var(--pre);
+  border:1px solid var(--line); border-radius:8px; font-size:.9rem }
+.md dl.rb-meta dt { color:var(--dim); font-weight:600; white-space:nowrap }
+.md dl.rb-meta dd { margin:0 }
+.md details { max-width:78ch; margin:1.8rem 0; border:1px solid var(--line);
+  border-radius:8px; background:var(--pre); padding:0 1.15rem }
+.md details[open] { padding-bottom:.4rem }
+.md details > summary { cursor:pointer; padding:.85rem 0; font-weight:600;
+  color:var(--accent); list-style:none }
+.md details > summary::-webkit-details-marker { display:none }
+.md details > summary::before { content:'\25B8\A0' }
+.md details[open] > summary::before { content:'\25BE\A0' }
+.md details > summary + * { margin-top:.2rem }
 </style></head><body><main>
 <nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">cyber-amazons</a><span class="sep">&rsaquo;</span><a href="../">head-socket</a></nav>
 <div class="eyebrow">cyber-amazons · head-socket · round 1</div>
 <h1>Head Socket — Round 1 runbook</h1>
 <a class="crosslink" href="../r1-panel/">&#128203; Review panel &rarr;</a>
-<div class="md"><p><strong>Round type:</strong> concept sweep (fresh standalone asset — design selection) <strong>Owner:</strong> Claude (cloud) → Dimitri (+ Jason) review <strong>Date opened:</strong> 2026-07-12 <strong>Branch:</strong> <code>claude/firewall-head-socket-design-zp117y</code></p>
+<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>Concept sweep — design selection</dd><dt>Status</dt><dd>Awaiting sign-off · no images generated yet</dd><dt>Owner</dt><dd>Claude (cloud) → Dimitri + Jason</dd><dt>Date opened</dt><dd>2026-07-12</dd><dt>Branch</dt><dd><code>claude/firewall-head-socket-design-zp117y</code></dd></dl>
 <h2>Goal</h2>
-<p>Design the <strong>head socket</strong> — the right-temple interface socket every Firewall FC model wears, which doubles as the gang emblem — as a standalone, mesh-proven asset, and pick one base design to become the team-wide exemplar. This unblocks the socket that character rounds have been deferring (gorgon r5 punted it &quot;until its standalone asset exists&quot;; mace m1 ate the original studs). Scope this round: <strong>explore a variety of plate silhouettes, incumbent triangle as the baseline to beat (1a); the socket silhouette IS the whole gang mark, one asset (2a).</strong></p>
-<p>Failure modes being pre-empted (from the skill&#x27;s hard-won rules):</p>
+<p>Design the <strong>head socket</strong> — the right-temple interface socket every Firewall FC model wears, which doubles as the gang emblem — as a standalone asset, and pick one shape to become the team-wide standard. Doing it on its own, rather than inside a character, is deliberate: this eye-sized bit of hardware vanishes in the 3D step unless it&#x27;s designed bold and proven on its own first.</p>
+<h2>The designs on the table</h2>
+<p>Five plate shapes, all sharing the same port: three small recessed sockets, each ringed by a raised collar. The <strong>shape is the gang mark</strong> — it has to read as a bold, simple emblem *and* as something you&#x27;d plug a cable into.</p>
+<div class="tablewrap"><table><thead><tr><th></th><th>Design</th><th>What it is</th><th>Leans</th></tr></thead><tbody><tr><td><strong>P1</strong></td><td>Triangle (incumbent)</td><td>equilateral triangle, one socket at each corner</td><td>the current standard — the shape to beat</td></tr><tr><td><strong>P2</strong></td><td>Nested triangles</td><td>a triangle whose three sockets are themselves little triangles</td><td>glyph</td></tr><tr><td><strong>P4</strong></td><td>Delta / chevron</td><td>a bold downward arrowhead, spray-tag style</td><td>glyph — most tag-like</td></tr><tr><td><strong>P5</strong></td><td>Keyed disc</td><td>a round port with an orientation notch — most obviously &quot;a socket&quot;</td><td>hardware</td></tr><tr><td><strong>P6</strong></td><td>Mecha-wolf (Jason)</td><td>an angular cyber-wolf head whose two eyes and snout <strong>are</strong> the three sockets</td><td>glyph — most characterful</td></tr></tbody></table></div>
+<p>P2 / P4 / P6 push the recognizable-emblem end; P5 the convincing-hardware end. The panel itself will answer &quot;glyph vs hardware&quot;.</p>
+<h2>What we need from you</h2>
+<p>Pick the shape — one or two to advance — that becomes the Furies&#x27; mark on all 14 models, or reject the set with fresh direction. The incumbent triangle only gets unseated for a clear win. Secondary: keep the collared-socket port, or switch to plain holes / raised pins (a cheap change either way).</p>
+<h2>Cost</h2>
+<p>~$1.1 to draft all five designs (cost-trimmed models — see the technical plan); ~$0.7 to render the winner across more models. Round ≈ <strong>$1.8</strong>.</p>
+<details>
+<summary>Technical plan — models, prompts, commands (pipeline detail, not the art call)</summary>
+<h3>What changed going in</h3>
 <ul>
-<li>micro-hardware vanishes in mesh reconstruction (mace m1 studs) → everything</li>
+<li>New shared sub-project <code>projects/cyber-amazons/head-socket/</code> (team asset, not per-character).</li>
+<li>Locked connector vocabulary (<code>spec.md</code>): <strong>plate · socket-hole · pin · collared socket-hole</strong>; banned bore / post / studs / &quot;recessed pins&quot;. Default port = collared socket-hole; pin↔hole is a cheap late flip.</li>
+<li>Generation target = <strong>temple hero-crop</strong>: a tight two-panel close-up of only the right temple on a neutral clay head (flat-on to read the glyph, raking 3/4 to read the relief), so the micro-hardware gets maximum pixels and survives the mesh.</li>
+<li>Model list is explicit below — the built-in <code>concept</code> panel in <code>compare_gen.py</code> is stale (still lists struck-out models).</li>
 </ul>
-<p>designed <strong>bold + geometric</strong>, ≥0.6 mm, one-eye-width plate;</p>
-<ul>
-<li>micro-hardware dies in novel-view synthesis (0/16 gorgon turnaround panels) →</li>
-</ul>
-<p>generate the socket <strong>isolated</strong> as a temple hero-crop, never inside a character round;</p>
-<ul>
-<li>male/female term ambiguity (&quot;recessed pins&quot;) → a **locked controlled</li>
-</ul>
-<p>vocabulary** (spec.md).</p>
-<h2>What changed going in (spec / prompt / process deltas)</h2>
-<ul>
-<li><strong>New shared sub-project</strong> <code>projects/cyber-amazons/head-socket/</code> — the socket</li>
-</ul>
-<p>is team-wide, not per-character (canonical per-project layout, applied to a shared asset).</p>
-<ul>
-<li><strong>Controlled connector vocabulary locked</strong> (spec.md): plate · socket-hole</li>
-</ul>
-<p>(recessed) · pin (raised) · collared socket-hole (hybrid). Banned: bore, post, studs, &quot;recessed pins&quot;. Verified against connector-industry sources (VIAVI; Wikipedia *Gender of connectors and fasteners*).</p>
-<ul>
-<li><strong>Default port construction = collared socket-hole</strong> (Dimitri, r1) — truest</li>
-</ul>
-<p>neural-jack read + collar relief survives the mesh. Pin↔hole is a cheap late flip; not testing both this round.</p>
-<ul>
-<li><strong>Generation target = temple hero-crop</strong> — tight two-panel close-up of only</li>
-</ul>
-<p>the right temple on a neutral bald clay head (flat-on to read the glyph + raking 3/4 to read the relief). Maximises pixels on the hardware.</p>
-<ul>
-<li><strong>Model policy</strong> made explicit below (the built-in <code>concept</code> panel string in</li>
-</ul>
-<p><code>compare_gen.py</code> is stale — still lists struck-out models — so pass explicit variant lists, not <code>--variants concept</code>).</p>
-<h2>Experiment matrix</h2>
-<p>Two stages so we compare <strong>designs</strong> apples-to-apples before spending the wide panel on <strong>rendering</strong> the finalist.</p>
 <h3>Stage 1 — design bake-off (picks the design)</h3>
-<p>All 4 plate silhouettes × <strong>3 cheap, reliable, distinct engines</strong> (<code>flash31</code> = Gemini workhorse &amp; eventual edit model; <code>gptimage2</code> = best hardware/build detail, on elevated scrutiny; <code>grokq</code> = cheap Grok wildcard). No Gemini-lineage purity concern here (fresh concept), so mixing engines is fine. One roll per cell = <strong>12 images</strong>. Port construction fixed = collared socket-hole.</p>
-<div class="tablewrap"><table><thead><tr><th>#</th><th>Design</th><th>Plate silhouette</th><th>Prompt</th><th>Out stem</th><th>Variants</th></tr></thead><tbody><tr><td>1</td><td>P1 incumbent</td><td>equilateral triangle</td><td><code>prompts/r1-P1-incumbent.txt</code></td><td><code>hsocket-r1-P1</code></td><td>flash31,gptimage2,grokq</td></tr><tr><td>2</td><td>P2 nested-tri</td><td>triangle w/ 3 nested rounded-triangle holes</td><td><code>prompts/r1-P2-nested-triangles.txt</code></td><td><code>hsocket-r1-P2</code></td><td>flash31,gptimage2,grokq</td></tr><tr><td>3</td><td>P4 delta/chevron</td><td>downward chevron tag</td><td><code>prompts/r1-P4-delta-chevron.txt</code></td><td><code>hsocket-r1-P4</code></td><td>flash31,gptimage2,grokq</td></tr><tr><td>4</td><td>P5 keyed disc</td><td>disc w/ key notch</td><td><code>prompts/r1-P5-round-keyed-jack.txt</code></td><td><code>hsocket-r1-P5</code></td><td>flash31,gptimage2,grokq</td></tr></tbody></table></div>
+<p>Five designs × three cheap, distinct engines = 15 rolls, port fixed to the collared socket-hole. Models are <strong>cost-trimmed</strong> because this is throwaway silhouette-selection (Stage 2 re-renders the winner properly): <code>flash31</code> @2K (1K wouldn&#x27;t be cheaper — Gemini bills per tier), <code>gptimage2med</code> (gpt-image-2 at <code>--quality medium</code>, ~half of <code>high</code>), <code>grokq1k</code> (grok @1K). Resolution is a weak lever here; tier/quality is what moves cost.</p>
+<div class="tablewrap"><table><thead><tr><th>Design</th><th>Prompt</th><th>Out stem</th></tr></thead><tbody><tr><td>P1 incumbent triangle</td><td><code>prompts/r1-P1-incumbent.txt</code></td><td><code>hsocket-r1-P1</code></td></tr><tr><td>P2 nested triangles</td><td><code>prompts/r1-P2-nested-triangles.txt</code></td><td><code>hsocket-r1-P2</code></td></tr><tr><td>P4 delta / chevron</td><td><code>prompts/r1-P4-delta-chevron.txt</code></td><td><code>hsocket-r1-P4</code></td></tr><tr><td>P5 keyed disc</td><td><code>prompts/r1-P5-round-keyed-jack.txt</code></td><td><code>hsocket-r1-P5</code></td></tr><tr><td>P6 mecha-wolf</td><td><code>prompts/r1-P6-mecha-wolf.txt</code></td><td><code>hsocket-r1-P6</code></td></tr></tbody></table></div>
 <h3>Stage 2 — exemplar sweep (picks the render)</h3>
-<p>After Dimitri picks 1–2 winning designs, sweep each across the <strong>full working cyber-amazons concept panel</strong> — <code>pro2k, flash31, gptimage2, seedream45, grokq, riverflow25</code> (add pro2k/seedream45/riverflow25 to stage 1&#x27;s three). ~6–12 images. Seedream ignores clay-style and renders photoreal metal — kept to stage 2 deliberately, where a photoreal read helps judge the chosen geometry. The best roll becomes the canonical exemplar crop that gets composited/stencilled into every character.</p>
-<p><strong>Dependencies:</strong> Stage 2 waits on Dimitri&#x27;s stage-1 design verdict. Audit each roll as it lands (per-design: glyph reads as a bold mark flat-on; three port features distinct + ≥0.6 mm; collar proud / hole recessed; opaque, no thin spikes; plate ~one-eye-width, proud).</p>
-<h2>Setup checklist (cloud sandbox)</h2>
-<ol>
-<li>Deps: <code>python3 -m pip install -r requirements.txt</code></li>
-<li>Secrets: <code>OP_SERVICE_ACCOUNT_TOKEN</code> in env → <code>op</code> CLI (<code>cloud/setup.sh</code>)</li>
-</ol>
-<p>resolves <code>OPENROUTER_API_KEY</code> / <code>GEMINI_API_KEY</code> from the <code>minis-pipeline</code> vault.</p>
-<ol>
-<li>No base binaries to pull — this is a net-new asset (no ancestor images).</li>
-</ol>
-<h2>Execution</h2>
-<p>Generation runs <strong>after Dimitri signs off on this runbook</strong> (runbook-before- generation). Stage 1, all four designs (parallel across the three engines):</p>
+<p>The winning 1–2 designs × the full working concept panel (<code>pro2k, flash31, gptimage2, seedream45, grokq, riverflow25</code>). The best roll becomes the canonical exemplar composited/stencilled into every character. Seedream ignores clay-style and renders photoreal metal — kept to Stage 2, where that read helps judge the chosen geometry.</p>
+<h3>Commands (run after sign-off)</h3>
 <pre class="code"><code>H=projects/cyber-amazons/head-socket
-G=$H/generated
-for P in P1-incumbent P2-nested-triangles P4-delta-chevron P5-round-keyed-jack; do
-  STEM=hsocket-r1-$(echo $P | cut -d- -f1)
+for P in P1-incumbent P2-nested-triangles P4-delta-chevron P5-round-keyed-jack P6-mecha-wolf; do
   python3 tools/compare_gen.py --prompt-file $H/prompts/r1-$P.txt \
-    --out-dir $G --out-stem $STEM \
-    --variants flash31,gptimage2,grokq --jobs 3 \
-    --lineage $H/lineage.json
+    --out-dir $H/generated --out-stem hsocket-r1-$(echo $P | cut -d- -f1) \
+    --variants flash31,gptimage2med,grokq1k --jobs 3 --lineage $H/lineage.json
 done</code></pre>
-<p>Audit each of the 12 as it lands (fresh-context crop subagent + eye), logging verdicts to <code>reviews.json</code> via <code>tools/review_log.py</code>. Then build the review page (<code>tools/review_page.py --inline</code> → claude.ai artifact for Dimitri; the <code>r1-panel.json</code> config is already stubbed with the asks/next-steps). Stage 2 fires on the design verdict.</p>
-<p>Close-out: update <code>rounds.md</code>, push text keepers to the branch, push binaries to Drive (<code>tools/drive_sync.sh push $G</code>).</p>
-<h2>Cost estimate</h2>
-<p>Stage 1: 12 rolls — flash31 ~$0.07, gptimage2 ~$0.18, grokq ~$0.07 → ~$0.32 per design × 4 ≈ <strong>$1.3</strong>. Stage 2: ~6–12 rolls ≈ <strong>$0.7–1.4</strong>. Round total ≈ <strong>$2–2.7</strong>.</p>
-<h2>Session status / results</h2>
-<ul>
-<li>2026-07-12: runbook written; sub-project scaffolded (spec, 4 prompts, lineage</li>
-</ul>
-<p>seed, r1-panel config stub). Published to Pages at round start (standard step) and PR&#x27;d to both repos. <strong>Awaiting Dimitri&#x27;s sign-off on the plan before any generation.</strong></p>
-<ul>
-<li>_(design bake-off results filled in here as stage 1 lands.)_</li>
-</ul></div>
+<p>Audit each roll as it lands (fresh-context crop subagent + eye), log verdicts to <code>reviews.json</code>, then build the review panel (<code>tools/review_page.py --inline</code> → claude.ai artifact). Durable log: <code>rounds.md</code>.</p>
+</details></div>
 </main>
 <div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
 <div id="ilb" hidden><div class="panel">
