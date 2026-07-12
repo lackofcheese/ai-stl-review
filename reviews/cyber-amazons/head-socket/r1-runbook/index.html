@@ -4,7 +4,7 @@
 <meta name="robots" content="noindex">
 <title>Head Socket — Round 1 runbook</title>
 <style>
-:root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+:root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
 @media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
 :root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
 :root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -165,8 +165,7 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 .md details[open] > summary::before { content:'\25BE\A0' }
 .md details > summary + * { margin-top:.2rem }
 </style></head><body><main>
-<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">cyber-amazons</a><span class="sep">&rsaquo;</span><a href="../">head-socket</a></nav>
-<div class="eyebrow">cyber-amazons · head-socket · round 1</div>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Cyber-Amazons · Firewall FC</a><span class="sep">&rsaquo;</span><a href="../">Head Socket</a></nav>
 <h1>Head Socket — Round 1 runbook</h1>
 <a class="crosslink" href="../r1-panel/">&#128203; Review panel &rarr;</a>
 <div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>Concept sweep — design selection</dd><dt>Status</dt><dd>Awaiting sign-off · no images generated yet</dd><dt>Owner</dt><dd>Claude (cloud) → Dimitri + Jason</dd><dt>Date opened</dt><dd>2026-07-12</dd><dt>Branch</dt><dd><code>claude/firewall-head-socket-design-zp117y</code></dd></dl>
@@ -192,8 +191,8 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 <h3>Stage 1 — design bake-off (picks the design)</h3>
 <p>Five designs × three cheap, distinct engines = 15 rolls, port fixed to the collared socket-hole. Models are <strong>cost-trimmed</strong> because this is throwaway silhouette-selection (Stage 2 re-renders the winner properly): <code>flash31</code> @2K (1K wouldn&#x27;t be cheaper — Gemini bills per tier), <code>gptimage2med</code> (gpt-image-2 at <code>--quality medium</code>, ~half of <code>high</code>), <code>grokq1k</code> (grok @1K). Resolution is a weak lever here; tier/quality is what moves cost.</p>
 <div class="tablewrap"><table><thead><tr><th>Design</th><th>Prompt</th><th>Out stem</th></tr></thead><tbody><tr><td>P1 incumbent triangle</td><td><code>prompts/r1-P1-incumbent.txt</code></td><td><code>hsocket-r1-P1</code></td></tr><tr><td>P2 nested triangles</td><td><code>prompts/r1-P2-nested-triangles.txt</code></td><td><code>hsocket-r1-P2</code></td></tr><tr><td>P4 delta / chevron</td><td><code>prompts/r1-P4-delta-chevron.txt</code></td><td><code>hsocket-r1-P4</code></td></tr><tr><td>P5 keyed disc</td><td><code>prompts/r1-P5-round-keyed-jack.txt</code></td><td><code>hsocket-r1-P5</code></td></tr><tr><td>P6 mecha-wolf</td><td><code>prompts/r1-P6-mecha-wolf.txt</code></td><td><code>hsocket-r1-P6</code></td></tr></tbody></table></div>
-<h3>Stage 2 — exemplar sweep (picks the render)</h3>
-<p>The winning 1–2 designs × the full working concept panel (<code>pro2k, flash31, gptimage2, seedream45, grokq, riverflow25</code>). The best roll becomes the canonical exemplar composited/stencilled into every character. Seedream ignores clay-style and renders photoreal metal — kept to Stage 2, where that read helps judge the chosen geometry.</p>
+<h3>Stage 2 — exemplar sweep (picks the render + the 3D-master input)</h3>
+<p>The winning 1–2 designs × the full working concept panel (<code>pro2k, flash31, gptimage2, seedream45, grokq, riverflow25</code>). Each winner is rendered <strong>both</strong> on-head (the seating/scale read) <strong>and</strong> as a <strong>standalone isolated plate</strong> (flat-on + raking, neutral background) — the isolated render is the clean stencil exemplar *and* the input for the socket&#x27;s <strong>authored STL master</strong>. Delivery onto the 14 characters is by <strong>fusing that authored master onto each character mesh</strong> (boolean union), not per-character reconstruction — feasibility confirmed 2026-07-12 (watertight over-embed union; geometric plates author from primitives, no Meshy). See <code>spec.md</code> → &quot;Delivery onto characters&quot;. Seedream ignores clay-style and renders photoreal metal — kept to Stage 2, where that read helps judge the chosen geometry.</p>
 <h3>Commands (run after sign-off)</h3>
 <pre class="code"><code>H=projects/cyber-amazons/head-socket
 for P in P1-incumbent P2-nested-triangles P4-delta-chevron P5-round-keyed-jack P6-mecha-wolf; do
