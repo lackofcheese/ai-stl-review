@@ -17,6 +17,14 @@ h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
 h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
 .eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
   text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
 .sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
 .blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
 .callout { border:1px solid var(--line); border-left:3px solid var(--accent);
@@ -86,12 +94,24 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 .ibtn:hover { color:var(--ink); border-color:var(--dim) }
 #lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
   justify-content:center; align-items:center; z-index:9; padding:12px }
-#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
 #lb[hidden], #ilb[hidden] { display:none }
 #lb img { max-width:100%; max-height:92vh; object-fit:contain;
   transform-origin:center center; will-change:transform; touch-action:none;
   user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
 #lb .cap { color:var(--dim); font-size:.85rem }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
 .panel { position:relative; background:var(--card); color:var(--ink);
   border:1px solid var(--line); border-radius:8px; max-width:46rem;
   width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
@@ -116,19 +136,8 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 .x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
   border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
 .x:hover { color:var(--ink) }
-.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
-  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
-  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  -webkit-tap-highlight-color:transparent }
-.lb-nav:hover { background:rgba(45,45,56,.8) }
-.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
-.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
-.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
-  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
-  font-size:.8rem; pointer-events:none }
-#lb { touch-action:pan-y }
 </style></head><body><main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Cyber-Amazons</a><span class="sep">&rsaquo;</span><a href="../">Gorgon</a></nav>
 <div class="eyebrow">Firewall FC — Gorgon · round 6 (hair-movement pass) · 2026-07-11</div>
 <h1>Gorgon r6 — hair to the far shoulder, nape implant exposed: three routes compared</h1>
 <p class="sub">One goal, three arms (Dimitri): move the dread mane over her LEFT (far, stiff-arm) shoulder so the spinal implant's neck portion reads from the main view, and rotate the camera a bit toward her front (torso, palm, far leg). ARM A = riverflow25 text-only regen with a dedicated hair negative (2 rolls). ARM B = riverflow25 fed its OWN r4 gold and asked for exactly the two changes (2 rolls). ARM C = five non-riverflow models, same reference + edit prompt (1 roll each). 9 rolls, ~$1.99. Verdicts are Claude's fresh-context crop-audit pre-read — Dimitri's call is the gate. Click any chip to open its evidence; each card's long audit sits behind "full audit".</p>
