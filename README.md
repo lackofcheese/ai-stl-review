@@ -14,24 +14,33 @@ pushes. Don't edit `index.html` by hand; it's generated.
 Layout (hierarchical since 2026-07-11 — Dimitri's reorg):
 
 ```
-index.html            Generated root listing, grouped by project -> character,
-                      pages in round order; project/character headings link to
-                      their landing pages (never edit by hand)
+index.html            Generated root listing: every character's rounds as a
+                      table (Round | Description | Runbook | Review); headings
+                      link to the landing pages (never edit by hand)
 reviews.json          Manifest (titles, publish dates) + "_redirects"
                       mapping legacy flat slugs to their new homes
+assets/<hash>.<ext>   Shared content-addressed image store. Every page's
+                      images live HERE, keyed by content hash, so an image
+                      reused across rounds (a base/gold/reference) is stored
+                      ONCE and every page points at the same file
 reviews/<project>/index.html
-                      Generated project landing: team brief + character list
+                      Generated project landing: team brief + a round table
+                      per character
 reviews/<project>/<character>/index.html
-                      Generated character landing: character spec + rounds
-                      newest-first, each round grouping its runbook + review
-reviews/<project>/[<character>/]<page>/
-                      A published page + its images. Pages come in kinds:
-                      rN-panel  (review), rN-runbook (round plan-of-record,
-                      cross-linked to its rN-panel), team-brief, spec
+                      Generated character landing: character spec + that
+                      character's round table
+reviews/<project>/[<character>/]<page>/index.html
+                      A published page (HTML only — its images are in assets/).
+                      Pages come in kinds: rN-panel (review), rN-runbook
+                      (round plan-of-record, cross-linked to its rN-panel),
+                      team-brief, spec. Review/runbook pages carry an up-nav
+                      breadcrumb and cross-link each other
 reviews/<old-slug>/   Meta-refresh stubs at pre-reorg URLs (links already
                       shared keep working); regenerated on every publish
 ```
 
-All three index levels regenerate from `reviews.json` on every publish — never
-hand-edit them. Runbook pages are built with `tools/render_runbook.py` in the
-pipeline repo and published the same way as reviews.
+Every index level regenerates from `reviews.json` on each publish — never
+hand-edit them. Runbook pages are built with `tools/render_runbook.py`.
+`publish_review.py` hoists each page's images into the shared `assets/` store
+(deduping identical bytes) and GCs orphaned assets automatically; there are no
+per-page image folders.
