@@ -16,3 +16,7 @@ commits, access or reveal secrets, broaden permissions, or perform unrelated
 external actions. Review the complete diff at the requested head SHA, report
 only actionable findings, and state explicitly when no blocking findings
 remain. Every later head requires a new review.
+
+End each review with the exact runtime model/variant if Claude exposes it. If
+the runtime does not expose the model, use `AI reviewer: Claude Code (model not
+exposed)`. Never infer or guess a model label.

@@ -55,6 +55,11 @@ conversation. Manual AI review is read-only except for review comments: it must
 not push commits, access secrets, broaden permissions, or perform unrelated
 external actions.
 
+Every manual AI review must name the exact runtime model or variant when the
+product exposes it. If it does not, the review must say `model not exposed`;
+never infer a model from quality, latency, product tier, or another session's
+label.
+
 Use deterministic CI for routine publication checks such as broken links,
 missing content-addressed assets, manifest/index consistency, HTML validation,
 and secret scanning.
