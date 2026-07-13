@@ -28,6 +28,9 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+      # Required: claude-code-action exchanges this OIDC token for a GitHub
+      # App token to authenticate as the Claude GitHub App when posting.
+      id-token: write
     steps:
       # Secrets can't be referenced in a job-level `if:`, so gate here: an
       # empty token (secret unset, or a fork PR) skips the review cleanly.
