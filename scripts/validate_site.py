@@ -95,8 +95,6 @@ class SiteParser(HTMLParser):
             name = name.lower()
             if value and name in RESOURCE_ATTRIBUTES:
                 self.resources.append((name, value))
-                if name == "href" and value.startswith("#") and len(value) > 1:
-                    self.fragments.append(unquote(value[1:]))
             elif value and name == "data-inputs":
                 self.fragments.append(value)
 
@@ -158,12 +156,9 @@ def _target_file(path: Path) -> Path:
 
 
 def _validate_html(root: Path, html_files: list[Path], errors: list[str]) -> dict[Path, SiteParser]:
-    parsed: dict[Path, SiteParser] = {}
-    for path in html_files:
+    parsed = {path: _parse_html(path, root, errors) for path in html_files}
+    for path, document in parsed.items():
         label = _display(path, root)
-        document = _parse_html(path, root, errors)
-        parsed[path] = document
-
         if not document.doctype:
             errors.append(f"{label}: missing <!doctype html>")
         if not document.html_lang:
@@ -194,6 +189,14 @@ def _validate_html(root: Path, html_files: list[Path], errors: list[str]) -> dic
                 errors.append(f"{label}: broken {attribute} {reference!r}")
             elif target_path.is_dir() and not (target_path / "index.html").is_file():
                 errors.append(f"{label}: linked directory has no index.html: {reference!r}")
+            elif attribute == "href" and urlsplit(reference).fragment:
+                target_file = _target_file(target_path).resolve()
+                target_document = parsed.get(target_file)
+                fragment = unquote(urlsplit(reference).fragment)
+                if target_document is not None and fragment not in target_document.ids:
+                    errors.append(
+                        f"{label}: href fragment target does not exist: {reference!r}"
+                    )
     return parsed
 
 
@@ -254,6 +257,8 @@ def _validate_manifest(
     canonical = {key for key in manifest if key != "_redirects"}
     redirect_slugs = set(redirects)
     landing_dirs: set[Path] = set()
+    if not canonical:
+        errors.append("reviews.json: must contain at least one canonical page")
 
     for slug in sorted(canonical):
         if not CANONICAL_SLUG.fullmatch(slug):
@@ -447,7 +452,7 @@ def _validate_workflows(root: Path, errors: list[str]) -> None:
         text = path.read_text(encoding="utf-8")
         if "pull_request_target:" in text:
             errors.append(f"{label}: pull_request_target is forbidden for public PR validation")
-        if re.search(r"\$\{\{\s*secrets\.", text, re.IGNORECASE):
+        if re.search(r"\$\{\{[^}]*\bsecrets\s*(?:\.|\[)", text, re.IGNORECASE):
             errors.append(f"{label}: pull-request workflows must not access secrets")
         if AI_WORKFLOW.search(text):
             errors.append(f"{label}: automatic AI/LLM invocation is forbidden in this public repository")
@@ -467,7 +472,7 @@ def _validate_workflows(root: Path, errors: list[str]) -> None:
                 continue
             if "@" not in action or not PINNED_ACTION.fullmatch(action.rsplit("@", 1)[1]):
                 errors.append(f"{label}: action is not pinned to an immutable commit SHA: {action}")
-        if re.search(r"(?m)^\s{2}pull_request:\s*$", text):
+        if re.search(r"\bpull_request\b", text):
             if not re.search(r"(?m)^concurrency:\s*$", text):
                 errors.append(f"{label}: pull-request workflow needs a concurrency group")
             if not re.search(r"(?m)^\s{2}cancel-in-progress:\s*true\s*$", text):
@@ -485,8 +490,7 @@ def validate(root: Path) -> list[str]:
 
     parsed_html = _validate_html(root, html_files, errors)
     manifest = _load_manifest(root, errors)
-    if manifest:
-        _validate_manifest(root, manifest, parsed_html, errors)
+    _validate_manifest(root, manifest, parsed_html, errors)
     _validate_assets(root, parsed_html, errors)
     _validate_publication_safety(root, errors)
     _validate_workflows(root, errors)

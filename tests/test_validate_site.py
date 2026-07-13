@@ -117,6 +117,41 @@ jobs:
         manifest.write_text(json.dumps(json.loads(manifest.read_text())), encoding="utf-8")
         self.assertTrue(any("formatting differs" in error for error in validate(self.root)))
 
+    def test_empty_manifest_is_reported(self) -> None:
+        (self.root / "reviews.json").write_text("{}\n", encoding="utf-8")
+        self.assertTrue(any("at least one canonical page" in error for error in validate(self.root)))
+
+    def test_bracketed_secret_reference_is_reported(self) -> None:
+        workflow = self.root / ".github/workflows/ci.yml"
+        workflow.write_text(
+            workflow.read_text() + "      - run: echo ${{ secrets['NPM_TOKEN'] }}\n",
+            encoding="utf-8",
+        )
+        self.assertTrue(any("must not access secrets" in error for error in validate(self.root)))
+
+    def test_cross_page_fragment_is_reported(self) -> None:
+        page = self.root / "reviews/team/character/r1-runbook/index.html"
+        page.write_text(
+            page.read_text().replace('../r1-panel/">', '../r1-panel/#missing">'),
+            encoding="utf-8",
+        )
+        self.assertTrue(any("fragment target" in error for error in validate(self.root)))
+
+    def test_flow_style_pull_request_requires_concurrency(self) -> None:
+        workflow = self.root / ".github/workflows/ci.yml"
+        workflow.write_text(
+            workflow.read_text()
+            .replace("on:\n  pull_request:\n", "on: [pull_request]\n")
+            .replace(
+                "concurrency:\n  group: test\n  cancel-in-progress: true\n",
+                "",
+            ),
+            encoding="utf-8",
+        )
+        errors = validate(self.root)
+        self.assertTrue(any("concurrency group" in error for error in errors))
+        self.assertTrue(any("cancel superseded" in error for error in errors))
+
     def test_unpinned_action_and_ai_workflow_are_reported(self) -> None:
         workflow = self.root / ".github/workflows/ci.yml"
         workflow.write_text(
