@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Mace — Round 9 runbook</title>
+<style>
+:root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:92vh; object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+
+.md h2 { font-size:1.15rem; margin:2.2rem 0 .3rem }
+.md h3 { font-size:1rem; margin:1.6rem 0 .3rem }
+.md h4 { font-size:.9rem; margin:1.2rem 0 .3rem; color:var(--dim) }
+.md p { max-width:78ch }
+.md ul, .md ol { max-width:78ch; padding-left:1.4rem }
+.md li { margin:.25rem 0 }
+.md a { color:var(--accent) }
+.md code { background:var(--pre); border:1px solid var(--line); border-radius:4px;
+  padding:.05rem .3rem; font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
+.md pre.code { background:var(--pre); border:1px solid var(--line); border-radius:6px;
+  padding:.75rem 1rem; overflow-x:auto; font-size:.82rem; line-height:1.5 }
+.md pre.code code { background:none; border:0; padding:0 }
+.md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+.md dl.rb-meta { display:grid; grid-template-columns:auto 1fr; gap:.3rem 1.1rem;
+  max-width:60ch; margin:.2rem 0 1.8rem; padding:.9rem 1.15rem; background:var(--pre);
+  border:1px solid var(--line); border-radius:8px; font-size:.9rem }
+.md dl.rb-meta dt { color:var(--dim); font-weight:600; white-space:nowrap }
+.md dl.rb-meta dd { margin:0 }
+.md details { max-width:78ch; margin:1.8rem 0; border:1px solid var(--line);
+  border-radius:8px; background:var(--pre); padding:0 1.15rem }
+.md details[open] { padding-bottom:.4rem }
+.md details > summary { cursor:pointer; padding:.85rem 0; font-weight:600;
+  color:var(--accent); list-style:none }
+.md details > summary::-webkit-details-marker { display:none }
+.md details > summary::before { content:'\25B8\A0' }
+.md details[open] > summary::before { content:'\25BE\A0' }
+.md details > summary + * { margin-top:.2rem }
+</style></head><body><main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Cyber-Amazons</a><span class="sep">&rsaquo;</span><a href="../">Mace</a></nav>
+<h1>Mace — Round 9 runbook</h1>
+<span class="crosslink" style="opacity:.55;pointer-events:none" title="Published at round close">&#128203; Review panel &mdash; at round close</span>
+<h2>Base assets — what this round builds on</h2>
+<p class="blurb">The source image(s) every generation in this round starts from. Click to zoom; open “inputs” for the prompt and reference images that produced each one.</p>
+<div class="grid">
+<div class="card"><div class="imgwrap" data-full="../../../../assets/4d9d2ced52ea3e2a.jpg" data-cap="mace-r8-A1"><img src="../../../../assets/f55dc25e93a84d26.jpg" alt="mace-r8-A1" loading="lazy"></div><div class="meta"><header><h3>mace-r8-A1</h3></header><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+</div>
+<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>Mesh surgery — clean the defective temple socket (graft prep)</dd><dt>Status</dt><dd>Awaiting sign-off · no mesh surgery yet</dd><dt>Owner</dt><dd>Claude (cloud) → Dimitri · Jason review</dd><dt>Date opened</dt><dd>2026-07-13</dd><dt>Branch</dt><dd><code>claude/mace-round-9-socket-etj9xo</code></dd><dt>Prior round</dt><dd>Mace&#x27;s current mesh <strong>m2</strong> (<code>meshy/round-8/mace-m2-clean-37mm.stl</code>, wide pose, watertight single shell, Euler 0) reconstructed the right-temple <strong>triangular three-pin socket as soft, mushy relief</strong> — exactly the micro-hardware-dies-in-Meshy failure that spawned the standalone <strong>head-socket</strong> asset. Head-socket r2 close picked the team mark (<strong>P6 mecha-wolf, recessed</strong>, <code>hsocket-r2-P6-recessed-gptimage2med</code>) to be authored as a reusable STL master and <strong>fused onto each character</strong> by boolean union — and that fuse needs a <strong>manifold temple</strong> to land on. Mace&#x27;s temple isn&#x27;t clean enough to receive it yet.</dd></dl>
+<h2>Goal</h2>
+<p>Take Mace&#x27;s best mesh (m2) and <strong>clean up the botched temple socket</strong> so the head is ready to receive the real gang mark. The reconstruction turned her triangular three-pin socket into a soft blob; this round <strong>removes that defective relief and rebuilds a smooth, watertight temple patch</strong> in its place — a clean surface the new head-socket asset can be grafted onto without gaps or holes. Nothing else about the model changes. This is the prep step that unblocks putting the *real* socket on Mace.</p>
+<h2>The choices on the table</h2>
+<p>This is a surgery round, so the &quot;choices&quot; are how we cut and what we leave behind — plus the sign-off to do it:</p>
+<div class="tablewrap"><table><thead><tr><th>Decision</th><th>Options</th><th>Our recommendation</th></tr></thead><tbody><tr><td><strong>Which mesh we clean</strong></td><td>(a) <strong>m2</strong> — the wide-pose mesh, watertight, Euler 0, the pose Jason&#x27;s &quot;half-hearted&quot; note was fixed on; (b) m1 — the earlier, narrower-pose mesh</td><td><strong>(a) m2.</strong> It&#x27;s the current keeper on every axis (pose, topology). No reason to graft onto the superseded pose.</td></tr><tr><td><strong>How we remove the bad socket</strong></td><td>(a) <strong>local mesh surgery</strong> — excise just the defective relief and re-patch a smooth temple, in trimesh, deterministic, $0; (b) re-run the whole model through Meshy with the socket omitted</td><td><strong>(a) local surgery.</strong> (b) throws away a known-good watertight mesh and re-rolls the whole-body reconstruction lottery to fix one 5 mm patch — all downside. Cut local, keep everything else identical.</td></tr><tr><td><strong>What we leave at the temple</strong></td><td>(a) a <strong>clean smooth manifold patch</strong> (asset-agnostic — the head-socket fuse step over-embeds the plate and carves its own recess); (b) pre-cut a plate-shaped seat pocket now</td><td><strong>(a) clean smooth patch</strong>, plus we record the <strong>seat point + surface normal</strong> for the downstream fuse. Keeps this round independent of the exact wolf-plate geometry (still being authored in head-socket r3) — if the plate shape shifts, Mace doesn&#x27;t need re-cutting.</td></tr></tbody></table></div>
+<h2>What we need from you</h2>
+<p><strong>Sign-off to do the surgery</strong>, plus confirm: clean <strong>m2</strong> (not m1), by <strong>local mesh surgery</strong> (not a Meshy re-run), leaving a <strong>smooth manifold temple</strong> for the fuse step to seat onto. One more call: this round delivers a *graft-ready* Mace — the actual wolf-socket graft happens once the head-socket <strong>master STL exists</strong> (head-socket r3, not yet authored). Confirm you&#x27;re happy for r9 to be <strong>cleanup-only</strong> and the graft to follow, vs. wanting to hold r9 until the master lands so we do both in one pass.</p>
+<h2>Cost</h2>
+<p>Effectively <strong>~$0</strong> — local trimesh surgery, validation, and renders only. No image or Meshy credits. The only spend is authoring + review time; the cleaned STL uploads to Drive the moment it lands.</p>
+<details>
+<summary>Technical plan — surgery, validation, graft-readiness (pipeline detail)</summary>
+<h3>What changed going in (spec / process deltas)</h3>
+<ul>
+<li><strong>No change to <code>mace/spec.md</code> this round.</strong> The spec still describes the old &quot;TRIANGULAR THREE-PIN SOCKET&quot; as Mace&#x27;s temple mark; that description is <strong>superseded by the shared head-socket standard</strong> (P6 wolf) but is left as-is here — reconciling Mace&#x27;s spec to &quot;carries the team head-socket master&quot; is a one-line delta that belongs with the *graft* round (when the master actually lands on her), not this cleanup. Flagged so it isn&#x27;t forgotten.</li>
+<li><strong>New script authored this round:</strong> <code>tools/clean_temple.py</code> — local trimesh surgery that selects the temple patch by seat-point + radius, deletes the defective socket faces, and re-fills a smooth manifold patch fitted to the surrounding skin curvature. Not in <code>tools/</code> yet. It is deliberately <strong>asset-agnostic</strong> (produces a clean temple, not a wolf-shaped pocket) so it is reusable for every roster head that reconstructed a mushy socket.</li>
+<li><strong>Process:</strong> first pure mesh-surgery round for Mace — no image generation, no Meshy. The m2 STL is the input; the output is the same mesh minus the bad socket. This round is the <strong>producer</strong> side of head-socket r3&#x27;s fuse step (which is the <strong>consumer</strong>): r3 authors the wolf master and boolean-unions it onto a *manifold* temple — r9 is what makes Mace&#x27;s temple manifold and clean.</li>
+</ul>
+<h3>Build steps (each gated by its check)</h3>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Step</th><th>Output</th><th>Gate</th></tr></thead><tbody><tr><td>1</td><td>Pull m2 from Drive; baseline-validate (watertight, component count, Euler/genus) + tight thin-parts probe to characterise the temple as-is</td><td>baseline report</td><td>reproduce the m2 numbers (watertight, single shell, Euler 0)</td></tr><tr><td>2</td><td>Locate the seat: <strong>right temple = VIEWER&#x27;S LEFT in a front view</strong> (spec chirality); confirm the defective socket blob&#x27;s centre + local surface normal</td><td>seat point + normal</td><td>eyeball vs. an m2 temple render; symmetry sanity</td></tr><tr><td>3</td><td>Excise the defective relief: select the temple patch (seat ± radius), delete the socket bumps/pins, re-fill a smooth patch matched to local curvature</td><td><code>mace-m2-temple-clean.stl</code> (working)</td><td>patch is watertight + manifold; no new non-manifold edges</td></tr><tr><td>4</td><td>Full validate: watertight, <strong>single component</strong>, Euler/genus unchanged, temple region <strong>manifold</strong> (the boolean precondition), tight thin-parts probe clean</td><td>validation report</td><td>all pass — temple manifold is the load-bearing gate</td></tr><tr><td>5</td><td>Render turnarounds + zoomed temple crops; fresh-context subagent audit vs. m2 — confirm <strong>only</strong> the temple changed, the rest is untouched</td><td>renders + audit record</td><td>socket gone/smooth; pose, pad, eagle, hands, footprint identical to m2</td></tr><tr><td>6</td><td>Upload cleaned STL + renders to Drive <strong>the moment they land</strong>; hand over the Drive link (target scale ~37 mm)</td><td>Drive links</td><td>—</td></tr><tr><td>7</td><td>Close: <code>r9-panel</code> review artifact carrying the cleaned-temple verdict; record seat point + normal for the head-socket fuse; note Mace is now graft-ready</td><td><code>r9</code> review artifact</td><td>Dimitri + Jason sign-off</td></tr></tbody></table></div>
+<h3>Downstream (not this round)</h3>
+<p>The actual gang mark lands via <strong>head-socket</strong> tooling, not here: once <code>hsocket-r3-wolf-master.stl</code> exists, <code>tools/fuse_socket.py --master &lt;wolf&gt; --character &lt;mace-m2-temple-clean.stl&gt; --seat right-temple --embed 0.6 --carve-recess</code> boolean-unions the wolf plate onto the temple this round cleaned. r9&#x27;s deliverable is the <strong>clean manifold temple + recorded seat/normal</strong>; the graft + its test print are a follow-on (coordinate with head-socket r3, which currently names Gorgon as its test character — Mace can be an additional graft target on your say-so).</p>
+<h3>Commands (run after sign-off)</h3>
+<p>Generic setup: <code>pip install -r requirements.txt</code>; secrets via <code>OP_SERVICE_ACCOUNT_TOKEN</code> → <code>op</code> resolves the <code>minis-pipeline</code> vault. Pull the m2 mesh from Drive first (cloud: Drive MCP; local: <code>tools/drive_sync.sh pull projects/cyber-amazons/mace/meshy/round-8</code>).</p>
+<pre class="code"><code>M=projects/cyber-amazons/mace
+# NB: clean_temple.py is a NEW script authored THIS round (build-step table) —
+# not in tools/ yet. It wraps the trimesh select/delete/re-fill + the
+# watertight/manifold checks from references/stl-validation.md. The block below
+# is the intended post-sign-off run order, not runnable until it lands.
+# 1 baseline
+python3 tools/mesh_thin_parts.py --stl $M/meshy/round-8/mace-m2-clean-37mm.stl --pitch 0.28 --fragile-mm 0.6
+# 2-4 excise the defective socket + re-patch a smooth manifold temple
+python3 tools/clean_temple.py \
+  --stl $M/meshy/round-8/mace-m2-clean-37mm.stl \
+  --seat right-temple --patch-radius &lt;mm&gt; \
+  --out $M/meshy/round-9/mace-m2-temple-clean-37mm.stl
+python3 tools/mesh_thin_parts.py --stl $M/meshy/round-9/mace-m2-temple-clean-37mm.stl --pitch 0.28 --fragile-mm 0.6
+# 5 render turnarounds + temple crops → fresh-context subagent audit vs m2
+# 6 upload STL + renders to Drive ASAP; 7 close round with r9-panel</code></pre>
+<p>Upload every returned STL/render to Drive the moment it lands (do not batch to session end). The durable log is <code>rounds.md</code>; the round closes with an <code>r9-panel</code> review artifact carrying the cleaned-temple verdict.</p>
+</details></div>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+<template id="in-0"><h2>mace-r8-A1</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-10T15:08:34</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/mace/prompts/r8-turnaround-wide.txt</p><pre>A character turnaround sheet for a 3D miniature sculpt, painted INTO the attached template canvas.
+
+TWO images are attached. The FIRST is the character reference. The SECOND is the template canvas: one horizontal row of FOUR equally-sized WIDE slots separated by thick dark divider lines. Paint EXACTLY ONE full-body view of the character into each slot, left to right. The entire figure stays inside its slot with a small gray margin on all sides; no part touches or crosses the dark divider lines or the image edges. Keep the divider lines intact. Never merge slots, never stack views vertically, never leave a slot empty.
+
+THE POSE IS WIDE — THIS IS CRITICAL. The slots are deliberately wide to fit her full stance. In EVERY slot, preserve the complete WIDTH of the reference pose: feet planted clearly wider than her shoulders, knees bent outward, arms held wide of her torso with hands out front. Let the pose FILL the width of each slot. Do NOT narrow the stance, do NOT bring her feet together, do NOT tuck her arms in, do NOT straighten her up. She is coiled wide and low, ready to wrestle whatever comes through the line.
+
+The four views, left to right (all directions are the VIEWER&#x27;S left and right):
+- Slot 1 = FRONT view: the shoulder pad and the number 8 are on the VIEWER&#x27;S RIGHT; the triangular three-pin socket at her temple is on the VIEWER&#x27;S LEFT; the trailing foot is on the VIEWER&#x27;S LEFT.
+- Slot 2 = SIDE PROFILE of the shoulder-pad side: the character faces the VIEWER&#x27;S LEFT; the shoulder pad is on the near shoulder, fully visible; her extended arms reach toward the VIEWER&#x27;S LEFT. The temple socket is on the far side of her head and NOT visible in this slot.
+- Slot 3 = REAR THREE-QUARTER from the side WITHOUT the pad: her back dominates the view, her pad-free shoulder and flank are nearest the camera, the shoulder pad sits on the FAR shoulder at the VIEWER&#x27;S LEFT, partially visible; the edge of the temple socket may show on the near side of her head.
+- Slot 4 = FRONT THREE-QUARTER from the side WITHOUT the pad: her pad-free shoulder and flank are nearest the camera; the triangular three-pin socket at her temple is on the near side, clearly visible; the shoulder pad sits on the FAR shoulder toward the VIEWER&#x27;S RIGHT; both open palms clearly visible, each with four fingers plus a visible thumb.
+
+Monochrome matte clay render, like a ZBrush sculpt screenshot: every part is SOLID OPAQUE matte gray clay, no color, no glow, no transparency; soft neutral studio lighting, crisp clean geometry, high resolution.
+
+The character is the woman in the FIRST attached image, reproduced faithfully in all four slots — the SAME armor kit, the SAME build, the SAME wide ready stance. Key details: femme features, heavy jaw, flattened boxer&#x27;s nose, fierce scowl, very short buzzcut. The TRIANGULAR THREE-PIN SOCKET at one temple exactly as in the reference: a raised flat triangular metal plate with three recessed cylindrical socket pins, roughly eye-sized. A single asymmetric layered armored shoulder pad on ONE shoulder; snug armored compression bodysuit; armored knee pads and shin guards; heavy boots with cleated soles; chunky plated knuckle guards over the backs of both hands. Both hands clearly EMPTY, fingers together. Arms and legs are flesh and muscle: NO robotic or cybernetic limbs. Her back is plain bodysuit and harness straps: NO emblem or markings on her back.
+
+Shoulder pad markings — on the TOP PLATE ONLY. The engraved number 8 sits small in the plate&#x27;s upper rear corner. The rest of the top plate&#x27;s face is DOMINATED by a large EAGLE tag: a crude, deliberately ASYMMETRIC spray-stencil tag of a DIVING eagle seen from the side — single head in profile pointed down and forward, wings swept back at different angles, blocky geometric feathers — with a RIDGED, RAISED OUTLINE standing proud of the plate surface. It is street graffiti, NOT a heraldic emblem, NOT symmetrical. The LOWER plates of the pad are completely PLAIN, and the eagle appears NOWHERE else on the model.
+
+No base or pedestal under the figure, no background props, no text, captions, or panel labels anywhere — the only markings on the character are the 8 and the eagle tag on the pad&#x27;s top plate.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="projects/cyber-amazons/mace/concept-art/mace-r7-A1-1.png (not on this machine)" alt="projects/cyber-amazons/mace/concept-art/mace-r7-A1-1.png (not on this machine)"><figcaption>projects/cyber-amazons/mace/concept-art/mace-r7-A1-1.png (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="projects/cyber-amazons/mace/concept-art/turnaround-template-4slot-wide-2k.png (not on this machine)" alt="projects/cyber-amazons/mace/concept-art/turnaround-template-4slot-wide-2k.png (not on this machine)"><figcaption>projects/cyber-amazons/mace/concept-art/turnaround-template-4slot-wide-2k.png (not on this machine)</figcaption></figure></div></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy / share a deep link to one card. The URL is this page plus the card's
+// #id anchor, so a recipient lands scrolled to (and highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+</body></html>
