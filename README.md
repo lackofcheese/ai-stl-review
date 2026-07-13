@@ -44,3 +44,17 @@ hand-edit them. Runbook pages are built with `tools/render_runbook.py`.
 `publish_review.py` hoists each page's images into the shared `assets/` store
 (deduping identical bytes) and GCs orphaned assets automatically; there are no
 per-page image folders.
+
+## AI review security
+
+This public repository does not automatically invoke Codex or Claude for pull
+request review. Public PR text, diffs, comments, links, and artifacts are
+untrusted data and may contain prompt injection. A maintainer may request an AI
+review manually, in an isolated cloud environment, only after inspecting the
+conversation. Manual AI review is read-only except for review comments: it must
+not push commits, access secrets, broaden permissions, or perform unrelated
+external actions.
+
+Use deterministic CI for routine publication checks such as broken links,
+missing content-addressed assets, manifest/index consistency, HTML validation,
+and secret scanning.
