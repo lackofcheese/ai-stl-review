@@ -178,31 +178,11 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 .md details > summary::before { content:'\25B8\A0' }
 .md details[open] > summary::before { content:'\25BE\A0' }
 .md details > summary + * { margin-top:.2rem }
-/* Runbook tables carry PROSE (the "choices on the table" comparison, the
-   build-step gates), not the review panel's short IDs. review_page.py's global
-   table CSS pins cols 1-2 to white-space:nowrap and col 2 to a monospace font —
-   right for id columns, but here it forces long option/recommendation cells
-   onto one unbreakable line: the table blows past the page width (the awkward
-   left-right scroll) and the other columns get starved into tall, ragged stacks
-   (the lopsided whitespace). Undo both inside .md so every cell wraps to its
-   column and auto table-layout balances the widths to the page. */
-.md .tablewrap { margin:.4rem 0 1.6rem }
-.md th, .md td { white-space:normal; overflow-wrap:break-word;
-  font-family:inherit }
-.md td code { overflow-wrap:anywhere }
-/* Keep some readable structure on narrow screens rather than crushing three
-   prose columns to nothing; .tablewrap scrolls only past this floor. */
-.md table { min-width:34rem }
 </style></head><body><main>
 <nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Cyber-Amazons</a><span class="sep">&rsaquo;</span><a href="../">Mace</a></nav>
 <h1>Mace — Round 9 runbook</h1>
 <span class="crosslink" style="opacity:.55;pointer-events:none" title="Published at round close">&#128203; Review panel &mdash; at round close</span>
-<h2>Base assets — what this round builds on</h2>
-<p class="blurb">The source image(s) every generation in this round starts from. Click to zoom; open “inputs” for the prompt and reference images that produced each one.</p>
-<div class="grid">
-<div class="card"><div class="imgwrap" data-full="../../../../assets/4d9d2ced52ea3e2a.jpg" data-cap="mace-r8-A1"><img src="../../../../assets/f55dc25e93a84d26.jpg" alt="mace-r8-A1" loading="lazy"></div><div class="meta"><header><h3>mace-r8-A1</h3></header><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
-</div>
-<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>Mesh surgery — clean the defective temple socket (graft prep)</dd><dt>Status</dt><dd>Awaiting sign-off · no mesh surgery yet</dd><dt>Owner</dt><dd>Claude (cloud) → Dimitri · Jason review</dd><dt>Date opened</dt><dd>2026-07-13</dd><dt>Branch</dt><dd><code>claude/mace-round-9-socket-etj9xo</code></dd><dt>Prior round</dt><dd>Mace&#x27;s current mesh <strong>m2</strong> (<code>meshy/round-8/mace-m2-clean-37mm.stl</code>, wide pose, watertight single shell, Euler 0) reconstructed the right-temple <strong>triangular three-pin socket as soft, mushy relief</strong> — exactly the micro-hardware-dies-in-Meshy failure that spawned the standalone <strong>head-socket</strong> asset. Head-socket r2 close picked the team mark (<strong>P6 mecha-wolf, recessed</strong>, <code>hsocket-r2-P6-recessed-gptimage2med</code>) to be authored as a reusable STL master and <strong>fused onto each character</strong> by boolean union — and that fuse needs a <strong>manifold temple</strong> to land on. Mace&#x27;s temple isn&#x27;t clean enough to receive it yet.</dd></dl>
+<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>Mesh surgery — clean the defective temple socket (graft prep)</dd><dt>Status</dt><dd>Executed — see <code>../rounds.md</code> · human selection pending</dd><dt>Owner</dt><dd>Claude (cloud) → Dimitri · Jason review</dd><dt>Date opened</dt><dd>2026-07-13</dd><dt>Branch</dt><dd><code>claude/mace-round-9-socket-etj9xo</code></dd><dt>Prior round</dt><dd>Mace&#x27;s current mesh <strong>m2</strong> (<code>models/round-8/mace-m2-clean-37mm.stl</code>, wide pose, watertight single shell, Euler 0) reconstructed the right-temple <strong>triangular three-pin socket as soft, mushy relief</strong> — exactly the micro-hardware-dies-in-Meshy failure that spawned the standalone <strong>head-socket</strong> asset. Head-socket r2 close picked the team mark (<strong>P6 mecha-wolf, recessed</strong>, <code>hsocket-r2-P6-recessed-gptimage2med</code>) to be authored as a reusable STL master and <strong>fused onto each character</strong> by boolean union — and that fuse needs a <strong>manifold temple</strong> to land on. Mace&#x27;s temple isn&#x27;t clean enough to receive it yet.</dd></dl>
 <h2>Goal</h2>
 <p>Take Mace&#x27;s best mesh (m2) and <strong>clean up the botched temple socket</strong> so the head is ready to receive the real gang mark. The reconstruction turned her triangular three-pin socket into a soft blob; this round <strong>removes that defective relief and rebuilds a smooth, watertight temple patch</strong> in its place — a clean surface the new head-socket asset can be grafted onto without gaps or holes. Nothing else about the model changes. This is the prep step that unblocks putting the *real* socket on Mace.</p>
 <h2>The choices on the table</h2>
@@ -225,20 +205,20 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 <h3>Downstream (not this round)</h3>
 <p>The actual gang mark lands via <strong>head-socket</strong> tooling, not here: once <code>hsocket-r3-wolf-master.stl</code> exists, <code>tools/fuse_socket.py --master &lt;wolf&gt; --character &lt;mace-m2-temple-clean.stl&gt; --seat right-temple --embed 0.6 --carve-recess</code> boolean-unions the wolf plate onto the temple this round cleaned. r9&#x27;s deliverable is the <strong>clean manifold temple + recorded seat/normal</strong>; the graft + its test print are a follow-on (coordinate with head-socket r3, which currently names Gorgon as its test character — Mace can be an additional graft target on your say-so).</p>
 <h3>Commands (run after sign-off)</h3>
-<p>Generic setup: <code>pip install -r requirements.txt</code>; secrets via <code>OP_SERVICE_ACCOUNT_TOKEN</code> → <code>op</code> resolves the <code>minis-pipeline</code> vault. Pull the m2 mesh from Drive first (cloud: Drive MCP; local: <code>tools/drive_sync.sh pull projects/cyber-amazons/mace/meshy/round-8</code>).</p>
+<p>Generic setup: <code>pip install -r requirements.txt</code>; secrets via <code>OP_SERVICE_ACCOUNT_TOKEN</code> → <code>op</code> resolves the <code>minis-pipeline</code> vault. Pull the m2 mesh from Drive first (cloud: Drive MCP; local: <code>tools/drive_sync.sh pull projects/cyber-amazons/mace/models/round-8</code>).</p>
 <pre class="code"><code>M=projects/cyber-amazons/mace
 # NB: clean_temple.py is a NEW script authored THIS round (build-step table) —
 # not in tools/ yet. It wraps the trimesh select/delete/re-fill + the
 # watertight/manifold checks from references/stl-validation.md. The block below
 # is the intended post-sign-off run order, not runnable until it lands.
 # 1 baseline
-python3 tools/mesh_thin_parts.py --stl $M/meshy/round-8/mace-m2-clean-37mm.stl --pitch 0.28 --fragile-mm 0.6
+python3 tools/mesh_thin_parts.py --stl $M/models/round-8/mace-m2-clean-37mm.stl --pitch 0.28 --fragile-mm 0.6
 # 2-4 excise the defective socket + re-patch a smooth manifold temple
 python3 tools/clean_temple.py \
-  --stl $M/meshy/round-8/mace-m2-clean-37mm.stl \
+  --stl $M/models/round-8/mace-m2-clean-37mm.stl \
   --seat right-temple --patch-radius &lt;mm&gt; \
-  --out $M/meshy/round-9/mace-m2-temple-clean-37mm.stl
-python3 tools/mesh_thin_parts.py --stl $M/meshy/round-9/mace-m2-temple-clean-37mm.stl --pitch 0.28 --fragile-mm 0.6
+  --out $M/models/round-9/mace-m2-temple-clean-37mm.stl
+python3 tools/mesh_thin_parts.py --stl $M/models/round-9/mace-m2-temple-clean-37mm.stl --pitch 0.28 --fragile-mm 0.6
 # 5 render turnarounds + temple crops → fresh-context subagent audit vs m2
 # 6 upload STL + renders to Drive ASAP; 7 close round with r9-panel</code></pre>
 <p>Upload every returned STL/render to Drive the moment it lands (do not batch to session end). The durable log is <code>rounds.md</code>; the round closes with an <code>r9-panel</code> review artifact carrying the cleaned-temple verdict.</p>
@@ -248,26 +228,7 @@ python3 tools/mesh_thin_parts.py --stl $M/meshy/round-9/mace-m2-temple-clean-37m
 <div id="ilb" hidden><div class="panel">
 <button class="x" data-close aria-label="close">&times;</button>
 <div id="ilb-body"></div></div></div>
-<template id="in-0"><h2>mace-r8-A1</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-10T15:08:34</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/mace/prompts/r8-turnaround-wide.txt</p><pre>A character turnaround sheet for a 3D miniature sculpt, painted INTO the attached template canvas.
 
-TWO images are attached. The FIRST is the character reference. The SECOND is the template canvas: one horizontal row of FOUR equally-sized WIDE slots separated by thick dark divider lines. Paint EXACTLY ONE full-body view of the character into each slot, left to right. The entire figure stays inside its slot with a small gray margin on all sides; no part touches or crosses the dark divider lines or the image edges. Keep the divider lines intact. Never merge slots, never stack views vertically, never leave a slot empty.
-
-THE POSE IS WIDE — THIS IS CRITICAL. The slots are deliberately wide to fit her full stance. In EVERY slot, preserve the complete WIDTH of the reference pose: feet planted clearly wider than her shoulders, knees bent outward, arms held wide of her torso with hands out front. Let the pose FILL the width of each slot. Do NOT narrow the stance, do NOT bring her feet together, do NOT tuck her arms in, do NOT straighten her up. She is coiled wide and low, ready to wrestle whatever comes through the line.
-
-The four views, left to right (all directions are the VIEWER&#x27;S left and right):
-- Slot 1 = FRONT view: the shoulder pad and the number 8 are on the VIEWER&#x27;S RIGHT; the triangular three-pin socket at her temple is on the VIEWER&#x27;S LEFT; the trailing foot is on the VIEWER&#x27;S LEFT.
-- Slot 2 = SIDE PROFILE of the shoulder-pad side: the character faces the VIEWER&#x27;S LEFT; the shoulder pad is on the near shoulder, fully visible; her extended arms reach toward the VIEWER&#x27;S LEFT. The temple socket is on the far side of her head and NOT visible in this slot.
-- Slot 3 = REAR THREE-QUARTER from the side WITHOUT the pad: her back dominates the view, her pad-free shoulder and flank are nearest the camera, the shoulder pad sits on the FAR shoulder at the VIEWER&#x27;S LEFT, partially visible; the edge of the temple socket may show on the near side of her head.
-- Slot 4 = FRONT THREE-QUARTER from the side WITHOUT the pad: her pad-free shoulder and flank are nearest the camera; the triangular three-pin socket at her temple is on the near side, clearly visible; the shoulder pad sits on the FAR shoulder toward the VIEWER&#x27;S RIGHT; both open palms clearly visible, each with four fingers plus a visible thumb.
-
-Monochrome matte clay render, like a ZBrush sculpt screenshot: every part is SOLID OPAQUE matte gray clay, no color, no glow, no transparency; soft neutral studio lighting, crisp clean geometry, high resolution.
-
-The character is the woman in the FIRST attached image, reproduced faithfully in all four slots — the SAME armor kit, the SAME build, the SAME wide ready stance. Key details: femme features, heavy jaw, flattened boxer&#x27;s nose, fierce scowl, very short buzzcut. The TRIANGULAR THREE-PIN SOCKET at one temple exactly as in the reference: a raised flat triangular metal plate with three recessed cylindrical socket pins, roughly eye-sized. A single asymmetric layered armored shoulder pad on ONE shoulder; snug armored compression bodysuit; armored knee pads and shin guards; heavy boots with cleated soles; chunky plated knuckle guards over the backs of both hands. Both hands clearly EMPTY, fingers together. Arms and legs are flesh and muscle: NO robotic or cybernetic limbs. Her back is plain bodysuit and harness straps: NO emblem or markings on her back.
-
-Shoulder pad markings — on the TOP PLATE ONLY. The engraved number 8 sits small in the plate&#x27;s upper rear corner. The rest of the top plate&#x27;s face is DOMINATED by a large EAGLE tag: a crude, deliberately ASYMMETRIC spray-stencil tag of a DIVING eagle seen from the side — single head in profile pointed down and forward, wings swept back at different angles, blocky geometric feathers — with a RIDGED, RAISED OUTLINE standing proud of the plate surface. It is street graffiti, NOT a heraldic emblem, NOT symmetrical. The LOWER plates of the pad are completely PLAIN, and the eagle appears NOWHERE else on the model.
-
-No base or pedestal under the figure, no background props, no text, captions, or panel labels anywhere — the only markings on the character are the 8 and the eagle tag on the pad&#x27;s top plate.
-</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="projects/cyber-amazons/mace/concept-art/mace-r7-A1-1.png (not on this machine)" alt="projects/cyber-amazons/mace/concept-art/mace-r7-A1-1.png (not on this machine)"><figcaption>projects/cyber-amazons/mace/concept-art/mace-r7-A1-1.png (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="projects/cyber-amazons/mace/concept-art/turnaround-template-4slot-wide-2k.png (not on this machine)" alt="projects/cyber-amazons/mace/concept-art/turnaround-template-4slot-wide-2k.png (not on this machine)"><figcaption>projects/cyber-amazons/mace/concept-art/turnaround-template-4slot-wide-2k.png (not on this machine)</figcaption></figure></div></template>
 <script>
 const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
       lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
