@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Head Socket — Round 3 runbook</title>
+<style>
+:root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:92vh; object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+
+.md h2 { font-size:1.15rem; margin:2.2rem 0 .3rem }
+.md h3 { font-size:1rem; margin:1.6rem 0 .3rem }
+.md h4 { font-size:.9rem; margin:1.2rem 0 .3rem; color:var(--dim) }
+.md p { max-width:78ch }
+.md ul, .md ol { max-width:78ch; padding-left:1.4rem }
+.md li { margin:.25rem 0 }
+.md a { color:var(--accent) }
+.md code { background:var(--pre); border:1px solid var(--line); border-radius:4px;
+  padding:.05rem .3rem; font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
+.md pre.code { background:var(--pre); border:1px solid var(--line); border-radius:6px;
+  padding:.75rem 1rem; overflow-x:auto; font-size:.82rem; line-height:1.5 }
+.md pre.code code { background:none; border:0; padding:0 }
+.md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+.md dl.rb-meta { display:grid; grid-template-columns:auto 1fr; gap:.3rem 1.1rem;
+  max-width:60ch; margin:.2rem 0 1.8rem; padding:.9rem 1.15rem; background:var(--pre);
+  border:1px solid var(--line); border-radius:8px; font-size:.9rem }
+.md dl.rb-meta dt { color:var(--dim); font-weight:600; white-space:nowrap }
+.md dl.rb-meta dd { margin:0 }
+.md details { max-width:78ch; margin:1.8rem 0; border:1px solid var(--line);
+  border-radius:8px; background:var(--pre); padding:0 1.15rem }
+.md details[open] { padding-bottom:.4rem }
+.md details > summary { cursor:pointer; padding:.85rem 0; font-weight:600;
+  color:var(--accent); list-style:none }
+.md details > summary::-webkit-details-marker { display:none }
+.md details > summary::before { content:'\25B8\A0' }
+.md details[open] > summary::before { content:'\25BE\A0' }
+.md details > summary + * { margin-top:.2rem }
+</style></head><body><main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">cyber-amazons</a><span class="sep">&rsaquo;</span><a href="../">head-socket</a></nav>
+<div class="eyebrow">cyber-amazons · head-socket · round 3</div>
+<h1>Head Socket — Round 3 runbook</h1>
+<span class="crosslink" style="opacity:.55;pointer-events:none" title="Published at round close">&#128203; Review panel &mdash; at round close</span>
+<h2>Base assets — what this round builds on</h2>
+<p class="blurb">The source image(s) every generation in this round starts from. Click to zoom; open “inputs” for the prompt and reference images that produced each one.</p>
+<div class="grid">
+<div class="card"><div class="imgwrap" data-full="../../../../assets/38fbba02068af28c.jpg" data-cap="hsocket-r2-P6-recessed-gptimage2med"><img src="../../../../assets/4cb418e9edde6ad2.jpg" alt="hsocket-r2-P6-recessed-gptimage2med" loading="lazy"></div><div class="meta"><header><h3>hsocket-r2-P6-recessed-gptimage2med</h3></header><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+</div>
+<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>Authoring / build — STL master → per-character fuse → test print</dd><dt>Status</dt><dd>Awaiting sign-off · no authoring or Meshy spend yet</dd><dt>Owner</dt><dd>Claude (cloud) → Dimitri · Jason · Jeremy review</dd><dt>Date opened</dt><dd>2026-07-13</dd><dt>Branch</dt><dd><code>claude/head-socket-round-2-daxwbb</code></dd><dt>Prior round</dt><dd>r2 close picked the mark — <strong>P6 mecha-wolf, recessed field, held at ~one-eye-width</strong> (<code>hsocket-r2-P6-recessed-gptimage2med</code>; Jason &quot;coolest while still a port first&quot;, Dimitri concurs). Jeremy cautioned the dug-in detail is tiny — &quot;might be printable… but borderline unpaintable if it does come out&quot;, maybe side-brushable &quot;if it sits up high enough&quot;. Dimitri: &quot;worth a try to see how it goes.&quot; (<code>round-feedback.jsonl</code> r2 jason/jeremy/dimitri, all <code>final</code>.)</dd></dl>
+<h2>Goal</h2>
+<p>The design is chosen; this round <strong>builds it for real and puts it in hand</strong>. We author the recessed wolf socket as one clean, reusable <strong>STL master</strong>, fuse that master onto a single real character&#x27;s head, and run a <strong>physical test print</strong> — because the one thing images can&#x27;t answer is Jeremy&#x27;s question: does the recessed detail actually print at 32 mm, and can you get paint into (or around) it? Everything roster-wide waits on that print.</p>
+<h2>The choices on the table</h2>
+<p>This is a build round, so the &quot;choices&quot; are the two calls that shape the master and the test — plus the sign-off to spend:</p>
+<div class="tablewrap"><table><thead><tr><th>Decision</th><th>Options</th><th>Our recommendation</th></tr></thead><tbody><tr><td><strong>How we build the wolf</strong></td><td>(a) trace the low-poly wolf outline and author it from primitives — no Meshy, deterministic, free; (b) send the render to Meshy (×2 rolls) and pick the clean one</td><td><strong>(a) trace-and-author.</strong> The r2 gold is already an angular, geometric line-art wolf — traceable as a polygon, so we can skip the Meshy lottery entirely and get exact control of the recess depth and rim height. Meshy stays the fallback if the trace looks lifeless.</td></tr><tr><td><strong>Recess depth / rim height on the master</strong></td><td>the exact millimetres of field-dip and rim-proud</td><td>Author to the floors (field ~0.3–0.5 mm below skin, rim + collars proud, every feature ≥0.6 mm) and print <strong>a small depth ladder</strong> (2–3 rim/recess heights on one plate) so the test print settles &quot;sits up high enough&quot; empirically rather than by guess.</td></tr><tr><td><strong>Which character to test on</strong></td><td>any one roster mesh with a clean temple</td><td><strong>Gorgon</strong> (used for the r1 fuse feasibility check; temple region already known-good). Say the word if you&#x27;d rather it be someone else.</td></tr></tbody></table></div>
+<h2>What we need from you</h2>
+<p><strong>Sign-off to author + print</strong>, plus: confirm the <strong>trace-and-author</strong> path (vs. Meshy), and confirm <strong>Gorgon</strong> as the test-print character (or name another). Then we author the master, fuse it, and get a physical print back to judge print + paint access — no roster-wide rollout until that print passes.</p>
+<h2>Cost</h2>
+<p>Effectively <strong>~$0 in credits</strong> on the recommended path (trace-and-author uses no image/Meshy spend; validation + render are local). Meshy fallback would be ~2 rolls × ~20 credits. The real cost is <strong>one test print</strong> (Dimitri&#x27;s printer / filament-or-resin + time).</p>
+<details>
+<summary>Technical plan — authoring, fuse, validation, print (pipeline detail)</summary>
+<h3>What changed going in (spec / process deltas)</h3>
+<ul>
+<li><strong>spec.md → new &quot;Selected design (r2 close, 2026-07-13)&quot;</strong> section locks the geometry the master is authored to: P6 wolf outline, recessed field, three collared socket-holes (eyes + snout), ~one-eye-width, authored-STL delivery. Status moved from &quot;design-selection in progress&quot; → &quot;design selected; authoring the master (r3)&quot;.</li>
+<li><strong>rounds.md</strong> r2 decision resolved (P6 / recessed / size held / test print); r3 section opened. Verdicts logged to <code>reviews.json</code> (jason SELECTED, jeremy CAUTION on the gold) and <code>round-feedback.jsonl</code> (r2, <code>final</code>).</li>
+<li><strong>Process:</strong> first authoring round for this asset — no image generation. The r2 gold <code>hsocket-r2-P6-recessed-gptimage2med</code> is the visual reference the authored geometry must match; it is embedded on this page as the base asset.</li>
+</ul>
+<h3>Build steps (the &quot;matrix&quot; for a build round — each gated by its check)</h3>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Step</th><th>Output</th><th>Gate</th></tr></thead><tbody><tr><td>1</td><td>Trace the r2-gold wolf outline to a 2D polygon (ears/muzzle vertices); place the 3 port centres (2 eyes + snout)</td><td><code>wolf_outline.svg</code>/points</td><td>eyeball trace vs. the gold; symmetry sanity</td></tr><tr><td>2</td><td>Author the master from primitives: extrude the wolf-outline <strong>rim ring</strong>; <strong>recess</strong> the inner field ~0.3–0.5 mm; add <strong>3 collar cylinders − 3 bores</strong>; author a <strong>2–3 step depth ladder</strong> variant plate</td><td><code>hsocket-r3-wolf-master.stl</code> (+ ladder)</td><td>watertight, single component, features ≥0.6 mm (<code>stl-validation</code>)</td></tr><tr><td>3</td><td>Thin-parts probe on the ear tips + eye/snout collar necks (tight: <code>--pitch 0.28</code>, flag necks <code>--fragile-mm 0.6</code>)</td><td>probe report</td><td>no sub-0.6 mm necks; blunt ears</td></tr><tr><td>4</td><td>Fuse the master onto the test character (Gorgon): seat at right temple, orient to local normal, over-embed rim + <strong>subtract the recess pocket</strong>, boolean union</td><td><code>hsocket-r3-wolf-on-&lt;char&gt;.stl</code></td><td>watertight single shell; temple manifold pre-boolean</td></tr><tr><td>5</td><td>Render turnarounds + zoomed temple crops; fresh-context subagent audit vs. the r2 gold</td><td>renders + audit record</td><td>rim&gt;field&gt;holes reads; wolf + jack both read</td></tr><tr><td>6</td><td>Upload master + fused STL + renders to Drive <strong>the moment they land</strong>; hand over Drive links</td><td>Drive links</td><td>—</td></tr><tr><td>7</td><td><strong>Physical test print</strong> (Dimitri) at 32 mm heroic scale</td><td>printed mini</td><td>print resolution + paint access on the recessed detail</td></tr><tr><td>8</td><td>Close the round: review panel (<code>r3-panel.json</code>) with the print verdict; fold the standard into team-brief §4 + character specs</td><td><code>rN</code> review artifact</td><td>Dimitri + Jason + Jeremy sign-off</td></tr></tbody></table></div>
+<p>Meshy fallback (only if the trace reads lifeless): standalone orthographic exemplar render of the wolf plate → Meshy multi-view ×2 → pick the defect-free roll (per-feature comparative review vs. gold) → same fuse step from #4.</p>
+<h3>Commands (run after sign-off)</h3>
+<p>Generic setup: <code>pip install -r requirements.txt</code>; secrets via <code>OP_SERVICE_ACCOUNT_TOKEN</code> → <code>op</code> resolves the <code>minis-pipeline</code> vault (preflight <code>op</code> is installed). Pull the r2 gold + the target character mesh from Drive first (<code>tools/drive_sync.sh pull &lt;path&gt;</code>; cloud: Drive MCP).</p>
+<pre class="code"><code>H=projects/cyber-amazons/head-socket
+# NB: author_head_socket.py, stl_validate.py, and fuse_socket.py are NEW scripts
+# authored THIS round (per the build-steps table) — they are not in tools/ yet.
+# stl_validate.py just wraps the existing trimesh watertight/scale checks from
+# references/stl-validation.md (mesh_thin_parts.py already exists). The block
+# below is the intended post-sign-off run order, not runnable until they land.
+# 1–3 author + validate the master
+python3 tools/author_head_socket.py --design p6-wolf --seating recessed \
+  --trace $H/generated/hsocket-r2-P6-recessed-gptimage2med-1.png \
+  --size one-eye-width --depth-ladder 0.3,0.4,0.5 \
+  --out $H/meshy/hsocket-r3-wolf-master.stl
+python3 tools/stl_validate.py $H/meshy/hsocket-r3-wolf-master.stl
+# tight thin-parts probe: real CLI is --stl (positional not accepted), no --erode;
+# tightness is --pitch, and --fragile-mm flags necks below the threshold.
+python3 tools/mesh_thin_parts.py --stl $H/meshy/hsocket-r3-wolf-master.stl --pitch 0.28 --fragile-mm 0.6
+# 4 fuse onto the test character (Gorgon)
+python3 tools/fuse_socket.py --master $H/meshy/hsocket-r3-wolf-master.stl \
+  --character &lt;gorgon-mesh.stl&gt; --seat right-temple --embed 0.6 --carve-recess \
+  --out $H/meshy/hsocket-r3-wolf-on-gorgon.stl
+python3 tools/stl_validate.py $H/meshy/hsocket-r3-wolf-on-gorgon.stl
+# 5 render + audit; 6 upload to Drive ASAP; 7 test print; 8 close round</code></pre>
+<p>Upload every returned STL/render to Drive the moment it lands (do not batch to session end). The durable log is <code>rounds.md</code>; the round closes with an <code>r3-panel</code> review artifact carrying the test-print verdict.</p>
+</details></div>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+<template id="in-0"><h2>hsocket-r2-P6-recessed-gptimage2med</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=medium · $0.04 · 2026-07-12T15:42:37</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r2-P6-recessed.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the SEATING and depth read clearly — shadows show the raised rim, the field, and the recessed holes.
+
+THE ASSET — a single interface socket set into the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+
+- PLATE OUTLINE: an angular mecha-WOLF head — chunky and simple, blunt ears, not ornate. The raised rim traces the wolf-head outline; its two eyes and snout ARE the three collared socket-holes, sunk in the field.
+
+SEATING / PROFILE — how the asset sits against the skin (THE KEY POINT OF THIS STUDY):
+- The plate has a RAISED RIM / EDGE — a bevelled bezel ring tracing the outline — that ALWAYS stands proud of the skin and is the HIGHEST part, standing a bit further out than the inner field.
+- The inner FIELD (the top face the sockets sit in) is the level that varies: the field sits SLIGHTLY BELOW SKIN LEVEL — dug in about 0.3–0.5 mm — with the rim proud above both the field and the surrounding skin. The rim rises above the field in every case.
+- This is a SET-IN socket with a proud rim, NOT a slab or tile stuck flat on top of the skin.
+- The three COLLARED SOCKET-HOLES sit in the field: each a small round hole ringed by a short raised collar; the collar rises no higher than the rim, the hole is recessed below the field. NOT pins, NOT studs.
+- In the raking panel the light must read the levels clearly: the proud RIM (highest/brightest), then the FIELD, then the recessed HOLES (darkest).
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The rim is a chunky bevelled ring (≥0.6 mm wide, ≥0.6 mm proud); the three collared socket-holes are generously spaced so they stay separate; every feature ≥0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+document.addEventListener('click',function(e){
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+</body></html>
