@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Gorgon — Round 10 runbook</title>
+<style>
+:root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:92vh; object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+
+.md h2 { font-size:1.15rem; margin:2.2rem 0 .3rem }
+.md h3 { font-size:1rem; margin:1.6rem 0 .3rem }
+.md h4 { font-size:.9rem; margin:1.2rem 0 .3rem; color:var(--dim) }
+.md p { max-width:78ch }
+.md ul, .md ol { max-width:78ch; padding-left:1.4rem }
+.md li { margin:.25rem 0 }
+.md a { color:var(--accent) }
+.md code { background:var(--pre); border:1px solid var(--line); border-radius:4px;
+  padding:.05rem .3rem; font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
+.md pre.code { background:var(--pre); border:1px solid var(--line); border-radius:6px;
+  padding:.75rem 1rem; overflow-x:auto; font-size:.82rem; line-height:1.5 }
+.md pre.code code { background:none; border:0; padding:0 }
+.md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+.md dl.rb-meta { display:grid; grid-template-columns:auto 1fr; gap:.3rem 1.1rem;
+  max-width:60ch; margin:.2rem 0 1.8rem; padding:.9rem 1.15rem; background:var(--pre);
+  border:1px solid var(--line); border-radius:8px; font-size:.9rem }
+.md dl.rb-meta dt { color:var(--dim); font-weight:600; white-space:nowrap }
+.md dl.rb-meta dd { margin:0 }
+.md details { max-width:78ch; margin:1.8rem 0; border:1px solid var(--line);
+  border-radius:8px; background:var(--pre); padding:0 1.15rem }
+.md details[open] { padding-bottom:.4rem }
+.md details > summary { cursor:pointer; padding:.85rem 0; font-weight:600;
+  color:var(--accent); list-style:none }
+.md details > summary::-webkit-details-marker { display:none }
+.md details > summary::before { content:'\25B8\A0' }
+.md details[open] > summary::before { content:'\25BE\A0' }
+.md details > summary + * { margin-top:.2rem }
+/* Runbook tables carry PROSE (the "choices on the table" comparison, the
+   build-step gates), not the review panel's short IDs. review_page.py's global
+   table CSS pins cols 1-2 to white-space:nowrap and col 2 to a monospace font —
+   right for id columns, but here it forces long option/recommendation cells
+   onto one unbreakable line: the table blows past the page width (the awkward
+   left-right scroll) and the other columns get starved into tall, ragged stacks
+   (the lopsided whitespace). Undo both inside .md so every cell wraps to its
+   column and auto table-layout balances the widths to the page. */
+.md .tablewrap { margin:.4rem 0 1.6rem }
+.md th, .md td { white-space:normal; overflow-wrap:break-word;
+  font-family:inherit }
+.md td code { overflow-wrap:anywhere }
+/* Keep some readable structure on narrow screens rather than crushing three
+   prose columns to nothing; .tablewrap scrolls only past this floor. */
+.md table { min-width:34rem }
+</style></head><body><main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">cyber-amazons</a><span class="sep">&rsaquo;</span><a href="../">gorgon</a></nav>
+<h1>Gorgon — Round 10 runbook</h1>
+<span class="crosslink" style="opacity:.55;pointer-events:none" title="Published at round close">&#128203; Review panel &mdash; at round close</span>
+<h2>Base assets — what this round builds on</h2>
+<p class="blurb">The source image(s) every generation in this round starts from. Click to zoom; open “inputs” for the prompt and reference images that produced each one.</p>
+<div class="grid">
+<div class="card"><div class="imgwrap" data-full="../../../../assets/62f98ca94acda847.jpg" data-cap="gorgon-r9-clay-1x4-r1-flash31"><img src="../../../../assets/f8d072687d866d39.jpg" alt="gorgon-r9-clay-1x4-r1-flash31" loading="lazy"></div><div class="meta"><header><h3>gorgon-r9-clay-1x4-r1-flash31</h3></header><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="../../../../assets/eb95754779c8dc7b.jpg" data-cap="gorgon-r9-clay-1x4-r2-flash31"><img src="../../../../assets/5a2eeaa2ea7565a6.jpg" alt="gorgon-r9-clay-1x4-r2-flash31" loading="lazy"></div><div class="meta"><header><h3>gorgon-r9-clay-1x4-r2-flash31</h3></header><button class="ibtn" data-inputs="in-1">inputs — prompt &amp; refs</button></div></div>
+</div>
+<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>Meshy run (clay sheets → 3D reconstruction)</dd><dt>Status</dt><dd>In progress — Dimitri&#x27;s go given (2026-07-13; round-feedback.jsonl)</dd><dt>Owner</dt><dd>Claude (cloud) → Dimitri review</dd><dt>Date opened</dt><dd>2026-07-13</dd><dt>Inputs</dt><dd><code>gorgon-r9-clay-1x4-r1-flash31</code>, <code>gorgon-r9-clay-1x4-r2-flash31</code> — the two Round 9 clay keepers</dd><dt>Produces</dt><dd><code>gorgon-r10-r1-m1</code>, <code>gorgon-r10-r1-m2</code>, <code>gorgon-r10-r2-m1</code>, <code>gorgon-r10-r2-m2</code> — four candidate meshes (two Meshy rolls per clay sheet)</dd><dt>Branch</dt><dd><code>claude/round-10-clay-meshy-ngwor0</code></dd><dt>Prior round</dt><dd>Round 9 produced two clean clay rolls (<code>-r1</code> backup, <code>-r2</code> recommended). Dimitri&#x27;s go for Round 10 (2026-07-13): run <strong>both</strong> clay sheets — not just the recommended r2 — with <strong>two Meshy rolls each</strong>, and pick the defect-free mesh.</dd></dl>
+<h2>Goal</h2>
+<p>Turn the Round 9 clay turnaround sheets into 3D — feed the clean matte-clay four-view sheets into Meshy&#x27;s multi-view reconstruction and get back a watertight, print-ready mesh of Gorgon. This is the step that first makes her a real object you can drop into a slicer. The problem it addresses: reconstruction is a stochastic lottery at the feature level (a hand can double, a thin edge can float or vanish) — so we run more than one roll and keep the clean one.</p>
+<h2>The choices on the table</h2>
+<p>One path, no competing designs — Meshy multi-view reconstruction of each clay sheet. The variety is deliberate insurance, not a design fork:</p>
+<div class="tablewrap"><table><thead><tr><th>What we run</th><th>Why</th></tr></thead><tbody><tr><td><strong>r1 clay → 2 Meshy rolls</strong></td><td>r1 is the backup keeper; its front-pad &quot;4&quot; had degraded to a faint cross, so it earns a look in 3D too</td></tr><tr><td><strong>r2 clay → 2 Meshy rolls</strong></td><td>r2 is the crisper recommended sheet (legible incised &quot;4&quot;), the primary candidate</td></tr></tbody></table></div>
+<p>Four meshes total. Two rolls per sheet is the standard cheap safety net: surface roughness is stable roll-to-roll, but <strong>feature</strong> defects are per-roll random, so a second roll usually yields one clean shell. What this round sets up for a decision: <strong>which single mesh becomes the print candidate</strong>, and it keeps the still-open <strong>S7.1 un-mirror</strong> call live (the clay was built in the mirrored generation frame; with clay already fixed, the un-mirror is now a late horizontal flip of the STL in the slicer — mechanism still pending your confirmation).</p>
+<h2>What we need from you</h2>
+<p>After validation + the comparative review land in <code>rounds.md</code> / the <code>r10-panel</code> review: confirm <strong>the keeper mesh</strong> (defect-free pick, per clay sheet and overall) to carry to the live-3D gate and test print, and settle the <strong>S7.1 un-mirror</strong> mechanism (STL-in-slicer horizontal flip vs earlier). Meshes come back at Meshy&#x27;s raw units; the target is <strong>~32 mm on the longest axis</strong> — set your viewer to that to see her life-size.</p>
+<h2>Cost</h2>
+<p>Meshy ≈ 20 credits/run × 4 runs = <strong>~80 credits</strong>. No image-model spend (clay sheets already exist).</p>
+<details>
+<summary>Technical plan — models, prompts, commands (pipeline detail)</summary>
+<h3>What changed going in (spec / prompt / process deltas)</h3>
+<ul>
+<li><strong>Both clay parents, not just r2</strong> (Dimitri&#x27;s r10 scope). Round 9&#x27;s own next-step note recommended meshing only the crisper r2 sheet; this round widens to r1 <strong>and</strong> r2, two rolls each, and picks the defect-free mesh across all four. No spec/design change.</li>
+<li><strong>No new generation prompt</strong> — this is a 3D step, not an image step. Inputs are the existing clay PNGs.</li>
+<li><strong>Input prep (standard, from the skill&#x27;s Meshy-crop rules):</strong> each clay sheet is a wide 1×4 strip with dark dividers. Divider-trim past the dark dividers and restitch a divider-free sheet FIRST (dividers sit at panel corners and poison <code>meshy_crops.py</code>&#x27;s corner-based background estimate), then crop the 4 panels in rotational reading order (front → side → back → other side).</li>
+<li><strong>Frame note (S7.1 — still open):</strong> clay was converted in the mirrored generation frame (Gorgon walks viewer-right; pad her-right shoulder). Reconstructing in-frame does not foreclose the team-standard un-mirror; with the clay fixed, that flip is now an STL-in-slicer horizontal flip, pending Dimitri&#x27;s confirmation.</li>
+<li><strong>Validation policy (per <code>references/stl-validation.md</code>):</strong> watertightness + Euler, scale to ~32 mm longest axis, thin-connection probe (<code>mesh_thin_parts.py</code> tight: pitch ~0.28, erode 1, <code>--gold</code> diff), turntable</li>
+<ul>
+<li>hand/pad zoom renders, then a fresh-context per-feature COMPARATIVE review vs the photoreal gold (<code>gorgon-r8-B2-turnaround-1x4-flash31</code>) — pre-filter only; the human live-3D gate is the real acceptance.</li>
+</ul>
+</ul>
+<h3>Experiment matrix</h3>
+<p>Four Meshy runs. <strong>Source (input)</strong> is a Round 9 clay sheet; <strong>Out-stem (output)</strong> is the reconstructed mesh. Model policy: Meshy multi-view (<code>meshy-6</code>), polycount 300k (defaults) — same engine for all four so the only variable is the clay input + the per-roll lottery.</p>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Variant axes</th><th>Tool</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>1</td><td><code>gorgon-r9-clay-1x4-r1-flash31</code></td><td>Meshy roll 1</td><td><code>meshy_api.py run</code></td><td><code>gorgon-r10-r1-m1</code></td></tr><tr><td>2</td><td><code>gorgon-r9-clay-1x4-r1-flash31</code></td><td>Meshy roll 2</td><td><code>meshy_api.py run</code></td><td><code>gorgon-r10-r1-m2</code></td></tr><tr><td>3</td><td><code>gorgon-r9-clay-1x4-r2-flash31</code></td><td>Meshy roll 1</td><td><code>meshy_api.py run</code></td><td><code>gorgon-r10-r2-m1</code></td></tr><tr><td>4</td><td><code>gorgon-r9-clay-1x4-r2-flash31</code></td><td>Meshy roll 2</td><td><code>meshy_api.py run</code></td><td><code>gorgon-r10-r2-m2</code></td></tr></tbody></table></div>
+<h3>Commands (run after sign-off)</h3>
+<pre class="code"><code># setup: deps + secrets (OP_SERVICE_ACCOUNT_TOKEN -&gt; op CLI -&gt; minis-pipeline vault)
+bash cloud/setup.sh
+G=projects/cyber-amazons/gorgon
+GEN=$G/generated
+# pull the two clay PNGs from Drive (cloud: Google Drive MCP connector; local: drive_sync)
+tools/drive_sync.sh pull $GEN
+
+# per clay sheet: divider-trim + restitch, then crop the 4 panels (reading order)
+for R in r1 r2; do
+  SHEET=$GEN/gorgon-r9-clay-1x4-$R-flash31-1.png
+  python3 tools/meshy_crops.py --sheet $SHEET \
+    --views front side back three-quarter \
+    --out-dir $G/meshy/round-10/inputs-$R \
+    --prefix gorgon-r10-$R-in \
+    --composite $G/meshy/round-10/gorgon-r10-$R-inputs.png
+done
+# (pre-flight: eyeball each -inputs.png composite before spending credits)
+
+# 4 Meshy runs = two rolls per clay sheet
+for R in r1 r2; do
+  IN=$G/meshy/round-10/inputs-$R
+  for ROLL in m1 m2; do
+    python3 tools/meshy_api.py run \
+      --front $IN/gorgon-r10-$R-in-front.png \
+      --views $IN/gorgon-r10-$R-in-side.png $IN/gorgon-r10-$R-in-back.png $IN/gorgon-r10-$R-in-three-quarter.png \
+      --out $G/meshy/round-10/gorgon-r10-$R-$ROLL.glb
+    # push each mesh to Drive THE MOMENT it lands (before validation)
+    tools/drive_sync.sh push $G/meshy/round-10
+  done
+done
+
+# validate/repair each mesh, scale to ~32mm, render turntables + thin-parts probe
+# (per references/stl-validation.md), then fresh-context comparative review vs gold</code></pre>
+<p>Upload every returned mesh to Drive immediately on landing (durability floor). Audit each mesh with a fresh-context per-feature COMPARATIVE subagent vs the gold, log verdicts to <code>reviews.json</code>, then build the <code>r10-panel</code> review (<code>review_page.py --inline</code> → claude.ai artifact). The durable log is <code>rounds.md</code> (Round 10) — that (and the <code>r10-panel</code> review), NOT this runbook, is where the round&#x27;s outcome and verdicts live.</p>
+</details></div>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+<template id="in-0"><h2>gorgon-r9-clay-1x4-r1-flash31</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-13T07:22:09</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon/prompts/r9-clay-convert.txt</p><pre>Convert the attached FOUR-VIEW turnaround sheet into a monochrome matte clay sculpt render, like a ZBrush clay-sculpt screenshot: the SAME character, SAME poses, SAME armor and kit, SAME hair, SAME proportions and SAME camera angle in every panel as the reference — change ONLY the material and finish. This is a pure restyle, not a redraw: preserve every panel&#x27;s composition exactly.
+
+Keep the sheet&#x27;s structure IDENTICAL: the SAME wide left-to-right strip of FOUR full-body panels in the SAME order — (1) FRONT, (2) her-right-hand-side pad-side near-profile (strides toward the viewer&#x27;s right), (3) TRUE BACK (spine toward camera, face NOT drawn), (4) her-left-hand-side stiff-arm profile (strides toward the viewer&#x27;s left). Do not add, drop, reorder, mirror, or re-pose any panel. Keep each figure at the same size and place in its panel.
+
+Render EVERY surface as SOLID OPAQUE matte gray sculpting clay — one uniform neutral mid-gray across the whole figure. NO color anywhere: no magenta or pink spray-paint tags, no chrome shine or metal reflections, no neon glow, no skin tones, no black leather sheen, no fabric weave. The cybernetic arms, the armored shoulder pad, the compression bodysuit, the leather legging, the bare thigh, the garter strap, the knee pads, the boots, the cable-dreads and the segmented spinal stack are ALL the same matte gray clay, distinguished only by their sculpted 3D form and soft shading. Soft neutral studio lighting, crisp clean geometry, a plain flat light-gray background.
+
+Preserve the geometry that defines her, as clay relief: the raised segmented vertebral spinal stack down the back of the true-back panel; the layered angular shoulder pad with its engraved number 4 on the top plate; the studded leather garter high on the bare leg; the differentiated knee pads; the chunky lugged combat boots; the swept-back cable-dreads as connected sculpted cords. Keep the leg asymmetry exactly as shown (one leg fully covered by the legging, the other bare from mid-thigh with the garter).
+
+Simplify only fine surface grime and painted decals so the forms read cleanly at miniature scale; keep the silhouette and all real geometry identical to the reference. No base or pedestal under the figures, no ground-shadow platform, no props, and NO text or labels anywhere except the engraved number 4 on the shoulder pad.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/9023433376254a75.jpg" data-full="../../../../assets/371f132501a404c3.jpg" data-cap="gorgon-r8-B2-turnaround-1x4-flash31-1.png" alt="gorgon-r8-B2-turnaround-1x4-flash31-1.png"><figcaption>gorgon-r8-B2-turnaround-1x4-flash31-1.png</figcaption></figure></div></template>
+<template id="in-1"><h2>gorgon-r9-clay-1x4-r2-flash31</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-13T07:22:43</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon/prompts/r9-clay-convert.txt</p><pre>Convert the attached FOUR-VIEW turnaround sheet into a monochrome matte clay sculpt render, like a ZBrush clay-sculpt screenshot: the SAME character, SAME poses, SAME armor and kit, SAME hair, SAME proportions and SAME camera angle in every panel as the reference — change ONLY the material and finish. This is a pure restyle, not a redraw: preserve every panel&#x27;s composition exactly.
+
+Keep the sheet&#x27;s structure IDENTICAL: the SAME wide left-to-right strip of FOUR full-body panels in the SAME order — (1) FRONT, (2) her-right-hand-side pad-side near-profile (strides toward the viewer&#x27;s right), (3) TRUE BACK (spine toward camera, face NOT drawn), (4) her-left-hand-side stiff-arm profile (strides toward the viewer&#x27;s left). Do not add, drop, reorder, mirror, or re-pose any panel. Keep each figure at the same size and place in its panel.
+
+Render EVERY surface as SOLID OPAQUE matte gray sculpting clay — one uniform neutral mid-gray across the whole figure. NO color anywhere: no magenta or pink spray-paint tags, no chrome shine or metal reflections, no neon glow, no skin tones, no black leather sheen, no fabric weave. The cybernetic arms, the armored shoulder pad, the compression bodysuit, the leather legging, the bare thigh, the garter strap, the knee pads, the boots, the cable-dreads and the segmented spinal stack are ALL the same matte gray clay, distinguished only by their sculpted 3D form and soft shading. Soft neutral studio lighting, crisp clean geometry, a plain flat light-gray background.
+
+Preserve the geometry that defines her, as clay relief: the raised segmented vertebral spinal stack down the back of the true-back panel; the layered angular shoulder pad with its engraved number 4 on the top plate; the studded leather garter high on the bare leg; the differentiated knee pads; the chunky lugged combat boots; the swept-back cable-dreads as connected sculpted cords. Keep the leg asymmetry exactly as shown (one leg fully covered by the legging, the other bare from mid-thigh with the garter).
+
+Simplify only fine surface grime and painted decals so the forms read cleanly at miniature scale; keep the silhouette and all real geometry identical to the reference. No base or pedestal under the figures, no ground-shadow platform, no props, and NO text or labels anywhere except the engraved number 4 on the shoulder pad.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/9023433376254a75.jpg" data-full="../../../../assets/371f132501a404c3.jpg" data-cap="gorgon-r8-B2-turnaround-1x4-flash31-1.png" alt="gorgon-r8-B2-turnaround-1x4-flash31-1.png"><figcaption>gorgon-r8-B2-turnaround-1x4-flash31-1.png</figcaption></figure></div></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy / share a deep link to one card. The URL is this page plus the card's
+// #id anchor, so a recipient lands scrolled to (and highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+</body></html>
