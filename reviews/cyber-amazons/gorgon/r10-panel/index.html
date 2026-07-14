@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Gorgon — Round 10 (Meshy run)</title>
+<style>
+:root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:92vh; object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+</style></head><body><main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Cyber-Amazons</a><span class="sep">&rsaquo;</span><a href="../">Gorgon</a></nav>
+<div class="eyebrow">cyber-amazons · gorgon · round 10</div>
+<h1>Gorgon — Round 10 (Meshy run)</h1>
+<a class="crosslink" href="../r10-runbook/">&#128214; Round runbook &rarr;</a>
+<p class="sub">Round 10 reconstructs Gorgon in 3D — Meshy multi-view on the Round-9 <b>r2</b> clay sheet, two rolls (<b>m1</b>, <b>m2</b>) as the standard defect-lottery insurance. Meshes are scaled to <b>37&nbsp;mm</b> total height (team “32&nbsp;mm heroic”), feet floored at z=0. Pick the cleaner roll for the live-3D print gate.</p>
+<div class="callout"><b>Pre-read.</b> Both rolls reconstructed cleanly: single watertight-for-slicing shell (a clean 2-manifold except ~24–25 sub-mm self-touch pinch edges — slicer-repairable; 0 holes, winding-consistent), ~0.93–0.94&nbsp;cm³, all identity kit present — open stiff-arm palm, trailing fist, the single asymmetric shoulder pad, braids over the pad-side shoulder, segmented spine, both knee pads, laced/buckled boots. No ghost props (she holds nothing), no doubled limbs, no floating parts; the thin-parts probe flagged no fragile necks. One systematic quirk on <b>both</b> rolls: a flat sole-plate reads under the trailing (mid-stride) boot — from the walk pose, not a per-roll defect. <b>Recommendation: effectively a TIE, narrow lean to m1.</b> m1 is cleaner on the hard-surface armor (pad, seams, spine — fewer non-manifold spikes; its only blemishes are a tiny fingertip hole + minor dreadlock gaps that auto-fill); m2 owns the hero feature — a crisper raised open palm with a clearer thumb and no fingertip hole, plus cleaner braids — but carries a wider ragged non-manifold fringe on the pad rim/shoulder seams that is more cleanup. Both are viable inputs; the call is close enough that it's your live-3D eye.</div>
+<div class="callout asks"><p class="boxhead">Verdicts / info needed</p><p class="intro">Answer any subset — partial answers unblock partial work. Rejecting the set with fresh direction is as valid as picking a roll.</p><ol><li><span class="q">Which mesh roll goes to the live-3D print gate — m1 or m2?</span><span class="who">Dimitri + Jason</span><p class="d">Both are clean, near-identical reconstructions of the r2 clay. This picks the STL you rotate in a real viewer/slicer and greenlight for a test print. Drive has both raw + clean-37mm STLs.</p><ul><li><strong>m1</strong> — carry m1 to the live-3D gate.</li><li><strong>m2</strong> — carry m2 to the live-3D gate.</li><li><strong>Reject both + feedback</strong> — e.g. a defect you spot on the real STL, or an input-change re-run.</li></ul></li><li><span class="q">Un-mirror mechanism (S7.1) — confirm the flip so the plan of record is settled.</span><span class="who">Dimitri</span><p class="d">The clay (and so these meshes) were built in the spec's MIRRORED generation frame (walks viewer-right, pad her-right shoulder). Team standard is pad LEFT / socket RIGHT temple, restored by ONE late horizontal flip. With the mesh already made, that flip is now cleanest in the slicer.</p><ul><li><strong>Flip the STL in the slicer</strong> — simplest; nothing upstream changes.</li><li><strong>Flip earlier (art/clay)</strong> — keeps that option open too.</li></ul></li><li><span class="q">r1 clay — leave dropped, or run it? (ADDRESSED in r11)</span><span class="who">Dimitri</span><p class="d">r1 was dropped this round because its clay blurs into the background — partly a crop-tool issue (the figure's low-contrast interior was painted over as background). The tooling was subsequently hardened on <b>main</b> (PR #80) with a non-destructive rectangular crop default that removes the paint-out entirely (superseding this branch's earlier in-repo attempt). <b>Round 11 acted on this</b>: it re-cropped and meshed r1 (and r2, and the non-clay gold) with the merged rectangular tool — see the r11 panel/round for the result.</p></li></ol></div>
+<h2>Meshy reconstruction — two rolls off the r2 clay</h2>
+<p class="blurb">Each card is a Meshy roll: the main image is the 4-azimuth turnaround render; click to open the inputs lightbox (the four cropped clay panels that fed the run) and cycle to the hand/upper-body zoom. The r2 clay sheet is shown as the gold to compare against.</p>
+<div class="grid">
+<div class="card" id="gorgon-r10-r2-m1"><div class="imgwrap" data-full="../../../../assets/2b01c5f8356b2338.jpg" data-cap="mesh · r2 roll m1"><img src="../../../../assets/fbee7d2fdabc536d.jpg" alt="mesh · r2 roll m1" loading="lazy"></div><div class="meta"><header><h3>mesh · r2 roll m1</h3><span class="call keeper" title="KEEPER — narrow pick (mesh cleanliness)">KEEPER</span></header><div class="cardref"><a class="refid" href="#gorgon-r10-r2-m1" title="Deep link to this image">#r2-m1</a><button class="refbtn" data-copy="gorgon-r10-r2-m1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="gorgon-r10-r2-m1" data-title="mesh · r2 roll m1" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="floating sole-plate under trailing boot (systematic, both rolls)">floating sole-pla…</span><span class="chip warn" title="small fingertip hole + minor dreadlock gaps (auto-fill)">small fingertip h…</span><span class="chip ok" title="raised open palm 4+thumb; trailing fist">raised open palm…</span><span class="chip ok" title="single asymmetric pad; braids; segmented spine (no face)">single asymmetric…</span></div><details class="more"><summary>all 5 detectors (1 more)</summary><div class="chips"><span class="chip bad" title="floating sole-plate under trailing boot (systematic, both rolls)">floating sole-pla…</span><span class="chip warn" title="small fingertip hole + minor dreadlock gaps (auto-fill)">small fingertip h…</span><span class="chip ok" title="raised open palm 4+thumb; trailing fist">raised open palm…</span><span class="chip ok" title="single asymmetric pad; braids; segmented spine (no face)">single asymmetric…</span><span class="chip ok" title="cleaner hard-surface armor/seams (fewer non-manifold spikes)">cleaner hard-surf…</span></div></details><p>Clean recon; cleaner armor/seams than m2, minor auto-fillable holes.</p><details class="more"><summary>full note</summary><p class="chipnote">Clean recon; cleaner armor/seams than m2, minor auto-fillable holes. Narrow pick on mesh cleanliness; hero hand slightly softer than m2.</p></details><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="gorgon-r10-r2-m2"><div class="imgwrap" data-full="../../../../assets/45de045c5f1bd0f0.jpg" data-cap="mesh · r2 roll m2"><img src="../../../../assets/ab9ba6defa57f2e4.jpg" alt="mesh · r2 roll m2" loading="lazy"></div><div class="meta"><header><h3>mesh · r2 roll m2</h3><span class="call keeper" title="KEEPER — crisper hero hand">KEEPER</span></header><div class="cardref"><a class="refid" href="#gorgon-r10-r2-m2" title="Deep link to this image">#r2-m2</a><button class="refbtn" data-copy="gorgon-r10-r2-m2" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="gorgon-r10-r2-m2" data-title="mesh · r2 roll m2" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="floating sole-plate under trailing boot (systematic, both rolls)">floating sole-pla…</span><span class="chip warn" title="ragged non-manifold fringe on pad rim + shoulder seams (more cleanup)">ragged non-manifo…</span><span class="chip ok" title="raised open palm crisper thumb, no fingertip hole; trailing fist">raised open palm…</span><span class="chip ok" title="single asymmetric pad; cleaner braids; segmented spine (no face)">single asymmetric…</span></div><p>Crisper raised open-palm hand + cleaner braids than m1, but wider non-manifold fringe on the pad/seams to clean up.</p><details class="more"><summary>full note</summary><p class="chipnote">Crisper raised open-palm hand + cleaner braids than m1, but wider non-manifold fringe on the pad/seams to clean up. Effectively tied with m1.</p></details><button class="ibtn" data-inputs="in-1">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="gorgon-r9-clay-1x4-r2-flash31"><div class="imgwrap" data-full="../../../../assets/eb95754779c8dc7b.jpg" data-cap="r2 clay (gold, Meshy input)"><img src="../../../../assets/5a2eeaa2ea7565a6.jpg" alt="r2 clay (gold, Meshy input)" loading="lazy"></div><div class="meta"><header><h3>r2 clay (gold, Meshy input)</h3><span class="cost">~$0.10</span><span class="call keeper" title="KEEPER clay conversion (recommended Meshy input)">KEEPER clay conversio…</span></header><div class="cardref"><a class="refid" href="#gorgon-r9-clay-1x4-r2-flash31" title="Deep link to this image">#r2-clay</a><button class="refbtn" data-copy="gorgon-r9-clay-1x4-r2-flash31" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="gorgon-r9-clay-1x4-r2-flash31" data-title="r2 clay (gold, Meshy input)" title="Share this image">share</button></div><div class="chips"><span class="chip ok" title="uniform-clay — fully opaque matte gray; no chrome/skin/magenta residue">uniform-clay</span><span class="chip ok" title="composition-preserved — 4 panels/order/poses/camera/chirality match gold">composition-prese…</span><span class="chip ok" title="spine (P3) — segmented spinal stack crisp and intact">spine (P3)</span><span class="chip ok" title="hands — all views 4 fingers+thumb, no doubling/drops; stiff-arms preserved">hands</span></div><details class="more"><summary>all 5 detectors (1 more)</summary><div class="chips"><span class="chip ok" title="uniform-clay — fully opaque matte gray; no chrome/skin/magenta residue">uniform-clay</span><span class="chip ok" title="composition-preserved — 4 panels/order/poses/camera/chirality match gold">composition-prese…</span><span class="chip ok" title="spine (P3) — segmented spinal stack crisp and intact">spine (P3)</span><span class="chip ok" title="hands — all views 4 fingers+thumb, no doubling/drops; stiff-arms preserved">hands</span><span class="chip ok" title="P1 · pad-4-glyph — engraved &#x27;4&#x27; legible on the front pad (P1 and P2)">pad-4-glyph</span></div></details><p>Clean uniform-clay restyle, composition preserved, no defects; slightly crisper than r1 with a legible incised &#x27;4&#x27; on the front pad.</p><details class="more"><summary>full note</summary><p class="chipnote">Fresh-context crop-audit vs the photoreal gold gorgon-r8-B2-turnaround-1x4-flash31. Pure material-only restyle: fully opaque uniform matte gray clay, no residual chrome/skin/magenta. All four rotational panels, order, poses, camera, and chirality preserved identically to gold; segmented spinal stack crisp, studded garter, differentiated knee pads, lugged boots intact; all hands correct (4 fingers+thumb, no doubling/drops), stiff-arms preserved edge-on in profiles, no second pad, no ghost/blur limbs, no floating parts. Front-pad &#x27;4&#x27; rendered as a legible incised &#x27;4&#x27; (P1 and P2). Recommended over r1 as the cleaner Meshy input. Two expected carries (not defects): bare-vs-legging material contrast is necessarily gone in clay (garter still marks the formerly-bare leg, a paint-stage distinction); the rounded dome pauldron on the raised shoulder in P3/P4 is faithful to the gold, not a melt.</p></details><button class="ibtn" data-inputs="in-2">inputs — prompt &amp; refs</button></div></div>
+</div>
+<div class="callout steps"><p class="boxhead">Proposed next steps</p><p class="intro">Step 1 depends on the roll pick; the un-mirror can settle any time before the STL is finalised.</p><ol><li><span class="t">Live-3D gate + test print</span><span class="when">on the roll pick</span><p class="d">Rotate the chosen STL in a real viewer/slicer at 37&nbsp;mm; if it holds, a resin test print is the real acceptance (the render pre-filter can't adjudicate borderline thin fragility).</p><ul><li>Apply the S7.1 horizontal flip per your call</li><li>Head-socket graft (P6 mecha-wolf master) fuses on later, per head-socket r3</li></ul></li><li><span class="t">Optional: run r1 now that the crop bug is fixed</span><span class="when">only if you want the extra hedge</span><p class="d">~40 credits for two r1 rolls; the re-prepped r1 crops are clean. Skip unless you want to compare against r1's geometry.</p></li></ol></div>
+<div class="callout"><b>Your eye-call, Dimitri.</b> Pick the roll to carry to the live-3D gate (or reject both with feedback), settle the S7.1 flip, and say whether r1 is worth running now that its crops are fixed.</div>
+<footer>Round cost ~40 Meshy credits (2 r2 rolls; r1's two runs dropped) · meshes + renders on Drive under gorgon/models/round-10/</footer>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+<template id="in-0"><h2>mesh · r2 roll m1</h2><p class="gmeta">meshy-6 · 2026-07-13</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/62edb83a1df66925.jpg" data-full="../../../../assets/a6bf5670d26e3058.jpg" data-cap="gorgon-r10-r2-in-front.png" alt="gorgon-r10-r2-in-front.png"><figcaption>gorgon-r10-r2-in-front.png</figcaption></figure><figure><img src="../../../../assets/f84282a6a25eb294.jpg" data-full="../../../../assets/90f9bdfe9fe79aa7.jpg" data-cap="gorgon-r10-r2-in-side.png" alt="gorgon-r10-r2-in-side.png"><figcaption>gorgon-r10-r2-in-side.png</figcaption></figure><figure><img src="../../../../assets/631f4492c6b04676.jpg" data-full="../../../../assets/d843a7cada841187.jpg" data-cap="gorgon-r10-r2-in-back.png" alt="gorgon-r10-r2-in-back.png"><figcaption>gorgon-r10-r2-in-back.png</figcaption></figure><figure><img src="../../../../assets/488485263eb4f30b.jpg" data-full="../../../../assets/8076b9ba8f33b8b9.jpg" data-cap="gorgon-r10-r2-in-three-quarter.png" alt="gorgon-r10-r2-in-three-quarter.png"><figcaption>gorgon-r10-r2-in-three-quarter.png</figcaption></figure></div></template>
+<template id="in-1"><h2>mesh · r2 roll m2</h2><p class="gmeta">meshy-6 · 2026-07-13</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/62edb83a1df66925.jpg" data-full="../../../../assets/a6bf5670d26e3058.jpg" data-cap="gorgon-r10-r2-in-front.png" alt="gorgon-r10-r2-in-front.png"><figcaption>gorgon-r10-r2-in-front.png</figcaption></figure><figure><img src="../../../../assets/f84282a6a25eb294.jpg" data-full="../../../../assets/90f9bdfe9fe79aa7.jpg" data-cap="gorgon-r10-r2-in-side.png" alt="gorgon-r10-r2-in-side.png"><figcaption>gorgon-r10-r2-in-side.png</figcaption></figure><figure><img src="../../../../assets/631f4492c6b04676.jpg" data-full="../../../../assets/d843a7cada841187.jpg" data-cap="gorgon-r10-r2-in-back.png" alt="gorgon-r10-r2-in-back.png"><figcaption>gorgon-r10-r2-in-back.png</figcaption></figure><figure><img src="../../../../assets/488485263eb4f30b.jpg" data-full="../../../../assets/8076b9ba8f33b8b9.jpg" data-cap="gorgon-r10-r2-in-three-quarter.png" alt="gorgon-r10-r2-in-three-quarter.png"><figcaption>gorgon-r10-r2-in-three-quarter.png</figcaption></figure></div></template>
+<template id="in-2"><h2>r2 clay (gold, Meshy input)</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-13T07:22:43</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon/prompts/r9-clay-convert.txt</p><pre>Convert the attached FOUR-VIEW turnaround sheet into a monochrome matte clay sculpt render, like a ZBrush clay-sculpt screenshot: the SAME character, SAME poses, SAME armor and kit, SAME hair, SAME proportions and SAME camera angle in every panel as the reference — change ONLY the material and finish. This is a pure restyle, not a redraw: preserve every panel&#x27;s composition exactly.
+
+Keep the sheet&#x27;s structure IDENTICAL: the SAME wide left-to-right strip of FOUR full-body panels in the SAME order — (1) FRONT, (2) her-right-hand-side pad-side near-profile (strides toward the viewer&#x27;s right), (3) TRUE BACK (spine toward camera, face NOT drawn), (4) her-left-hand-side stiff-arm profile (strides toward the viewer&#x27;s left). Do not add, drop, reorder, mirror, or re-pose any panel. Keep each figure at the same size and place in its panel.
+
+Render EVERY surface as SOLID OPAQUE matte gray sculpting clay — one uniform neutral mid-gray across the whole figure. NO color anywhere: no magenta or pink spray-paint tags, no chrome shine or metal reflections, no neon glow, no skin tones, no black leather sheen, no fabric weave. The cybernetic arms, the armored shoulder pad, the compression bodysuit, the leather legging, the bare thigh, the garter strap, the knee pads, the boots, the cable-dreads and the segmented spinal stack are ALL the same matte gray clay, distinguished only by their sculpted 3D form and soft shading. Soft neutral studio lighting, crisp clean geometry, a plain flat light-gray background.
+
+Preserve the geometry that defines her, as clay relief: the raised segmented vertebral spinal stack down the back of the true-back panel; the layered angular shoulder pad with its engraved number 4 on the top plate; the studded leather garter high on the bare leg; the differentiated knee pads; the chunky lugged combat boots; the swept-back cable-dreads as connected sculpted cords. Keep the leg asymmetry exactly as shown (one leg fully covered by the legging, the other bare from mid-thigh with the garter).
+
+Simplify only fine surface grime and painted decals so the forms read cleanly at miniature scale; keep the silhouette and all real geometry identical to the reference. No base or pedestal under the figures, no ground-shadow platform, no props, and NO text or labels anywhere except the engraved number 4 on the shoulder pad.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/9023433376254a75.jpg" data-full="../../../../assets/371f132501a404c3.jpg" data-cap="gorgon-r8-B2-turnaround-1x4-flash31-1.png" alt="gorgon-r8-B2-turnaround-1x4-flash31-1.png"><figcaption>gorgon-r8-B2-turnaround-1x4-flash31-1.png</figcaption></figure></div></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy / share a deep link to one card. The URL is this page plus the card's
+// #id anchor, so a recipient lands scrolled to (and highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+</body></html>
