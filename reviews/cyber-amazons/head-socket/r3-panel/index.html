@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Head Jack Round 3 — parallel authored candidates</title>
+<style>
+:root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:92vh; object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+</style></head><body><main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Cyber-Amazons</a><span class="sep">&rsaquo;</span><a href="../">Shared head jack</a></nav>
+<div class="eyebrow">Firewall FC — shared head jack · round 3 · 2026-07-13</div>
+<h1>Head Jack Round 3 — parallel authored candidates</h1>
+<a class="crosslink" href="../r3-runbook/">&#128214; Round runbook &rarr;</a>
+<p class="sub">One checksum-pinned comparison of PR #74 and PR #78 after separating source self-assessments from coordinator-owned round state.</p>
+<div class="callout"><strong>Coordinator pre-read:</strong> Candidate B at 2.0 mm is the strongest rendered direction. Candidate A is mechanically valid but visibly oversized and poorly integrated; Candidate B's 1.5 and 2.0 mm fuses both pass the common mechanical and matched visual gates, with 2.0 mm giving the stronger readable pins. <strong>Dimitri has deferred the physical test because the project is not ready for that gate yet.</strong> This interim review asks only which exact geometry should be retained for later work. No master is promoted and Round 3 remains open.</div>
+<div class="callout asks"><p class="boxhead">Verdict needed now</p><p class="intro">Choose the exact geometry direction to retain. The physical test is explicitly deferred, and the rendered recommendation is not a promotion.</p><ol><li><span class="q">Which exact Round 3 candidate should be retained for later development?</span><span class="who">Dimitri + Jason</span><p class="d">Candidate B at 2.0 mm is recommended from the rendered evidence: it has the strongest balanced wolf/three-pin read and clean seating. Its 0.44 mm pins and 0.26 mm rim remain unproven physically, so selection now only preserves a direction and exact checksum for future work.</p><ul><li>Retain Candidate B · 2.0 mm — recommended; fused checksum 22fa3e9f…08b6 and master checksum a545937f…ceed.</li><li>Retain Candidate B · 1.5 mm — subtler; fused checksum 3bb8382c…19f and master checksum ddd2a594…22e0.</li><li>Select Candidate A only as an explicit visual-overturn — explain what the live mesh disproves about its oversized/projected render.</li><li>Reject all — give precise size, contact-gender, seating, or silhouette feedback for the next numbered runbook.</li></ul></li></ol></div>
+<h2>Common mechanical gate</h2>
+<div class="tablewrap"><table><thead><tr><th>Artifact</th><th>SHA-256</th><th>Topology</th><th>Master footprint</th><th>Mace preservation</th></tr></thead><tbody><tr><td>Candidate A · recessed ports</td><td>de60ec5e…71c7</td><td>PASS · one watertight winding-consistent fused shell · Euler −2 from open port handles</td><td>3.60 × 3.75 mm</td><td>37 mm height and 27.073 × 25.425 mm footprint retained</td></tr><tr><td>Candidate B · 1.5 mm raised pins</td><td>3bb8382c…19f</td><td>PASS · one watertight winding-consistent fused shell · Euler 0</td><td>1.50 × 1.96 mm</td><td>37 mm height and footprint retained</td></tr><tr><td>Candidate B · 2.0 mm raised pins</td><td>22fa3e9f…08b6</td><td>PASS · one watertight winding-consistent fused shell · Euler 0</td><td>2.00 × 2.61 mm</td><td>37 mm height and footprint retained</td></tr></tbody></table></div>
+<h2>Matched authored-master comparison</h2>
+<p class="blurb">Same renderer, clay color, lighting, four cameras, crop behavior, and resolution. These views show contact gender and structural proportions; the on-head set below shows actual scale.</p>
+<div class="grid">
+<div class="card" id="hsocket-r3-attempt-codex-master-3p6mm"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/fd32ba789e8cf89a.png" data-cap="Candidate A — 3.6 mm recessed ports"><img src="../../../../assets/a6207b437422da5f.jpg" alt="Candidate A — 3.6 mm recessed ports" loading="lazy"></div><div class="meta"><header><h3>Candidate A — 3.6 mm recessed ports</h3><span class="call other" title="SOURCE GEOMETRY">SOURCE GEOMETRY</span></header><div class="cardref"><a class="refid" href="#hsocket-r3-attempt-codex-master-3p6mm" title="Deep link to this image">#A-MASTER</a><button class="refbtn" data-copy="hsocket-r3-attempt-codex-master-3p6mm" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="hsocket-r3-attempt-codex-master-3p6mm" data-title="Candidate A — 3.6 mm recessed ports" title="Share this image">share</button></div><div class="chips"><span class="chip warn" title="collarless">collarless</span><span class="chip ok" title="3 recessed ports">3 recessed ports</span></div><p>PR #74&#x27;s robust collarless female-port design; source self-assessment is kept in its attempt packet.</p><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="hsocket-r3-attempt-claude-master-1p5mm"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/9201d341bda6e308.png" data-cap="Candidate B — 1.5 mm raised pins"><img src="../../../../assets/7351e3f55da329e8.jpg" alt="Candidate B — 1.5 mm raised pins" loading="lazy"></div><div class="meta"><header><h3>Candidate B — 1.5 mm raised pins</h3><span class="call other" title="SOURCE GEOMETRY">SOURCE GEOMETRY</span></header><div class="cardref"><a class="refid" href="#hsocket-r3-attempt-claude-master-1p5mm" title="Deep link to this image">#B-1.5-MASTER</a><button class="refbtn" data-copy="hsocket-r3-attempt-claude-master-1p5mm" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="hsocket-r3-attempt-claude-master-1p5mm" data-title="Candidate B — 1.5 mm raised pins" title="Share this image">share</button></div><div class="chips"><span class="chip warn" title="0.33 mm pins">0.33 mm pins</span><span class="chip ok" title="3 raised pins">3 raised pins</span></div><p>PR #78&#x27;s smaller male-pin variant; compact but below the normal feature comfort floor.</p><button class="ibtn" data-inputs="in-1">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="hsocket-r3-attempt-claude-master-2mm"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/7775b4647af63e85.png" data-cap="Candidate B — 2.0 mm raised pins"><img src="../../../../assets/370b87a9e3656718.jpg" alt="Candidate B — 2.0 mm raised pins" loading="lazy"></div><div class="meta"><header><h3>Candidate B — 2.0 mm raised pins</h3><span class="call other" title="SOURCE GEOMETRY">SOURCE GEOMETRY</span></header><div class="cardref"><a class="refid" href="#hsocket-r3-attempt-claude-master-2mm" title="Deep link to this image">#B-2-MASTER</a><button class="refbtn" data-copy="hsocket-r3-attempt-claude-master-2mm" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="hsocket-r3-attempt-claude-master-2mm" data-title="Candidate B — 2.0 mm raised pins" title="Share this image">share</button></div><div class="chips"><span class="chip warn" title="0.44 mm pins">0.44 mm pins</span><span class="chip ok" title="3 raised pins">3 raised pins</span></div><p>PR #78&#x27;s larger male-pin variant; still sub-floor, but visually stronger than 1.5 mm.</p><button class="ibtn" data-inputs="in-2">inputs — prompt &amp; refs</button></div></div>
+</div>
+<h2>Matched on-head comparison</h2>
+<p class="blurb">Same Mace m2 source checksum, z crop, renderer, lighting, cameras, and output resolution. The fresh-context audit judged proportion, seating, contact count, and visible damage from these exact images.</p>
+<div class="grid">
+<div class="card" id="hsocket-r3-attempt-codex-fused-3p6mm"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/77ddb8769bb14e74.png" data-cap="Candidate A — delivered fuse"><img src="../../../../assets/a03be5cc531cabde.jpg" alt="Candidate A — delivered fuse" loading="lazy"></div><div class="meta"><header><h3>Candidate A — delivered fuse</h3><span class="call reject" title="REJECT — robust ports, but the delivered fuse is oversized and poorly integrated">REJECT</span></header><div class="cardref"><a class="refid" href="#hsocket-r3-attempt-codex-fused-3p6mm" title="Deep link to this image">#A</a><button class="refbtn" data-copy="hsocket-r3-attempt-codex-fused-3p6mm" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="hsocket-r3-attempt-codex-fused-3p6mm" data-title="Candidate A — delivered fuse" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="temple assembly · proportion/localization — The 3.6 × 3.75 mm assembly dominates the side of the head, covers the ear/temple region, reaches toward the neck, and stays block-like from frontal angles.">proportion/locali…</span><span class="chip bad" title="temple · seating/damage — No facial gouge is visible, but the frame appears heavily projected and poorly integrated rather than cleanly seated against the skull.">seating/damage</span><span class="chip ok" title="outer frame · wolf/head-jack silhouette — Angular ears, brow, cheeks, and pointed chin form a recognizable coarse wolf/mask silhouette.">wolf/head-jack si…</span><span class="chip ok" title="ports · contact count — Exactly three contacts are visible in a triangular two-over-one arrangement.">contact count</span></div><details class="more"><summary>all 6 detectors (2 more)</summary><div class="chips"><span class="chip bad" title="temple assembly · proportion/localization — The 3.6 × 3.75 mm assembly dominates the side of the head, covers the ear/temple region, reaches toward the neck, and stays block-like from frontal angles.">proportion/locali…</span><span class="chip bad" title="temple · seating/damage — No facial gouge is visible, but the frame appears heavily projected and poorly integrated rather than cleanly seated against the skull.">seating/damage</span><span class="chip ok" title="outer frame · wolf/head-jack silhouette — Angular ears, brow, cheeks, and pointed chin form a recognizable coarse wolf/mask silhouette.">wolf/head-jack si…</span><span class="chip ok" title="ports · contact count — Exactly three contacts are visible in a triangular two-over-one arrangement.">contact count</span><span class="chip ok" title="ports · contact relief — All three read clearly as recessed circular ports rather than raised pins.">contact relief</span><span class="chip ok" title="ports and rim · print/paint plausibility — The 0.62 mm ports and broad 0.4 mm rim are the most visibly robust and paint-separable contact geometry of the three candidates.">print/paint plaus…</span></div></details><p>Reject on visible proportion and seating despite excellent port robustness and legibility.</p><details class="more"><summary>full note</summary><p class="chipnote">Candidate A satisfies silhouette, exact-count, and recessed-port requirements, but its scale and projection overwhelm the head and produce an add-on bracket appearance. A physical print is not needed to reject this exact visible version.</p></details><button class="ibtn" data-inputs="in-3">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="hsocket-r3-attempt-claude-fused-1p5mm"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/c7b5b17cc7ba1cab.png" data-cap="Candidate B — 1.5 mm fuse"><img src="../../../../assets/03bd6fa9b8d4917f.jpg" alt="Candidate B — 1.5 mm fuse" loading="lazy"></div><div class="meta"><header><h3>Candidate B — 1.5 mm fuse</h3><span class="call keeper" title="KEEPER-CANDIDATE — clean compact fuse; mandatory physical micro-detail gate">KEEPER-CANDIDATE</span></header><div class="cardref"><a class="refid" href="#hsocket-r3-attempt-claude-fused-1p5mm" title="Deep link to this image">#B-1.5</a><button class="refbtn" data-copy="hsocket-r3-attempt-claude-fused-1p5mm" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="hsocket-r3-attempt-claude-fused-1p5mm" data-title="Candidate B — 1.5 mm fuse" title="Share this image">share</button></div><div class="chips"><span class="chip warn" title="pins and rim · print/paint plausibility — Geometry looks distinct in the render, but 0.33 mm pins and a 0.20 mm rim are micro-features with uncertain print survival and paint separation.">print/paint plaus…</span><span class="chip ok" title="outer rim · wolf/head-jack silhouette — Small ears, angular cheeks, and pointed lower rim create a readable compact wolf/shield silhouette.">wolf/head-jack si…</span><span class="chip ok" title="pins · contact count — Exactly three rounded contacts are consistently visible in a triangular two-over-one arrangement.">contact count</span><span class="chip ok" title="pins · contact relief — Contacts unambiguously read as raised rounded pins.">contact relief</span></div><details class="more"><summary>all 6 detectors (2 more)</summary><div class="chips"><span class="chip warn" title="pins and rim · print/paint plausibility — Geometry looks distinct in the render, but 0.33 mm pins and a 0.20 mm rim are micro-features with uncertain print survival and paint separation.">print/paint plaus…</span><span class="chip ok" title="outer rim · wolf/head-jack silhouette — Small ears, angular cheeks, and pointed lower rim create a readable compact wolf/shield silhouette.">wolf/head-jack si…</span><span class="chip ok" title="pins · contact count — Exactly three rounded contacts are consistently visible in a triangular two-over-one arrangement.">contact count</span><span class="chip ok" title="pins · contact relief — Contacts unambiguously read as raised rounded pins.">contact relief</span><span class="chip ok" title="temple assembly · proportion/localization — Compact placement above and forward of the ear feels intentional and does not dominate the head.">proportion/locali…</span><span class="chip ok" title="temple and face · seating/damage — The rim follows the temple cleanly; no visible gouging, clipping, facial deformation, or ear damage.">seating/damage</span></div></details><p>Best-integrated subtle option, with a mandatory physical micro-detail gate.</p><details class="more"><summary>full note</summary><p class="chipnote">Candidate B at 1.5 mm is cleanly seated, proportionate, and legible with exactly three raised pins. Test-print in the intended process, inspect pin survival, and human paint-read it at normal tabletop distance.</p></details><button class="ibtn" data-inputs="in-4">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="hsocket-r3-attempt-claude-fused-2mm"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/8c8c6dbd8d7b3e79.png" data-cap="Candidate B — 2.0 mm fuse"><img src="../../../../assets/0603f60e2ed0d949.jpg" alt="Candidate B — 2.0 mm fuse" loading="lazy"></div><div class="meta"><header><h3>Candidate B — 2.0 mm fuse</h3><span class="call keeper" title="KEEPER-CANDIDATE — preferred visible candidate; physical print still required">KEEPER-CANDIDATE</span></header><div class="cardref"><a class="refid" href="#hsocket-r3-attempt-claude-fused-2mm" title="Deep link to this image">#B-2</a><button class="refbtn" data-copy="hsocket-r3-attempt-claude-fused-2mm" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="hsocket-r3-attempt-claude-fused-2mm" data-title="Candidate B — 2.0 mm fuse" title="Share this image">share</button></div><div class="chips"><span class="chip warn" title="pins and rim · print/paint plausibility — The 0.44 mm pins and 0.26 mm rim offer stronger separation than 1.5 mm, but remain sub-millimetre details requiring physical validation.">print/paint plaus…</span><span class="chip ok" title="outer rim · wolf/head-jack silhouette — Ears, angular brow/cheeks, and pointed chin read clearly as a coarse wolf-head jack.">wolf/head-jack si…</span><span class="chip ok" title="pins · contact count — Exactly three rounded contacts are clearly visible in the intended triangular arrangement.">contact count</span><span class="chip ok" title="pins · contact relief — The contacts read decisively as raised pins from side and three-quarter views.">contact relief</span></div><details class="more"><summary>all 6 detectors (2 more)</summary><div class="chips"><span class="chip warn" title="pins and rim · print/paint plausibility — The 0.44 mm pins and 0.26 mm rim offer stronger separation than 1.5 mm, but remain sub-millimetre details requiring physical validation.">print/paint plaus…</span><span class="chip ok" title="outer rim · wolf/head-jack silhouette — Ears, angular brow/cheeks, and pointed chin read clearly as a coarse wolf-head jack.">wolf/head-jack si…</span><span class="chip ok" title="pins · contact count — Exactly three rounded contacts are clearly visible in the intended triangular arrangement.">contact count</span><span class="chip ok" title="pins · contact relief — The contacts read decisively as raised pins from side and three-quarter views.">contact relief</span><span class="chip ok" title="temple assembly · proportion/localization — Larger than 1.5 mm but still localized to the temple and visually subordinate to the face.">proportion/locali…</span><span class="chip ok" title="temple and face · seating/damage — Clean apparent seating with no visible temple gouge, clipping, facial damage, or ear deformation.">seating/damage</span></div></details><p>Preferred visible candidate: stronger legibility than 1.5 mm without Candidate A&#x27;s oversized bracket effect.</p><details class="more"><summary>full note</summary><p class="chipnote">Candidate B at 2.0 mm provides the clearest balance: recognizable wolf outline, exactly three obvious raised pins, clean temple integration, and good matched-scale visibility. Gate final acceptance on a print, handling/snag check, and human paint-read.</p></details><button class="ibtn" data-inputs="in-5">inputs — prompt &amp; refs</button></div></div>
+</div>
+<h2>Provenance and design-envelope differences</h2>
+<details class="more"><summary>exact source heads, current binaries, and deviations</summary><p>Candidate A: PR #74 at <code>9a5369f0ce3d7cf24f05083f8b859d072df011de</code>; fused SHA-256 <code>de60ec5ec59beccb4145affaf07f1f7e7eb7abbc135b38ee39897a503bc971c7</code>. Candidate B: PR #78 at <code>b583efbde65602e333443029ab1ab9c606d007c9</code>; 1.5 mm fused SHA-256 <code>3bb8382cd41b4132963c46937ed09f58ed7acffd694b86e655c4ba39f519419f</code>; 2.0 mm fused SHA-256 <code>22fa3e9fe5c268db99d211de745de2a36741f5a7cb6d65889f964124e73208b6</code>. Both used Mace instead of the runbook's recommended/sign-off-requested Gorgon. A dropped collars. B also changed female holes to male raised pins and reduced the r2 held size. The frozen runbook is not retroactively rewritten.</p></details>
+<div class="callout steps"><p class="boxhead">After the verdict</p><p class="intro">Selection, future physical verification, promotion, and source-PR closure remain separate append-only events.</p><ol><li><span class="t">Append the checksum-pinned human selection</span><span class="when">on review</span><p class="d">Add a new reviews.json record; do not rewrite source self-assessments or coordinator audits.</p></li><li><span class="t">Hold the physical gate</span><span class="when">until explicitly ready</span><p class="d">Do not schedule a test print yet. Preserve the selected exact binary on Drive and carry print/paint/handling validation into the next readiness round.</p></li><li><span class="t">Do not promote from renders alone</span><span class="when">after visual selection</span><p class="d">Keep Round 3 open and the selected checksum provisional. Promotion still requires a later explicit physical-validation decision.</p></li><li><span class="t">Close source PRs as superseded evidence</span><span class="when">after reconciliation lands</span><p class="d">Retain PR #74 and PR #78 heads as immutable provenance rather than merging their competing shared round state.</p></li></ol></div>
+<div class="callout"><strong>Choose a direction, not a production master:</strong> the 2.0 mm raised-pin jack is recommended from renders; physical testing is deferred and no source-lane CLOSED claim is canonical.</div>
+<footer>Round cost: $0 local authoring/normalization · exact binaries and matched renders on Drive under projects/cyber-amazons/head-socket/</footer>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+<template id="in-0"><h2>Candidate A — 3.6 mm recessed ports</h2><p class="gmeta">Codex (GPT-5, local) parametric authoring via PR #74 source head 9a5369f0ce3d7cf24f05083f8b859d072df011de · width_mm=3.6 height_mm=3.75 ports=three recessed, collarless port_diameter_mm=0.62 · 2026-07-13T00:00:00+10:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-1"><h2>Candidate B — 1.5 mm raised pins</h2><p class="gmeta">Claude Code (Claude Opus 4.8, cloud) parametric authoring via PR #78 source head b583efbde65602e333443029ab1ab9c606d007c9 · width_mm=1.5 ports=three raised rounded pins pin_diameter_mm=0.33 · 2026-07-13T11:52:21+10:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-2"><h2>Candidate B — 2.0 mm raised pins</h2><p class="gmeta">Claude Code (Claude Opus 4.8, cloud) parametric authoring via PR #78 source head b583efbde65602e333443029ab1ab9c606d007c9 · width_mm=2.0 ports=three raised rounded pins pin_diameter_mm=0.44 · 2026-07-13T11:52:21+10:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-3"><h2>Candidate A — delivered fuse</h2><p class="gmeta">Codex (GPT-5, local) manifold boolean via PR #74 source head 9a5369f0ce3d7cf24f05083f8b859d072df011de · character=Mace m2 recess_depth_mm=0.3 watertight=True components=1 · 2026-07-13T00:00:00+10:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-4"><h2>Candidate B — 1.5 mm fuse</h2><p class="gmeta">Claude Code (Claude Opus 4.8, cloud) manifold union via PR #78 source head b583efbde65602e333443029ab1ab9c606d007c9 · character=Mace m2 size_mm=1.5 method=union-no-carve watertight=True components=1 · 2026-07-13T11:52:21+10:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-5"><h2>Candidate B — 2.0 mm fuse</h2><p class="gmeta">Claude Code (Claude Opus 4.8, cloud) manifold union via PR #78 source head b583efbde65602e333443029ab1ab9c606d007c9 · character=Mace m2 size_mm=2.0 method=union-no-carve watertight=True components=1 · 2026-07-13T11:52:21+10:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy / share a deep link to one card. The URL is this page plus the card's
+// #id anchor, so a recipient lands scrolled to (and highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+</body></html>

@@ -1,0 +1,161 @@
+{
+ "_redirects": {
+  "gorgon-r1-panel": "cyber-amazons/gorgon/r1-panel",
+  "gorgon-r2-panel": "cyber-amazons/gorgon/r2-panel",
+  "gorgon-r3-panel": "cyber-amazons/gorgon/r3-panel",
+  "gorgon-r3x-panel": "cyber-amazons/gorgon/r3x-panel",
+  "gorgon-r4-panel": "cyber-amazons/gorgon/r4-panel",
+  "gorgon-r5-panel": "cyber-amazons/gorgon/r5-panel",
+  "team-brief": "cyber-amazons/team-brief"
+ },
+ "cyber-amazons/gorgon/r1-panel": {
+  "published": "2026-07-10T08:28:09.218407+00:00",
+  "title": "Gorgon r1 \u2014 concept panel",
+  "updated": "2026-07-13T07:28:33.155359+00:00"
+ },
+ "cyber-amazons/gorgon/r10-panel": {
+  "published": "2026-07-14T01:22:22.128460+00:00",
+  "title": "Gorgon \u2014 Round 10 (Meshy run)",
+  "updated": "2026-07-14T02:46:54.502577+00:00"
+ },
+ "cyber-amazons/gorgon/r10-runbook": {
+  "published": "2026-07-13T12:36:27.922669+00:00",
+  "title": "Gorgon \u2014 Round 10 runbook",
+  "updated": "2026-07-14T01:23:33.084668+00:00"
+ },
+ "cyber-amazons/gorgon/r11-panel": {
+  "published": "2026-07-14T01:22:50.672801+00:00",
+  "title": "Gorgon \u2014 Round 11 (clay vs non-clay Meshy)",
+  "updated": "2026-07-14T02:47:16.955972+00:00"
+ },
+ "cyber-amazons/gorgon/r11-runbook": {
+  "published": "2026-07-13T23:17:34.688292+00:00",
+  "title": "Gorgon \u2014 Round 11 runbook",
+  "updated": "2026-07-14T01:23:36.047877+00:00"
+ },
+ "cyber-amazons/gorgon/r12-panel": {
+  "published": "2026-07-14T02:09:20.544290+00:00",
+  "title": "Gorgon \u2014 Round 12 (--no-remesh re-run)",
+  "updated": "2026-07-14T02:47:26.963646+00:00"
+ },
+ "cyber-amazons/gorgon/r12-panel-r2-stl-test": {
+  "published": "2026-07-14T03:48:20.533164+00:00",
+  "title": "Gorgon R12 \u2014 R2 image + STL test",
+  "updated": "2026-07-14T03:48:38.073797+00:00"
+ },
+ "cyber-amazons/gorgon/r12-panel-r2-test": {
+  "published": "2026-07-14T03:28:29.504391+00:00",
+  "title": "Gorgon R12 \u2014 R2 asset test",
+  "updated": "2026-07-14T03:30:57.463241+00:00"
+ },
+ "cyber-amazons/gorgon/r12-runbook": {
+  "published": "2026-07-14T01:16:33.046803+00:00",
+  "title": "Gorgon \u2014 Round 12 runbook",
+  "updated": "2026-07-14T02:09:23.959725+00:00"
+ },
+ "cyber-amazons/gorgon/r2-panel": {
+  "published": "2026-07-10T10:42:44.139956+00:00",
+  "title": "Gorgon r2 \u2014 punk + 3/4 panel",
+  "updated": "2026-07-13T07:28:34.910512+00:00"
+ },
+ "cyber-amazons/gorgon/r3-panel": {
+  "published": "2026-07-10T15:12:53.873568+00:00",
+  "title": "Gorgon r3 \u2014 side-view stride, text-only 10-model sweep",
+  "updated": "2026-07-13T07:26:51.521188+00:00"
+ },
+ "cyber-amazons/gorgon/r3x-panel": {
+  "published": "2026-07-10T18:25:03.458708+00:00",
+  "title": "Gorgon r3x \u2014 mirror/leg-binding experiment grid",
+  "updated": "2026-07-13T07:26:53.223655+00:00"
+ },
+ "cyber-amazons/gorgon/r4-panel": {
+  "published": "2026-07-10T21:37:27.069249+00:00",
+  "title": "Gorgon r4 \u2014 planted-foot re-sweep + t1 photoreal turnarounds",
+  "updated": "2026-07-13T07:28:36.433520+00:00"
+ },
+ "cyber-amazons/gorgon/r5-panel": {
+  "published": "2026-07-11T01:25:04.104628+00:00",
+  "title": "Gorgon r5 \u2014 mirrored-frame sweep + t2 turnarounds",
+  "updated": "2026-07-13T07:28:38.274849+00:00"
+ },
+ "cyber-amazons/gorgon/r6-panel": {
+  "published": "2026-07-11T04:14:09.655657+00:00",
+  "title": "Gorgon r6 \u2014 hair-movement pass (self-edit img2img wins)",
+  "updated": "2026-07-13T07:28:39.678338+00:00"
+ },
+ "cyber-amazons/gorgon/r7-panel": {
+  "published": "2026-07-11T08:04:50.014220+00:00",
+  "title": "Gorgon r7 \u2014 turnaround sheets + 2\u00d72 aspect experiment",
+  "updated": "2026-07-13T07:28:41.062406+00:00"
+ },
+ "cyber-amazons/gorgon/r7-runbook": {
+  "published": "2026-07-12T09:20:17.999620+00:00",
+  "title": "Gorgon \u2014 Round 7 runbook",
+  "updated": "2026-07-13T13:58:49.445781+00:00"
+ },
+ "cyber-amazons/gorgon/r8-panel": {
+  "published": "2026-07-11T16:29:03.353959+00:00",
+  "title": "Gorgon \u2014 Round 8",
+  "updated": "2026-07-13T07:27:00.858810+00:00"
+ },
+ "cyber-amazons/gorgon/r8-runbook": {
+  "published": "2026-07-12T00:14:17.958344+00:00",
+  "title": "Gorgon \u2014 Round 8 runbook",
+  "updated": "2026-07-13T13:59:07.726081+00:00"
+ },
+ "cyber-amazons/gorgon/r9-panel": {
+  "published": "2026-07-13T11:46:10.816161+00:00",
+  "title": "Gorgon \u2014 Round 9 (clay conversion)",
+  "updated": "2026-07-13T13:59:26.766371+00:00"
+ },
+ "cyber-amazons/gorgon/r9-runbook": {
+  "published": "2026-07-13T08:38:36.579054+00:00",
+  "title": "Gorgon \u2014 Round 9 runbook (clay conversion)",
+  "updated": "2026-07-13T13:59:17.308742+00:00"
+ },
+ "cyber-amazons/head-socket/r1-panel": {
+  "published": "2026-07-12T13:24:19.636999+00:00",
+  "title": "Head Socket \u2014 Round 1 (design selection)",
+  "updated": "2026-07-13T07:27:03.828702+00:00"
+ },
+ "cyber-amazons/head-socket/r1-runbook": {
+  "published": "2026-07-12T08:56:17.772878+00:00",
+  "title": "Head Socket \u2014 Round 1 runbook",
+  "updated": "2026-07-12T11:35:11.978821+00:00"
+ },
+ "cyber-amazons/head-socket/r2-panel": {
+  "published": "2026-07-12T17:39:19.259694+00:00",
+  "title": "Head Socket r2 \u2014 seating / profile study (review)",
+  "updated": "2026-07-13T03:43:23.425350+00:00"
+ },
+ "cyber-amazons/head-socket/r2-runbook": {
+  "published": "2026-07-12T15:10:27.150225+00:00",
+  "title": "Head Socket r2 \u2014 seating / profile study (plan)",
+  "updated": "2026-07-12T15:22:01.209054+00:00"
+ },
+ "cyber-amazons/head-socket/r3-panel": {
+  "published": "2026-07-13T23:09:36.491087+00:00",
+  "title": "Head Jack Round 3 \u2014 parallel authored candidates",
+  "updated": "2026-07-13T23:09:36.491087+00:00"
+ },
+ "cyber-amazons/head-socket/r3-runbook": {
+  "published": "2026-07-13T03:20:01.183235+00:00",
+  "title": "Head Jack \u2014 Round 3 runbook",
+  "updated": "2026-07-13T23:10:54.108971+00:00"
+ },
+ "cyber-amazons/mace/r9-runbook": {
+  "published": "2026-07-13T07:27:37.172111+00:00",
+  "title": "Mace Round 9 runbook",
+  "updated": "2026-07-13T13:25:38.282667+00:00"
+ },
+ "cyber-amazons/team-brief": {
+  "published": "2026-07-10T06:30:40.873322+00:00",
+  "title": "Firewall FC \u2014 Team Brief",
+  "updated": "2026-07-10T06:37:11.287753+00:00"
+ },
+ "cyber-amazons/wraith/r1-panel": {
+  "published": "2026-07-11T01:27:16.686562+00:00",
+  "title": "Wraith r1 \u2014 demon half-mask concept panel",
+  "updated": "2026-07-13T07:28:42.487371+00:00"
+ }
+}

@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Head Socket — Round 2 runbook</title>
+<style>
+:root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:92vh; object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+
+.md h2 { font-size:1.15rem; margin:2.2rem 0 .3rem }
+.md h3 { font-size:1rem; margin:1.6rem 0 .3rem }
+.md h4 { font-size:.9rem; margin:1.2rem 0 .3rem; color:var(--dim) }
+.md p { max-width:78ch }
+.md ul, .md ol { max-width:78ch; padding-left:1.4rem }
+.md li { margin:.25rem 0 }
+.md a { color:var(--accent) }
+.md code { background:var(--pre); border:1px solid var(--line); border-radius:4px;
+  padding:.05rem .3rem; font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
+.md pre.code { background:var(--pre); border:1px solid var(--line); border-radius:6px;
+  padding:.75rem 1rem; overflow-x:auto; font-size:.82rem; line-height:1.5 }
+.md pre.code code { background:none; border:0; padding:0 }
+.md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+.md dl.rb-meta { display:grid; grid-template-columns:auto 1fr; gap:.3rem 1.1rem;
+  max-width:60ch; margin:.2rem 0 1.8rem; padding:.9rem 1.15rem; background:var(--pre);
+  border:1px solid var(--line); border-radius:8px; font-size:.9rem }
+.md dl.rb-meta dt { color:var(--dim); font-weight:600; white-space:nowrap }
+.md dl.rb-meta dd { margin:0 }
+.md details { max-width:78ch; margin:1.8rem 0; border:1px solid var(--line);
+  border-radius:8px; background:var(--pre); padding:0 1.15rem }
+.md details[open] { padding-bottom:.4rem }
+.md details > summary { cursor:pointer; padding:.85rem 0; font-weight:600;
+  color:var(--accent); list-style:none }
+.md details > summary::-webkit-details-marker { display:none }
+.md details > summary::before { content:'\25B8\A0' }
+.md details[open] > summary::before { content:'\25BE\A0' }
+.md details > summary + * { margin-top:.2rem }
+</style></head><body><main>
+<h1>Head Socket — Round 2 runbook</h1>
+<a class="crosslink" href="../r2-panel/">&#128203; Review panel &rarr;</a>
+<h2>Base assets — what this round builds on</h2>
+<p class="blurb">The source image(s) every generation in this round starts from. Click to zoom; open “inputs” for the prompt and reference images that produced each one.</p>
+<div class="grid">
+<div class="card"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ee5c386b12cab4d4.jpg" data-cap="hsocket-r1-P1-flash31"><img src="../../../../assets/1107bdec7e7c997a.jpg" alt="hsocket-r1-P1-flash31" loading="lazy"></div><div class="meta"><header><h3>hsocket-r1-P1-flash31</h3></header><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/c48694a25df29aa7.jpg" data-cap="hsocket-r1-P6-flash31"><img src="../../../../assets/b64a9df889eda706.jpg" alt="hsocket-r1-P6-flash31" loading="lazy"></div><div class="meta"><header><h3>hsocket-r1-P6-flash31</h3></header><button class="ibtn" data-inputs="in-1">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/50986c55f0cb2acc.jpg" data-cap="hsocket-r1-P2-flash31"><img src="../../../../assets/87853f2628af6fdd.jpg" alt="hsocket-r1-P2-flash31" loading="lazy"></div><div class="meta"><header><h3>hsocket-r1-P2-flash31</h3></header><button class="ibtn" data-inputs="in-2">inputs — prompt &amp; refs</button></div></div>
+</div>
+<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>Concept sweep — seating / profile study</dd><dt>Status</dt><dd>Awaiting sign-off · no images generated yet</dd><dt>Owner</dt><dd>Claude (cloud) → Dimitri + Jason review</dd><dt>Date opened</dt><dd>2026-07-12</dd><dt>Branch</dt><dd><code>claude/head-socket-assets-6znijl</code></dd><dt>Prior round</dt><dd>Dimitri&#x27;s r1 read — the sockets &quot;stand out too much&quot; (relief too proud) — sharpened into a construction: a <strong>raised rim</strong>, but the plate <strong>face at skin level or slightly dug in</strong>. r2 renders that seating so it can be judged and the field level settled by eye. (<code>round-feedback.jsonl</code> r1 <code>dimitri</code>; still preliminary, Jason not yet in.)</dd></dl>
+<h2>Goal</h2>
+<p>r1 picked the socket&#x27;s *outline* (still open on the r1 panel); this round fixes how it <strong>sits against the skin</strong>. The new construction is a <strong>set-in port</strong>: a raised rim/edge always stands proud and is the highest part, while the field the three sockets sit in drops toward skin level. r2 answers Dimitri&#x27;s &quot;too proud&quot; note and, on the incumbent triangle, tries a centre gang-emblem.</p>
+<h2>The choices on the table</h2>
+<p>Two shapes carried from r1, each rendered across three field levels — so the seating call and the emblem call can be made on one panel. Every option shares the new profile: <strong>a raised rim that is always the highest edge, with the field set lower.</strong></p>
+<p><strong>1 — Field level</strong> (the headline of this round). The rim always stands proud a bit further than the field; what varies is where the <strong>field</strong> sits vs. the skin:</p>
+<div class="tablewrap"><table><thead><tr><th></th><th>Field level</th><th>Looks like</th></tr></thead><tbody><tr><td><strong>Flush</strong></td><td>at skin level</td><td>rim is the only thing proud; face flush with the skin</td></tr><tr><td><strong>Recessed</strong></td><td>~0.3–0.5 mm below skin</td><td>face dug slightly into the head — the &quot;or maybe dug in?&quot; option</td></tr><tr><td><strong>Raised</strong></td><td>~0.3–0.5 mm proud plateau</td><td>face slightly proud, but the rim still steps up above it</td></tr></tbody></table></div>
+<p><strong>2 — Shapes</strong> (narrowed from the r1 shortlist to two, per Dimitri):</p>
+<div class="tablewrap"><table><thead><tr><th></th><th>Shape</th><th>Notes</th></tr></thead><tbody><tr><td><strong>P1</strong></td><td>equilateral triangle (incumbent)</td><td>rendered <strong>two ways: plain, and with a centre emblem</strong></td></tr><tr><td><strong>P1 + emblem</strong></td><td>triangle + a raised <strong>&quot;U&quot; with an &quot;I&quot; inside</strong></td><td>the mark Dimitri liked off r1&#x27;s P2 roll — IP-checked, no clash found</td></tr><tr><td><strong>P6</strong></td><td>mecha-wolf (eyes + snout = the sockets)</td><td>most characterful; carried as-is</td></tr></tbody></table></div>
+<h2>What we need from you</h2>
+<p>Pick the <strong>field level</strong> (flush / recessed / raised), whether the incumbent triangle carries the <strong>centre emblem</strong>, and — between <strong>P1 and P6</strong> — which becomes the team mark (if the r1 panel hasn&#x27;t already). Size (the other half of your r1 note) is an authoring parameter now; say if you want it dialled down too.</p>
+<h2>Cost</h2>
+<p>~$0.17/pair (flash31 + gptimage2med) × 3 shape-variants × 3 field levels = <strong>~$1.5</strong>. Drop the emblem to one level, or cut a field level, to spend less.</p>
+<details>
+<summary>Technical plan — models, prompts, commands (pipeline detail)</summary>
+<h3>What changed going in (spec / prompt / process deltas)</h3>
+<ul>
+<li><strong>spec.md → &quot;Plate seating profile (r2 construction under test)&quot;</strong>: rim is <strong>always the highest</strong> level (proud of skin *and* above the field); the <strong>field</strong> is the variable — flush / recessed / raised (~0.3–0.5 mm either side of skin). Adds an <strong>optional centre emblem</strong> (&quot;U&quot; with an &quot;I&quot; inside, P1 only) with provenance (r1 <code>hsocket-r1-P2-flash31</code>) and the IP-check note.</li>
+<li><strong>Prompts</strong> rewritten around a shared SEATING/PROFILE block (<code>prompts/r2-{P1,P1logo,P6}-{flush,recessed,raised}.txt</code>, 9 files): the rim is pinned as the highest level in all three, and the raking panel is told to read rim &gt; field &gt; holes. The P1logo files add the centre-emblem line.</li>
+<li><strong>Shortlist narrowed to P1 + P6</strong> (Dimitri); <strong>P4 / P5 dropped</strong> from r2, <strong>P2 dropped</strong> already. Engines stay <strong>flash31 + gptimage2med</strong> (grokq1k was the weakest on every r1 design).</li>
+<li>Delivery is the <strong>authored STL fused per character</strong> (spec.md → &quot;Delivery onto characters&quot;), so this study judges the *read*; final field level/size are set at authoring. Note: a recessed field means the per-character fuse also carves a shallow pocket (union of proud rim + subtract of the recess) — a small extension of the proven over-embed-and-union; re-validate on the winner.</li>
+</ul>
+<h3>Experiment matrix</h3>
+<p>Two shapes (P1 rendered plain + emblem) × three field levels × two strong engines = <strong>18 rolls</strong>. Audit each as it lands.</p>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base</th><th>Variant axes</th><th>Prompt</th><th>Out stem</th></tr></thead><tbody><tr><td>1</td><td>neutral clay temple</td><td>P1 triangle · flush</td><td><code>prompts/r2-P1-flush.txt</code></td><td><code>hsocket-r2-P1-flush</code></td></tr><tr><td>2</td><td>neutral clay temple</td><td>P1 triangle · recessed</td><td><code>prompts/r2-P1-recessed.txt</code></td><td><code>hsocket-r2-P1-recessed</code></td></tr><tr><td>3</td><td>neutral clay temple</td><td>P1 triangle · raised</td><td><code>prompts/r2-P1-raised.txt</code></td><td><code>hsocket-r2-P1-raised</code></td></tr><tr><td>4</td><td>neutral clay temple</td><td>P1 + U-I emblem · flush</td><td><code>prompts/r2-P1logo-flush.txt</code></td><td><code>hsocket-r2-P1logo-flush</code></td></tr><tr><td>5</td><td>neutral clay temple</td><td>P1 + U-I emblem · recessed</td><td><code>prompts/r2-P1logo-recessed.txt</code></td><td><code>hsocket-r2-P1logo-recessed</code></td></tr><tr><td>6</td><td>neutral clay temple</td><td>P1 + U-I emblem · raised</td><td><code>prompts/r2-P1logo-raised.txt</code></td><td><code>hsocket-r2-P1logo-raised</code></td></tr><tr><td>7</td><td>neutral clay temple</td><td>P6 wolf · flush</td><td><code>prompts/r2-P6-flush.txt</code></td><td><code>hsocket-r2-P6-flush</code></td></tr><tr><td>8</td><td>neutral clay temple</td><td>P6 wolf · recessed</td><td><code>prompts/r2-P6-recessed.txt</code></td><td><code>hsocket-r2-P6-recessed</code></td></tr><tr><td>9</td><td>neutral clay temple</td><td>P6 wolf · raised</td><td><code>prompts/r2-P6-raised.txt</code></td><td><code>hsocket-r2-P6-raised</code></td></tr></tbody></table></div>
+<p>Each stem × {flash31, gptimage2med}. Cheaper trims if wanted: render the emblem (rows 4–6) at one field level only, or drop one field level across the board. For the geometric triangle the *exact* three-level comparison can also be authored from primitives and rendered from the real STL (no image credits) if the image approximation of depth isn&#x27;t decisive.</p>
+<h3>Commands (run after sign-off)</h3>
+<p>Generic setup: <code>pip install -r requirements.txt</code>; secrets via <code>OP_SERVICE_ACCOUNT_TOKEN</code> → <code>op</code> resolves the <code>minis-pipeline</code> vault (preflight that <code>op</code> is installed — it was missing at r1 Stage-1 and cost a $0 dud sweep; installed this session via <code>cloud/setup.sh</code>).</p>
+<pre class="code"><code>H=projects/cyber-amazons/head-socket
+for S in P1 P1logo P6; do
+  for D in flush recessed raised; do
+    python3 tools/compare_gen.py --prompt-file $H/prompts/r2-$S-$D.txt \
+      --out-dir $H/generated --out-stem hsocket-r2-$S-$D \
+      --variants flash31,gptimage2med --jobs 2 --lineage $H/lineage.json
+  done
+done</code></pre>
+<p>Audit each roll as it lands (fresh-context crop subagent + eye), log verdicts to <code>reviews.json</code>, then build the review panel (<code>tools/review_page.py --inline</code> → claude.ai artifact) with <code>r2-panel.json</code>. The durable log is <code>rounds.md</code>.</p>
+</details></div>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+<template id="in-0"><h2>hsocket-r1-P1-flash31</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-12T12:08:47</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r1-P1-incumbent.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the raised relief and depth read clearly — shadows show what is proud and what is recessed.
+
+THE ASSET — a single interface socket mounted as raised hardware on the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+- PLATE: an equilateral TRIANGLE plate, point up, sitting proud of the skin with a beveled rim and a flat top face.
+- PORT: three COLLARED SOCKET-HOLES — one at each corner of the triangle. Each is a small round hole sunk into the plate top, ringed by a short raised collar (grommet). The collar is proud; the hole is recessed. NOT pins, NOT studs.
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The plate stands clearly proud of the skin (about 1–1.5 mm), beveled rim.
+- The three collared socket-holes are generously spaced so they stay separate; each collar/hole is at least 0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-1"><h2>hsocket-r1-P6-flash31</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-12T12:11:41</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r1-P6-mecha-wolf.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the raised relief and depth read clearly — shadows show what is proud and what is recessed.
+
+THE ASSET — a single interface socket mounted as raised hardware on the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark. Here the mark is a stylized MECHA-WOLF HEAD that also functions as a three-socket jack:
+- PLATE: an angular, geometric CYBER/MECHA WOLF-HEAD, seen head-on — a bold stencil / gang-tag silhouette with two chunky pointed ears at the top and a blunt angular muzzle at the bottom. Faceted, mechanical, low-relief plate sitting proud of the skin with a beveled rim and a flat top face. Chunky and simple, not fine or ornate.
+- PORT: the wolf&#x27;s face features ARE the three COLLARED SOCKET-HOLES — the wolf&#x27;s TWO EYES and its NOSE/SNOUT-TIP are each a small round hole sunk into the plate, ringed by a short raised collar (grommet). The collar is proud; the hole is recessed. So the three sockets read as the wolf&#x27;s eyes and nose. NOT pins, NOT studs.
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole wolf-head plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The plate stands clearly proud of the skin (about 1–1.5 mm), beveled rim; the ears are thick and blunt wedges, never thin spikes.
+- The three collared socket-holes (two eyes + nose) are generously spaced so they stay separate; each collar/hole is at least 0.6 mm in its smallest dimension.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-2"><h2>hsocket-r1-P2-flash31</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-12T12:09:56</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/head-socket/prompts/r1-P2-nested-triangles.txt</p><pre>A monochrome matte CLAY SCULPT render — smooth grey sculpting clay, soft studio light, plain neutral background. No color, no paint, no text, no labels, no watermark.
+
+SUBJECT: an extreme close-up study of the RIGHT TEMPLE of a neutral, bald, androgynous human head sculpted in clay. Show only the temple area — the skin on the side of the forehead, in front of and above the ear. No hair.
+
+TWO VIEWS side by side in one image:
+- LEFT PANEL: a straight-on, flat-on view, camera square to the temple, so the socket&#x27;s outline reads as a clean flat emblem.
+- RIGHT PANEL: a raking three-quarter view of the same temple (camera ~45°, low grazing light) so the raised relief and depth read clearly — shadows show what is proud and what is recessed.
+
+THE ASSET — a single interface socket mounted as raised hardware on the temple skin. It doubles as a gang emblem, so its outline must read as a bold, simple, recognizable mark.
+- PLATE: an equilateral TRIANGLE plate, point up, sitting proud of the skin with a beveled rim and a flat top face.
+- PORT: three ROUNDED-TRIANGLE COLLARED SOCKET-HOLES — one nested at each corner of the big triangle. Each socket-hole is itself a small ROUNDED TRIANGLE (not round), pointing the same way as the big plate, so the three echo the plate&#x27;s shape — a nested-triangle motif. Each rounded-triangle hole is recessed into the plate top and ringed by a matching short raised collar. NOT pins, NOT studs.
+
+MESH-SURVIVAL CONSTRAINTS (this becomes a small 3D resin print at 32mm scale):
+- The whole plate is roughly one EYE-WIDTH across — bold, not tiny.
+- The plate stands clearly proud of the skin (about 1–1.5 mm), beveled rim.
+- The three rounded-triangle socket-holes are generously spaced so they stay separate; each is at least 0.6 mm in its smallest dimension, corners softened (rounded) so they survive the print.
+- Everything is OPAQUE MATTE CLAY — never glass, never chrome, never see-through.
+- No fragile spikes, no thin needles, no fine sub-millimetre detail.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+document.addEventListener('click',function(e){
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+</body></html>

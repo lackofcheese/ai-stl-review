@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Gorgon — Round 7 runbook</title>
+<style>
+:root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:92vh; object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+
+.md h2 { font-size:1.15rem; margin:2.2rem 0 .3rem }
+.md h3 { font-size:1rem; margin:1.6rem 0 .3rem }
+.md h4 { font-size:.9rem; margin:1.2rem 0 .3rem; color:var(--dim) }
+.md p { max-width:78ch }
+.md ul, .md ol { max-width:78ch; padding-left:1.4rem }
+.md li { margin:.25rem 0 }
+.md a { color:var(--accent) }
+.md code { background:var(--pre); border:1px solid var(--line); border-radius:4px;
+  padding:.05rem .3rem; font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
+.md pre.code { background:var(--pre); border:1px solid var(--line); border-radius:6px;
+  padding:.75rem 1rem; overflow-x:auto; font-size:.82rem; line-height:1.5 }
+.md pre.code code { background:none; border:0; padding:0 }
+.md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+.md dl.rb-meta { display:grid; grid-template-columns:auto 1fr; gap:.3rem 1.1rem;
+  max-width:60ch; margin:.2rem 0 1.8rem; padding:.9rem 1.15rem; background:var(--pre);
+  border:1px solid var(--line); border-radius:8px; font-size:.9rem }
+.md dl.rb-meta dt { color:var(--dim); font-weight:600; white-space:nowrap }
+.md dl.rb-meta dd { margin:0 }
+.md details { max-width:78ch; margin:1.8rem 0; border:1px solid var(--line);
+  border-radius:8px; background:var(--pre); padding:0 1.15rem }
+.md details[open] { padding-bottom:.4rem }
+.md details > summary { cursor:pointer; padding:.85rem 0; font-weight:600;
+  color:var(--accent); list-style:none }
+.md details > summary::-webkit-details-marker { display:none }
+.md details > summary::before { content:'\25B8\A0' }
+.md details[open] > summary::before { content:'\25BE\A0' }
+.md details > summary + * { margin-top:.2rem }
+</style></head><body><main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">cyber-amazons</a><span class="sep">&rsaquo;</span><a href="../">gorgon</a></nav>
+<h1>Gorgon — Round 7 runbook</h1>
+<a class="crosslink" href="../r7-panel/">&#128203; Review panel &rarr;</a>
+<h2>Base assets — what this round builds on</h2>
+<p class="blurb">The source image(s) every generation in this round starts from. Click to zoom; open “inputs” for the prompt and reference images that produced each one.</p>
+<div class="grid">
+<div class="card"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/218be4ea42a57cf3.webp" data-cap="gorgon-r6-B2-riverflow25"><img src="../../../../assets/0868f3be750b3277.jpg" alt="gorgon-r6-B2-riverflow25" loading="lazy"></div><div class="meta"><header><h3>gorgon-r6-B2-riverflow25</h3></header><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/fd3fef68cb39909f.jpg" data-cap="gorgon-r6-C-flash31"><img src="../../../../assets/156284b59f32a4cf.jpg" alt="gorgon-r6-C-flash31" loading="lazy"></div><div class="meta"><header><h3>gorgon-r6-C-flash31</h3></header><button class="ibtn" data-inputs="in-1">inputs — prompt &amp; refs</button></div></div>
+</div>
+<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>turnaround sweep</dd><dt>Status</dt><dd>Executed 2026-07-11 — see rounds.md (Round 7 + 7x)</dd><dt>Owner</dt><dd>Claude (Codex Web → cloud) → Dimitri review</dd><dt>Date opened</dt><dd>2026-07-11</dd><dt>Inputs</dt><dd><code>gorgon-r6-B2-riverflow25</code>, <code>gorgon-r6-C-flash31</code> — the two R6 keeper-candidate bases</dd><dt>Produces</dt><dd><code>gorgon-r7-B2-turnaround-{riverflow25,flash31}</code>, <code>gorgon-r7-flash31alt-turnaround-{riverflow25,flash31}</code> (4 sheets)</dd><dt>Branch</dt><dd><code>claude/gorgon-round-7-mplz3b</code></dd></dl>
+<h2>Goal</h2>
+<p>Produce four full four-view turnaround sheets from the two Round-6 keeper-candidate bases, each through two models, to find a sheet clean enough for a Meshy run. Addresses the r6 open item: we had good single bases but no multi-view turnaround yet.</p>
+<h2>Cost</h2>
+<p>4 sheets across riverflow25 (~$0.28/roll) + flash31 (~$0.05/roll) ≈ <strong>$0.7</strong>.</p>
+<details>
+<summary>Technical plan — models, prompts, commands (pipeline detail)</summary>
+<h3>What changed going in (spec / prompt / process deltas)</h3>
+<ul>
+<li>Turn around <strong>two</strong> bases as parallel branches: <strong>B2</strong> (plan-of-record — dreads over the stiff-arm/non-pad shoulder) and <strong>flash31-alt</strong> (divergent hair design — dreads over the pad-side shoulder).</li>
+<li>New per-panel hair anchors in both prompts to hold the mane&#x27;s side across all four views (the #1 past failure).</li>
+<li>Template built dynamically to the base&#x27;s figure bbox (<code>make_turnaround_template.py --match-image</code>).</li>
+</ul>
+<h3>Experiment matrix</h3>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Variant axes</th><th>Prompt</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>1</td><td><code>gorgon-r6-B2-riverflow25-1</code></td><td>B2 plan-of-record: dreads over stiff-arm shoulder</td><td><code>prompts/r7-B2-turnaround.txt</code></td><td><code>gorgon-r7-B2-turnaround</code></td></tr><tr><td>2</td><td><code>gorgon-r6-C-flash31-1</code></td><td>flash31 alt: dreads over pad-side shoulder</td><td><code>prompts/r7-flash31-alt-hair-turnaround.txt</code></td><td><code>gorgon-r7-flash31alt-turnaround</code></td></tr></tbody></table></div>
+<p>Each stem runs <code>--variants riverflow25,flash31</code> (2 sheets per stem → 4 total). Dependencies: the two R6 bases must be pulled from Drive before generation.</p>
+<h3>Commands (setup + execution)</h3>
+<pre class="code"><code># setup: deps + secrets (OP_SERVICE_ACCOUNT_TOKEN -&gt; op CLI -&gt; minis-pipeline vault)
+tools/drive_sync.sh pull projects/cyber-amazons/gorgon/generated
+python3 tools/make_turnaround_template.py \
+  --out projects/cyber-amazons/gorgon/generated/gorgon-r7-turnaround-template.png \
+  --match-image projects/cyber-amazons/gorgon/generated/gorgon-r6-B2-riverflow25-1.png
+
+python3 tools/compare_gen.py \
+  --prompt-file projects/cyber-amazons/gorgon/prompts/r7-B2-turnaround.txt \
+  --image projects/cyber-amazons/gorgon/generated/gorgon-r6-B2-riverflow25-1.png \
+  --image projects/cyber-amazons/gorgon/generated/gorgon-r7-turnaround-template.png \
+  --out-dir projects/cyber-amazons/gorgon/generated \
+  --out-stem gorgon-r7-B2-turnaround \
+  --variants riverflow25,flash31 --jobs 2
+
+python3 tools/compare_gen.py \
+  --prompt-file projects/cyber-amazons/gorgon/prompts/r7-flash31-alt-hair-turnaround.txt \
+  --image projects/cyber-amazons/gorgon/generated/gorgon-r6-C-flash31-1.png \
+  --image projects/cyber-amazons/gorgon/generated/gorgon-r7-turnaround-template.png \
+  --out-dir projects/cyber-amazons/gorgon/generated \
+  --out-stem gorgon-r7-flash31alt-turnaround \
+  --variants riverflow25,flash31 --jobs 2</code></pre>
+<p>Gate: four fresh-context crop-audit subagents (techniques.md §6), one per sheet, verdicts to <code>reviews.json</code>. Push binaries to Drive after curation.</p>
+</details></div>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+<template id="in-0"><h2>gorgon-r6-B2-riverflow25</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K · $0.36 · 2026-07-11T03:45:24</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon/prompts/r6-BC-hairmove-edit.txt</p><pre>The attached image shows a female cyberpunk gridiron-football blocker frozen mid-stride in a stiff-arm pose — a photorealistic full-body studio render on a plain gray backdrop, seen in near-profile from her armored-shoulder side as she strides toward the VIEWER&#x27;S RIGHT. Recreate THIS EXACT image — the SAME character, same face, same massive heavyweight build, same pose, same kit, same materials, same styling and lighting — with EXACTLY TWO CHANGES and nothing else changed:
+
+CHANGE 1 — HAIR. In the attached image her thick cable-dreadlocks are swept back and hang down BEHIND her, down her back. Move them: gather the ENTIRE mass of dreadlocks and drape it forward over her FAR shoulder — the shoulder of the extended stiff-arm, the shoulder AWAY from the camera, the one WITHOUT the armored pad — so the whole bundle of thick sculpted cords hangs down the FRONT of that far shoulder toward her chest. After this change NO dreadlocks hang down her back: her upper back, the BACK OF HER NECK and her near pad-shoulder are completely clear of hair. On the newly exposed back of her neck, add the raised segmented SPINAL IMPLANT that the hair was hiding: a vertebral ridge of chunky bold chrome segments running from the back of her skull down the back of her neck and disappearing under the bodysuit&#x27;s collar, clearly visible in profile against the background.
+
+CHANGE 2 — CAMERA. Rotate the camera about 20 degrees further around toward her FRONT, keeping the same distance and height, so the view becomes slightly more of a three-quarter: more of the FRONT of her torso turns toward the camera, the OPEN PALM of her extended far hand becomes clearly visible to the camera, and her FAR trailing leg is clearly visible past her near leg instead of hiding behind it. She still strides toward the VIEWER&#x27;S RIGHT with the armored pad shoulder nearest the camera; the view stays side-biased, never a head-on front view.
+
+Everything else stays IDENTICAL to the attached image: same pose — mid-stride, the NEAR bare leg leading with its combat boot planted flat on the ground, the FAR covered leg trailing with toes down and heel raised; the FAR arm fully extended forward at shoulder height with the open palm facing forward, fingers together, thumb visible; the NEAR chrome arm hanging at her side in a loose empty fist. Same kit — a single armored shoulder pad with the white number 4 on the NEAR shoulder only; the far shoulder stays the bare smooth chrome ball of the cyberarm joint with NO pad, NO strap, NO armor (the draped hair is hair, not armor); both arms full gunmetal military cyberarms; one CONTINUOUS intact legging on the covered trailing leg only, joining the suit at the hip with no bare-skin gap, no rips and no holes; exactly ONE wide studded leather garter, high on the bare near thigh; a hard armored knee pad on the covered leg and a strapped leather knee pad on the bare leg; bulky buckled combat boots on both feet. Same heavyweight V-tapered build, same cold level stare, both temples shaved with NO socket, stud or jewel on the visible temple or forehead. No weapons, no ball, no other people, no base or pedestal, and no text or logos anywhere except the number 4 on the shoulder pad and strictly illegible spray-stencil tags. Full figure head to toe, nothing cropped.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/ab885b424ac004d1.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/517e0fff84f804d4.webp" data-cap="gorgon-r4-side-riverflow25-1.png" alt="gorgon-r4-side-riverflow25-1.png"><figcaption>gorgon-r4-side-riverflow25-1.png</figcaption></figure></div></template>
+<template id="in-1"><h2>gorgon-r6-C-flash31</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-11T03:46:03</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon/prompts/r6-BC-hairmove-edit.txt</p><pre>The attached image shows a female cyberpunk gridiron-football blocker frozen mid-stride in a stiff-arm pose — a photorealistic full-body studio render on a plain gray backdrop, seen in near-profile from her armored-shoulder side as she strides toward the VIEWER&#x27;S RIGHT. Recreate THIS EXACT image — the SAME character, same face, same massive heavyweight build, same pose, same kit, same materials, same styling and lighting — with EXACTLY TWO CHANGES and nothing else changed:
+
+CHANGE 1 — HAIR. In the attached image her thick cable-dreadlocks are swept back and hang down BEHIND her, down her back. Move them: gather the ENTIRE mass of dreadlocks and drape it forward over her FAR shoulder — the shoulder of the extended stiff-arm, the shoulder AWAY from the camera, the one WITHOUT the armored pad — so the whole bundle of thick sculpted cords hangs down the FRONT of that far shoulder toward her chest. After this change NO dreadlocks hang down her back: her upper back, the BACK OF HER NECK and her near pad-shoulder are completely clear of hair. On the newly exposed back of her neck, add the raised segmented SPINAL IMPLANT that the hair was hiding: a vertebral ridge of chunky bold chrome segments running from the back of her skull down the back of her neck and disappearing under the bodysuit&#x27;s collar, clearly visible in profile against the background.
+
+CHANGE 2 — CAMERA. Rotate the camera about 20 degrees further around toward her FRONT, keeping the same distance and height, so the view becomes slightly more of a three-quarter: more of the FRONT of her torso turns toward the camera, the OPEN PALM of her extended far hand becomes clearly visible to the camera, and her FAR trailing leg is clearly visible past her near leg instead of hiding behind it. She still strides toward the VIEWER&#x27;S RIGHT with the armored pad shoulder nearest the camera; the view stays side-biased, never a head-on front view.
+
+Everything else stays IDENTICAL to the attached image: same pose — mid-stride, the NEAR bare leg leading with its combat boot planted flat on the ground, the FAR covered leg trailing with toes down and heel raised; the FAR arm fully extended forward at shoulder height with the open palm facing forward, fingers together, thumb visible; the NEAR chrome arm hanging at her side in a loose empty fist. Same kit — a single armored shoulder pad with the white number 4 on the NEAR shoulder only; the far shoulder stays the bare smooth chrome ball of the cyberarm joint with NO pad, NO strap, NO armor (the draped hair is hair, not armor); both arms full gunmetal military cyberarms; one CONTINUOUS intact legging on the covered trailing leg only, joining the suit at the hip with no bare-skin gap, no rips and no holes; exactly ONE wide studded leather garter, high on the bare near thigh; a hard armored knee pad on the covered leg and a strapped leather knee pad on the bare leg; bulky buckled combat boots on both feet. Same heavyweight V-tapered build, same cold level stare, both temples shaved with NO socket, stud or jewel on the visible temple or forehead. No weapons, no ball, no other people, no base or pedestal, and no text or logos anywhere except the number 4 on the shoulder pad and strictly illegible spray-stencil tags. Full figure head to toe, nothing cropped.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/ab885b424ac004d1.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/517e0fff84f804d4.webp" data-cap="gorgon-r4-side-riverflow25-1.png" alt="gorgon-r4-side-riverflow25-1.png"><figcaption>gorgon-r4-side-riverflow25-1.png</figcaption></figure></div></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy / share a deep link to one card. The URL is this page plus the card's
+// #id anchor, so a recipient lands scrolled to (and highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+</body></html>
