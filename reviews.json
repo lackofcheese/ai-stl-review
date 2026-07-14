@@ -13,15 +13,30 @@
   "title": "Gorgon r1 \u2014 concept panel",
   "updated": "2026-07-13T07:28:33.155359+00:00"
  },
+ "cyber-amazons/gorgon/r10-panel": {
+  "published": "2026-07-14T01:22:22.128460+00:00",
+  "title": "Gorgon \u2014 Round 10 (Meshy run)",
+  "updated": "2026-07-14T01:22:22.128460+00:00"
+ },
  "cyber-amazons/gorgon/r10-runbook": {
   "published": "2026-07-13T12:36:27.922669+00:00",
-  "title": "Gorgon r10 \u2014 Meshy run (both r9 clay sheets)",
-  "updated": "2026-07-13T12:36:27.922669+00:00"
+  "title": "Gorgon \u2014 Round 10 runbook",
+  "updated": "2026-07-14T01:23:33.084668+00:00"
+ },
+ "cyber-amazons/gorgon/r11-panel": {
+  "published": "2026-07-14T01:22:50.672801+00:00",
+  "title": "Gorgon \u2014 Round 11 (clay vs non-clay Meshy)",
+  "updated": "2026-07-14T01:22:50.672801+00:00"
  },
  "cyber-amazons/gorgon/r11-runbook": {
   "published": "2026-07-13T23:17:34.688292+00:00",
-  "title": "Gorgon r11 \u2014 Meshy input comparison (clay vs non-clay)",
-  "updated": "2026-07-13T23:17:34.688292+00:00"
+  "title": "Gorgon \u2014 Round 11 runbook",
+  "updated": "2026-07-14T01:23:36.047877+00:00"
+ },
+ "cyber-amazons/gorgon/r12-runbook": {
+  "published": "2026-07-14T01:16:33.046803+00:00",
+  "title": "Gorgon r12 \u2014 Meshy re-run at --no-remesh",
+  "updated": "2026-07-14T01:16:33.046803+00:00"
  },
  "cyber-amazons/gorgon/r2-panel": {
   "published": "2026-07-10T10:42:44.139956+00:00",
