@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Trumbert — Round 4 (design-to-survive thickening)</title>
+<style>
+:root{color-scheme:dark light;--accent:#e08a1e;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.statrow { display:flex; flex-wrap:wrap; gap:.15rem .5rem; margin:0 0 .1rem;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.72rem;
+  color:var(--dim) }
+.statrow span { white-space:nowrap }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.chip.unclear { color:var(--dim); border-color:var(--dim) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:92vh; object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+</style></head><body><main>
+<div class="eyebrow">herpeton-eradication-society · Trumbert · round 4</div>
+<h1>Trumbert — Round 4 (design-to-survive thickening)</h1>
+<a class="crosslink" href="../r4-runbook/">&#128214; Round runbook &rarr;</a>
+<p class="sub">Pose and model are <b>locked</b> — Trumbert is the <b>P6 Protective Interpose on gptimage2</b>. This round does one job: <b>make him printable</b>. Four normally-fragile features are re-sculpted THICK/CHUNKY/SOLID for a Small-gnome resin mini — <b>(1)</b> one-mass flame hair (no thin wisps), <b>(2)</b> ears pinned/embedded in the hair, <b>(3)</b> a heavy thick FUR cloak, <b>(4)</b> a bulkier scimitar with its TIP PLANTED ON THE GROUND beside his foot (a gluable third contact). Two rendering approaches compete: <b>Track A</b> re-generates the interpose from a thickened text prompt; <b>Track B</b> img2img-edits the exact P6 keeper so identity/composition are preserved. Pick the best thickened base (or the best hybrid) to carry to the R5 clay-sculpt turnaround.</p>
+<div class="callout"><b>Pre-read — the thickening approach WORKS; the sword is the headline win.</b> Fresh-context crop audits give <b>three keeper-candidates</b>: <b>Track A gptimage2</b>, and on Track B <b>gptimage2</b> and <b>riverflow25</b>. Across the whole board, three of the four thickenings land reliably: the flame <b>hair</b> becomes one chunky connected mass, the <b>cloak</b> becomes a genuinely heavy deep-pile <b>fur</b> mantle (a big upgrade on the keeper's thin cape), and the <b>blade</b> bulks to a broad, print-safe cross-section — exactly the DM's most-agreed ask. The two <b>harder</b> targets are the ones to eye: <b>(a) grounding the blade tip</b> — several rolls (Track A riverflow25, Track B flash31/grokq) left the tip <i>floating</i> beside the boot instead of planted; the keepers plant it, though gptimage2/riverflow angle it out ~35° rather than dead-vertical; and <b>(b) embedding the ears</b> — pro2k, mai25 and Track A riverflow25 still poke a pointed tip out of the hair. <b>Track identity trade-off:</b> the img2img Track B best preserves the <i>exact</i> keeper face/composition (gptimage2 editing its own output), while the prompt-adjust Track A drifts the build <b>chunkier/chibi</b>.<br><br><b>Blind cross-check (read the chips — mandatory human look).</b> The unbiased blind detector called every roll print-REJECT (its usual R1–R3 print-strict behaviour on a photoreal concept — it means "thicken more before 3D," not "discard"), and it flags two genuine <b>crop-vs-blind disagreements</b> for your eye: <b>build</b> — the blind pass reads several renders as "stout/stocky" where the primed crop audit sees "lithe/fey" (the soft R3 build tension, still live); and <b>ears</b> — on the two Track-B keepers the crop audit calls the ears embedded but the blind pass still sees a slightly-pointed tip. Also surfaced: the bulked blade now reads as a <b>broad straightish falchion</b> on some rolls rather than a clearly curved scimitar, and fine hardware (boot buckles, the ankh's neck chain) still reads thin — clay/mesh-stage items. Raw blind pass: <code>notes/r4-blind-detect.jsonl</code>.</div>
+<div class="callout asks"><p class="boxhead">Verdicts / info needed</p><p class="intro">Answer any subset. This is a proof-of-concept round (is an image-stage thickening pass worthwhile?), so a read on the approach itself is as useful as a base pick. Rejecting the board with fresh thickening notes is fully valid.</p><ol><li><span class="q">Which thickened base carries to R5 (clay-sculpt turnaround)?</span><span class="who">Dimitri</span><p class="d">This pick becomes the R5 turnaround keeper (rendered as two rolls for insurance). All three keeper-candidates land all/most of the four thickenings with correct chirality and both feet flat.</p><ul><li><strong>Track B — gptimage2</strong> — best <em>exact</em> identity match (edits the keeper's own output): same face &amp; composition, lithe build preserved, all four thickenings present; blade tip is grounded but angled out ~35°.</li><li><strong>Track B — riverflow25</strong> — the cleanest all-four: thick rope-curl hair, embedded ear, heavy fur cloak, broad blunt blade planted on the ground; lithe. Trade-off: riverflow re-interprets the face slightly (still on-model), not a pixel-exact identity match.</li><li><strong>Track A — gptimage2</strong> — strongest grounded blade and a bold thick fur cloak, but a fresh text roll: build reads chunkier/chibi and one ear tip pokes out; different face from the keeper.</li><li><strong>Reject / mix</strong> — reject with fresh thickening notes, or name a hybrid (e.g. carry Track B gptimage2 but pull riverflow's dead-vertical grounded blade / fully-embedded ear).</li></ul></li><li><span class="q">Two design calls to confirm on the winning base</span><span class="who">Dimitri</span><p class="d">Both are cheap to pin now before the turnaround locks the geometry.</p><ul><li><strong>Grounded-blade angle</strong> — keep the blade planted near-VERTICAL right beside the near foot (riverflow-style, tidiest third contact + basing) or the slightly angled-out gptimage2 look?</li><li><strong>Blade shape</strong> — the bulking made the blade read as a broad straightish falchion on some rolls. Keep pushing a clearly CURVED scimitar silhouette, or is the bulkier broad blade fine?</li></ul></li><li><span class="q">Proof-of-concept read: is an image-stage thickening pass worth doing?</span><span class="who">Dimitri</span><p class="d">The round's own value question (r3→r4 feedback): three of four fragile features thicken reliably at the image stage; grounding the blade and fully embedding ears are the stochastic misses. Worth keeping as a standard pre-3D step, or defer thickening to the mesh stage?</p></li></ol></div>
+<h2>Track A — prompt-adjust (text→image, no reference)</h2>
+<p class="blurb">The interpose re-generated from a thickened prompt ("built to be 3D-printed… everything THICK, CHUNKY, SOLID") on the two locked models. Cleanest thick geometry, but a fresh roll can drift the exact face/composition and build.</p>
+<div class="grid">
+<div class="card" id="trumbert-r4-interpose-thick-gptimage2"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/36ec57b64dc2f425.png" data-cap="gptimage2 · KEEPER-CANDIDATE"><img src="../../../../assets/42662ab9bdfa4fb3.jpg" alt="gptimage2 · KEEPER-CANDIDATE" loading="lazy"></div><div class="meta"><header><h3>gptimage2 · KEEPER-CANDIDATE</h3><span class="cost">$0.17</span><span class="call keeper" title="KEEPER-CANDIDATE — three of four thickenings land cleanly; only the exposed pointed left-ear tip is a soft flag worth a fix pass">KEEPER-CANDIDATE</span></header><div class="cardref"><a class="refid" href="#trumbert-r4-interpose-thick-gptimage2" title="Deep link to this image">#thick-gptimage2</a><button class="refbtn" data-copy="trumbert-r4-interpose-thick-gptimage2" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="trumbert-r4-interpose-thick-gptimage2" data-title="gptimage2 · KEEPER-CANDIDATE" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — multiple critical contradictions on build, printability, and key design elements.">blind cross-check</span><span class="chip warn" title="ears embedded — His left ear (viewer-right) is short/swept-back but its pointed tip clearly juts sideways out of the hairline in the face crop — a thin exposed protrusion, not fully tucked; right ear is hidden in hair">ears embedded</span><span class="chip ok" title="hair one-mass — Flame hair reads as one connected chunky mass of thick rounded curl-lobes merging into the scalp; a few crown flame-licks taper but curl back as hooks, not straight needle spikes">hair one-mass</span><span class="chip ok" title="cloak thick fur — Very heavy deep-pile rope-like fur collar/cloak with thick rolled edges and solid volume over both shoulders — no thin flat sheet or flapping hem">cloak thick fur</span></div><details class="more"><summary>all 10 detectors (6 more)</summary><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — multiple critical contradictions on build, printability, and key design elements.">blind cross-check</span><span class="chip warn" title="ears embedded — His left ear (viewer-right) is short/swept-back but its pointed tip clearly juts sideways out of the hairline in the face crop — a thin exposed protrusion, not fully tucked; right ear is hidden in hair">ears embedded</span><span class="chip ok" title="hair one-mass — Flame hair reads as one connected chunky mass of thick rounded curl-lobes merging into the scalp; a few crown flame-licks taper but curl back as hooks, not straight needle spikes">hair one-mass</span><span class="chip ok" title="cloak thick fur — Very heavy deep-pile rope-like fur collar/cloak with thick rolled edges and solid volume over both shoulders — no thin flat sheet or flapping hem">cloak thick fur</span><span class="chip ok" title="blade bulky — Scimitar has wide flat cross-section, thick visible spine, and a broad blunt sturdy tip (tip crop) — no needle point">blade bulky</span><span class="chip ok" title="blade tip grounded — Blunt broad blade tip rests on the ground beside the near (viewer-left) boot as a third contact point; blade is near-vertical/lowered">blade tip grounded</span><span class="chip ok" title="fey gnome build — Small lithe build, slightly-large head, big bright warm amber eyes, clean-shaven, gentle half-smile — not stocky/dwarfish or grim">fey gnome build</span><span class="chip ok" title="kit+emblem+ankh — Fitted steel breastplate; one centered geometric sun emblem (~8-10 thick triangular rays, central disc); ankh-and-sun pendant at neck; trousers + boots; shield plain steel with domed boss and no sun">kit+emblem+ankh</span><span class="chip ok" title="chirality — Scimitar in his right hand = viewer-left; round shield on his left arm = viewer-right — correct, not mirrored">chirality</span><span class="chip ok" title="both feet flat — Both boots flat and fully soled on the ground, heels down (feet crop) — no toe-standing">both feet flat</span></div></details><p>Hair one-mass, thick fur cloak, and bulky ground-planted blade all land; identity/chirality/basing all correct; only the pointed left-ear tip juts out (thickening #2 partial).</p><details class="more"><summary>full note</summary><p class="chipnote">Cropped and zoomed head/ears, torso emblem+ankh, shield, sword hand+full blade+tip, and both feet. Three of four target thickenings pass strongly: the flame hair is one connected chunky rounded-lobe mass, the shoulder cloak is heavy deep-pile rope-like fur with thick rolled edges, and the scimitar is a wide-cross-section blade with a thick spine and blunt broad tip planted on the ground beside the near foot as a solid third contact. Identity holds — a lithe fey gnome with a slightly-large head, big warm amber eyes, clean-shaven kind expression; kit is correct (steel breastplate, single centered geometric sun ~8-10 rays, ankh-and-sun neck pendant, trousers+boots, plain domed-boss shield with no sun). Chirality is correct (sword viewer-left, shield viewer-right) and both boots are flat with heels down. The lone weakness is thickening #2: his left ear is short and swept back but its pointed tip clearly juts sideways out of the hair rather than being fully embedded — a thin exposed protrusion and mild print-safety/thickening miss, keeping this a strong keeper-candidate with one fixable ear flag.</p></details><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="trumbert-r4-interpose-thick-riverflow25"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/1fc7eec6de409ad9.webp" data-cap="riverflow25"><img src="../../../../assets/fdb4167484afe9a0.jpg" alt="riverflow25" loading="lazy"></div><div class="meta"><header><h3>riverflow25</h3><span class="cost">$0.34</span><span class="call fixable" title="FIXABLE — strong kit/identity/chirality, thick fur + bulky blade land, but pointed ear tip juts out and the lowered blade tip floats in mid-air instead of planted on ground">FIXABLE</span></header><div class="cardref"><a class="refid" href="#trumbert-r4-interpose-thick-riverflow25" title="Deep link to this image">#thick-riverflow25</a><button class="refbtn" data-copy="trumbert-r4-interpose-thick-riverflow25" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="trumbert-r4-interpose-thick-riverflow25" data-title="riverflow25" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="ears embedded — Head crop: sharp pointed gnome ear clearly juts out sideways from the hair on both sides, exposed thin pointed tip — not embedded/pinned; print-risk protrusion, fails thickening brief">ears embedded</span><span class="chip bad" title="blade tip grounded — Full/sword crops: blade lowered and angled out to viewer-left, tip curves down and floats in mid-air well left of the near boot; does NOT contact ground, no third ground point">blade tip grounded</span><span class="chip bad" title="blind cross-check — REJECT — Numerous critical deviations from brief, especially printability and core concept.">blind cross-check</span><span class="chip warn" title="hair one-mass — Head crop: largely one chunky connected flame mass, but several pointed flame-lick tips at crown/sides taper to points rather than rounded merges; no needle wisps though">hair one-mass</span></div><details class="more"><summary>all 10 detectors (6 more)</summary><div class="chips"><span class="chip bad" title="ears embedded — Head crop: sharp pointed gnome ear clearly juts out sideways from the hair on both sides, exposed thin pointed tip — not embedded/pinned; print-risk protrusion, fails thickening brief">ears embedded</span><span class="chip bad" title="blade tip grounded — Full/sword crops: blade lowered and angled out to viewer-left, tip curves down and floats in mid-air well left of the near boot; does NOT contact ground, no third ground point">blade tip grounded</span><span class="chip bad" title="blind cross-check — REJECT — Numerous critical deviations from brief, especially printability and core concept.">blind cross-check</span><span class="chip warn" title="hair one-mass — Head crop: largely one chunky connected flame mass, but several pointed flame-lick tips at crown/sides taper to points rather than rounded merges; no needle wisps though">hair one-mass</span><span class="chip ok" title="cloak thick fur — Full/feet crops: heavy deep-pile fur cloak with thick rolled collar and long solid-volume drape; clearly not a thin fabric cape">cloak thick fur</span><span class="chip ok" title="blade bulky — Sword crop: broad-bellied scimitar with wide cross-section and thick spine; tip tapers to a moderate point (not a needle) but is on the pointier side">blade bulky</span><span class="chip ok" title="fey gnome build — Head crop: small child-like proportions, slightly large head, big bright warm eyes, freckles, clean-shaven, warm expression — lithe fey, not stocky/dwarfish">fey gnome build</span><span class="chip ok" title="kit+emblem+ankh — Torso crop: steel breastplate, one big geometric gold sun emblem (~10-12 thick rays around domed boss), gold ankh-and-sun neck pendant present; trousers+boots">kit+emblem+ankh</span><span class="chip ok" title="chirality — Scimitar in his right hand = viewer&#x27;s LEFT; plain round shield on his left arm = viewer&#x27;s RIGHT. Correct, not mirrored">chirality</span><span class="chip ok" title="both feet flat — Feet crop: both boots planted flat, full soles and heels down on ground, natural interpose half-step stance">both feet flat</span></div></details><p>Identity/kit/chirality/cloak/bulky-blade all good, but pointed ear juts out (bad) and lowered blade tip floats un-grounded (bad) — two of four thickenings miss.</p><details class="more"><summary>full note</summary><p class="chipnote">A strong render on core identity: lithe fey gnome, correct steel breastplate with one big ~10-12-ray gold sun emblem and ankh-sun pendant, plain domed round shield with no sun, correct chirality (scimitar viewer-left, shield viewer-right), and both feet flat. Of the four thickening asks, cloak (heavy thick fur) and blade bulk (broad scimitar belly) succeed, but two fail: the pointed gnome ears jut out sideways as exposed thin tips rather than embedded in hair, and the lowered scimitar&#x27;s tip floats in mid-air out to the side instead of being planted on the ground beside the near foot (no solid third ground contact). Hair is mostly one chunky mass but retains a few pointed flame-lick tips. Both failures are prompt-fixable, so FIXABLE rather than reject.</p></details><button class="ibtn" data-inputs="in-1">inputs — prompt &amp; refs</button></div></div>
+</div>
+<h2>Track B — img2img edit of the P6 keeper</h2>
+<p class="blurb">The exact P6 keeper (trumbert-r3-p6interpose-gptimage2) fed back in and edited to thicken ONLY the four features while preserving identity/kit/pose/chirality/composition. gptimage2 + riverflow25 added at Dimitri's request; flash31 is the img2img trust anchor; grokq + mai25 the cheap A/B.</p>
+<div class="grid">
+<div class="card" id="trumbert-r4-interpose-i2i-gptimage2"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/05db204e1d9be8be.png" data-cap="gptimage2 · KEEPER-CANDIDATE"><img src="../../../../assets/8cc81528db571ffa.jpg" alt="gptimage2 · KEEPER-CANDIDATE" loading="lazy"></div><div class="meta"><header><h3>gptimage2 · KEEPER-CANDIDATE</h3><span class="cost">$0.18</span><span class="call keeper" title="KEEPER-CANDIDATE — all four thickenings landed; identity/kit/chirality intact; only nits are a fairly frontal pose and a diagonally-angled (not near-vertical) grounded blade">KEEPER-CANDIDATE</span></header><div class="cardref"><a class="refid" href="#trumbert-r4-interpose-i2i-gptimage2" title="Deep link to this image">#i2i-gptimage2</a><button class="refbtn" data-copy="trumbert-r4-interpose-i2i-gptimage2" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="trumbert-r4-interpose-i2i-gptimage2" data-title="gptimage2 · KEEPER-CANDIDATE" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — Significant deviations in build, printability, and key item specifics.">blind cross-check</span><span class="chip warn" title="blade tip grounded — Tip reaches ground level right beside the near (viewer-left) boot acting as a contact, but blade is angled ~35deg outward rather than near-vertical">blade tip grounded</span><span class="chip warn" title="composition faithful — Standard clean full-body front; sword lowered + shield raised reads protective, but stance is fairly square/frontal — possible mild gptimage2 recompose vs a half-step-aside interpose">composition faith…</span><span class="chip ok" title="hair one-mass — Single thick connected cap of chunky rope-curls with rounded merging tips; zero thin wisps/spikes — very print-safe">hair one-mass</span></div><details class="more"><summary>all 11 detectors (7 more)</summary><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — Significant deviations in build, printability, and key item specifics.">blind cross-check</span><span class="chip warn" title="blade tip grounded — Tip reaches ground level right beside the near (viewer-left) boot acting as a contact, but blade is angled ~35deg outward rather than near-vertical">blade tip grounded</span><span class="chip warn" title="composition faithful — Standard clean full-body front; sword lowered + shield raised reads protective, but stance is fairly square/frontal — possible mild gptimage2 recompose vs a half-step-aside interpose">composition faith…</span><span class="chip ok" title="hair one-mass — Single thick connected cap of chunky rope-curls with rounded merging tips; zero thin wisps/spikes — very print-safe">hair one-mass</span><span class="chip ok" title="ears embedded — Ear closeup shows a rounded ear tucked under/into the hair mass; no sharp pointed tip juts out">ears embedded</span><span class="chip ok" title="cloak thick fur — Heavy deep-pile fur cloak with solid volume and thick rolled collar; not a thin fabric cape or flat sheet">cloak thick fur</span><span class="chip ok" title="blade bulky — Broad falchion-style blade, wide cross-section and thick spine, blunt rounded tip — not a thin needle">blade bulky</span><span class="chip ok" title="fey gnome build — Lithe, clean-shaven youthful face, big eyes, slightly-large head from hair; reads fey/lithe though overt gnome scale is subtle">fey gnome build</span><span class="chip ok" title="kit+emblem+ankh — Steel breastplate, one big geometric gold sun emblem, ankh-and-sun neck pendant, plain round steel shield (domed boss, rivets, no sun), trousers+boots all present">kit+emblem+ankh</span><span class="chip ok" title="chirality — Scimitar/falchion in his right hand = VIEWER LEFT; round shield on his left arm = VIEWER RIGHT — correct, not mirrored">chirality</span><span class="chip ok" title="both feet flat — Both boots planted flat, heels down on the ground">both feet flat</span></div></details><p>Strong keeper-candidate: all four fragile features thickened for resin, identity/kit/chirality intact; minor nits on angled blade and frontal pose.</p><details class="more"><summary>full note</summary><p class="chipnote">The IMG2IMG thickening pass succeeded on all four targets: hair is one chunky connected rope-curl mass with rounded tips, the ear is rounded and embedded in the hair with no jutting point, the cloak is a heavy deep-pile fur with a thick rolled collar, and the blade is a broad thick-spined falchion with a blunt tip whose point reaches the ground beside the near boot as a third contact. Identity and kit are faithful — lithe fey clean-shaven gnome, steel breastplate with one big gold sun emblem, ankh-and-sun pendant, plain round riveted steel shield with no sun, trousers and boots. Chirality is correct (blade viewer-left, shield viewer-right) and both feet are flat. The only soft flags: the lowered blade is angled outward rather than near-vertical (tip is grounded but not planted vertically), and the stance reads fairly frontal/square, a possible mild gptimage2 recompose relative to a half-step-aside interpose. Print-safety looks good: thumb visible on the grip, no thin protrusions or floating parts.</p></details><button class="ibtn" data-inputs="in-2">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="trumbert-r4-interpose-i2i-riverflow25"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/37cb9cb80be7d04d.webp" data-cap="riverflow25 · KEEPER-CANDIDATE"><img src="../../../../assets/50d5de81fcbe0219.jpg" alt="riverflow25 · KEEPER-CANDIDATE" loading="lazy"></div><div class="meta"><header><h3>riverflow25 · KEEPER-CANDIDATE</h3><span class="cost">$0.36</span><span class="call keeper" title="KEEPER-CANDIDATE — all four thickenings satisfied; identity/kit/chirality/basing intact">KEEPER-CANDIDATE</span></header><div class="cardref"><a class="refid" href="#trumbert-r4-interpose-i2i-riverflow25" title="Deep link to this image">#i2i-riverflow25</a><button class="refbtn" data-copy="trumbert-r4-interpose-i2i-riverflow25" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="trumbert-r4-interpose-i2i-riverflow25" data-title="riverflow25 · KEEPER-CANDIDATE" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — fundamental failures in gnome identity, key religious symbol, and printability">blind cross-check</span><span class="chip ok" title="hair one-mass — Single chunky connected mass of thick rounded orange curls/rolls merging into head; no thin wisps, strands, spikes, or needles anywhere.">hair one-mass</span><span class="chip ok" title="ears embedded — Viewer-left ear is short with a rounded top, mostly buried in hair; no thin pointed elf-tip juts out; right ear fully hair-covered.">ears embedded</span><span class="chip ok" title="cloak thick fur — Heavy deep-pile fur cloak with thick rolled collar and dense fleece body volume; clearly solid fur, not a thin fabric cape or flat sheet.">cloak thick fur</span></div><details class="more"><summary>all 11 detectors (7 more)</summary><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — fundamental failures in gnome identity, key religious symbol, and printability">blind cross-check</span><span class="chip ok" title="hair one-mass — Single chunky connected mass of thick rounded orange curls/rolls merging into head; no thin wisps, strands, spikes, or needles anywhere.">hair one-mass</span><span class="chip ok" title="ears embedded — Viewer-left ear is short with a rounded top, mostly buried in hair; no thin pointed elf-tip juts out; right ear fully hair-covered.">ears embedded</span><span class="chip ok" title="cloak thick fur — Heavy deep-pile fur cloak with thick rolled collar and dense fleece body volume; clearly solid fur, not a thin fabric cape or flat sheet.">cloak thick fur</span><span class="chip ok" title="blade bulky — Broad falchion/scimitar with very wide cross-section, thick spine and a blunt squared-off tip; no thin/needle geometry — well over-thickened for resin.">blade bulky</span><span class="chip ok" title="blade tip grounded — Near-vertical lowered blade; broad tip planted flat on the ground beside the near (viewer-left) foot, casting contact shadow = third ground contact.">blade tip grounded</span><span class="chip ok" title="fey gnome build — Small lithe build, slightly-large head, big warm eyes, clean-shaven youthful face; reads fey/gnome, not stocky or dwarfish.">fey gnome build</span><span class="chip ok" title="kit+emblem+ankh — Steel breastplate; ONE big geometric gold sun-star chest emblem; ankh-over-sunburst neck pendant on chain; trousers + strapped boots — all present.">kit+emblem+ankh</span><span class="chip ok" title="chirality — Scimitar in his right hand = viewer&#x27;s LEFT; plain round steel shield on his left arm = viewer&#x27;s RIGHT. Not mirrored.">chirality</span><span class="chip ok" title="composition faithful — Faithful full-body standing interpose pose, calm forward gaze, sword lowered; framing/pose consistent with a keeper edit, no obvious drift.">composition faith…</span><span class="chip ok" title="both feet flat — Near foot full sole flat; far (viewer-right) boot heel and sole down flat on ground. Both planted.">both feet flat</span></div></details><p>Clean keeper: all four thickenings (hair mass, embedded ears, thick fur cloak, bulky grounded blade) met; kit, chirality, basing all intact.</p><details class="more"><summary>full note</summary><p class="chipnote">Crop-and-zoom audit of every region confirms this img2img thickening pass succeeds on all four target features: hair is one chunky connected mass of rounded curls with no wisps; the ear is short, rounded, and embedded in hair; the cloak is heavy deep-pile fur with thick rolled edges; and the blade is a broad thick falchion with a blunt tip planted on the ground beside the near foot as a third contact point. Identity is preserved — lithe fey gnome, steel breastplate with one gold sun emblem, ankh-and-sun pendant, plain round riveted steel shield (no sun), trousers and boots. Chirality is correct (sword viewer-left, shield viewer-right), both feet are flat, the grip shows a visible thumb, and no thin protrusions or floating parts are present. Strong keeper candidate.</p></details><button class="ibtn" data-inputs="in-3">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="trumbert-r4-interpose-i2i-flash31"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/a71b3d95c1b0d2c1.jpg" data-cap="flash31"><img src="../../../../assets/a7e52f040d7b280b.jpg" alt="flash31" loading="lazy"></div><div class="meta"><header><h3>flash31</h3><span class="cost">~$0.10</span><span class="call fixable" title="FIXABLE — thick, faithful edit but the scimitar tip floats in mid-air instead of being planted on the ground (fails thickening brief #4 + floating protrusion)">FIXABLE</span></header><div class="cardref"><a class="refid" href="#trumbert-r4-interpose-i2i-flash31" title="Deep link to this image">#i2i-flash31</a><button class="refbtn" data-copy="trumbert-r4-interpose-i2i-flash31" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="trumbert-r4-interpose-i2i-flash31" data-title="flash31" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="blade tip grounded — blade is held out to viewer-left and angled down but the tip hovers well above the floor beside the near boot — it does NOT touch the ground; no third ground contact and the tip is a floating protrusion">blade tip grounded</span><span class="chip bad" title="blind cross-check — REJECT — Multiple critical contradictions on build, ears, weapon type, emblem placement, and 3D printability.">blind cross-check</span><span class="chip warn" title="ears embedded — viewer-right gnome ear is short and mostly tucked against the hair, but a pointed tip still juts sideways/out of the hair rather than being fully buried; not a long needle but not fully embedded">ears embedded</span><span class="chip warn" title="composition faithful — identity/kit/framing look faithful, but sword is held out to the side with tip floating rather than lowered-and-planted; blade angle/pose appears to have drifted from the intended grounded lowered blade">composition faith…</span></div><details class="more"><summary>all 11 detectors (7 more)</summary><div class="chips"><span class="chip bad" title="blade tip grounded — blade is held out to viewer-left and angled down but the tip hovers well above the floor beside the near boot — it does NOT touch the ground; no third ground contact and the tip is a floating protrusion">blade tip grounded</span><span class="chip bad" title="blind cross-check — REJECT — Multiple critical contradictions on build, ears, weapon type, emblem placement, and 3D printability.">blind cross-check</span><span class="chip warn" title="ears embedded — viewer-right gnome ear is short and mostly tucked against the hair, but a pointed tip still juts sideways/out of the hair rather than being fully buried; not a long needle but not fully embedded">ears embedded</span><span class="chip warn" title="composition faithful — identity/kit/framing look faithful, but sword is held out to the side with tip floating rather than lowered-and-planted; blade angle/pose appears to have drifted from the intended grounded lowered blade">composition faith…</span><span class="chip ok" title="hair one-mass — flame hair reads as one thick connected mass of chunky rounded tube-curls merging into the scalp; a few short curl tips at the perimeter but all rounded, no thin wisps/spikes/needles">hair one-mass</span><span class="chip ok" title="cloak thick fur — heavy deep-pile fur collar/cloak with solid rolled volume down the shoulders and side; not a thin flat cape or flapping fabric hem">cloak thick fur</span><span class="chip ok" title="blade bulky — scimitar is very broad and thick — wide cross-section, heavy spine, blunt sturdy chisel tip; print-safe cross-section throughout">blade bulky</span><span class="chip ok" title="fey gnome build — lithe youthful gnome — slightly large head, big bright eyes, clean-shaven, warm faint smile; not stocky/dwarfish">fey gnome build</span><span class="chip ok" title="kit+emblem+ankh — fitted steel breastplate, exactly one large geometric sunburst emblem centered on chest, ankh-and-sun pendant on a chain at the neck, trousers + brown boots; all present">kit+emblem+ankh</span><span class="chip ok" title="chirality — scimitar in his right hand on the VIEWER-LEFT; plain round steel shield on his left arm on the VIEWER-RIGHT — correct, not mirrored">chirality</span><span class="chip ok" title="both feet flat — both boots sit flat on the ground with trailing heel down; stable stance">both feet flat</span></div></details><p>Thick, on-model fey-gnome edit — hair mass, fur cloak, bulky blade and kit all pass, but the scimitar tip floats instead of being planted on the ground.</p><details class="more"><summary>full note</summary><p class="chipnote">Crop audit: head/ears show a lithe fey gnome with big bright eyes and a warm smile, flame hair rendered as one thick connected mass of rounded tube-curls (no wisps); the viewer-right ear is short and mostly tucked but its pointed tip still juts slightly (warn). Torso crop confirms fitted steel breastplate with a single centered geometric sunburst emblem and an ankh-and-sun neck pendant; the shoulder cloak is genuine heavy deep-pile fur with rolled volume. Shield crop is a plain domed steel round shield (riveted rim, no sun) on his left arm at viewer-right, and the scimitar is in his right hand at viewer-left — chirality correct. The blade itself is excellently bulky (broad spine, blunt chisel tip, print-safe cross-section). The one real failure is thickening brief #4: the lower-blade crop shows the tip hovering above the floor beside the near boot rather than planted on the ground — a floating protrusion with no third ground contact — so the intended grounded/lowered pose has drifted. Both boots are flat on the ground. Net: identity and thickenings are strong, but the un-grounded floating sword tip makes this FIXABLE (repose the blade so its tip plants on the base) rather than an immediate keeper.</p></details><button class="ibtn" data-inputs="in-4">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="trumbert-r4-interpose-i2i-pro2k"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b24abb15d7091888.jpg" data-cap="pro2k"><img src="../../../../assets/b18c510a6302697b.jpg" alt="pro2k" loading="lazy"></div><div class="meta"><header><h3>pro2k</h3><span class="cost">~$0.14</span><span class="call fixable" title="FIXABLE — identity/kit/chirality/cloak/hair all good, but two thickening targets missed: pointed ears still jut out of the hair, and the lowered blade is cantilevered out to the side rather than tip-planted beside the near foot.">FIXABLE</span></header><div class="cardref"><a class="refid" href="#trumbert-r4-interpose-i2i-pro2k" title="Deep link to this image">#i2i-pro2k</a><button class="refbtn" data-copy="trumbert-r4-interpose-i2i-pro2k" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="trumbert-r4-interpose-i2i-pro2k" data-title="pro2k" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="ears embedded — Head and shield crops: sharply pointed fey ears clearly protrude from the hairline on BOTH sides, thin pointed tips fully exposed — not pinned/swept/embedded. This thickening target failed; a fragile thin protrusion remains.">ears embedded</span><span class="chip bad" title="blind cross-check — REJECT — Core character build, specific iconography, and printability requirements are contradicted.">blind cross-check</span><span class="chip warn" title="blade tip grounded — Sword crop: blade is lowered but held out and angled ~45deg to viewer-left, cantilevered away from the body. Tip drops to about ground level but off to the side, NOT planted beside the near foot and not near-vertical — no clear third ground contact.">blade tip grounded</span><span class="chip ok" title="hair one-mass — Head crop: single thick chunky connected mass of rounded orange curls merging into the scalp; curls are fat and rounded, no thin wisps/strands/needles. Peripheral curl ends curl outward but stay thick.">hair one-mass</span></div><details class="more"><summary>all 11 detectors (7 more)</summary><div class="chips"><span class="chip bad" title="ears embedded — Head and shield crops: sharply pointed fey ears clearly protrude from the hairline on BOTH sides, thin pointed tips fully exposed — not pinned/swept/embedded. This thickening target failed; a fragile thin protrusion remains.">ears embedded</span><span class="chip bad" title="blind cross-check — REJECT — Core character build, specific iconography, and printability requirements are contradicted.">blind cross-check</span><span class="chip warn" title="blade tip grounded — Sword crop: blade is lowered but held out and angled ~45deg to viewer-left, cantilevered away from the body. Tip drops to about ground level but off to the side, NOT planted beside the near foot and not near-vertical — no clear third ground contact.">blade tip grounded</span><span class="chip ok" title="hair one-mass — Head crop: single thick chunky connected mass of rounded orange curls merging into the scalp; curls are fat and rounded, no thin wisps/strands/needles. Peripheral curl ends curl outward but stay thick.">hair one-mass</span><span class="chip ok" title="cloak thick fur — Torso/shield crops: heavy deep-pile fur cloak with solid rolled volume draping over shoulders and down the back — clearly a thick fur, not a thin fabric cape or flat sheet.">cloak thick fur</span><span class="chip ok" title="blade bulky — Sword crop: broad wide-cross-section scimitar with a thick spine; substantially bulked. Very tip still tapers to a modest point but overall mass is heavy, not a needle.">blade bulky</span><span class="chip ok" title="fey gnome build — Small lithe youth with slightly-large head, big warm eyes, clean-shaven, calm friendly expression — reads as a lithe fey gnome, not stocky/dwarfish/bearded.">fey gnome build</span><span class="chip ok" title="kit+emblem+ankh — Torso crop: steel breastplate, ONE big geometric bronze 8-point sun emblem with domed boss center, ankh-and-sun neck pendant on a chain; trousers + boots. All kit present and correct.">kit+emblem+ankh</span><span class="chip ok" title="chirality — Scimitar in his right hand = VIEWER&#x27;S LEFT; plain round steel shield on his left arm = VIEWER&#x27;S RIGHT. Not mirrored.">chirality</span><span class="chip ok" title="composition faithful — Reads as a faithful thickening edit — calm warm face, sword lowered, shield raised. Pose sits fairly square/planted (front-facing guard) rather than an obvious half-step-aside, but no gross drift vs an interpose edit.">composition faith…</span><span class="chip ok" title="both feet flat — Feet crop: both boots planted flat with full soles and heels down on the ground.">both feet flat</span></div></details><p>Good identity/kit/chirality/cloak/hair/blade-bulk, but pointed ears still jut out and lowered blade isn&#x27;t tip-planted beside the near foot — FIXABLE.</p><details class="more"><summary>full note</summary><p class="chipnote">Crop audit confirms a strong thickening pass on most fronts: hair is one thick connected mass of rounded curls, the cloak is heavy deep-pile fur, and the scimitar blade is broadly bulked. Identity holds — lithe clean-shaven warm fey gnome with steel breastplate, single geometric sun chest emblem, ankh-and-sun pendant, plain domed-boss round steel shield (no sun), trousers and boots — and chirality is correct (scimitar viewer-left, shield viewer-right) with both feet flat on the ground. Two of the four thickening targets fall short: the pointed fey ears still protrude fully from the hair (thin exposed tips, a print-fragile protrusion), and the lowered blade is angled and cantilevered out to viewer-left rather than tip-planted beside the near foot, so it does not establish the intended third ground contact. Net: FIXABLE — re-edit to embed the ears in the hair and drop the blade tip to plant near-vertically beside the near foot.</p></details><button class="ibtn" data-inputs="in-5">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="trumbert-r4-interpose-i2i-grokq"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/fa5061dd6620b191.png" data-cap="grokq"><img src="../../../../assets/5fe181be9937a724.jpg" alt="grokq" loading="lazy"></div><div class="meta"><header><h3>grokq</h3><span class="cost">$0.08</span><span class="call fixable" title="FIXABLE — three of four thickenings excellent; sword tip floats above ground beside boot and stays pointed, so it fails the grounded/blunt third-contact goal and remains a fragile protrusion">FIXABLE</span></header><div class="cardref"><a class="refid" href="#trumbert-r4-interpose-i2i-grokq" title="Deep link to this image">#i2i-grokq</a><button class="refbtn" data-copy="trumbert-r4-interpose-i2i-grokq" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="trumbert-r4-interpose-i2i-grokq" data-title="grokq" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="blade tip grounded — near-vertical lowered blade ends beside the near boot toe FLOATING above the ground plane; tip not planted, no third ground contact">blade tip grounded</span><span class="chip bad" title="blind cross-check — REJECT — numerous critical deviations from gnome identity, printability, and key pose elements">blind cross-check</span><span class="chip warn" title="blade bulky — blade is broad with wide cross-section and thick spine (well thickened), but the curved tip is still a sharp point, not blunted">blade bulky</span><span class="chip ok" title="hair one-mass — single thick chunky rope-coil mass, rounded merging tips, zero thin wisps/spikes">hair one-mass</span></div><details class="more"><summary>all 11 detectors (7 more)</summary><div class="chips"><span class="chip bad" title="blade tip grounded — near-vertical lowered blade ends beside the near boot toe FLOATING above the ground plane; tip not planted, no third ground contact">blade tip grounded</span><span class="chip bad" title="blind cross-check — REJECT — numerous critical deviations from gnome identity, printability, and key pose elements">blind cross-check</span><span class="chip warn" title="blade bulky — blade is broad with wide cross-section and thick spine (well thickened), but the curved tip is still a sharp point, not blunted">blade bulky</span><span class="chip ok" title="hair one-mass — single thick chunky rope-coil mass, rounded merging tips, zero thin wisps/spikes">hair one-mass</span><span class="chip ok" title="ears embedded — ears buried in hair at the temples/jawline; no thin pointed tip juts out">ears embedded</span><span class="chip ok" title="cloak thick fur — heavy deep-pile fur cloak with thick rolled collar and hem, solid volume — not thin fabric">cloak thick fur</span><span class="chip ok" title="fey gnome build — lithe, clean-shaven, big warm eyes, slightly large head, youthful/boyish — reads fey gnome, not stocky/dwarfish">fey gnome build</span><span class="chip ok" title="kit+emblem+ankh — steel breastplate, one big geometric gold sun emblem, ankh-and-sun neck pendant, plain round steel shield with domed boss+rivets and no sun">kit+emblem+ankh</span><span class="chip ok" title="chirality — sword in his right hand = viewer-left; shield on left arm = viewer-right — correct, not mirrored">chirality</span><span class="chip ok" title="composition faithful — faithful interpose stance, sword lowered, shield raised, full-body framing consistent with the keeper edit">composition faith…</span><span class="chip ok" title="both feet flat — both boots planted flat on the ground, trailing heel down; thumb visible on grip">both feet flat</span></div></details><p>Strong thickening pass (hair/ears/cloak great, blade broad), but sword tip floats above ground beside boot and stays pointed — not grounded.</p><details class="more"><summary>full note</summary><p class="chipnote">This img2img thickening edit keeps identity, kit, chirality, pose, and composition intact: lithe fey gnome, steel breastplate with one gold geometric sun, ankh-and-sun pendant, plain round riveted steel shield on viewer-right, scimitar in viewer-left hand with thumb visible. Three of the four target thickenings land well — the hair is one thick connected rope-coil mass, the ears are embedded with no jutting tips, and the cloak is a heavy deep-pile fur with thick rolled edges. The blade is broadened to a wide cross-section, but it fails the key survivability goal: the curved tip is still a sharp point and it floats just above the ground beside the near boot rather than being planted as a third ground contact, leaving a fragile thin protrusion. Fixable with a targeted blade-tip regen to blunt and ground the point.</p></details><button class="ibtn" data-inputs="in-6">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="trumbert-r4-interpose-i2i-mai25"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/28f33eea1dc7e442.png" data-cap="mai25"><img src="../../../../assets/3283a40dc94a1bed.jpg" alt="mai25" loading="lazy"></div><div class="meta"><header><h3>mai25</h3><span class="cost">$0.06</span><span class="call fixable" title="FIXABLE — identity/kit/chirality/cloak/blade all good, but the two headline thickenings failed: hair is still wispy/spiky and the pointed ears still jut out; needs another thickening edit on hair+ears (and blunt the sharp blade point).">FIXABLE</span></header><div class="cardref"><a class="refid" href="#trumbert-r4-interpose-i2i-mai25" title="Deep link to this image">#i2i-mai25</a><button class="refbtn" data-copy="trumbert-r4-interpose-i2i-mai25" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="trumbert-r4-interpose-i2i-mai25" data-title="mai25" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="hair one-mass — Head/ears crops show spiky wind-blown hair with many thin flyaway strands and sharp pointed tips at crown and sides — NOT one thick connected rounded mass; classic thin-wisp print hazard, thickening not achieved.">hair one-mass</span><span class="chip bad" title="ears embedded — Large pointed fey ears jut out prominently on both sides, thin sharp tips fully exposed clear of the hair — not pinned/swept/embedded; the target thickening failed.">ears embedded</span><span class="chip bad" title="blind cross-check — REJECT — Multiple core contradictions: build, ears, sword type, and critical printability issues with thin parts.">blind cross-check</span><span class="chip warn" title="blade tip grounded — Blade is lowered and its tip does contact the ground (third contact, faint shadow at tip), but it sits diagonally out to the LEFT and well away from the near foot rather than near-vertical beside it.">blade tip grounded</span></div><details class="more"><summary>all 11 detectors (7 more)</summary><div class="chips"><span class="chip bad" title="hair one-mass — Head/ears crops show spiky wind-blown hair with many thin flyaway strands and sharp pointed tips at crown and sides — NOT one thick connected rounded mass; classic thin-wisp print hazard, thickening not achieved.">hair one-mass</span><span class="chip bad" title="ears embedded — Large pointed fey ears jut out prominently on both sides, thin sharp tips fully exposed clear of the hair — not pinned/swept/embedded; the target thickening failed.">ears embedded</span><span class="chip bad" title="blind cross-check — REJECT — Multiple core contradictions: build, ears, sword type, and critical printability issues with thin parts.">blind cross-check</span><span class="chip warn" title="blade tip grounded — Blade is lowered and its tip does contact the ground (third contact, faint shadow at tip), but it sits diagonally out to the LEFT and well away from the near foot rather than near-vertical beside it.">blade tip grounded</span><span class="chip ok" title="cloak thick fur — Torso and lower crops show a heavy deep-pile fur collar and full fur-lined cloak with thick rolled edges — solid volume, not a thin fabric cape.">cloak thick fur</span><span class="chip ok" title="blade bulky — Hand/tip crops show a broad wide-cross-section blade with a thick central spine; bulky overall, though the tip narrows to a fairly sharp spear-like point (minor print-fragility note).">blade bulky</span><span class="chip ok" title="fey gnome build — Small lithe build, slightly-large head, big warm eyes, gentle smile — reads fey; not stocky/dwarfish.">fey gnome build</span><span class="chip ok" title="kit+emblem+ankh clean-shaven — Steel breastplate, ONE big gold geometric sun emblem, ankh-and-sun neck pendant on chain; face is CLEAN-SHAVEN — no moustache/goatee (mai25&#x27;s usual facial-hair pull did NOT occur).">kit+emblem+ankh c…</span><span class="chip ok" title="chirality — Scimitar/sword held in his right hand = VIEWER&#x27;S LEFT; plain round domed steel shield (rivets, no sun) on left arm = VIEWER&#x27;S RIGHT. Correct, not mirrored.">chirality</span><span class="chip ok" title="composition faithful — Identity, kit, pose (calm interpose, sword lowered, shield raised) and framing appear preserved by the edit; no obvious drift.">composition faith…</span><span class="chip ok" title="both feet flat — Feet crop shows both boots planted flat on the ground with the trailing heel down; stable base.">both feet flat</span></div></details><p>Cloak/blade thickened and identity/kit/chirality all clean and clean-shaven, but hair still wispy and pointed ears still jut out — FIXABLE.</p><details class="more"><summary>full note</summary><p class="chipnote">This i2i thickening edit preserved everything it should: lithe clean-shaven fey gnome, steel breastplate with a single gold sun emblem and ankh pendant, plain round shield on the viewer&#x27;s right, bulky broad sword in the viewer&#x27;s-left hand with a visible thumb on the grip, both boots flat on the ground, and a genuinely heavy deep-pile fur cloak. However, the two primary headline thickenings failed: the hair is still spiky with many thin flyaway strands and sharp tips rather than one chunky rounded mass, and the large pointed ears still jut out fully exposed instead of being pinned/embedded. The blade tip touches the ground but sits diagonally out to the left rather than near-vertical beside the near foot, and the tip itself remains a sharp point. Net: a strong, faithful base that needs one more targeted thickening pass on hair and ears (and a blunted blade tip) before it can be a keeper.</p></details><button class="ibtn" data-inputs="in-7">inputs — prompt &amp; refs</button></div></div>
+</div>
+<div class="callout steps"><p class="boxhead">Proposed next steps</p><p class="intro">Everything downstream keys off your base pick (and the two design calls).</p><ol><li><span class="t">R5 — clay-sculpt turnaround of the chosen thickened base</span><span class="when">on your base pick</span><p class="d">Render the winning base as a monochrome clay-sculpt 4-view turnaround (2×2 rotational turntable), two rolls for insurance. Apply any confirmed design calls (dead-vertical grounded blade / fully-embedded ears / curved-vs-broad blade) and keep the chest sun the ONLY sun. Photoreal → clay-sculpt turnaround directly (a separate clay round is now situational).</p></li><li><span class="t">R6 — multi-view Meshy reconstruction (two rolls) → validate/repair</span><span class="when">after the turnaround passes audit</span><p class="d">Two Meshy rolls, pick the defect-free one; validate watertightness, scale to ~24 mm figure on a 25 mm base, and probe the thin features (blade tip, ear, ankh chain) with the thin-parts probe.</p></li><li><span class="t">Pathway verdict vs the R1 direct-text baseline</span><span class="when">when the pipeline-path mesh is ready</span><p class="d">Hold the concept-art-path mesh beside the R1 Track-B direct-text baseline (on Drive) for the pathway-value call — and fold R4's proof-of-concept read (image-stage thickening vs mesh-stage) into that decision.</p></li></ol></div>
+<div class="callout"><b>Your eye-call, Dimitri.</b> Pick the thickened base to carry to the R5 turnaround — or reject the board with fresh thickening notes. A hybrid (best identity + best grounded blade) and a "defer thickening to the mesh stage" verdict are both explicitly valid answers.</div>
+<footer>Round 4 cost ≈ $1.44 (8 renders: Track A gptimage2+riverflow25; Track B flash31+pro2k+gptimage2+riverflow25+grokq+mai25) · prompts in trumbert/prompts/ (r4-interpose-thick.txt, r4-interpose-thicken-i2i.txt) · runbook + rounds.md carry the plan and log · renders on Drive (minis-pipeline/.../trumbert/generated) · blind cross-check raw in notes/r4-blind-detect.jsonl</footer>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+
+<template id="in-0"><h2>gptimage2 · KEEPER-CANDIDATE</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=high · $0.17 · 2026-07-15T00:06:41</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r4-interpose-thick.txt</p><pre>A photorealistic full-body studio render of a male FANTASY GNOME warrior-priest, on a plain neutral gray studio backdrop with even soft studio lighting, his entire body visible from head to toe including both feet flat on the ground. High-detail character concept art of a tabletop-RPG hero. He is TRUMBERT, a LITHE, FEY little Champion of the sun goddess Sarenrae — the redemption-preacher who stands between danger and the innocent. This pose is his PROTECTIVE INTERPOSE. This design is built to be 3D-PRINTED as a small resin miniature, so every feature is THICK, CHUNKY and SOLID — nothing thin, spindly or fragile.
+
+CAMERA: a FRONT / gentle three-quarter hero shot toward his shield side, from roughly chest height, the full standing figure in frame from the top of his hair down to both planted feet. Nothing cropped.
+
+BUILD: a LITHE, WIRY, FEY GNOME — SMALL and short, but SLENDER and gracefully built: trim torso, lean-muscular limbs, taut sinewy athleticism (NOT stocky, NOT broad, NOT a strongman, NOT dwarfish, not frail or lanky). Unmistakably a gnome (small stature, slightly-large head, large bright eyes) with a distinctly FEY quality.
+
+HEAD &amp; HAIR (PRINT-THICK): youthful, CLEAN-SHAVEN gnome face, large bright eyes, a calm reassuring expression — protective but kind, not aggressive. Wild, tousled FLAME-COLORED HAIR worn UNCOVERED (no hat), sculpted as ONE THICK, CHUNKY, CONNECTED MASS of bold flame-shaped locks — a solid tousled helmet of hair with rounded thick tips that merge back into the head. ABSOLUTELY NO thin wisps, no fine hair strands, no delicate flame-licks, no spiky needle points — everything is a fat, solid, connected sculpt.
+
+EARS (PINNED, NOT STICKING OUT): his gnome ears are only SLIGHTLY pointed, SHORT, and SWEPT BACK flat against the head, TUCKED INTO and FRAMED BY the dense thick flame hair so they read as EMBEDDED in the hair mass — they must NOT stick out sideways, must NOT be long, and must NOT form thin protruding points. The thick hair wraps around and partly covers each ear so there is no fragile jutting tip.
+
+ARMOR / KIT (adventurer-champion): a fitted steel BREASTPLATE. Centered boldly on the breastplate is exactly ONE large, high-relief, GEOMETRIC radiant SUN / DAWN emblem — a raised sun disc with THICK triangular rays, only a FEW (about eight to twelve bold rays). Big, chunky, simple — the ONLY sun on him. A Sarenrae ANKH-and-SUN PENDANT at his neck in bold raised relief, thick and chunky, sitting flush against the chest (no thin dangling chain). Sturdy boots and TROUSERS (legs covered).
+
+CLOAK (THICK FUR): across his shoulders he wears a HEAVY, THICK FUR CLOAK — a substantial, chunky, deep-pile fur mantle that drapes over both shoulders and down his back as a SOLID heavy volume with thick rolled fur edges. It reads as warm winter fur, dense and weighty — NOT a thin fabric cape, NOT a flat sheet, with NO thin flapping hem and NO delicate trailing edge. The fur is a chunky connected sculpted mass.
+
+POSE — PROTECTIVE INTERPOSE (&quot;I&#x27;ll stand between you and them&quot;): he takes a calm, grounded half-step to one side, BOTH FEET PLANTED FLAT and firmly on the ground (both feet in full solid flat contact — the trailing heel stays DOWN, not on the toes), bracing to shield someone behind him. His PLAIN ROUND STEEL SHIELD (simple domed boss, riveted rim, NO sun motifs) is on his LEFT arm (the VIEWER&#x27;S RIGHT), raised and extended OUT TO THE SIDE / forward as if warding off a threat and protecting an unseen ally — the shield face reads clearly. In his RIGHT hand (the VIEWER&#x27;S LEFT) he holds a PLAIN COLD-IRON SCIMITAR LOWERED and DE-ESCALATING: a THICK, BULKY, HEAVY blade with a wide sturdy cross-section and a broad spine (never a thin or needle-tipped blade), plain chunky pommel and simple crossguard, no decoration. The scimitar is held DOWN at his side with its TIP RESTING ON THE GROUND beside his near foot — the blade is near-vertical, point planted on the floor as a solid THIRD GROUND CONTACT — clearly lowered and non-threatening. Both hands accounted for: the right hand grips the grounded scimitar&#x27;s hilt (fingers together around the grip, thumb visible), the left carries the raised protective shield.
+
+No other people, no base or pedestal, no ground shadow clutter, and NO text, numbers, letters, runes or logos anywhere.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-1"><h2>riverflow25</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K · $0.34 · 2026-07-15T00:07:13</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r4-interpose-thick.txt</p><pre>A photorealistic full-body studio render of a male FANTASY GNOME warrior-priest, on a plain neutral gray studio backdrop with even soft studio lighting, his entire body visible from head to toe including both feet flat on the ground. High-detail character concept art of a tabletop-RPG hero. He is TRUMBERT, a LITHE, FEY little Champion of the sun goddess Sarenrae — the redemption-preacher who stands between danger and the innocent. This pose is his PROTECTIVE INTERPOSE. This design is built to be 3D-PRINTED as a small resin miniature, so every feature is THICK, CHUNKY and SOLID — nothing thin, spindly or fragile.
+
+CAMERA: a FRONT / gentle three-quarter hero shot toward his shield side, from roughly chest height, the full standing figure in frame from the top of his hair down to both planted feet. Nothing cropped.
+
+BUILD: a LITHE, WIRY, FEY GNOME — SMALL and short, but SLENDER and gracefully built: trim torso, lean-muscular limbs, taut sinewy athleticism (NOT stocky, NOT broad, NOT a strongman, NOT dwarfish, not frail or lanky). Unmistakably a gnome (small stature, slightly-large head, large bright eyes) with a distinctly FEY quality.
+
+HEAD &amp; HAIR (PRINT-THICK): youthful, CLEAN-SHAVEN gnome face, large bright eyes, a calm reassuring expression — protective but kind, not aggressive. Wild, tousled FLAME-COLORED HAIR worn UNCOVERED (no hat), sculpted as ONE THICK, CHUNKY, CONNECTED MASS of bold flame-shaped locks — a solid tousled helmet of hair with rounded thick tips that merge back into the head. ABSOLUTELY NO thin wisps, no fine hair strands, no delicate flame-licks, no spiky needle points — everything is a fat, solid, connected sculpt.
+
+EARS (PINNED, NOT STICKING OUT): his gnome ears are only SLIGHTLY pointed, SHORT, and SWEPT BACK flat against the head, TUCKED INTO and FRAMED BY the dense thick flame hair so they read as EMBEDDED in the hair mass — they must NOT stick out sideways, must NOT be long, and must NOT form thin protruding points. The thick hair wraps around and partly covers each ear so there is no fragile jutting tip.
+
+ARMOR / KIT (adventurer-champion): a fitted steel BREASTPLATE. Centered boldly on the breastplate is exactly ONE large, high-relief, GEOMETRIC radiant SUN / DAWN emblem — a raised sun disc with THICK triangular rays, only a FEW (about eight to twelve bold rays). Big, chunky, simple — the ONLY sun on him. A Sarenrae ANKH-and-SUN PENDANT at his neck in bold raised relief, thick and chunky, sitting flush against the chest (no thin dangling chain). Sturdy boots and TROUSERS (legs covered).
+
+CLOAK (THICK FUR): across his shoulders he wears a HEAVY, THICK FUR CLOAK — a substantial, chunky, deep-pile fur mantle that drapes over both shoulders and down his back as a SOLID heavy volume with thick rolled fur edges. It reads as warm winter fur, dense and weighty — NOT a thin fabric cape, NOT a flat sheet, with NO thin flapping hem and NO delicate trailing edge. The fur is a chunky connected sculpted mass.
+
+POSE — PROTECTIVE INTERPOSE (&quot;I&#x27;ll stand between you and them&quot;): he takes a calm, grounded half-step to one side, BOTH FEET PLANTED FLAT and firmly on the ground (both feet in full solid flat contact — the trailing heel stays DOWN, not on the toes), bracing to shield someone behind him. His PLAIN ROUND STEEL SHIELD (simple domed boss, riveted rim, NO sun motifs) is on his LEFT arm (the VIEWER&#x27;S RIGHT), raised and extended OUT TO THE SIDE / forward as if warding off a threat and protecting an unseen ally — the shield face reads clearly. In his RIGHT hand (the VIEWER&#x27;S LEFT) he holds a PLAIN COLD-IRON SCIMITAR LOWERED and DE-ESCALATING: a THICK, BULKY, HEAVY blade with a wide sturdy cross-section and a broad spine (never a thin or needle-tipped blade), plain chunky pommel and simple crossguard, no decoration. The scimitar is held DOWN at his side with its TIP RESTING ON THE GROUND beside his near foot — the blade is near-vertical, point planted on the floor as a solid THIRD GROUND CONTACT — clearly lowered and non-threatening. Both hands accounted for: the right hand grips the grounded scimitar&#x27;s hilt (fingers together around the grip, thumb visible), the left carries the raised protective shield.
+
+No other people, no base or pedestal, no ground shadow clutter, and NO text, numbers, letters, runes or logos anywhere.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-2"><h2>gptimage2 · KEEPER-CANDIDATE</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=high · $0.18 · 2026-07-15T00:06:46</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r4-interpose-thicken-i2i.txt</p><pre>Edit the attached reference image of the gnome champion Trumbert. KEEP everything about him the same — same lithe fey gnome, same face and warm expression, same pose (protective interpose: shield raised on the viewer&#x27;s right, scimitar in his right hand on the viewer&#x27;s left), same steel breastplate with the single bold chunky sun emblem, same ankh-and-sun pendant, same plain round steel shield, same trousers and boots, same framing (full body, both feet flat on the ground, plain gray studio backdrop). Do NOT change his identity, kit, chirality or composition.
+
+ONLY make these four features THICKER and more solid so the figure survives being 3D-printed as a small resin miniature — nothing thin or fragile:
+
+1. HAIR: rebuild the flame-colored hair as ONE thick, chunky, connected mass of bold rounded locks — remove every thin wisp, fine strand, spike and delicate flame-lick. Fat, solid, sculptural hair only, tips merging back into the head.
+
+2. EARS: pin the pointed gnome ears back and shorten them — tuck them into and behind the thick hair so they are EMBEDDED in the hair mass and do NOT stick out sideways or form thin protruding points. Let the dense hair wrap around each ear.
+
+3. CLOAK: turn his shoulder cloak into a HEAVY, THICK FUR cloak — a substantial deep-pile fur mantle draping over both shoulders and down his back as a solid chunky volume with thick rolled fur edges. No thin fabric, no flat sheet, no thin flapping hem or delicate trailing edge.
+
+4. SCIMITAR: make the blade much THICKER and BULKIER — a wide, heavy cross-section with a broad spine and a blunt sturdy tip (never thin or needle-pointed), plus a chunky pommel and simple crossguard. Re-angle the lowered scimitar so its TIP RESTS ON THE GROUND beside his near foot: hold it near-vertical, point planted on the floor as a solid third ground contact, still clearly lowered and de-escalating. Keep the right hand gripping the hilt, fingers together, thumb visible.
+
+Keep it a photorealistic full-body concept render on the plain gray backdrop. No text, numbers, letters or logos anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/dccb586b1110473d.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/c5cab61900da9c29.png" data-cap="trumbert-r3-p6interpose-gptimage2-1.png" alt="trumbert-r3-p6interpose-gptimage2-1.png"><figcaption>trumbert-r3-p6interpose-gptimage2-1.png</figcaption></figure></div></template>
+<template id="in-3"><h2>riverflow25 · KEEPER-CANDIDATE</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K · $0.36 · 2026-07-15T00:07:24</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r4-interpose-thicken-i2i.txt</p><pre>Edit the attached reference image of the gnome champion Trumbert. KEEP everything about him the same — same lithe fey gnome, same face and warm expression, same pose (protective interpose: shield raised on the viewer&#x27;s right, scimitar in his right hand on the viewer&#x27;s left), same steel breastplate with the single bold chunky sun emblem, same ankh-and-sun pendant, same plain round steel shield, same trousers and boots, same framing (full body, both feet flat on the ground, plain gray studio backdrop). Do NOT change his identity, kit, chirality or composition.
+
+ONLY make these four features THICKER and more solid so the figure survives being 3D-printed as a small resin miniature — nothing thin or fragile:
+
+1. HAIR: rebuild the flame-colored hair as ONE thick, chunky, connected mass of bold rounded locks — remove every thin wisp, fine strand, spike and delicate flame-lick. Fat, solid, sculptural hair only, tips merging back into the head.
+
+2. EARS: pin the pointed gnome ears back and shorten them — tuck them into and behind the thick hair so they are EMBEDDED in the hair mass and do NOT stick out sideways or form thin protruding points. Let the dense hair wrap around each ear.
+
+3. CLOAK: turn his shoulder cloak into a HEAVY, THICK FUR cloak — a substantial deep-pile fur mantle draping over both shoulders and down his back as a solid chunky volume with thick rolled fur edges. No thin fabric, no flat sheet, no thin flapping hem or delicate trailing edge.
+
+4. SCIMITAR: make the blade much THICKER and BULKIER — a wide, heavy cross-section with a broad spine and a blunt sturdy tip (never thin or needle-pointed), plus a chunky pommel and simple crossguard. Re-angle the lowered scimitar so its TIP RESTS ON THE GROUND beside his near foot: hold it near-vertical, point planted on the floor as a solid third ground contact, still clearly lowered and de-escalating. Keep the right hand gripping the hilt, fingers together, thumb visible.
+
+Keep it a photorealistic full-body concept render on the plain gray backdrop. No text, numbers, letters or logos anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/dccb586b1110473d.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/c5cab61900da9c29.png" data-cap="trumbert-r3-p6interpose-gptimage2-1.png" alt="trumbert-r3-p6interpose-gptimage2-1.png"><figcaption>trumbert-r3-p6interpose-gptimage2-1.png</figcaption></figure></div></template>
+<template id="in-4"><h2>flash31</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-15T00:05:16</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r4-interpose-thicken-i2i.txt</p><pre>Edit the attached reference image of the gnome champion Trumbert. KEEP everything about him the same — same lithe fey gnome, same face and warm expression, same pose (protective interpose: shield raised on the viewer&#x27;s right, scimitar in his right hand on the viewer&#x27;s left), same steel breastplate with the single bold chunky sun emblem, same ankh-and-sun pendant, same plain round steel shield, same trousers and boots, same framing (full body, both feet flat on the ground, plain gray studio backdrop). Do NOT change his identity, kit, chirality or composition.
+
+ONLY make these four features THICKER and more solid so the figure survives being 3D-printed as a small resin miniature — nothing thin or fragile:
+
+1. HAIR: rebuild the flame-colored hair as ONE thick, chunky, connected mass of bold rounded locks — remove every thin wisp, fine strand, spike and delicate flame-lick. Fat, solid, sculptural hair only, tips merging back into the head.
+
+2. EARS: pin the pointed gnome ears back and shorten them — tuck them into and behind the thick hair so they are EMBEDDED in the hair mass and do NOT stick out sideways or form thin protruding points. Let the dense hair wrap around each ear.
+
+3. CLOAK: turn his shoulder cloak into a HEAVY, THICK FUR cloak — a substantial deep-pile fur mantle draping over both shoulders and down his back as a solid chunky volume with thick rolled fur edges. No thin fabric, no flat sheet, no thin flapping hem or delicate trailing edge.
+
+4. SCIMITAR: make the blade much THICKER and BULKIER — a wide, heavy cross-section with a broad spine and a blunt sturdy tip (never thin or needle-pointed), plus a chunky pommel and simple crossguard. Re-angle the lowered scimitar so its TIP RESTS ON THE GROUND beside his near foot: hold it near-vertical, point planted on the floor as a solid third ground contact, still clearly lowered and de-escalating. Keep the right hand gripping the hilt, fingers together, thumb visible.
+
+Keep it a photorealistic full-body concept render on the plain gray backdrop. No text, numbers, letters or logos anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/dccb586b1110473d.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/c5cab61900da9c29.png" data-cap="trumbert-r3-p6interpose-gptimage2-1.png" alt="trumbert-r3-p6interpose-gptimage2-1.png"><figcaption>trumbert-r3-p6interpose-gptimage2-1.png</figcaption></figure></div></template>
+<template id="in-5"><h2>pro2k</h2><p class="gmeta">gemini-3-pro-image · size=2K · ~$0.14 · 2026-07-15T00:05:25</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r4-interpose-thicken-i2i.txt</p><pre>Edit the attached reference image of the gnome champion Trumbert. KEEP everything about him the same — same lithe fey gnome, same face and warm expression, same pose (protective interpose: shield raised on the viewer&#x27;s right, scimitar in his right hand on the viewer&#x27;s left), same steel breastplate with the single bold chunky sun emblem, same ankh-and-sun pendant, same plain round steel shield, same trousers and boots, same framing (full body, both feet flat on the ground, plain gray studio backdrop). Do NOT change his identity, kit, chirality or composition.
+
+ONLY make these four features THICKER and more solid so the figure survives being 3D-printed as a small resin miniature — nothing thin or fragile:
+
+1. HAIR: rebuild the flame-colored hair as ONE thick, chunky, connected mass of bold rounded locks — remove every thin wisp, fine strand, spike and delicate flame-lick. Fat, solid, sculptural hair only, tips merging back into the head.
+
+2. EARS: pin the pointed gnome ears back and shorten them — tuck them into and behind the thick hair so they are EMBEDDED in the hair mass and do NOT stick out sideways or form thin protruding points. Let the dense hair wrap around each ear.
+
+3. CLOAK: turn his shoulder cloak into a HEAVY, THICK FUR cloak — a substantial deep-pile fur mantle draping over both shoulders and down his back as a solid chunky volume with thick rolled fur edges. No thin fabric, no flat sheet, no thin flapping hem or delicate trailing edge.
+
+4. SCIMITAR: make the blade much THICKER and BULKIER — a wide, heavy cross-section with a broad spine and a blunt sturdy tip (never thin or needle-pointed), plus a chunky pommel and simple crossguard. Re-angle the lowered scimitar so its TIP RESTS ON THE GROUND beside his near foot: hold it near-vertical, point planted on the floor as a solid third ground contact, still clearly lowered and de-escalating. Keep the right hand gripping the hilt, fingers together, thumb visible.
+
+Keep it a photorealistic full-body concept render on the plain gray backdrop. No text, numbers, letters or logos anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/dccb586b1110473d.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/c5cab61900da9c29.png" data-cap="trumbert-r3-p6interpose-gptimage2-1.png" alt="trumbert-r3-p6interpose-gptimage2-1.png"><figcaption>trumbert-r3-p6interpose-gptimage2-1.png</figcaption></figure></div></template>
+<template id="in-6"><h2>grokq</h2><p class="gmeta">x-ai/grok-imagine-image-quality via openrouter · resolution=2K · $0.08 · 2026-07-15T00:05:33</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r4-interpose-thicken-i2i.txt</p><pre>Edit the attached reference image of the gnome champion Trumbert. KEEP everything about him the same — same lithe fey gnome, same face and warm expression, same pose (protective interpose: shield raised on the viewer&#x27;s right, scimitar in his right hand on the viewer&#x27;s left), same steel breastplate with the single bold chunky sun emblem, same ankh-and-sun pendant, same plain round steel shield, same trousers and boots, same framing (full body, both feet flat on the ground, plain gray studio backdrop). Do NOT change his identity, kit, chirality or composition.
+
+ONLY make these four features THICKER and more solid so the figure survives being 3D-printed as a small resin miniature — nothing thin or fragile:
+
+1. HAIR: rebuild the flame-colored hair as ONE thick, chunky, connected mass of bold rounded locks — remove every thin wisp, fine strand, spike and delicate flame-lick. Fat, solid, sculptural hair only, tips merging back into the head.
+
+2. EARS: pin the pointed gnome ears back and shorten them — tuck them into and behind the thick hair so they are EMBEDDED in the hair mass and do NOT stick out sideways or form thin protruding points. Let the dense hair wrap around each ear.
+
+3. CLOAK: turn his shoulder cloak into a HEAVY, THICK FUR cloak — a substantial deep-pile fur mantle draping over both shoulders and down his back as a solid chunky volume with thick rolled fur edges. No thin fabric, no flat sheet, no thin flapping hem or delicate trailing edge.
+
+4. SCIMITAR: make the blade much THICKER and BULKIER — a wide, heavy cross-section with a broad spine and a blunt sturdy tip (never thin or needle-pointed), plus a chunky pommel and simple crossguard. Re-angle the lowered scimitar so its TIP RESTS ON THE GROUND beside his near foot: hold it near-vertical, point planted on the floor as a solid third ground contact, still clearly lowered and de-escalating. Keep the right hand gripping the hilt, fingers together, thumb visible.
+
+Keep it a photorealistic full-body concept render on the plain gray backdrop. No text, numbers, letters or logos anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/dccb586b1110473d.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/c5cab61900da9c29.png" data-cap="trumbert-r3-p6interpose-gptimage2-1.png" alt="trumbert-r3-p6interpose-gptimage2-1.png"><figcaption>trumbert-r3-p6interpose-gptimage2-1.png</figcaption></figure></div></template>
+<template id="in-7"><h2>mai25</h2><p class="gmeta">microsoft/mai-image-2.5 via openrouter · $0.06 · 2026-07-15T00:05:58</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r4-interpose-thicken-i2i.txt</p><pre>Edit the attached reference image of the gnome champion Trumbert. KEEP everything about him the same — same lithe fey gnome, same face and warm expression, same pose (protective interpose: shield raised on the viewer&#x27;s right, scimitar in his right hand on the viewer&#x27;s left), same steel breastplate with the single bold chunky sun emblem, same ankh-and-sun pendant, same plain round steel shield, same trousers and boots, same framing (full body, both feet flat on the ground, plain gray studio backdrop). Do NOT change his identity, kit, chirality or composition.
+
+ONLY make these four features THICKER and more solid so the figure survives being 3D-printed as a small resin miniature — nothing thin or fragile:
+
+1. HAIR: rebuild the flame-colored hair as ONE thick, chunky, connected mass of bold rounded locks — remove every thin wisp, fine strand, spike and delicate flame-lick. Fat, solid, sculptural hair only, tips merging back into the head.
+
+2. EARS: pin the pointed gnome ears back and shorten them — tuck them into and behind the thick hair so they are EMBEDDED in the hair mass and do NOT stick out sideways or form thin protruding points. Let the dense hair wrap around each ear.
+
+3. CLOAK: turn his shoulder cloak into a HEAVY, THICK FUR cloak — a substantial deep-pile fur mantle draping over both shoulders and down his back as a solid chunky volume with thick rolled fur edges. No thin fabric, no flat sheet, no thin flapping hem or delicate trailing edge.
+
+4. SCIMITAR: make the blade much THICKER and BULKIER — a wide, heavy cross-section with a broad spine and a blunt sturdy tip (never thin or needle-pointed), plus a chunky pommel and simple crossguard. Re-angle the lowered scimitar so its TIP RESTS ON THE GROUND beside his near foot: hold it near-vertical, point planted on the floor as a solid third ground contact, still clearly lowered and de-escalating. Keep the right hand gripping the hilt, fingers together, thumb visible.
+
+Keep it a photorealistic full-body concept render on the plain gray backdrop. No text, numbers, letters or logos anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/dccb586b1110473d.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/c5cab61900da9c29.png" data-cap="trumbert-r3-p6interpose-gptimage2-1.png" alt="trumbert-r3-p6interpose-gptimage2-1.png"><figcaption>trumbert-r3-p6interpose-gptimage2-1.png</figcaption></figure></div></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy / share a deep link to one card. The URL is this page plus the card's
+// #id anchor, so a recipient lands scrolled to (and highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+
+</body></html>
