@@ -36,6 +36,17 @@ h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
 .card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
 .imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
 .imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.coreinputs { margin:1.2rem 0 .4rem }
+.coreinputs h2 { margin:0 0 .5rem }
+.coreinputs .hint { color:var(--dim); font-weight:400; font-size:.85rem }
+.inputrow { display:flex; flex-wrap:wrap; gap:12px }
+.coreinput { margin:0; width:210px; max-width:100%;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.coreinput .imgwrap { border-bottom:1px solid var(--line) }
+.coreinput .imgwrap img { max-height:230px }
+.coreinput figcaption { color:var(--dim); font-size:.7rem; padding:.35rem .5rem;
+  word-break:break-all; font-family:ui-monospace,SFMono-Regular,Menlo,monospace }
 .meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
 .meta header { display:flex; align-items:baseline; gap:.6rem }
 .meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
