@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Trumbert — Round 5 runbook</title>
+<style>
+:root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.statrow { display:flex; flex-wrap:wrap; gap:.15rem .5rem; margin:0 0 .1rem;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.72rem;
+  color:var(--dim) }
+.statrow span { white-space:nowrap }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.chip.unclear { color:var(--dim); border-color:var(--dim) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:92vh; object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+
+.md h2 { font-size:1.15rem; margin:2.2rem 0 .3rem }
+.md h3 { font-size:1rem; margin:1.6rem 0 .3rem }
+.md h4 { font-size:.9rem; margin:1.2rem 0 .3rem; color:var(--dim) }
+.md p { max-width:78ch }
+.md ul, .md ol { max-width:78ch; padding-left:1.4rem }
+.md li { margin:.25rem 0 }
+.md a { color:var(--accent) }
+.md code { background:var(--pre); border:1px solid var(--line); border-radius:4px;
+  padding:.05rem .3rem; font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
+.md pre.code { background:var(--pre); border:1px solid var(--line); border-radius:6px;
+  padding:.75rem 1rem; overflow-x:auto; font-size:.82rem; line-height:1.5 }
+.md pre.code code { background:none; border:0; padding:0 }
+.md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+.md dl.rb-meta { display:grid; grid-template-columns:auto 1fr; gap:.3rem 1.1rem;
+  max-width:60ch; margin:.2rem 0 1.8rem; padding:.9rem 1.15rem; background:var(--pre);
+  border:1px solid var(--line); border-radius:8px; font-size:.9rem }
+.md dl.rb-meta dt { color:var(--dim); font-weight:600; white-space:nowrap }
+.md dl.rb-meta dd { margin:0 }
+.md details { max-width:78ch; margin:1.8rem 0; border:1px solid var(--line);
+  border-radius:8px; background:var(--pre); padding:0 1.15rem }
+.md details[open] { padding-bottom:.4rem }
+.md details > summary { cursor:pointer; padding:.85rem 0; font-weight:600;
+  color:var(--accent); list-style:none }
+.md details > summary::-webkit-details-marker { display:none }
+.md details > summary::before { content:'\25B8\A0' }
+.md details[open] > summary::before { content:'\25BE\A0' }
+.md details > summary + * { margin-top:.2rem }
+/* Runbook tables carry PROSE (the "choices on the table" comparison, the
+   build-step gates), not the review panel's short IDs. review_page.py's global
+   table CSS pins cols 1-2 to white-space:nowrap and col 2 to a monospace font —
+   right for id columns, but here it forces long option/recommendation cells
+   onto one unbreakable line: the table blows past the page width (the awkward
+   left-right scroll) and the other columns get starved into tall, ragged stacks
+   (the lopsided whitespace). Undo both inside .md so every cell wraps to its
+   column and auto table-layout balances the widths to the page. */
+.md .tablewrap { margin:.4rem 0 1.6rem }
+.md th, .md td { white-space:normal; overflow-wrap:break-word;
+  font-family:inherit }
+.md td code { overflow-wrap:anywhere }
+/* Keep some readable structure on narrow screens rather than crushing three
+   prose columns to nothing; .tablewrap scrolls only past this floor. */
+.md table { min-width:34rem }
+</style></head><body><main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Herpeton Eradication Society</a><span class="sep">&rsaquo;</span><a href="../">Trumbert</a></nav>
+<h1>Trumbert — Round 5 runbook</h1>
+<span class="crosslink" style="opacity:.55;pointer-events:none" title="Published at round close">&#128203; Review panel &mdash; at round close</span>
+<h2>Base assets — what this round builds on</h2>
+<p class="blurb">The source image(s) every generation in this round starts from. Click to zoom; open “inputs” for the prompt and reference images that produced each one.</p>
+<div class="grid">
+<div class="card"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/68519f2863bc27d1.jpg" data-cap="trumbert-r4-interpose-thick-riverflow25"><img src="../../../../assets/fdb4167484afe9a0.jpg" alt="trumbert-r4-interpose-thick-riverflow25" loading="lazy"></div><div class="meta"><header><h3>trumbert-r4-interpose-thick-riverflow25</h3></header><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/95abe612883839a0.jpg" data-cap="trumbert-r4-interpose-i2i-gptimage2"><img src="../../../../assets/8cc81528db571ffa.jpg" alt="trumbert-r4-interpose-i2i-gptimage2" loading="lazy"></div><div class="meta"><header><h3>trumbert-r4-interpose-i2i-gptimage2</h3></header><button class="ibtn" data-inputs="in-1">inputs — prompt &amp; refs</button></div></div>
+</div>
+<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>concept refinement — curved-blade + grip correction pass (two parallel tracks: prompt-adjust + img2img)</dd><dt>Status</dt><dd>Awaiting sign-off · no images generated yet</dd><dt>Owner</dt><dd>Claude (cloud) → Dimitri review</dd><dt>Date opened</dt><dd>2026-07-15</dd><dt>Inputs</dt><dd>the two R4 thickened bases pulled from Drive — <strong><code>trumbert-r4-interpose-thick-riverflow25</code></strong> (Track A prompt-adjust, the best-sword roll) and <strong><code>trumbert-r4-interpose-i2i-gptimage2</code></strong> (Track B img2img keeper, the best exact-identity match) — plus the locked design in <code>trumbert/spec.md</code> (Kit-A fey adventurer-champion). No new reference image.</dd><dt>Produces</dt><dd>curve+grip-corrected interpose candidates — Track A (prompt-adjust, text→image) <code>trumbert-r5-interpose-curvegrip-&lt;model&gt;</code>; Track B (img2img fix of each base) <code>trumbert-r5-interpose-i2i-&lt;base&gt;-&lt;model&gt;</code>, under <code>generated/</code>.</dd><dt>Branch</dt><dd><code>claude/trumbert-round-5-bvjtjo</code></dd><dt>Prior round</dt><dd>R4&#x27;s thickening pass worked (hair→one mass, cape→heavy fur, blade→bulky all landed). On Dimitri&#x27;s eye the <strong>riverflow25 prompt-adjust roll is the best overall with the best sword shape by far — but Trumbert&#x27;s scimitar hand reads as an INVERTED grip</strong> (thumb should show on the front, fingers behind the hilt). The most promising img2img roll (flash31) <strong>wrecked the sword — a straight broadsword instead of a curved scimitar.</strong> Dimitri: retry R4 with more explicit instructions clarifying the curved blade and the grip. (<code>round-feedback.jsonl</code> r4→r5; grip miss logged in <code>verdict-overturns.jsonl</code>.)</dd></dl>
+<h2>Goal</h2>
+<p>R4 settled the hard part — the figure is thick enough to print. This round fixes the <strong>two things still wrong with the sword hand</strong>: the scimitar keeps straightening into a broadsword when it&#x27;s bulked, and on the best roll Trumbert is holding it with a <strong>backwards grip</strong> (thumb on the wrong side). We re-run the same thickened interpose with the blade&#x27;s <strong>curve</strong> and the <strong>hand&#x27;s grip</strong> spelled out explicitly, so the winning image is both print-ready *and* correctly posed before it goes to the turnaround and 3D steps.</p>
+<h2>The two fixes</h2>
+<p>One locked design, two corrections to the sword hand:</p>
+<div class="tablewrap"><table><thead><tr><th>The fix</th><th>What changes</th></tr></thead><tbody><tr><td><strong>Curved blade</strong></td><td>The scimitar must read as an <strong>unmistakably CURVED</strong> crescent sabre — one smooth arc from hilt to tip — never a straight blade, broadsword, or straight falchion. Still a solid print-safe cross-section, but the <strong>curve takes priority over bulk</strong> (curve is identity; Blaize already judged the base printable, so extra thickness is the nice-to-have).</td></tr><tr><td><strong>Correct grip</strong></td><td>The right hand holds the hilt in a <strong>normal forward grip: thumb on the FRONT of the grip (toward the viewer, clearly visible), fingers wrapping behind</strong> — an ordinary sabre hold, not the reversed/ice-pick grip on the R4 roll. Thumb-visible-front also makes the grip <strong>provable for 3D</strong> (an occluded-thumb grip reconstructs as a thumbless hand).</td></tr></tbody></table></div>
+<h2>The choices on the table</h2>
+<p>Same design, two rendering approaches — we run both and you pick the best corrected result (or the best hybrid). Grips are the single most stochastic thing an image model draws, and *pixels beat words* for fixing a hand, so we take <strong>two independent shots</strong> at it:</p>
+<div class="tablewrap"><table><thead><tr><th>Track</th><th>How</th><th>Why both</th></tr></thead><tbody><tr><td><strong>A — Prompt-adjust (text→image)</strong></td><td>Regenerate the interpose from scratch on <strong>riverflow25 + gptimage2</strong> with the curve + grip written into the prompt</td><td>riverflow25&#x27;s fresh roll was the R4 winner — a clean re-roll may simply nail curve + grip directly</td></tr><tr><td><strong>B — img2img fix of a chosen base</strong></td><td>Feed a good R4 base back in and correct *only* the blade curve + grip</td><td>Preserves an exact base you already like; the fix is a small local edit, not a re-roll</td></tr></tbody></table></div>
+<p>For Track B you picked <strong>both bases as a small A/B</strong> — so we correct the <strong>best-sword base</strong> (<code>riverflow25</code>, curve already good → mostly a grip fix) *and* the <strong>locked-identity base</strong> (<code>gptimage2</code>, best face → grip <strong>and</strong> curve fix), each edited by its own author model so identity/blade are best preserved.</p>
+<h2>What we need from you</h2>
+<ol>
+<li><strong>Confirm the two fixes as framed</strong> — curve-first (a clearly curved scimitar, accepting modest bulk) and a thumb-on-front forward grip. Change either if you&#x27;d rather.</li>
+<li><strong>Approve the spend</strong> (≈ $2.2 for the four-cell, two-roll survey).</li>
+</ol>
+<p>Then you pick the best curve+grip base from the board; that becomes the R6 clay-sculpt turnaround keeper.</p>
+<h2>Cost</h2>
+<p>≈ <strong>$2.2</strong> for two rolls per cell: Track A riverflow25 2×$0.35 + gptimage2 2×$0.18 = $1.06; Track B riverflow25 2×$0.35 + gptimage2 2×$0.18 = $1.06. (Drop to one roll per cell for ≈ $1.1 if you&#x27;d rather; two rolls is the cheap insurance against the stochastic grip/curve miss.)</p>
+<details>
+<summary>Technical plan — models, prompts, commands (pipeline detail)</summary>
+<h3>What changed going in (spec / prompt / process deltas)</h3>
+<ul>
+<li><strong>No spec rewrite this round.</strong> <code>spec.md</code> already demands a *curved* scimitar (&quot;a curved scimitar… thick blade cross-section&quot;) held with &quot;fingers together on the grip, thumb visible.&quot; R5 is an *image-execution* pass that forces those existing rules into the pixels — the exact curve/grip items Dimitri&#x27;s eye caught on the R4 board. Any confirmed geometry change folds into <code>spec.md</code> *after* Dimitri signs off on the winning base, not before.</li>
+<li><strong>New prompts:</strong></li>
+<ul>
+<li><code>prompts/r5-interpose-curvegrip.txt</code> — Track A. The R4 thickening prompt with the scimitar rewritten as &quot;UNMISTAKABLY CURVED… crescent sabre… one smooth arc… NOT a straight blade / broadsword / falchion; the curved silhouette takes priority over bulk,&quot; and an explicit grip clause (&quot;thumb on the FRONT… clearly visible… fingers wrap behind… NOT reversed / ice-pick / palm-out&quot;). Everything else (one-mass hair, embedded ears, thick fur cloak, grounded blade tip, chirality, both feet flat) carried verbatim from the R4 prompt that worked.</li>
+<li><code>prompts/r5-interpose-curvegrip-i2i.txt</code> — Track B. A tight edit instruction: KEEP identity/kit/pose/chirality/composition, change ONLY the blade curve + the grip. Idempotent across both bases (leaves an already-curved blade curved).</li>
+</ul>
+<li><strong>Base choice (Dimitri, this session):</strong> Track B corrects <strong>both</strong> the best-sword base and the locked-identity base as an A/B — resolving the R4 trade-off (riverflow&#x27;s sword vs gptimage2&#x27;s face) with the human&#x27;s eye rather than guessing. Each base is edited by its <strong>own author model</strong> (riverflow→ riverflow, gptimage2→gptimage2) so the good blade / good identity is preserved; flash31 is deliberately *not* used as the img2img editor here — it was the R4 roll that straightened the scimitar into a broadsword.</li>
+<li><strong>Audit delta:</strong> the crop-audit prompt gains an explicit <strong>grip-ORIENTATION</strong> check (thumb-on-front / fingers-behind, not merely &quot;a thumb is present&quot;) — the R4 crop audits reported &quot;clean grip+thumb&quot; and missed the inversion (<code>verdict-overturns.jsonl</code> <code>trumbert-r4-grip-inverted-crop-audit-miss</code>). Blade shape is audited as &quot;clearly curved scimitar vs straight/broadsword.&quot;</li>
+</ul>
+<h3>Experiment matrix</h3>
+<p>Two rolls per cell for the survey; the chosen base then carries to R6.</p>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Track</th><th>Prompt</th><th>Models</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>A</td><td>locked spec (text→image, no ref)</td><td>A prompt-adjust</td><td><code>r5-interpose-curvegrip.txt</code></td><td>riverflow25, gptimage2</td><td><code>trumbert-r5-interpose-curvegrip-&lt;model&gt;</code></td></tr><tr><td>B1</td><td><code>trumbert-r4-interpose-thick-riverflow25</code> (best sword)</td><td>B img2img fix</td><td><code>r5-interpose-curvegrip-i2i.txt</code></td><td>riverflow25</td><td><code>trumbert-r5-interpose-i2i-rvbase-riverflow25</code></td></tr><tr><td>B2</td><td><code>trumbert-r4-interpose-i2i-gptimage2</code> (locked identity)</td><td>B img2img fix</td><td><code>r5-interpose-curvegrip-i2i.txt</code></td><td>gptimage2</td><td><code>trumbert-r5-interpose-i2i-gpbase-gptimage2</code></td></tr></tbody></table></div>
+<h3>Commands (run after sign-off)</h3>
+<pre class="code"><code># setup (cold VM): op CLI + keys, deps
+bash cloud/setup.sh                # installs op CLI so GEMINI/OPENROUTER keys resolve
+pip install -r requirements.txt    # PIL/trimesh/etc. if not present
+G=projects/herpeton-eradication-society/trumbert/generated
+PR=projects/herpeton-eradication-society/trumbert/prompts
+BR=&quot;$G/trumbert-r4-interpose-thick-riverflow25-1.png&quot;   # best-sword base
+BG=&quot;$G/trumbert-r4-interpose-i2i-gptimage2-1.png&quot;       # locked-identity base
+mkdir -p &quot;$G&quot;
+# pull the two R4 bases from Drive if not already local (img2img sources):
+tools/drive_sync.sh pull projects/herpeton-eradication-society/trumbert/generated   # or Google Drive MCP in cloud
+
+# RUN EACH BLOCK BELOW TWICE to get two rolls per cell — compare_gen appends an
+# auto-incrementing -&lt;n&gt;, so a second run writes -2 beside the first run&#x27;s -1.
+
+# Track A — prompt-adjust, text-&gt;image (no reference image)
+python3 tools/compare_gen.py --prompt-file &quot;$PR/r5-interpose-curvegrip.txt&quot; \
+    --out-dir &quot;$G&quot; --out-stem trumbert-r5-interpose-curvegrip \
+    --variants riverflow25,gptimage2 --jobs 4
+
+# Track B1 — img2img fix on the best-sword riverflow base (self-edit)
+python3 tools/compare_gen.py --prompt-file &quot;$PR/r5-interpose-curvegrip-i2i.txt&quot; --image &quot;$BR&quot; \
+    --out-dir &quot;$G&quot; --out-stem trumbert-r5-interpose-i2i-rvbase \
+    --variants riverflow25 --jobs 4
+
+# Track B2 — img2img fix on the locked-identity gptimage2 base (self-edit)
+python3 tools/compare_gen.py --prompt-file &quot;$PR/r5-interpose-curvegrip-i2i.txt&quot; --image &quot;$BG&quot; \
+    --out-dir &quot;$G&quot; --out-stem trumbert-r5-interpose-i2i-gpbase \
+    --variants gptimage2 --jobs 4
+
+tools/drive_sync.sh push projects/herpeton-eradication-society/trumbert/generated</code></pre>
+<p>Audit each roll AS IT LANDS: a fresh-context crop subagent (<strong>blade clearly CURVED not straight/broadsword? grip thumb-on-FRONT / fingers-behind and thumb visible?</strong> plus identity + chirality + both feet flat + the four R4 thickenings unchanged) <strong>plus the blind detector</strong> run against this round&#x27;s curve+grip brief — treat any blind-vs-crop disagreement as a mandatory human look. Log every verdict to <code>reviews.json</code> (<code>tools/review_log.py</code>). Then build the <code>r5-panel</code> review (Track A vs Track B bases, side by side; drop the runbook <code>--review-pending</code> flag and re-publish this runbook so the cross-link goes live). Outcomes/verdicts live in <code>rounds.md</code> and the <code>r5-panel</code> review, NOT here.</p>
+</details></div>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+<template id="in-0"><h2>trumbert-r4-interpose-thick-riverflow25</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K · $0.34 · 2026-07-15T00:07:13</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r4-interpose-thick.txt</p><pre>A photorealistic full-body studio render of a male FANTASY GNOME warrior-priest, on a plain neutral gray studio backdrop with even soft studio lighting, his entire body visible from head to toe including both feet flat on the ground. High-detail character concept art of a tabletop-RPG hero. He is TRUMBERT, a LITHE, FEY little Champion of the sun goddess Sarenrae — the redemption-preacher who stands between danger and the innocent. This pose is his PROTECTIVE INTERPOSE. This design is built to be 3D-PRINTED as a small resin miniature, so every feature is THICK, CHUNKY and SOLID — nothing thin, spindly or fragile.
+
+CAMERA: a FRONT / gentle three-quarter hero shot toward his shield side, from roughly chest height, the full standing figure in frame from the top of his hair down to both planted feet. Nothing cropped.
+
+BUILD: a LITHE, WIRY, FEY GNOME — SMALL and short, but SLENDER and gracefully built: trim torso, lean-muscular limbs, taut sinewy athleticism (NOT stocky, NOT broad, NOT a strongman, NOT dwarfish, not frail or lanky). Unmistakably a gnome (small stature, slightly-large head, large bright eyes) with a distinctly FEY quality.
+
+HEAD &amp; HAIR (PRINT-THICK): youthful, CLEAN-SHAVEN gnome face, large bright eyes, a calm reassuring expression — protective but kind, not aggressive. Wild, tousled FLAME-COLORED HAIR worn UNCOVERED (no hat), sculpted as ONE THICK, CHUNKY, CONNECTED MASS of bold flame-shaped locks — a solid tousled helmet of hair with rounded thick tips that merge back into the head. ABSOLUTELY NO thin wisps, no fine hair strands, no delicate flame-licks, no spiky needle points — everything is a fat, solid, connected sculpt.
+
+EARS (PINNED, NOT STICKING OUT): his gnome ears are only SLIGHTLY pointed, SHORT, and SWEPT BACK flat against the head, TUCKED INTO and FRAMED BY the dense thick flame hair so they read as EMBEDDED in the hair mass — they must NOT stick out sideways, must NOT be long, and must NOT form thin protruding points. The thick hair wraps around and partly covers each ear so there is no fragile jutting tip.
+
+ARMOR / KIT (adventurer-champion): a fitted steel BREASTPLATE. Centered boldly on the breastplate is exactly ONE large, high-relief, GEOMETRIC radiant SUN / DAWN emblem — a raised sun disc with THICK triangular rays, only a FEW (about eight to twelve bold rays). Big, chunky, simple — the ONLY sun on him. A Sarenrae ANKH-and-SUN PENDANT at his neck in bold raised relief, thick and chunky, sitting flush against the chest (no thin dangling chain). Sturdy boots and TROUSERS (legs covered).
+
+CLOAK (THICK FUR): across his shoulders he wears a HEAVY, THICK FUR CLOAK — a substantial, chunky, deep-pile fur mantle that drapes over both shoulders and down his back as a SOLID heavy volume with thick rolled fur edges. It reads as warm winter fur, dense and weighty — NOT a thin fabric cape, NOT a flat sheet, with NO thin flapping hem and NO delicate trailing edge. The fur is a chunky connected sculpted mass.
+
+POSE — PROTECTIVE INTERPOSE (&quot;I&#x27;ll stand between you and them&quot;): he takes a calm, grounded half-step to one side, BOTH FEET PLANTED FLAT and firmly on the ground (both feet in full solid flat contact — the trailing heel stays DOWN, not on the toes), bracing to shield someone behind him. His PLAIN ROUND STEEL SHIELD (simple domed boss, riveted rim, NO sun motifs) is on his LEFT arm (the VIEWER&#x27;S RIGHT), raised and extended OUT TO THE SIDE / forward as if warding off a threat and protecting an unseen ally — the shield face reads clearly. In his RIGHT hand (the VIEWER&#x27;S LEFT) he holds a PLAIN COLD-IRON SCIMITAR LOWERED and DE-ESCALATING: a THICK, BULKY, HEAVY blade with a wide sturdy cross-section and a broad spine (never a thin or needle-tipped blade), plain chunky pommel and simple crossguard, no decoration. The scimitar is held DOWN at his side with its TIP RESTING ON THE GROUND beside his near foot — the blade is near-vertical, point planted on the floor as a solid THIRD GROUND CONTACT — clearly lowered and non-threatening. Both hands accounted for: the right hand grips the grounded scimitar&#x27;s hilt (fingers together around the grip, thumb visible), the left carries the raised protective shield.
+
+No other people, no base or pedestal, no ground shadow clutter, and NO text, numbers, letters, runes or logos anywhere.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-1"><h2>trumbert-r4-interpose-i2i-gptimage2</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=high · $0.18 · 2026-07-15T00:06:46</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r4-interpose-thicken-i2i.txt</p><pre>Edit the attached reference image of the gnome champion Trumbert. KEEP everything about him the same — same lithe fey gnome, same face and warm expression, same pose (protective interpose: shield raised on the viewer&#x27;s right, scimitar in his right hand on the viewer&#x27;s left), same steel breastplate with the single bold chunky sun emblem, same ankh-and-sun pendant, same plain round steel shield, same trousers and boots, same framing (full body, both feet flat on the ground, plain gray studio backdrop). Do NOT change his identity, kit, chirality or composition.
+
+ONLY make these four features THICKER and more solid so the figure survives being 3D-printed as a small resin miniature — nothing thin or fragile:
+
+1. HAIR: rebuild the flame-colored hair as ONE thick, chunky, connected mass of bold rounded locks — remove every thin wisp, fine strand, spike and delicate flame-lick. Fat, solid, sculptural hair only, tips merging back into the head.
+
+2. EARS: pin the pointed gnome ears back and shorten them — tuck them into and behind the thick hair so they are EMBEDDED in the hair mass and do NOT stick out sideways or form thin protruding points. Let the dense hair wrap around each ear.
+
+3. CLOAK: turn his shoulder cloak into a HEAVY, THICK FUR cloak — a substantial deep-pile fur mantle draping over both shoulders and down his back as a solid chunky volume with thick rolled fur edges. No thin fabric, no flat sheet, no thin flapping hem or delicate trailing edge.
+
+4. SCIMITAR: make the blade much THICKER and BULKIER — a wide, heavy cross-section with a broad spine and a blunt sturdy tip (never thin or needle-pointed), plus a chunky pommel and simple crossguard. Re-angle the lowered scimitar so its TIP RESTS ON THE GROUND beside his near foot: hold it near-vertical, point planted on the floor as a solid third ground contact, still clearly lowered and de-escalating. Keep the right hand gripping the hilt, fingers together, thumb visible.
+
+Keep it a photorealistic full-body concept render on the plain gray backdrop. No text, numbers, letters or logos anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="projects/herpeton-eradication-society/trumbert/generated/trumbert-r3-p6interpose-gptimage2-1.png (not on this machine)" alt="projects/herpeton-eradication-society/trumbert/generated/trumbert-r3-p6interpose-gptimage2-1.png (not on this machine)"><figcaption>projects/herpeton-eradication-society/trumbert/generated/trumbert-r3-p6interpose-gptimage2-1.png (not on this machine)</figcaption></figure></div></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy / share a deep link to one card. The URL is this page plus the card's
+// #id anchor, so a recipient lands scrolled to (and highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+</body></html>
