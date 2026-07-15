@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Trumbert — Round 5 (curved-blade + grip: three fixes × three-model sweep)</title>
+<style>
+:root{color-scheme:dark light;--accent:#e08a1e;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.statrow { display:flex; flex-wrap:wrap; gap:.15rem .5rem; margin:0 0 .1rem;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.72rem;
+  color:var(--dim) }
+.statrow span { white-space:nowrap }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.chip.unclear { color:var(--dim); border-color:var(--dim) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:92vh; object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+</style></head><body><main>
+<div class="eyebrow">herpeton-eradication-society · Trumbert · round 5</div>
+<h1>Trumbert — Round 5 (curved-blade + grip: three fixes × three-model sweep)</h1>
+<a class="crosslink" href="../r5-runbook/">&#128214; Round runbook &rarr;</a>
+<p class="sub">Three targeted img2img fixes, each run on all three models to find the best <b>base×editor</b> pairing. <b>(1)</b> the R4 best-sword <b>riverflow</b> roll had its inverted <b>GRIP</b> fixed; <b>(2)</b> the <b>flash31</b> roll (great hair+fur cloak) had its straight broadsword <b>RE-CURVED</b> into a scimitar; <b>(3)</b> the clean <b>R3 keeper</b> was fully <b>RE-THICKENED</b> with extra detail (all four targets + curve + grip). One roll per cell (9 images).</p>
+<div class="callout"><b>Pre-read — the curve fix WORKED everywhere, and riverflow25-as-editor swept all three bases.</b> Every one of the nine now shows a clearly curved scimitar (the exact thing that broke in R4), so the explicit "keep it CURVED" instruction held even on flash31. Crop audits give <b>five keeper-candidates</b>. The standouts: <b>riverflow-gripfix · riverflow25</b> — grip now CORRECT (thumb on the front, nail visible), curved blade preserved, and the blade <b>tip grounded</b> — the cleanest sword+grip of the round; and on the re-thicken base, <b>riverflow25</b> (all four thickenings + a genuinely <b>lithe</b> build) and <b>gptimage2</b> (best identity match, sturdiest tip).<br><br><b>The pattern across editors:</b> <b>riverflow25</b> is the strongest on every base; <b>flash31</b> failed its job each time (grip left <i>inverted</i> → REJECT on base 1; a recurved <i>kukri</i> instead of a scimitar on base 2; ears still <i>jutting</i> on base 3); <b>gptimage2</b> is competent but recurringly <b>floats the blade tip</b> and drifts <b>chibi/stocky</b> (and added a crossguard the base lacked).<br><br><b>The unresolved tension for your eye:</b> no single image nails <i>everything</i> — the best sword+grip cell (riverflow-gripfix·riverflow25) reads <b>chibi</b> (inherited from that base), while the <b>lithe</b> re-thicken cells <b>float the blade tip</b> instead of planting it. Build (chibi/stocky) and tip-grounding are the two open items.<br><br><b>Blind cross-check (read the chips):</b> as in R1–R4 the unbiased blind detector called all 9 print-REJECT — its usual print-strict behaviour — and its flags concentrate on <b>build</b> (stocky/chibi) and <b>ears/pendant</b>, which <i>agree</i> with the crop audits' build/ear warnings (a real cross-cutting signal, not noise). Raw: <code>notes/r5-blind-detect.jsonl</code>.<br><br><b>Process note:</b> a naming bug meant the intended 2nd roll overwrote the 1st, so this is <b>1 roll per cell</b> (9 images), though ~2 rolls' worth (~$4.12) was billed. Fixed for any re-rolls.</div>
+<div class="callout asks"><p class="boxhead">Verdicts / info needed</p><p class="intro">Answer any subset. The round largely succeeded (curve fixed everywhere; grip fixed on two base-1 cells; all four thickenings on the re-thicken base) — the open question is which base×editor carries forward and how to resolve the build/tip tension.</p><ol><li><span class="q">Which cell carries to R6 (clay-sculpt turnaround)?</span><span class="who">Dimitri</span><p class="d">Five keeper-candidates; the trade-off is sword+grip+grounded vs lithe build.</p><ul><li><strong>riverflow-gripfix · riverflow25</strong> — best SWORD + fixed GRIP + grounded tip, identity preserved. Knock: build reads chibi/childlike.</li><li><strong>r3keeper-rethicken · riverflow25</strong> — all four thickenings + a genuinely LITHE build + curved blade + clean grip. Knock: blade tip floats; hair a bit uniform/ringlety.</li><li><strong>r3keeper-rethicken · gptimage2</strong> — best identity match + sturdiest (least fragile) tip. Knock: one ear pokes through, build a touch stocky, tip floats.</li><li><strong>Reject / hybrid</strong> — e.g. carry riverflow-gripfix·riverflow25 but ask a targeted re-roll to de-chibify the build, or carry a re-thicken cell but ground the tip.</li></ul></li><li><span class="q">Two design calls</span><span class="who">Dimitri</span><p class="d">Both recur from R3/R4 and are cheap to pin now.</p><ul><li><strong>Build</strong> — is the chibi/childlike read on the riverflow best-sword base acceptable, or should we push the lithe/fey build (favours a re-thicken cell)?</li><li><strong>Grounded blade tip</strong> — require the tip planted on the floor as a third contact (only some cells achieve it), or accept a floating tip and add the base contact at the mesh/basing stage?</li></ul></li><li><span class="q">Worth a targeted second roll?</span><span class="who">Dimitri</span><p class="d">The intended 2nd roll was lost to a naming bug. A single correctly-named re-roll of your chosen cell (~$0.35 on riverflow) could try to resolve the one open flaw (ground the tip / de-chibify) rather than a blanket 9-cell re-run. Say if you want it.</p></li></ol></div>
+<h2>Base 1 — GRIP fix (base: R4 best-sword riverflow roll)</h2>
+<p class="blurb">The excellent curved-scimitar riverflow roll, edited to fix ONLY the inverted grip. <b>riverflow25 and gptimage2 fixed the grip</b> (thumb now on the front); <b>flash31 left it inverted → REJECT</b>. riverflow25 also keeps the tip grounded; gptimage2 floats it and reads most chibi.</p>
+<div class="grid">
+<div class="card" id="trumbert-r5-i2i-riverflow-gripfix-riverflow25"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/2eb632c7c1b26d1f.jpg" data-cap="riverflow25 · KEEPER — grip fixed + grounded"><img src="../../../../assets/4e4402cc4972ac19.jpg" alt="riverflow25 · KEEPER — grip fixed + grounded" loading="lazy"></div><div class="meta"><header><h3>riverflow25 · KEEPER — grip fixed + grounded</h3><span class="cost">$0.53</span><span class="call keeper" title="KEEPER-CANDIDATE">KEEPER-CANDIDATE</span></header><div class="cardref"><a class="refid" href="#trumbert-r5-i2i-riverflow-gripfix-riverflow25" title="Deep link to this image">#riverflow-gripfix-riverflow25</a><button class="refbtn" data-copy="trumbert-r5-i2i-riverflow-gripfix-riverflow25" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="trumbert-r5-i2i-riverflow-gripfix-riverflow25" data-title="riverflow25 · KEEPER — grip fixed + grounded" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — Ankh/sun pendant is split, not combined as requested.">blind cross-check</span><span class="chip warn" title="build-lithe — reads childlike/chibi (inherited from base)">build-lithe</span><span class="chip ok" title="grip-orientation — thumb clearly on near/front face with nail visible; fingers wrap behind — clean forward grip, inversion fixed">grip-orientation</span><span class="chip ok" title="blade-curve-preserved — curved single-edged crescent scimitar retained">blade-curve-prese…</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — Ankh/sun pendant is split, not combined as requested.">blind cross-check</span><span class="chip warn" title="build-lithe — reads childlike/chibi (inherited from base)">build-lithe</span><span class="chip ok" title="grip-orientation — thumb clearly on near/front face with nail visible; fingers wrap behind — clean forward grip, inversion fixed">grip-orientation</span><span class="chip ok" title="blade-curve-preserved — curved single-edged crescent scimitar retained">blade-curve-prese…</span><span class="chip ok" title="blade-tip-grounded — tip curves down to floor beside boot, grounded third contact">blade-tip-grounded</span><span class="chip ok" title="hair-onemass">hair-onemass</span><span class="chip ok" title="fur-cloak">fur-cloak</span><span class="chip ok" title="chirality">chirality</span><span class="chip ok" title="feet-flat">feet-flat</span></div></details><p>Grip now CORRECT (thumb front, fingers behind), curved blade + identity preserved, tip grounded — best of the three.</p><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="trumbert-r5-i2i-riverflow-gripfix-gptimage2"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/822270ce09e655fc.jpg" data-cap="gptimage2 · KEEPER — grip fixed, floaty tip, chibi"><img src="../../../../assets/0723a97299bb9ef6.jpg" alt="gptimage2 · KEEPER — grip fixed, floaty tip, chibi" loading="lazy"></div><div class="meta"><header><h3>gptimage2 · KEEPER — grip fixed, floaty tip, chibi</h3><span class="cost">$0.18</span><span class="call keeper" title="KEEPER-CANDIDATE">KEEPER-CANDIDATE</span></header><div class="cardref"><a class="refid" href="#trumbert-r5-i2i-riverflow-gripfix-gptimage2" title="Deep link to this image">#riverflow-gripfix-gptimage2</a><button class="refbtn" data-copy="trumbert-r5-i2i-riverflow-gripfix-gptimage2" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="trumbert-r5-i2i-riverflow-gripfix-gptimage2" data-title="gptimage2 · KEEPER — grip fixed, floaty tip, chibi" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — Numerous fundamental deviations in build, hair, ears, pendant, and sword grip. Several print safety issues identified.">blind cross-check</span><span class="chip warn" title="blade-tip-grounded — tip curls up and floats above floor">blade-tip-grounded</span><span class="chip warn" title="build-lithe — most chibi of the three (largest head, roundest face)">build-lithe</span><span class="chip ok" title="grip-orientation — thumb on near/front face, visible; forward grip, inversion fixed">grip-orientation</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — Numerous fundamental deviations in build, hair, ears, pendant, and sword grip. Several print safety issues identified.">blind cross-check</span><span class="chip warn" title="blade-tip-grounded — tip curls up and floats above floor">blade-tip-grounded</span><span class="chip warn" title="build-lithe — most chibi of the three (largest head, roundest face)">build-lithe</span><span class="chip ok" title="grip-orientation — thumb on near/front face, visible; forward grip, inversion fixed">grip-orientation</span><span class="chip ok" title="blade-curve-preserved — curved crescent, though a straight crossguard/quillon was added that base lacked">blade-curve-prese…</span><span class="chip ok" title="hair-onemass">hair-onemass</span><span class="chip ok" title="fur-cloak">fur-cloak</span><span class="chip ok" title="chirality">chirality</span><span class="chip ok" title="feet-flat">feet-flat</span></div></details><p>Grip CORRECT, blade curved; minor regressions — floating tip, added crossguard, more chibi.</p><button class="ibtn" data-inputs="in-1">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="trumbert-r5-i2i-riverflow-gripfix-flash31"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/773925ad13f59c55.jpg" data-cap="flash31 · REJECT — grip still inverted"><img src="../../../../assets/cd82d8c638fa0e17.jpg" alt="flash31 · REJECT — grip still inverted" loading="lazy"></div><div class="meta"><header><h3>flash31 · REJECT — grip still inverted</h3><span class="cost">~$0.10</span><span class="call reject" title="REJECT">REJECT</span></header><div class="cardref"><a class="refid" href="#trumbert-r5-i2i-riverflow-gripfix-flash31" title="Deep link to this image">#riverflow-gripfix-flash31</a><button class="refbtn" data-copy="trumbert-r5-i2i-riverflow-gripfix-flash31" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="trumbert-r5-i2i-riverflow-gripfix-flash31" data-title="flash31 · REJECT — grip still inverted" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="grip-orientation — still inverted — back of hand faces viewer, NO thumb on near face; matches base&#x27;s reversed signature. Fix failed.">grip-orientation</span><span class="chip bad" title="blind cross-check — REJECT — Fundamental character design (build, hair) and specific symbol (pendant) deviations, plus printability concerns.">blind cross-check</span><span class="chip warn" title="build-lithe — childlike/chibi">build-lithe</span><span class="chip ok" title="blade-curve-preserved">blade-curve-prese…</span></div><details class="more"><summary>all 9 detectors (5 more)</summary><div class="chips"><span class="chip bad" title="grip-orientation — still inverted — back of hand faces viewer, NO thumb on near face; matches base&#x27;s reversed signature. Fix failed.">grip-orientation</span><span class="chip bad" title="blind cross-check — REJECT — Fundamental character design (build, hair) and specific symbol (pendant) deviations, plus printability concerns.">blind cross-check</span><span class="chip warn" title="build-lithe — childlike/chibi">build-lithe</span><span class="chip ok" title="blade-curve-preserved">blade-curve-prese…</span><span class="chip ok" title="blade-tip-grounded">blade-tip-grounded</span><span class="chip ok" title="hair-onemass">hair-onemass</span><span class="chip ok" title="fur-cloak">fur-cloak</span><span class="chip ok" title="chirality">chirality</span><span class="chip ok" title="feet-flat">feet-flat</span></div></details><p>Grip remains INVERTED — the one thing this edit was meant to fix is unfixed.</p><button class="ibtn" data-inputs="in-2">inputs — prompt &amp; refs</button></div></div>
+</div>
+<h2>Base 2 — SWORD re-curve (base: flash31 hair/fur roll)</h2>
+<p class="blurb">The great-hair/great-fur flash31 roll whose blade came back a straight broadsword, edited to re-curve ONLY the blade. <b>riverflow25 = the clean single-arc scimitar with a grounded tip</b> (keeper); gptimage2 curves cleanly but floats the tip + stockier; flash31 self-edit produced a recurved <b>kukri</b>, not a scimitar.</p>
+<div class="grid">
+<div class="card" id="trumbert-r5-i2i-flash31-swordfix-riverflow25"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/28ef2cfa5a147216.jpg" data-cap="riverflow25 · KEEPER — clean scimitar, grounded"><img src="../../../../assets/ba2c61e2e5623ea0.jpg" alt="riverflow25 · KEEPER — clean scimitar, grounded" loading="lazy"></div><div class="meta"><header><h3>riverflow25 · KEEPER — clean scimitar, grounded</h3><span class="cost">$0.36</span><span class="call keeper" title="KEEPER-CANDIDATE">KEEPER-CANDIDATE</span></header><div class="cardref"><a class="refid" href="#trumbert-r5-i2i-flash31-swordfix-riverflow25" title="Deep link to this image">#flash31-swordfix-riverflow25</a><button class="refbtn" data-copy="trumbert-r5-i2i-flash31-swordfix-riverflow25" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="trumbert-r5-i2i-flash31-swordfix-riverflow25" data-title="riverflow25 · KEEPER — clean scimitar, grounded" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — Fundamental build and key identity features (ears, ankh) are incorrect.">blind cross-check</span><span class="chip warn" title="build-lithe">build-lithe</span><span class="chip ok" title="blade-curve — clearly curved single smooth crescent, unmistakable scimitar">blade-curve</span><span class="chip ok" title="blade-tip-thickness — broad-based tapered point, print-safe">blade-tip-thickne…</span></div><details class="more"><summary>all 10 detectors (6 more)</summary><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — Fundamental build and key identity features (ears, ankh) are incorrect.">blind cross-check</span><span class="chip warn" title="build-lithe">build-lithe</span><span class="chip ok" title="blade-curve — clearly curved single smooth crescent, unmistakable scimitar">blade-curve</span><span class="chip ok" title="blade-tip-thickness — broad-based tapered point, print-safe">blade-tip-thickne…</span><span class="chip ok" title="blade-tip-grounded — tip drops to floor with shadow beneath">blade-tip-grounded</span><span class="chip ok" title="hair-onemass">hair-onemass</span><span class="chip ok" title="fur-cloak">fur-cloak</span><span class="chip ok" title="grip-orientation">grip-orientation</span><span class="chip ok" title="chirality">chirality</span><span class="chip ok" title="feet-flat">feet-flat</span></div></details><p>Cleanest unmistakable curved scimitar, grounded tip, hair/fur preserved — the keeper for base 2.</p><button class="ibtn" data-inputs="in-3">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="trumbert-r5-i2i-flash31-swordfix-gptimage2"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/98e7e74d061ceb23.jpg" data-cap="gptimage2 · FIXABLE — clean curve, floaty tip"><img src="../../../../assets/5bccc701f125f0e8.jpg" alt="gptimage2 · FIXABLE — clean curve, floaty tip" loading="lazy"></div><div class="meta"><header><h3>gptimage2 · FIXABLE — clean curve, floaty tip</h3><span class="cost">$0.18</span><span class="call fixable" title="FIXABLE">FIXABLE</span></header><div class="cardref"><a class="refid" href="#trumbert-r5-i2i-flash31-swordfix-gptimage2" title="Deep link to this image">#flash31-swordfix-gptimage2</a><button class="refbtn" data-copy="trumbert-r5-i2i-flash31-swordfix-gptimage2" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="trumbert-r5-i2i-flash31-swordfix-gptimage2" data-title="gptimage2 · FIXABLE — clean curve, floaty tip" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — Build and ears are fundamentally incorrect, contradicting core character design.">blind cross-check</span><span class="chip warn" title="blade-tip-grounded — tip floats above floor with visible gap">blade-tip-grounded</span><span class="chip warn" title="build-lithe — stockier/chibi">build-lithe</span><span class="chip ok" title="blade-curve — very smooth uniform single-arc scimitar crescent">blade-curve</span></div><details class="more"><summary>all 10 detectors (6 more)</summary><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — Build and ears are fundamentally incorrect, contradicting core character design.">blind cross-check</span><span class="chip warn" title="blade-tip-grounded — tip floats above floor with visible gap">blade-tip-grounded</span><span class="chip warn" title="build-lithe — stockier/chibi">build-lithe</span><span class="chip ok" title="blade-curve — very smooth uniform single-arc scimitar crescent">blade-curve</span><span class="chip ok" title="blade-tip-thickness — rounded print-safe point">blade-tip-thickne…</span><span class="chip ok" title="hair-onemass">hair-onemass</span><span class="chip ok" title="fur-cloak">fur-cloak</span><span class="chip ok" title="grip-orientation">grip-orientation</span><span class="chip ok" title="chirality">chirality</span><span class="chip ok" title="feet-flat">feet-flat</span></div></details><p>Clean curved scimitar, but tip floats and body reads noticeably stockier/chibi.</p><button class="ibtn" data-inputs="in-4">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="trumbert-r5-i2i-flash31-swordfix-flash31"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/87d976e42dc94742.jpg" data-cap="flash31 · FIXABLE — kukri curve, hooked tip"><img src="../../../../assets/3b43ab34e1779f43.jpg" alt="flash31 · FIXABLE — kukri curve, hooked tip" loading="lazy"></div><div class="meta"><header><h3>flash31 · FIXABLE — kukri curve, hooked tip</h3><span class="cost">~$0.10</span><span class="call fixable" title="FIXABLE">FIXABLE</span></header><div class="cardref"><a class="refid" href="#trumbert-r5-i2i-flash31-swordfix-flash31" title="Deep link to this image">#flash31-swordfix-flash31</a><button class="refbtn" data-copy="trumbert-r5-i2i-flash31-swordfix-flash31" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="trumbert-r5-i2i-flash31-swordfix-flash31" data-title="flash31 · FIXABLE — kukri curve, hooked tip" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — Multiple core identity and emblem details are incorrect.">blind cross-check</span><span class="chip warn" title="blade-curve — recurved falchion/kukri belly with an angular notch, not a clean single-arc scimitar">blade-curve</span><span class="chip warn" title="blade-tip-thickness — hooked downward point, thinnish/fragile">blade-tip-thickne…</span><span class="chip warn" title="build-lithe">build-lithe</span></div><details class="more"><summary>all 10 detectors (6 more)</summary><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — Multiple core identity and emblem details are incorrect.">blind cross-check</span><span class="chip warn" title="blade-curve — recurved falchion/kukri belly with an angular notch, not a clean single-arc scimitar">blade-curve</span><span class="chip warn" title="blade-tip-thickness — hooked downward point, thinnish/fragile">blade-tip-thickne…</span><span class="chip warn" title="build-lithe">build-lithe</span><span class="chip ok" title="blade-tip-grounded">blade-tip-grounded</span><span class="chip ok" title="hair-onemass">hair-onemass</span><span class="chip ok" title="fur-cloak">fur-cloak</span><span class="chip ok" title="grip-orientation">grip-orientation</span><span class="chip ok" title="chirality">chirality</span><span class="chip ok" title="feet-flat">feet-flat</span></div></details><p>Curved but the wrong curve — recurved kukri with a hooked thin tip, not the clean scimitar arc.</p><button class="ibtn" data-inputs="in-5">inputs — prompt &amp; refs</button></div></div>
+</div>
+<h2>Base 3 — RE-THICKEN + detail (base: clean R3 keeper)</h2>
+<p class="blurb">The original un-thickened keeper, given a fresh full thickening pass (all four targets) + curve + grip + extra detail. <b>riverflow25</b> lands all four with a lithe build; <b>gptimage2</b> keeps the best identity + sturdiest tip (one ear pokes); flash31's ears still jut and its tip is a needle.</p>
+<div class="grid">
+<div class="card" id="trumbert-r5-i2i-r3keeper-rethicken-riverflow25"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/e8ef043a3125399a.jpg" data-cap="riverflow25 · KEEPER — all four, lithe"><img src="../../../../assets/9b1b3ca211349a3e.jpg" alt="riverflow25 · KEEPER — all four, lithe" loading="lazy"></div><div class="meta"><header><h3>riverflow25 · KEEPER — all four, lithe</h3><span class="cost">$0.36</span><span class="call keeper" title="KEEPER-CANDIDATE">KEEPER-CANDIDATE</span></header><div class="cardref"><a class="refid" href="#trumbert-r5-i2i-r3keeper-rethicken-riverflow25" title="Deep link to this image">#r3keeper-rethicken-riverflow25</a><button class="refbtn" data-copy="trumbert-r5-i2i-r3keeper-rethicken-riverflow25" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="trumbert-r5-i2i-r3keeper-rethicken-riverflow25" data-title="riverflow25 · KEEPER — all four, lithe" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — Multiple key attributes (ears, pendant, sword grip, sword curve, breastplate emblem) contradict or significantly deviate from the brief.">blind cross-check</span><span class="chip warn" title="blade-tip-grounded — floating tip">blade-tip-grounded</span><span class="chip ok" title="hair-onemass">hair-onemass</span><span class="chip ok" title="ears-embedded">ears-embedded</span></div><details class="more"><summary>all 12 detectors (8 more)</summary><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — Multiple key attributes (ears, pendant, sword grip, sword curve, breastplate emblem) contradict or significantly deviate from the brief.">blind cross-check</span><span class="chip warn" title="blade-tip-grounded — floating tip">blade-tip-grounded</span><span class="chip ok" title="hair-onemass">hair-onemass</span><span class="chip ok" title="ears-embedded">ears-embedded</span><span class="chip ok" title="fur-cloak">fur-cloak</span><span class="chip ok" title="blade-curve">blade-curve</span><span class="chip ok" title="grip-orientation">grip-orientation</span><span class="chip ok" title="detail-crisp">detail-crisp</span><span class="chip ok" title="identity-preserved">identity-preserved</span><span class="chip ok" title="chirality">chirality</span><span class="chip ok" title="feet-flat">feet-flat</span><span class="chip ok" title="build-lithe">build-lithe</span></div></details><p>All four thickenings land + bulky curved scimitar + clean grip + lithe build; only weakness floating tip and very uniform ringlet hair.</p><button class="ibtn" data-inputs="in-6">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="trumbert-r5-i2i-r3keeper-rethicken-gptimage2"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/776cebd84ab0737c.jpg" data-cap="gptimage2 · KEEPER — best identity, sturdy tip"><img src="../../../../assets/6a569f46386cf62d.jpg" alt="gptimage2 · KEEPER — best identity, sturdy tip" loading="lazy"></div><div class="meta"><header><h3>gptimage2 · KEEPER — best identity, sturdy tip</h3><span class="cost">$0.18</span><span class="call keeper" title="KEEPER-CANDIDATE">KEEPER-CANDIDATE</span></header><div class="cardref"><a class="refid" href="#trumbert-r5-i2i-r3keeper-rethicken-gptimage2" title="Deep link to this image">#r3keeper-rethicken-gptimage2</a><button class="refbtn" data-copy="trumbert-r5-i2i-r3keeper-rethicken-gptimage2" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="trumbert-r5-i2i-r3keeper-rethicken-gptimage2" data-title="gptimage2 · KEEPER — best identity, sturdy tip" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — multiple core attributes contradict brief (build, ears, pendant, sword grip)">blind cross-check</span><span class="chip warn" title="ears-embedded — one pointed ear still pokes through">ears-embedded</span><span class="chip warn" title="blade-tip-grounded — tip floats above floor">blade-tip-grounded</span><span class="chip warn" title="build-lithe — reads a touch stocky">build-lithe</span></div><details class="more"><summary>all 12 detectors (8 more)</summary><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — multiple core attributes contradict brief (build, ears, pendant, sword grip)">blind cross-check</span><span class="chip warn" title="ears-embedded — one pointed ear still pokes through">ears-embedded</span><span class="chip warn" title="blade-tip-grounded — tip floats above floor">blade-tip-grounded</span><span class="chip warn" title="build-lithe — reads a touch stocky">build-lithe</span><span class="chip ok" title="hair-onemass">hair-onemass</span><span class="chip ok" title="fur-cloak">fur-cloak</span><span class="chip ok" title="blade-curve">blade-curve</span><span class="chip ok" title="grip-orientation">grip-orientation</span><span class="chip ok" title="detail-crisp">detail-crisp</span><span class="chip ok" title="identity-preserved — best face/identity match">identity-preserved</span><span class="chip ok" title="chirality">chirality</span><span class="chip ok" title="feet-flat">feet-flat</span></div></details><p>All four thickenings land with the best identity match and sturdiest tip, but one ear pokes and build reads a touch stocky; tip floats.</p><button class="ibtn" data-inputs="in-7">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="trumbert-r5-i2i-r3keeper-rethicken-flash31"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/4077027d04785dc8.jpg" data-cap="flash31 · FIXABLE — ears jut, needle tip"><img src="../../../../assets/5d503e2624457c16.jpg" alt="flash31 · FIXABLE — ears jut, needle tip" loading="lazy"></div><div class="meta"><header><h3>flash31 · FIXABLE — ears jut, needle tip</h3><span class="cost">~$0.10</span><span class="call fixable" title="FIXABLE">FIXABLE</span></header><div class="cardref"><a class="refid" href="#trumbert-r5-i2i-r3keeper-rethicken-flash31" title="Deep link to this image">#r3keeper-rethicken-flash31</a><button class="refbtn" data-copy="trumbert-r5-i2i-r3keeper-rethicken-flash31" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="trumbert-r5-i2i-r3keeper-rethicken-flash31" data-title="flash31 · FIXABLE — ears jut, needle tip" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="ears-embedded — pointed ears still jut out — ears-thickening failed">ears-embedded</span><span class="chip bad" title="blind cross-check — REJECT — Fundamental character attributes (build, ears, pendant symbol) are incorrect or missing.">blind cross-check</span><span class="chip warn" title="blade-tip-grounded">blade-tip-grounded</span><span class="chip warn" title="detail-crisp — hair reads slightly plasticky">detail-crisp</span></div><details class="more"><summary>all 12 detectors (8 more)</summary><div class="chips"><span class="chip bad" title="ears-embedded — pointed ears still jut out — ears-thickening failed">ears-embedded</span><span class="chip bad" title="blind cross-check — REJECT — Fundamental character attributes (build, ears, pendant symbol) are incorrect or missing.">blind cross-check</span><span class="chip warn" title="blade-tip-grounded">blade-tip-grounded</span><span class="chip warn" title="detail-crisp — hair reads slightly plasticky">detail-crisp</span><span class="chip ok" title="hair-onemass">hair-onemass</span><span class="chip ok" title="fur-cloak">fur-cloak</span><span class="chip ok" title="blade-curve">blade-curve</span><span class="chip ok" title="grip-orientation">grip-orientation</span><span class="chip ok" title="identity-preserved">identity-preserved</span><span class="chip ok" title="chirality">chirality</span><span class="chip ok" title="feet-flat">feet-flat</span><span class="chip ok" title="build-lithe">build-lithe</span></div></details><p>Hair/cloak/blade thicken well and blade strongly curved, but pointed ears still jut and blade ends in a fragile needle tip.</p><button class="ibtn" data-inputs="in-8">inputs — prompt &amp; refs</button></div></div>
+</div>
+<div class="callout steps"><p class="boxhead">Proposed next steps</p><p class="intro">Everything downstream keys off your cell pick (and the two design calls).</p><ol><li><span class="t">R6 — clay-sculpt turnaround of the chosen cell</span><span class="when">on your pick</span><p class="d">Render the winning cell as a monochrome clay-sculpt 4-view turnaround (2×2 rotational turntable), two rolls for insurance (correctly named this time). Carry the confirmed design calls (build; grounded tip).</p></li><li><span class="t">Optional — one targeted re-roll before R6</span><span class="when">if you want the open flaw resolved first</span><p class="d">A single correctly-named re-roll of the chosen cell to try to ground the tip / de-chibify the build (~$0.35 on riverflow), rather than a blanket re-run.</p></li><li><span class="t">R7 — multi-view Meshy reconstruction (two rolls) → validate/repair</span><span class="when">after the turnaround passes audit</span><p class="d">Two Meshy rolls, pick the defect-free one; validate watertightness, scale to ~24 mm figure on a 25 mm base, probe thin features (blade tip, ears, ankh chain).</p></li></ol></div>
+<div class="callout"><b>Your eye-call, Dimitri.</b> Pick the cell to carry to the R6 turnaround — or name a hybrid / a targeted re-roll. The two open items are the build (chibi vs lithe) and the grounded blade tip; both are valid to pin now or defer.</div>
+<footer>Round 5 cost ≈ $4.12 billed (1 roll per cell kept — 9 images; a naming bug overwrote the intended 2nd rolls) · prompts in trumbert/prompts/ (r5-i2i-riverflow-gripfix / -flash31-swordfix / -r3keeper-rethicken) · runbook + rounds.md carry the plan and log · renders on Drive (minis-pipeline/.../trumbert/generated) · blind cross-check raw in notes/r5-blind-detect.jsonl</footer>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+
+<template id="in-0"><h2>riverflow25 · KEEPER — grip fixed + grounded</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K · $0.53 · 2026-07-15T02:40:31</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r5-i2i-riverflow-gripfix.txt</p><pre>Edit the attached reference image of the gnome champion Trumbert. This base is ALREADY very good — keep essentially everything: same lithe fey gnome, same face and warm expression, same pose (protective interpose, both feet flat on the ground), same steel breastplate with the single bold chunky sun emblem, same ankh-and-sun pendant, same plain round steel shield, same thick fur cloak, same one-mass flame hair, same trousers and boots, same framing and plain gray studio backdrop. In particular, KEEP THE SCIMITAR EXACTLY AS IT IS — its shape, its clear CURVE, its thickness, and its lowered tip-on-the-ground position are all correct; do NOT redraw, straighten, re-bulk or re-pose the blade. Do NOT change his identity, kit, chirality or composition. Keep it a photorealistic full-body concept render.
+
+ONLY fix ONE thing — the way his RIGHT hand holds the hilt:
+
+THE GRIP — FIX IT TO A NORMAL FORWARD HOLD. Re-draw only his right hand on the scimitar hilt as a natural forward sword grip: the THUMB is on the FRONT / near face of the grip, toward the viewer, and CLEARLY VISIBLE; the four fingers wrap around the BACK of the hilt, behind it. Thumb-in-front, fingers-behind, knuckles facing away — an ordinary sabre hold. The current image has the hand reversed/inverted (thumb on the wrong side) — correct it. It must NOT be a reversed / ice-pick grip and must NOT be palm-out; the thumb should show on the front of the hand facing the camera. Keep the hand in the same place on the same hilt — only the grip orientation changes.
+
+Change nothing else at all. No text, numbers, letters or logos anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/577461b7a7df8c28.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/68519f2863bc27d1.jpg" data-cap="trumbert-r4-interpose-thick-riverflow25-1.png" alt="trumbert-r4-interpose-thick-riverflow25-1.png"><figcaption>trumbert-r4-interpose-thick-riverflow25-1.png</figcaption></figure></div></template>
+<template id="in-1"><h2>gptimage2 · KEEPER — grip fixed, floaty tip, chibi</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=high · $0.18 · 2026-07-15T02:39:44</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r5-i2i-riverflow-gripfix.txt</p><pre>Edit the attached reference image of the gnome champion Trumbert. This base is ALREADY very good — keep essentially everything: same lithe fey gnome, same face and warm expression, same pose (protective interpose, both feet flat on the ground), same steel breastplate with the single bold chunky sun emblem, same ankh-and-sun pendant, same plain round steel shield, same thick fur cloak, same one-mass flame hair, same trousers and boots, same framing and plain gray studio backdrop. In particular, KEEP THE SCIMITAR EXACTLY AS IT IS — its shape, its clear CURVE, its thickness, and its lowered tip-on-the-ground position are all correct; do NOT redraw, straighten, re-bulk or re-pose the blade. Do NOT change his identity, kit, chirality or composition. Keep it a photorealistic full-body concept render.
+
+ONLY fix ONE thing — the way his RIGHT hand holds the hilt:
+
+THE GRIP — FIX IT TO A NORMAL FORWARD HOLD. Re-draw only his right hand on the scimitar hilt as a natural forward sword grip: the THUMB is on the FRONT / near face of the grip, toward the viewer, and CLEARLY VISIBLE; the four fingers wrap around the BACK of the hilt, behind it. Thumb-in-front, fingers-behind, knuckles facing away — an ordinary sabre hold. The current image has the hand reversed/inverted (thumb on the wrong side) — correct it. It must NOT be a reversed / ice-pick grip and must NOT be palm-out; the thumb should show on the front of the hand facing the camera. Keep the hand in the same place on the same hilt — only the grip orientation changes.
+
+Change nothing else at all. No text, numbers, letters or logos anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/577461b7a7df8c28.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/68519f2863bc27d1.jpg" data-cap="trumbert-r4-interpose-thick-riverflow25-1.png" alt="trumbert-r4-interpose-thick-riverflow25-1.png"><figcaption>trumbert-r4-interpose-thick-riverflow25-1.png</figcaption></figure></div></template>
+<template id="in-2"><h2>flash31 · REJECT — grip still inverted</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-15T02:37:30</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r5-i2i-riverflow-gripfix.txt</p><pre>Edit the attached reference image of the gnome champion Trumbert. This base is ALREADY very good — keep essentially everything: same lithe fey gnome, same face and warm expression, same pose (protective interpose, both feet flat on the ground), same steel breastplate with the single bold chunky sun emblem, same ankh-and-sun pendant, same plain round steel shield, same thick fur cloak, same one-mass flame hair, same trousers and boots, same framing and plain gray studio backdrop. In particular, KEEP THE SCIMITAR EXACTLY AS IT IS — its shape, its clear CURVE, its thickness, and its lowered tip-on-the-ground position are all correct; do NOT redraw, straighten, re-bulk or re-pose the blade. Do NOT change his identity, kit, chirality or composition. Keep it a photorealistic full-body concept render.
+
+ONLY fix ONE thing — the way his RIGHT hand holds the hilt:
+
+THE GRIP — FIX IT TO A NORMAL FORWARD HOLD. Re-draw only his right hand on the scimitar hilt as a natural forward sword grip: the THUMB is on the FRONT / near face of the grip, toward the viewer, and CLEARLY VISIBLE; the four fingers wrap around the BACK of the hilt, behind it. Thumb-in-front, fingers-behind, knuckles facing away — an ordinary sabre hold. The current image has the hand reversed/inverted (thumb on the wrong side) — correct it. It must NOT be a reversed / ice-pick grip and must NOT be palm-out; the thumb should show on the front of the hand facing the camera. Keep the hand in the same place on the same hilt — only the grip orientation changes.
+
+Change nothing else at all. No text, numbers, letters or logos anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/577461b7a7df8c28.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/68519f2863bc27d1.jpg" data-cap="trumbert-r4-interpose-thick-riverflow25-1.png" alt="trumbert-r4-interpose-thick-riverflow25-1.png"><figcaption>trumbert-r4-interpose-thick-riverflow25-1.png</figcaption></figure></div></template>
+<template id="in-3"><h2>riverflow25 · KEEPER — clean scimitar, grounded</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K · $0.36 · 2026-07-15T02:43:17</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r5-i2i-flash31-swordfix.txt</p><pre>Edit the attached reference image of the gnome champion Trumbert. This base has great HAIR and a great CLOAK — keep them and everything else: same lithe fey gnome, same face and warm expression, same pose (protective interpose, both feet flat on the ground), same steel breastplate with the single bold chunky sun emblem, same ankh-and-sun pendant, same plain round steel shield, same HEAVY THICK FUR CLOAK, same ONE-MASS FLAME HAIR with embedded ears, same trousers and boots, same framing and plain gray studio backdrop, same right-hand grip. Do NOT change his identity, kit, chirality or composition. Keep it a photorealistic full-body concept render.
+
+ONLY fix ONE thing — the SHAPE OF THE BLADE, which is currently wrong:
+
+THE SCIMITAR — RE-CURVE IT INTO A PROPER SCIMITAR. In this base the sword reads as a STRAIGHT, broad BROADSWORD / falchion — that is wrong. Reshape the blade in his right hand into an UNMISTAKABLY CURVED single-edged SCIMITAR: a crescent sabre whose blade sweeps in one smooth continuous ARC from the crossguard to the point, curving like a crescent moon (both the sharp edge and the back spine follow the same curve). It must NOT be straight, NOT a broadsword, NOT a straight-edged falchion — the curve should be obvious at a glance. Keep the blade a solid, sturdy, print-safe cross-section (no thin needle edge or fragile point), but the CURVED SILHOUETTE TAKES PRIORITY over sheer bulk — a moderately thick clearly-curved blade, never a thick straight one. Keep it lowered and de-escalating with its TIP RESTING ON THE GROUND beside his near foot as a third ground contact. Plain chunky pommel and simple crossguard, no decoration. Keep the same right hand in the same place gripping the same hilt — only the blade&#x27;s shape changes.
+
+Change nothing else — keep the hair, ears, fur cloak, face, armor, shield and pose exactly as they are. No text, numbers, letters or logos anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/30012f0e3079d0c1.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/e53433f0fc279479.jpg" data-cap="trumbert-r4-interpose-i2i-flash31-1.png" alt="trumbert-r4-interpose-i2i-flash31-1.png"><figcaption>trumbert-r4-interpose-i2i-flash31-1.png</figcaption></figure></div></template>
+<template id="in-4"><h2>gptimage2 · FIXABLE — clean curve, floaty tip</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=high · $0.18 · 2026-07-15T02:43:04</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r5-i2i-flash31-swordfix.txt</p><pre>Edit the attached reference image of the gnome champion Trumbert. This base has great HAIR and a great CLOAK — keep them and everything else: same lithe fey gnome, same face and warm expression, same pose (protective interpose, both feet flat on the ground), same steel breastplate with the single bold chunky sun emblem, same ankh-and-sun pendant, same plain round steel shield, same HEAVY THICK FUR CLOAK, same ONE-MASS FLAME HAIR with embedded ears, same trousers and boots, same framing and plain gray studio backdrop, same right-hand grip. Do NOT change his identity, kit, chirality or composition. Keep it a photorealistic full-body concept render.
+
+ONLY fix ONE thing — the SHAPE OF THE BLADE, which is currently wrong:
+
+THE SCIMITAR — RE-CURVE IT INTO A PROPER SCIMITAR. In this base the sword reads as a STRAIGHT, broad BROADSWORD / falchion — that is wrong. Reshape the blade in his right hand into an UNMISTAKABLY CURVED single-edged SCIMITAR: a crescent sabre whose blade sweeps in one smooth continuous ARC from the crossguard to the point, curving like a crescent moon (both the sharp edge and the back spine follow the same curve). It must NOT be straight, NOT a broadsword, NOT a straight-edged falchion — the curve should be obvious at a glance. Keep the blade a solid, sturdy, print-safe cross-section (no thin needle edge or fragile point), but the CURVED SILHOUETTE TAKES PRIORITY over sheer bulk — a moderately thick clearly-curved blade, never a thick straight one. Keep it lowered and de-escalating with its TIP RESTING ON THE GROUND beside his near foot as a third ground contact. Plain chunky pommel and simple crossguard, no decoration. Keep the same right hand in the same place gripping the same hilt — only the blade&#x27;s shape changes.
+
+Change nothing else — keep the hair, ears, fur cloak, face, armor, shield and pose exactly as they are. No text, numbers, letters or logos anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/30012f0e3079d0c1.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/e53433f0fc279479.jpg" data-cap="trumbert-r4-interpose-i2i-flash31-1.png" alt="trumbert-r4-interpose-i2i-flash31-1.png"><figcaption>trumbert-r4-interpose-i2i-flash31-1.png</figcaption></figure></div></template>
+<template id="in-5"><h2>flash31 · FIXABLE — kukri curve, hooked tip</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-15T02:40:52</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r5-i2i-flash31-swordfix.txt</p><pre>Edit the attached reference image of the gnome champion Trumbert. This base has great HAIR and a great CLOAK — keep them and everything else: same lithe fey gnome, same face and warm expression, same pose (protective interpose, both feet flat on the ground), same steel breastplate with the single bold chunky sun emblem, same ankh-and-sun pendant, same plain round steel shield, same HEAVY THICK FUR CLOAK, same ONE-MASS FLAME HAIR with embedded ears, same trousers and boots, same framing and plain gray studio backdrop, same right-hand grip. Do NOT change his identity, kit, chirality or composition. Keep it a photorealistic full-body concept render.
+
+ONLY fix ONE thing — the SHAPE OF THE BLADE, which is currently wrong:
+
+THE SCIMITAR — RE-CURVE IT INTO A PROPER SCIMITAR. In this base the sword reads as a STRAIGHT, broad BROADSWORD / falchion — that is wrong. Reshape the blade in his right hand into an UNMISTAKABLY CURVED single-edged SCIMITAR: a crescent sabre whose blade sweeps in one smooth continuous ARC from the crossguard to the point, curving like a crescent moon (both the sharp edge and the back spine follow the same curve). It must NOT be straight, NOT a broadsword, NOT a straight-edged falchion — the curve should be obvious at a glance. Keep the blade a solid, sturdy, print-safe cross-section (no thin needle edge or fragile point), but the CURVED SILHOUETTE TAKES PRIORITY over sheer bulk — a moderately thick clearly-curved blade, never a thick straight one. Keep it lowered and de-escalating with its TIP RESTING ON THE GROUND beside his near foot as a third ground contact. Plain chunky pommel and simple crossguard, no decoration. Keep the same right hand in the same place gripping the same hilt — only the blade&#x27;s shape changes.
+
+Change nothing else — keep the hair, ears, fur cloak, face, armor, shield and pose exactly as they are. No text, numbers, letters or logos anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/30012f0e3079d0c1.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/e53433f0fc279479.jpg" data-cap="trumbert-r4-interpose-i2i-flash31-1.png" alt="trumbert-r4-interpose-i2i-flash31-1.png"><figcaption>trumbert-r4-interpose-i2i-flash31-1.png</figcaption></figure></div></template>
+<template id="in-6"><h2>riverflow25 · KEEPER — all four, lithe</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K · $0.36 · 2026-07-15T02:45:56</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r5-i2i-r3keeper-rethicken.txt</p><pre>Edit the attached reference image of the gnome champion Trumbert (this is the ORIGINAL un-thickened keeper). KEEP his identity, kit, pose, chirality and composition: same lithe fey gnome, same face and warm expression, same protective-interpose pose with BOTH FEET FLAT on the ground, same steel breastplate with the single bold sun emblem, same ankh-and-sun pendant, same plain round steel shield, same trousers and boots, same framing and plain gray studio backdrop. Keep it a photorealistic full-body concept render.
+
+Re-sculpt him to be BOTH print-ready AND richly detailed — thick, solid, chunky LOAD-BEARING forms with crisp, well-defined surface detail (not mushy, not oversimplified). Make ALL of these changes together:
+
+1. HAIR (thicken): rebuild the flame-colored hair as ONE thick, chunky, connected mass of bold rounded locks — remove every thin wisp, fine strand, spike and delicate flame-lick — but keep crisp, clearly-defined individual locks so it reads as detailed sculpted hair, not a smooth blob. Tips merge back into the head.
+
+2. EARS (embed): pin the pointed gnome ears back and shorten them — tuck them into and behind the thick hair so they are EMBEDDED in the hair mass and do NOT stick out sideways or form thin protruding points.
+
+3. CLOAK (thicken to FUR): turn his thin fabric cape into a HEAVY, THICK FUR cloak — a substantial deep-pile fur mantle draping over both shoulders and down his back as a solid chunky volume with thick rolled fur edges and crisp, detailed fur texture. No thin fabric, no flat sheet, no thin flapping hem.
+
+4. SCIMITAR (thicken AND curve): make the blade a solid, sturdy, print-safe cross-section (no thin needle edge or fragile point) AND unmistakably CURVED — a crescent scimitar whose blade sweeps in one smooth continuous ARC from crossguard to point (edge and spine both curved). It must NOT be a straight blade, a broadsword or a straight falchion; the curved silhouette takes PRIORITY over bulk. Re-angle it LOWERED and de-escalating with its TIP RESTING ON THE GROUND beside his near foot as a solid third ground contact. Plain chunky pommel and simple crossguard.
+
+5. GRIP (correct forward hold): his right hand grips the hilt in a natural forward sword grip — the THUMB on the FRONT / near face of the grip, toward the viewer and CLEARLY VISIBLE; the four fingers wrap around BEHIND the hilt. Thumb-in-front, fingers-behind, knuckles away — NOT reversed, NOT ice-pick, NOT palm-out.
+
+Also sharpen the identity details while keeping them print-safe: crisp, high-relief chest sun emblem (thick triangular rays, few of them), a bold well-defined ankh-and-sun pendant sitting flush against the chest, and clean defined armor/strap/boot detail. Everything thick and solid, but detailed and crisp — never mushy.
+
+No text, numbers, letters or logos anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/dccb586b1110473d.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/0a8dc583c64b9308.jpg" data-cap="trumbert-r3-p6interpose-gptimage2-1.png" alt="trumbert-r3-p6interpose-gptimage2-1.png"><figcaption>trumbert-r3-p6interpose-gptimage2-1.png</figcaption></figure></div></template>
+<template id="in-7"><h2>gptimage2 · KEEPER — best identity, sturdy tip</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=high · $0.18 · 2026-07-15T02:45:31</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r5-i2i-r3keeper-rethicken.txt</p><pre>Edit the attached reference image of the gnome champion Trumbert (this is the ORIGINAL un-thickened keeper). KEEP his identity, kit, pose, chirality and composition: same lithe fey gnome, same face and warm expression, same protective-interpose pose with BOTH FEET FLAT on the ground, same steel breastplate with the single bold sun emblem, same ankh-and-sun pendant, same plain round steel shield, same trousers and boots, same framing and plain gray studio backdrop. Keep it a photorealistic full-body concept render.
+
+Re-sculpt him to be BOTH print-ready AND richly detailed — thick, solid, chunky LOAD-BEARING forms with crisp, well-defined surface detail (not mushy, not oversimplified). Make ALL of these changes together:
+
+1. HAIR (thicken): rebuild the flame-colored hair as ONE thick, chunky, connected mass of bold rounded locks — remove every thin wisp, fine strand, spike and delicate flame-lick — but keep crisp, clearly-defined individual locks so it reads as detailed sculpted hair, not a smooth blob. Tips merge back into the head.
+
+2. EARS (embed): pin the pointed gnome ears back and shorten them — tuck them into and behind the thick hair so they are EMBEDDED in the hair mass and do NOT stick out sideways or form thin protruding points.
+
+3. CLOAK (thicken to FUR): turn his thin fabric cape into a HEAVY, THICK FUR cloak — a substantial deep-pile fur mantle draping over both shoulders and down his back as a solid chunky volume with thick rolled fur edges and crisp, detailed fur texture. No thin fabric, no flat sheet, no thin flapping hem.
+
+4. SCIMITAR (thicken AND curve): make the blade a solid, sturdy, print-safe cross-section (no thin needle edge or fragile point) AND unmistakably CURVED — a crescent scimitar whose blade sweeps in one smooth continuous ARC from crossguard to point (edge and spine both curved). It must NOT be a straight blade, a broadsword or a straight falchion; the curved silhouette takes PRIORITY over bulk. Re-angle it LOWERED and de-escalating with its TIP RESTING ON THE GROUND beside his near foot as a solid third ground contact. Plain chunky pommel and simple crossguard.
+
+5. GRIP (correct forward hold): his right hand grips the hilt in a natural forward sword grip — the THUMB on the FRONT / near face of the grip, toward the viewer and CLEARLY VISIBLE; the four fingers wrap around BEHIND the hilt. Thumb-in-front, fingers-behind, knuckles away — NOT reversed, NOT ice-pick, NOT palm-out.
+
+Also sharpen the identity details while keeping them print-safe: crisp, high-relief chest sun emblem (thick triangular rays, few of them), a bold well-defined ankh-and-sun pendant sitting flush against the chest, and clean defined armor/strap/boot detail. Everything thick and solid, but detailed and crisp — never mushy.
+
+No text, numbers, letters or logos anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/dccb586b1110473d.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/0a8dc583c64b9308.jpg" data-cap="trumbert-r3-p6interpose-gptimage2-1.png" alt="trumbert-r3-p6interpose-gptimage2-1.png"><figcaption>trumbert-r3-p6interpose-gptimage2-1.png</figcaption></figure></div></template>
+<template id="in-8"><h2>flash31 · FIXABLE — ears jut, needle tip</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-15T02:43:38</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r5-i2i-r3keeper-rethicken.txt</p><pre>Edit the attached reference image of the gnome champion Trumbert (this is the ORIGINAL un-thickened keeper). KEEP his identity, kit, pose, chirality and composition: same lithe fey gnome, same face and warm expression, same protective-interpose pose with BOTH FEET FLAT on the ground, same steel breastplate with the single bold sun emblem, same ankh-and-sun pendant, same plain round steel shield, same trousers and boots, same framing and plain gray studio backdrop. Keep it a photorealistic full-body concept render.
+
+Re-sculpt him to be BOTH print-ready AND richly detailed — thick, solid, chunky LOAD-BEARING forms with crisp, well-defined surface detail (not mushy, not oversimplified). Make ALL of these changes together:
+
+1. HAIR (thicken): rebuild the flame-colored hair as ONE thick, chunky, connected mass of bold rounded locks — remove every thin wisp, fine strand, spike and delicate flame-lick — but keep crisp, clearly-defined individual locks so it reads as detailed sculpted hair, not a smooth blob. Tips merge back into the head.
+
+2. EARS (embed): pin the pointed gnome ears back and shorten them — tuck them into and behind the thick hair so they are EMBEDDED in the hair mass and do NOT stick out sideways or form thin protruding points.
+
+3. CLOAK (thicken to FUR): turn his thin fabric cape into a HEAVY, THICK FUR cloak — a substantial deep-pile fur mantle draping over both shoulders and down his back as a solid chunky volume with thick rolled fur edges and crisp, detailed fur texture. No thin fabric, no flat sheet, no thin flapping hem.
+
+4. SCIMITAR (thicken AND curve): make the blade a solid, sturdy, print-safe cross-section (no thin needle edge or fragile point) AND unmistakably CURVED — a crescent scimitar whose blade sweeps in one smooth continuous ARC from crossguard to point (edge and spine both curved). It must NOT be a straight blade, a broadsword or a straight falchion; the curved silhouette takes PRIORITY over bulk. Re-angle it LOWERED and de-escalating with its TIP RESTING ON THE GROUND beside his near foot as a solid third ground contact. Plain chunky pommel and simple crossguard.
+
+5. GRIP (correct forward hold): his right hand grips the hilt in a natural forward sword grip — the THUMB on the FRONT / near face of the grip, toward the viewer and CLEARLY VISIBLE; the four fingers wrap around BEHIND the hilt. Thumb-in-front, fingers-behind, knuckles away — NOT reversed, NOT ice-pick, NOT palm-out.
+
+Also sharpen the identity details while keeping them print-safe: crisp, high-relief chest sun emblem (thick triangular rays, few of them), a bold well-defined ankh-and-sun pendant sitting flush against the chest, and clean defined armor/strap/boot detail. Everything thick and solid, but detailed and crisp — never mushy.
+
+No text, numbers, letters or logos anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/dccb586b1110473d.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/0a8dc583c64b9308.jpg" data-cap="trumbert-r3-p6interpose-gptimage2-1.png" alt="trumbert-r3-p6interpose-gptimage2-1.png"><figcaption>trumbert-r3-p6interpose-gptimage2-1.png</figcaption></figure></div></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy / share a deep link to one card. The URL is this page plus the card's
+// #id anchor, so a recipient lands scrolled to (and highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+
+</body></html>
