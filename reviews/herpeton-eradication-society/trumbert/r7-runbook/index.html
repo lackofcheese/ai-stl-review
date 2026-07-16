@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Trumbert — Round 7 ghosting investigation runbook</title>
+<style>
+:root{color-scheme:dark light;--accent:#c67a2b;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.coreinputs { margin:1.2rem 0 .4rem }
+.coreinputs h2 { margin:0 0 .5rem }
+.coreinputs .hint { color:var(--dim); font-weight:400; font-size:.85rem }
+.inputrow { display:flex; flex-wrap:wrap; gap:12px }
+.coreinput { margin:0; width:210px; max-width:100%;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.coreinput .imgwrap { border-bottom:1px solid var(--line) }
+.coreinput .imgwrap img { max-height:230px }
+.coreinput figcaption { color:var(--dim); font-size:.7rem; padding:.35rem .5rem;
+  word-break:break-all; font-family:ui-monospace,SFMono-Regular,Menlo,monospace }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.statrow { display:flex; flex-wrap:wrap; gap:.15rem .5rem; margin:0 0 .1rem;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.72rem;
+  color:var(--dim) }
+.statrow span { white-space:nowrap }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.chip.unclear { color:var(--dim); border-color:var(--dim) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:92vh; object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+
+.md h2 { font-size:1.15rem; margin:2.2rem 0 .3rem }
+.md h3 { font-size:1rem; margin:1.6rem 0 .3rem }
+.md h4 { font-size:.9rem; margin:1.2rem 0 .3rem; color:var(--dim) }
+.md p { max-width:78ch }
+.md ul, .md ol { max-width:78ch; padding-left:1.4rem }
+.md li { margin:.25rem 0 }
+.md a { color:var(--accent) }
+.md code { background:var(--pre); border:1px solid var(--line); border-radius:4px;
+  padding:.05rem .3rem; font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
+.md pre.code { background:var(--pre); border:1px solid var(--line); border-radius:6px;
+  padding:.75rem 1rem; overflow-x:auto; font-size:.82rem; line-height:1.5 }
+.md pre.code code { background:none; border:0; padding:0 }
+.md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+.md dl.rb-meta { display:grid; grid-template-columns:auto 1fr; gap:.3rem 1.1rem;
+  max-width:60ch; margin:.2rem 0 1.8rem; padding:.9rem 1.15rem; background:var(--pre);
+  border:1px solid var(--line); border-radius:8px; font-size:.9rem }
+.md dl.rb-meta dt { color:var(--dim); font-weight:600; white-space:nowrap }
+.md dl.rb-meta dd { margin:0 }
+.md details { max-width:78ch; margin:1.8rem 0; border:1px solid var(--line);
+  border-radius:8px; background:var(--pre); padding:0 1.15rem }
+.md details[open] { padding-bottom:.4rem }
+.md details > summary { cursor:pointer; padding:.85rem 0; font-weight:600;
+  color:var(--accent); list-style:none }
+.md details > summary::-webkit-details-marker { display:none }
+.md details > summary::before { content:'\25B8\A0' }
+.md details[open] > summary::before { content:'\25BE\A0' }
+.md details > summary + * { margin-top:.2rem }
+/* Runbook tables carry PROSE (the "choices on the table" comparison, the
+   build-step gates), not the review panel's short IDs. review_page.py's global
+   table CSS pins cols 1-2 to white-space:nowrap and col 2 to a monospace font —
+   right for id columns, but here it forces long option/recommendation cells
+   onto one unbreakable line: the table blows past the page width (the awkward
+   left-right scroll) and the other columns get starved into tall, ragged stacks
+   (the lopsided whitespace). Undo both inside .md so every cell wraps to its
+   column and auto table-layout balances the widths to the page. */
+.md .tablewrap { margin:.4rem 0 1.6rem }
+.md th, .md td { white-space:normal; overflow-wrap:break-word;
+  font-family:inherit }
+.md td code { overflow-wrap:anywhere }
+/* Keep some readable structure on narrow screens rather than crushing three
+   prose columns to nothing; .tablewrap scrolls only past this floor. */
+.md table { min-width:34rem }
+</style></head><body><main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Herpeton Eradication Society</a><span class="sep">&rsaquo;</span><a href="../">Trumbert</a></nav>
+<h1>Trumbert — Round 7 ghosting investigation runbook</h1>
+<span class="crosslink" style="opacity:.55;pointer-events:none" title="Published at round close">&#128203; Review panel &mdash; at round close</span>
+<h2>Base assets — what this round builds on</h2>
+<p class="blurb">The source image(s) every generation in this round starts from. Click to zoom; open “inputs” for the prompt and reference images that produced each one.</p>
+<div class="grid">
+<div class="card"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/16a1d872afe2576e.png" data-cap="trumbert-r5-i2i-r3keeper-rethicken-gptimage2"><img src="../../../../assets/6a569f46386cf62d.jpg" alt="trumbert-r5-i2i-r3keeper-rethicken-gptimage2" loading="lazy"></div><div class="meta"><header><h3>trumbert-r5-i2i-r3keeper-rethicken-gptimage2</h3></header><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/6ba2addd2d3941d3.jpg" data-cap="trumbert-r6-turnaround-flash31-1"><img src="../../../../assets/158822019dae0720.jpg" alt="trumbert-r6-turnaround-flash31-1" loading="lazy"></div><div class="meta"><header><h3>trumbert-r6-turnaround-flash31-1</h3></header><button class="ibtn" data-inputs="in-1">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/a9e25780854b3b36.jpg" data-cap="trumbert-r6-turnaround-flash31-2"><img src="../../../../assets/3efcdc1185f87c97.jpg" alt="trumbert-r6-turnaround-flash31-2" loading="lazy"></div><div class="meta"><header><h3>trumbert-r6-turnaround-flash31-2</h3></header><button class="ibtn" data-inputs="in-2">inputs — prompt &amp; refs</button></div></div>
+<div class="card"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/46a5914e3525f0de.jpg" data-cap="trumbert-r6-turnaround-flash31-3"><img src="../../../../assets/fc07f5b7b9eb637e.jpg" alt="trumbert-r6-turnaround-flash31-3" loading="lazy"></div><div class="meta"><header><h3>trumbert-r6-turnaround-flash31-3</h3></header><button class="ibtn" data-inputs="in-3">inputs — prompt &amp; refs</button></div></div>
+</div>
+<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>turnaround diagnostic — detector calibration + controlled flash31 experiments</dd><dt>Status</dt><dd>PROPOSED — no generation or paid calls yet</dd><dt>Owner</dt><dd>Codex (local) → Dimitri review</dd><dt>Date opened</dt><dd>2026-07-16</dd><dt>Inputs</dt><dd>the three R6 flash31 1×4 turnarounds; the R5 gold character render; selected Gorgon R7–R8 sheets as an incompletely labelled comparison corpus</dd><dt>Produces</dt><dd>detector evidence; nine fresh screening sheets; two whole-sheet self-repair trials; up to four confirmation/local-repair outputs</dd><dt>Branch</dt><dd><code>codex/trumbert-r7-ghosting-plan</code></dd><dt>Prior round</dt><dd>R6&#x27;s three 1×4 turnarounds are broadly good, but all show ghosting in P3/P4 and softened dividers D2/D3. Gorgon previously favoured flash31 1×4 over 2×2, so 1×4 remains the prior while 2×2 is only a bounded diagnostic.</dd></dl>
+<h2>Goal</h2>
+<p>Find a reliable way to prevent or repair the <strong>ghosting</strong> in Trumbert&#x27;s later turnaround panels without sacrificing view correctness or identity. First pin down detectors using existing Trumbert and weakly labelled Gorgon evidence; then test a small set of layout, divider and self-repair ideas.</p>
+<h2>The choices on the table</h2>
+<div class="tablewrap"><table><thead><tr><th>Approach</th><th>What it tests</th><th>Why it is included</th></tr></thead><tbody><tr><td>Local detector calibration</td><td>Strong-edge loss, widened edges, false double contours and divider integrity</td><td>Whole-panel sharpness misses local ghosting, especially R1-P4</td></tr><tr><td>Reverse the 1×4 view order</td><td>Whether ghosting follows slots 3/4 or the back/sword views</td><td>Separates canvas position from view complexity</td></tr><tr><td>One bounded 2×2 trial</td><td>Whether Trumbert repeats Gorgon&#x27;s bottom-row failure</td><td>Diagnostic only; 2×2 is not presumed better</td></tr><tr><td>Divider variants</td><td>No outer border; black dividers; thinner dividers</td><td>Tests whether divider treatment and figure ghosting move together</td></tr><tr><td>flash31 self-repair</td><td>Two ways of asking flash31 to remove its own ghosting</td><td>Quick test before escalating to isolated panel generation</td></tr></tbody></table></div>
+<p>The existing three R6 sheets are the control; they are not regenerated merely to make the table symmetrical.</p>
+<h2>What we need from you</h2>
+<p>Approve, amend or reject the detector-first gate, the five fresh-generation cells (including one deliberately bounded 2×2 roll), the two self-repair prompt families, and the <strong>$1.50 maximum spend</strong>. Any detector disagreement on an unlabelled Gorgon crop will come back to you for a human label rather than being silently treated as ground truth.</p>
+<h2>Cost</h2>
+<p>Local calibration $0 + 9 screening calls $0.90 + 2 self-repairs $0.20 + up to 4 conditional repair/confirmation calls $0.40 → <strong>maximum ≈ $1.50 (15 flash31 calls)</strong>.</p>
+<details>
+<summary>Technical plan — detectors, prompts, matrices and commands (pipeline detail)</summary>
+<h3>What changed going in</h3>
+<ul>
+<li>Use <strong>ghosting</strong> as the umbrella term, while recording two subtypes separately: softness/smear and echo/double contour. Divider softness remains a third, separate sheet signal.</li>
+<li>Treat Gorgon as a partially labelled calibration corpus. Absence of a historic finding is not a negative label; consequential detector disagreements become blinded evidence crops for Dimitri.</li>
+<li>Keep flash31 1×4 as the prior. Gorgon R8 showed systematic 2×2 bottom-row ghosting, although a clean R7x 2×2 proves the failure is not deterministic.</li>
+<li>Add template-tool support for explicit no-outer-border and line-colour options before generating E3–E5; dimensions/background stay pixel-identical.</li>
+<li>Give E1 and E2 dedicated prompt variants. The R6 prompt hard-codes both a horizontal row and front/shield/back/sword order, so reusing it verbatim would contradict those experiments and confound the result.</li>
+</ul>
+<h3>Existing evidence and historical detector comparison</h3>
+<ul>
+<li>All three Trumbert R6 rolls show P3/P4 ghosting plus softened D2/D3. The defects are patchy: cloak, shield, sword and boot edges can ghost while a nearby hard edge remains crisp.</li>
+<li>A preliminary 96 px sliding-window pass recovers the broad pattern. Relative to the sharper of P1/P2, P3&#x27;s upper-tail edge score is <strong>0.73–0.78</strong> across the three rolls; P4 is <strong>0.67–0.86</strong>. R1-P4 is the instructive aggregate miss.</li>
+<li>Gorgon&#x27;s historic <code>motion-blur-ghost</code> detector was an advisory natural-language VLM rule focused on extended arms/outer limbs. Its implementation assumed a horizontal 1×N crop, so it could not reproducibly auto-crop the problematic 2×2 sheets. Later pills encode human feedback, not a preserved numeric run.</li>
+<li>The strongest matched pair is Gorgon B2/flash31: its 1×4 remains high/flat, while 2×2 falls to <strong>0.84 (P3) / 0.76 (P4)</strong>, agreeing with Dimitri&#x27;s call. Gorgon B1/flash31 2×2 has a labelled P4 ghost plus an unexplained low P2 score; Gorgon R7x/flash31 2×2 scores evenly and is an unlabelled holdout.</li>
+</ul>
+<h3>Phase 0 — detector calibration (no paid calls)</h3>
+<h4>Corpus and labels</h4>
+<ol>
+<li><strong>Human-labelled positives:</strong> Trumbert R6 P3/P4 at Dimitri&#x27;s exact regions; Gorgon R8 B2-flash31-2×2 P3/P4 and B1-flash31-2×2 P4.</li>
+<li><strong>Human-labelled negatives:</strong> Gorgon R8 B1/B2-flash31-1×4, whose updated reviews explicitly report no ghosting.</li>
+<li><strong>Weak/unlabelled:</strong> Gorgon R7/R7x and remaining R8 panels. Scores here are hypotheses only.</li>
+</ol>
+<h4>Detector stack</h4>
+<div class="tablewrap"><table><thead><tr><th>Detector</th><th>Measurement</th><th>Purpose</th></tr></thead><tbody><tr><td>G1 localized strong-edge deficit</td><td>96 px sliding windows; local q99 gradient distribution normalized within the same sheet and to matched clean regions</td><td>catches local/broad softening without averaging a whole panel</td></tr><tr><td>G2 edge-support width</td><td>gradient-response width around a selected silhouette/feature edge versus a matched clean edge</td><td>catches a widened smear where peak contrast survives</td></tr><tr><td>G3 parallel-contour echo</td><td>persistent secondary gradient peak parallel to the primary contour</td><td>targets false double edges</td></tr><tr><td>D1 divider integrity</td><td>registered divider-edge strength, width and continuity versus template and D1</td><td>measures divider degradation separately</td></tr></tbody></table></div>
+<p>Use source-native PNGs at a common pixels-per-figure scale. Figure windows mask divider/border pixels; divider windows mask figures crossing the line. Suppress the expected opposite side of a finite-width divider rather than counting its two legitimate edges as a ghost. Armor/shield rims, boot soles, hair strands and specular highlights are explicit false-positive controls.</p>
+<p>A region becomes a <strong>ghosting candidate</strong> only when at least two of G1/G2/G3 agree. D1 can support a shared-cause hypothesis but cannot fail a figure region. Every result preserves a heatmap and evidence crop.</p>
+<p><strong>Phase-0 gate:</strong> proceed only if known positives are localized, explicit Gorgon 1×4 negatives are not blanket-flagged, and scores have inspectable evidence. Expected first human-label pack: Gorgon B1-flash31-2×2 P2 versus P4, plus any R7/R7x crop on which G1 and G2/G3 agree.</p>
+<h3>Phase 1 — controlled fresh-generation screen</h3>
+<p>Keep constant: flash31, R5 gold reference, 2K setting, character description, materials, scale, lighting, background and per-view geometry. Only the named axis and the minimum prompt wording needed to express it may change.</p>
+<div class="tablewrap"><table><thead><tr><th>Cell</th><th>Source / base (input)</th><th>Layout/template</th><th>Order</th><th>Prompt</th><th>Rolls</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>E0 control</td><td>R5 gold + R6 template</td><td>1×4 grey 14 px dividers + outer border</td><td>front / shield / back / sword</td><td>existing <code>r6-turnaround-faithful.txt</code></td><td>3 existing</td><td><code>trumbert-r6-turnaround-flash31</code></td></tr><tr><td>E1 reverse order</td><td>R5 gold + R6 template</td><td>same as E0</td><td>sword / back / shield / front</td><td><code>r7-turnaround-reverse.txt</code></td><td>2</td><td><code>trumbert-r7-order-reverse-flash31</code></td></tr><tr><td>E2 bounded 2×2</td><td>R5 gold + 2×2 template</td><td>grey 14 px dividers + outer border</td><td>TL front / TR shield / BL back / BR sword</td><td><code>r7-turnaround-2x2.txt</code></td><td>1</td><td><code>trumbert-r7-layout-2x2-flash31</code></td></tr><tr><td>E3 divider-only</td><td>R5 gold + grey14-no-border template</td><td>1×4 internal grey 14 px; no outer border</td><td>standard</td><td><code>r7-turnaround-standard.txt</code></td><td>2</td><td><code>trumbert-r7-divider-grey14-noborder-flash31</code></td></tr><tr><td>E4 black divider</td><td>R5 gold + black14-no-border template</td><td>E3 with black internal lines</td><td>standard</td><td><code>r7-turnaround-standard.txt</code></td><td>2</td><td><code>trumbert-r7-divider-black14-noborder-flash31</code></td></tr><tr><td>E5 thin divider</td><td>R5 gold + grey4-no-border template</td><td>E3 with grey 4 px internal lines</td><td>standard</td><td><code>r7-turnaround-standard.txt</code></td><td>2</td><td><code>trumbert-r7-divider-grey4-noborder-flash31</code></td></tr></tbody></table></div>
+<p>The three R7 generation prompts copy the non-layout content of R6, then make their canvas/order instruction internally consistent:</p>
+<ul>
+<li><code>r7-turnaround-standard.txt</code>: one horizontal row; front/shield/back/sword.</li>
+<li><code>r7-turnaround-reverse.txt</code>: one horizontal row; sword/back/shield/front, with each slot&#x27;s full view description moved with the view.</li>
+<li><code>r7-turnaround-2x2.txt</code>: explicit reading order and positions: front top-left, shield top-right, back bottom-left, sword bottom-right.</li>
+</ul>
+<h4>Diagnostic predictions</h4>
+<ul>
+<li>Ghosting follows slots 3/4 in E1 → spatial/canvas-position behaviour.</li>
+<li>Ghosting follows back/sword into slots 1/2 → view-content complexity.</li>
+<li>Figure ghosting and divider degradation improve together in E3–E5 → divider conditioning hypothesis gains support. Divider-only improvement means the line is a correlated symptom, not the cause.</li>
+<li>E2 worsening in its bottom row reproduces Gorgon R8. One clean E2 roll is useful but cannot overturn the historical result.</li>
+</ul>
+<h3>Phase 1B — flash31 self-repair</h3>
+<p>Use R6 roll 2 as the fixed source:</p>
+<div class="tablewrap"><table><thead><tr><th>Cell</th><th>Prompt</th><th>Rolls</th><th>Out stem</th></tr></thead><tbody><tr><td>F1 direct artifact</td><td>“Remove ghosting, translucent echoes and false double edges; restore one crisp opaque contour; make each divider one crisp solid line. Preserve every view and all geometry.”</td><td>1</td><td><code>trumbert-r7-selfrepair-direct-flash31</code></td></tr><tr><td>F2 physical constraint</td><td>“Each object has exactly one opaque silhouette boundary; delete secondary offset contours/halos. Preserve pose, identity, geometry and all four views pixel-faithfully.”</td><td>1</td><td><code>trumbert-r7-selfrepair-singleedge-flash31</code></td></tr></tbody></table></div>
+<p>Whole-sheet repair is diagnostic: it can re-render clean P1/P2 and add generational softness. Compare ghosting, identity, chirality, weapon/shield geometry and clean-region drift against the source. If one prompt clearly works, repair P3 and P4 separately and deterministically re-stitch them with untouched P1/P2 and vector dividers. If neither works without regression, stop this arm.</p>
+<h3>Scoring, confirmation and solution ladder</h3>
+<p>Each sheet receives G1/G2/G3 heatmaps, D1 profiles, a fresh-context crop audit of flagged and known regions, normal turnaround checks, and source-diffs for repair cells. A screen winner needs no known-region ghosting failure, no new structural regression, and material improvement over E0; divider-only gain is insufficient.</p>
+<p>Generate two confirmation rolls of the best fresh cell. Promote it only if both beat the E0 distribution. Otherwise prefer, in order: isolated P3/P4 repair and re-stitch; compatible clean-panel harvesting and re-stitch; four individually generated views assembled deterministically. Blind sharpening/deconvolution is not preferred because it can sharpen the false contour itself.</p>
+<h3>Candidate causes under test</h3>
+<ol>
+<li>Late-slot spatial degradation in a wide canvas.</li>
+<li>Divider/border conditioning bleed.</li>
+<li>Back-fur, shield-overlap and sword-view complexity.</li>
+<li>Layout-dependent row behaviour, as in Gorgon R8 2×2.</li>
+<li>Template resampling of finite-width lines.</li>
+<li>Whole-sheet img2img reconstruction tax during self-repair.</li>
+</ol>
+<h3>Commands (run only after sign-off)</h3>
+<p>The exact template CLI additions (<code>--no-outer-border</code>, <code>--line-color</code>) must be implemented and tested before these commands are enabled. No paid command runs while the placeholders are unresolved.</p>
+<pre class="code"><code>CH=projects/herpeton-eradication-society/trumbert
+GEN=$CH/generated
+BASE=$GEN/trumbert-r5-i2i-r3keeper-rethicken-gptimage2-1.png
+
+# Pull canonical binary inputs first.
+tools/drive_sync.sh pull $CH/generated
+
+# Build experimental templates after the template CLI change is reviewed.
+python3 tools/make_turnaround_template.py --out $GEN/trumbert-r7-template-2x2-grey14-border.png --grid 2x2 --match-image $BASE --divider 14 --line-color 70
+python3 tools/make_turnaround_template.py --out $GEN/trumbert-r7-template-1x4-grey14-noborder.png --match-image $BASE --divider 14 --line-color 70 --no-outer-border
+python3 tools/make_turnaround_template.py --out $GEN/trumbert-r7-template-1x4-black14-noborder.png --match-image $BASE --divider 14 --line-color 0 --no-outer-border
+python3 tools/make_turnaround_template.py --out $GEN/trumbert-r7-template-1x4-grey4-noborder.png --match-image $BASE --divider 4 --line-color 70 --no-outer-border
+
+# E1 reverse order, 2 rolls.
+for roll in 1 2; do
+  python3 tools/gemini_gen.py --model gemini-3.1-flash-image --image-size 2K \
+    --image $BASE --image $GEN/trumbert-r6-turnaround-template-1x4.png \
+    --prompt-file $CH/prompts/r7-turnaround-reverse.txt \
+    --out-dir $GEN --out-stem trumbert-r7-order-reverse-flash31 \
+    --lineage $CH/lineage.json
+done
+
+# E2 bounded 2x2, 1 roll.
+python3 tools/gemini_gen.py --model gemini-3.1-flash-image --image-size 2K \
+  --image $BASE --image $GEN/trumbert-r7-template-2x2-grey14-border.png \
+  --prompt-file $CH/prompts/r7-turnaround-2x2.txt \
+  --out-dir $GEN --out-stem trumbert-r7-layout-2x2-flash31 \
+  --lineage $CH/lineage.json
+
+# E3-E5, 2 rolls per template; all use the standard-order prompt.
+for cell in grey14-noborder black14-noborder grey4-noborder; do
+  for roll in 1 2; do
+    python3 tools/gemini_gen.py --model gemini-3.1-flash-image --image-size 2K \
+      --image $BASE --image $GEN/trumbert-r7-template-1x4-$cell.png \
+      --prompt-file $CH/prompts/r7-turnaround-standard.txt \
+      --out-dir $GEN --out-stem trumbert-r7-divider-$cell-flash31 \
+      --lineage $CH/lineage.json
+  done
+done
+
+# F1/F2 use the fixed R6 roll-2 source; prompt files contain the full wording.
+for kind in direct singleedge; do
+  python3 tools/gemini_gen.py --model gemini-3.1-flash-image --image-size 2K \
+    --image $GEN/trumbert-r6-turnaround-flash31-2.png \
+    --prompt-file $CH/prompts/r7-selfrepair-$kind.txt \
+    --out-dir $GEN --out-stem trumbert-r7-selfrepair-$kind-flash31 \
+    --lineage $CH/lineage.json
+done
+
+# Push every landed image immediately, then run the detector/crop gates.
+tools/drive_sync.sh push $CH/generated</code></pre>
+<p>Audit each roll as it lands, append verdicts to <code>reviews.json</code>, and build the eventual <code>r7-panel</code> review. Outcomes live in <code>rounds.md</code> and the panel, never in this runbook. Stop early if Phase 0 cannot be calibrated, a cell breaks view/identity, both repair prompts regress clean panels, or a recipe confirms.</p>
+</details></div>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+<template id="in-0"><h2>trumbert-r5-i2i-r3keeper-rethicken-gptimage2</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=high · $0.18 · 2026-07-15T02:45:31</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r5-i2i-r3keeper-rethicken.txt</p><pre>Edit the attached reference image of the gnome champion Trumbert (this is the ORIGINAL un-thickened keeper). KEEP his identity, kit, pose, chirality and composition: same lithe fey gnome, same face and warm expression, same protective-interpose pose with BOTH FEET FLAT on the ground, same steel breastplate with the single bold sun emblem, same ankh-and-sun pendant, same plain round steel shield, same trousers and boots, same framing and plain gray studio backdrop. Keep it a photorealistic full-body concept render.
+
+Re-sculpt him to be BOTH print-ready AND richly detailed — thick, solid, chunky LOAD-BEARING forms with crisp, well-defined surface detail (not mushy, not oversimplified). Make ALL of these changes together:
+
+1. HAIR (thicken): rebuild the flame-colored hair as ONE thick, chunky, connected mass of bold rounded locks — remove every thin wisp, fine strand, spike and delicate flame-lick — but keep crisp, clearly-defined individual locks so it reads as detailed sculpted hair, not a smooth blob. Tips merge back into the head.
+
+2. EARS (embed): pin the pointed gnome ears back and shorten them — tuck them into and behind the thick hair so they are EMBEDDED in the hair mass and do NOT stick out sideways or form thin protruding points.
+
+3. CLOAK (thicken to FUR): turn his thin fabric cape into a HEAVY, THICK FUR cloak — a substantial deep-pile fur mantle draping over both shoulders and down his back as a solid chunky volume with thick rolled fur edges and crisp, detailed fur texture. No thin fabric, no flat sheet, no thin flapping hem.
+
+4. SCIMITAR (thicken AND curve): make the blade a solid, sturdy, print-safe cross-section (no thin needle edge or fragile point) AND unmistakably CURVED — a crescent scimitar whose blade sweeps in one smooth continuous ARC from crossguard to point (edge and spine both curved). It must NOT be a straight blade, a broadsword or a straight falchion; the curved silhouette takes PRIORITY over bulk. Re-angle it LOWERED and de-escalating with its TIP RESTING ON THE GROUND beside his near foot as a solid third ground contact. Plain chunky pommel and simple crossguard.
+
+5. GRIP (correct forward hold): his right hand grips the hilt in a natural forward sword grip — the THUMB on the FRONT / near face of the grip, toward the viewer and CLEARLY VISIBLE; the four fingers wrap around BEHIND the hilt. Thumb-in-front, fingers-behind, knuckles away — NOT reversed, NOT ice-pick, NOT palm-out.
+
+Also sharpen the identity details while keeping them print-safe: crisp, high-relief chest sun emblem (thick triangular rays, few of them), a bold well-defined ankh-and-sun pendant sitting flush against the chest, and clean defined armor/strap/boot detail. Everything thick and solid, but detailed and crisp — never mushy.
+
+No text, numbers, letters or logos anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/dccb586b1110473d.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/c5cab61900da9c29.png" data-cap="trumbert-r3-p6interpose-gptimage2-1.png" alt="trumbert-r3-p6interpose-gptimage2-1.png"><figcaption>trumbert-r3-p6interpose-gptimage2-1.png</figcaption></figure></div></template>
+<template id="in-1"><h2>trumbert-r6-turnaround-flash31-1</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-15T06:14:18</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r6-turnaround-faithful.txt</p><pre>Two images are attached. IMAGE 1 is the reference character: the gnome champion Trumbert, a finished full-colour concept render. IMAGE 2 is a BLANK TEMPLATE — one horizontal row of four equal empty slots separated by divider lines.
+
+Produce a faithful TURNAROUND SHEET of the EXACT SAME character from IMAGE 1, painted into the template. Paint EXACTLY ONE view of him into each of the four slots, left to right, as a clean 90-degree turntable (each slot is the same figure rotated one more quarter-turn on the spot). This is a rotation of the camera around a fixed figure — do NOT redesign, restyle or re-imagine him.
+
+REPRODUCE HIM FAITHFULLY in every slot, identical to IMAGE 1: the same photorealistic full-colour render style, the same lighting, the same lithe fey gnome proportions (not stocky), the same face, the same ginger flame-coloured hair as one thick chunky mass with the pointed ears embedded in it, the same steel breastplate with the one bold golden sun emblem, the same ankh-and-sun pendant, the same heavy thick fur cloak, the same brown leather trousers and boots, the same steel round shield, and the same CURVED single-edged scimitar (a clean convex saber curve, tip lowered to ground level) in his RIGHT hand. Same colours, same materials, same textures, same proportions in all four slots — only the viewing angle changes. Plain flat neutral-grey studio background, the same in every slot. Both feet flat at the same ground level. NO base, NO stand, NO text, numbers, letters, arrows or logos anywhere.
+
+The four slots, left to right:
+
+SLOT 1 — FRONT view (0 degrees): facing the viewer, exactly as in IMAGE 1. Full face visible, chest sun emblem centred, the scimitar held low in his right hand on the VIEWER&#x27;S LEFT, the round shield on his left arm on the VIEWER&#x27;S RIGHT.
+
+SLOT 2 — SIDE profile, the SHIELD side (rotated 90 degrees): a clean pure side view showing the round shield in profile, the fur cloak draping down the back.
+
+SLOT 3 — BACK view (rotated 180 degrees): seen from directly behind. Show the back of the head, the back of the flame hair, the back of the fur cloak and the back of the shield. DO NOT draw the face — this is the true back of the head.
+
+SLOT 4 — SIDE profile, the SWORD side (rotated 270 degrees): a clean pure side view from the opposite side, showing the curved scimitar in profile with its tip lowered toward the ground.
+
+Paint one view per slot, filling each slot with the figure at a consistent size and vertical alignment. Same character, same colours and materials, same lighting in every slot.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/bf82cd4caafec53a.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/16a1d872afe2576e.png" data-cap="trumbert-r5-i2i-r3keeper-rethicken-gptimage2-1.png" alt="trumbert-r5-i2i-r3keeper-rethicken-gptimage2-1.png"><figcaption>trumbert-r5-i2i-r3keeper-rethicken-gptimage2-1.png</figcaption></figure><figure><img src="../../../../assets/53659b8ae4079f16.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/a42f6568d35310d3.png" data-cap="trumbert-r6-turnaround-template-1x4.png" alt="trumbert-r6-turnaround-template-1x4.png"><figcaption>trumbert-r6-turnaround-template-1x4.png</figcaption></figure></div></template>
+<template id="in-2"><h2>trumbert-r6-turnaround-flash31-2</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-15T06:14:38</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r6-turnaround-faithful.txt</p><pre>Two images are attached. IMAGE 1 is the reference character: the gnome champion Trumbert, a finished full-colour concept render. IMAGE 2 is a BLANK TEMPLATE — one horizontal row of four equal empty slots separated by divider lines.
+
+Produce a faithful TURNAROUND SHEET of the EXACT SAME character from IMAGE 1, painted into the template. Paint EXACTLY ONE view of him into each of the four slots, left to right, as a clean 90-degree turntable (each slot is the same figure rotated one more quarter-turn on the spot). This is a rotation of the camera around a fixed figure — do NOT redesign, restyle or re-imagine him.
+
+REPRODUCE HIM FAITHFULLY in every slot, identical to IMAGE 1: the same photorealistic full-colour render style, the same lighting, the same lithe fey gnome proportions (not stocky), the same face, the same ginger flame-coloured hair as one thick chunky mass with the pointed ears embedded in it, the same steel breastplate with the one bold golden sun emblem, the same ankh-and-sun pendant, the same heavy thick fur cloak, the same brown leather trousers and boots, the same steel round shield, and the same CURVED single-edged scimitar (a clean convex saber curve, tip lowered to ground level) in his RIGHT hand. Same colours, same materials, same textures, same proportions in all four slots — only the viewing angle changes. Plain flat neutral-grey studio background, the same in every slot. Both feet flat at the same ground level. NO base, NO stand, NO text, numbers, letters, arrows or logos anywhere.
+
+The four slots, left to right:
+
+SLOT 1 — FRONT view (0 degrees): facing the viewer, exactly as in IMAGE 1. Full face visible, chest sun emblem centred, the scimitar held low in his right hand on the VIEWER&#x27;S LEFT, the round shield on his left arm on the VIEWER&#x27;S RIGHT.
+
+SLOT 2 — SIDE profile, the SHIELD side (rotated 90 degrees): a clean pure side view showing the round shield in profile, the fur cloak draping down the back.
+
+SLOT 3 — BACK view (rotated 180 degrees): seen from directly behind. Show the back of the head, the back of the flame hair, the back of the fur cloak and the back of the shield. DO NOT draw the face — this is the true back of the head.
+
+SLOT 4 — SIDE profile, the SWORD side (rotated 270 degrees): a clean pure side view from the opposite side, showing the curved scimitar in profile with its tip lowered toward the ground.
+
+Paint one view per slot, filling each slot with the figure at a consistent size and vertical alignment. Same character, same colours and materials, same lighting in every slot.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/bf82cd4caafec53a.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/16a1d872afe2576e.png" data-cap="trumbert-r5-i2i-r3keeper-rethicken-gptimage2-1.png" alt="trumbert-r5-i2i-r3keeper-rethicken-gptimage2-1.png"><figcaption>trumbert-r5-i2i-r3keeper-rethicken-gptimage2-1.png</figcaption></figure><figure><img src="../../../../assets/53659b8ae4079f16.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/a42f6568d35310d3.png" data-cap="trumbert-r6-turnaround-template-1x4.png" alt="trumbert-r6-turnaround-template-1x4.png"><figcaption>trumbert-r6-turnaround-template-1x4.png</figcaption></figure></div></template>
+<template id="in-3"><h2>trumbert-r6-turnaround-flash31-3</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.10 · 2026-07-15T06:14:59</p><h3>Prompt</h3><p class="path">projects/herpeton-eradication-society/trumbert/prompts/r6-turnaround-faithful.txt</p><pre>Two images are attached. IMAGE 1 is the reference character: the gnome champion Trumbert, a finished full-colour concept render. IMAGE 2 is a BLANK TEMPLATE — one horizontal row of four equal empty slots separated by divider lines.
+
+Produce a faithful TURNAROUND SHEET of the EXACT SAME character from IMAGE 1, painted into the template. Paint EXACTLY ONE view of him into each of the four slots, left to right, as a clean 90-degree turntable (each slot is the same figure rotated one more quarter-turn on the spot). This is a rotation of the camera around a fixed figure — do NOT redesign, restyle or re-imagine him.
+
+REPRODUCE HIM FAITHFULLY in every slot, identical to IMAGE 1: the same photorealistic full-colour render style, the same lighting, the same lithe fey gnome proportions (not stocky), the same face, the same ginger flame-coloured hair as one thick chunky mass with the pointed ears embedded in it, the same steel breastplate with the one bold golden sun emblem, the same ankh-and-sun pendant, the same heavy thick fur cloak, the same brown leather trousers and boots, the same steel round shield, and the same CURVED single-edged scimitar (a clean convex saber curve, tip lowered to ground level) in his RIGHT hand. Same colours, same materials, same textures, same proportions in all four slots — only the viewing angle changes. Plain flat neutral-grey studio background, the same in every slot. Both feet flat at the same ground level. NO base, NO stand, NO text, numbers, letters, arrows or logos anywhere.
+
+The four slots, left to right:
+
+SLOT 1 — FRONT view (0 degrees): facing the viewer, exactly as in IMAGE 1. Full face visible, chest sun emblem centred, the scimitar held low in his right hand on the VIEWER&#x27;S LEFT, the round shield on his left arm on the VIEWER&#x27;S RIGHT.
+
+SLOT 2 — SIDE profile, the SHIELD side (rotated 90 degrees): a clean pure side view showing the round shield in profile, the fur cloak draping down the back.
+
+SLOT 3 — BACK view (rotated 180 degrees): seen from directly behind. Show the back of the head, the back of the flame hair, the back of the fur cloak and the back of the shield. DO NOT draw the face — this is the true back of the head.
+
+SLOT 4 — SIDE profile, the SWORD side (rotated 270 degrees): a clean pure side view from the opposite side, showing the curved scimitar in profile with its tip lowered toward the ground.
+
+Paint one view per slot, filling each slot with the figure at a consistent size and vertical alignment. Same character, same colours and materials, same lighting in every slot.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/bf82cd4caafec53a.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/16a1d872afe2576e.png" data-cap="trumbert-r5-i2i-r3keeper-rethicken-gptimage2-1.png" alt="trumbert-r5-i2i-r3keeper-rethicken-gptimage2-1.png"><figcaption>trumbert-r5-i2i-r3keeper-rethicken-gptimage2-1.png</figcaption></figure><figure><img src="../../../../assets/53659b8ae4079f16.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/a42f6568d35310d3.png" data-cap="trumbert-r6-turnaround-template-1x4.png" alt="trumbert-r6-turnaround-template-1x4.png"><figcaption>trumbert-r6-turnaround-template-1x4.png</figcaption></figure></div></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy / share a deep link to one card. The URL is this page plus the card's
+// #id anchor, so a recipient lands scrolled to (and highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+</body></html>
