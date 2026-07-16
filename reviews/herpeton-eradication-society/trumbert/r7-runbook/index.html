@@ -261,6 +261,7 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 <div class="tablewrap"><table><thead><tr><th>Detector</th><th>Measurement</th><th>Purpose</th></tr></thead><tbody><tr><td>G1 localized strong-edge deficit</td><td>96 px sliding-window q99 gradient versus the edge-bearing clean-panel p35 distribution</td><td>catches local/broad softening without averaging a whole panel</td></tr><tr><td>G2 edge-support width</td><td>coarse/fine gradient ratio versus the clean-panel p65 distribution</td><td>catches a widened smear where peak contrast survives</td></tr><tr><td>G3 parallel-contour echo</td><td>4–12 px shifted edge autocorrelation versus the clean-panel p75 distribution</td><td>targets persistent secondary/parallel contours</td></tr><tr><td>D1 divider integrity</td><td>registered contrast, edge strength, width and continuity; later dividers compare to the first same-orientation divider, while exact-template ratios remain visible</td><td>measures divider degradation separately without turning sheet-wide resampling into a late-divider finding</td></tr></tbody></table></div>
 <p>Use source-native PNGs at a common pixels-per-figure scale. Figure windows mask divider/border pixels; divider windows mask figures crossing the line. Suppress the expected opposite side of a finite-width divider rather than counting its two legitimate edges as a ghost. Armor/shield rims, boot soles, hair strands and specular highlights are explicit false-positive controls.</p>
 <p>A window becomes a <strong>raw ghosting candidate</strong> only when at least two of G1/G2/G3 agree. A non-baseline panel is surfaced only when its candidate density exceeds the noisiest declared clean panel by 0.02; the evidence pack then keeps the eight strongest non-overlapping windows by default. D1 can support a shared-cause hypothesis but cannot fail a figure region. The selected baseline panels are controls and are never surfaced as findings.</p>
+<p>E1 is the exception to the usual fixed-baseline audit: reversing the view order moves the historically affected sword/back views into panels 1/2. Audit every E1 sheet twice, once with panels 1/2 as controls and once with panels 3/4 as controls. Treat the union of the two evidence packs and both sets of raw panel densities as the result; neither pass alone may rule out content-following ghosting.</p>
 <p><strong>Phase-0 gate:</strong> proceed only if known positives are localized, explicit Gorgon 1×4 negatives are not blanket-flagged, and scores have inspectable evidence. Expected first human-label pack: Gorgon B1-flash31-2×2 P2 versus P4, plus any R7/R7x crop on which G1 and G2/G3 agree.</p>
 <h3>Phase 1 — controlled fresh-generation screen</h3>
 <p>Treat the base image as an explicit experimental factor: R5 gold versus <code>trumbert-r6-swordfix-v1analogy-flash31-1</code>, the R6 keeper with the best sword shape. Within each base, keep flash31, 2K setting, character description, materials, scale, lighting, background, per-view geometry and templates constant. Using the same templates for both bases is intentional: only the named axis, the base, and the minimum prompt wording needed to express the cell may change.</p>
@@ -297,13 +298,16 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 </ol>
 <h3>Commands (run only after sign-off)</h3>
 <p>The local detector command is implemented and tested in detector PR #129, but that PR must land before Phase 0 runs. The template CLI additions (<code>--no-outer-border</code>, <code>--line-color</code>) are not yet implemented, so the fresh- generation commands remain disabled until those flags land and the Phase-0 evidence pack is reviewed. No paid command runs while any gate is open.</p>
-<pre class="code"><code>CH=projects/herpeton-eradication-society/trumbert
+<pre class="code"><code>set -euo pipefail
+
+CH=projects/herpeton-eradication-society/trumbert
 GEN=$CH/generated
 BASE_R5=$GEN/trumbert-r5-i2i-r3keeper-rethicken-gptimage2-1.png
 BASE_SWORD=$GEN/trumbert-r6-swordfix-v1analogy-flash31-1.png
 
 # Pull canonical binary inputs first.
 tools/drive_sync.sh pull $CH/generated
+tools/drive_sync.sh pull projects/cyber-amazons/gorgon/generated
 
 # Phase 0A: screen the three labelled Trumbert R6 sheets. Panels 1/2 are the
 # explicit within-sheet controls; detector output is scratch evidence, not git.
@@ -328,6 +332,16 @@ for base in B1 B2; do
       --out-dir /tmp/gorgon-r8-$base-$grid-ghosting
   done
 done
+
+# Hard stop before any generation call. Leave this gate in place until detector
+# PR #129 and the template flags land, and Dimitri approves the Phase-0 pack.
+TEMPLATE_HELP=$(python3 tools/make_turnaround_template.py --help)
+case &quot;$TEMPLATE_HELP&quot; in *--line-color*) ;; *) echo &quot;BLOCKED: --line-color is not implemented&quot; &gt;&amp;2; exit 1;; esac
+case &quot;$TEMPLATE_HELP&quot; in *--no-outer-border*) ;; *) echo &quot;BLOCKED: --no-outer-border is not implemented&quot; &gt;&amp;2; exit 1;; esac
+if [ &quot;${R7_PHASE0_APPROVED:-}&quot; != &quot;yes&quot; ]; then
+  echo &quot;BLOCKED: set R7_PHASE0_APPROVED=yes only after Dimitri approves Phase 0&quot; &gt;&amp;2
+  exit 1
+fi
 
 # Build experimental templates after the template CLI change is reviewed.
 python3 tools/make_turnaround_template.py --out $GEN/trumbert-r7-template-2x2-grey14-border.png --grid 2x2 --match-image $BASE_R5 --divider 14 --line-color 70
@@ -389,13 +403,39 @@ done
 # Push every landed image immediately, then run the detector/crop gates.
 tools/drive_sync.sh push $CH/generated
 
-# Run the same detector on each new sheet, choosing the correct grid and exact
-# template. Preserve its report/heatmap/crops with the audit working evidence;
-# only human-confirmed verdicts are appended to reviews.json.
-python3 tools/turnaround_ghosting.py $NEW_SHEET \
-  --grid $GRID --baseline-panels 1,2 --template $TEMPLATE \
-  --divider-width $DIVIDER_WIDTH --window 96 --stride 32 \
-  --out-dir /tmp/$(basename $NEW_SHEET .png)-ghosting</code></pre>
+# Run the same detector on every new sheet with its exact grid/template/width.
+# Native provider extensions vary, so audit every supported image extension.
+audit_stem() {
+  local stem=$1 grid=$2 template=$3 divider_width=$4
+  local baseline_panels=${5:-1,2}
+  local baseline_tag=${baseline_panels//,/-}
+  local sheet artifact found=no
+  for sheet in &quot;$GEN/$stem&quot;-*.{png,jpg,jpeg,webp}; do
+    [ -e &quot;$sheet&quot; ] || continue
+    artifact=$(basename &quot;$sheet&quot;)
+    artifact=${artifact%.*}
+    python3 tools/turnaround_ghosting.py &quot;$sheet&quot; \
+      --grid &quot;$grid&quot; --baseline-panels &quot;$baseline_panels&quot; --template &quot;$template&quot; \
+      --divider-width &quot;$divider_width&quot; --window 96 --stride 32 \
+      --out-dir &quot;/tmp/$artifact-ghosting-baseline-$baseline_tag&quot;
+    found=yes
+  done
+  [ &quot;$found&quot; = yes ] || { echo &quot;Missing generated sheets for $stem&quot; &gt;&amp;2; return 1; }
+}
+
+audit_stem trumbert-r7-control-r6sword-flash31 1x4 &quot;$GEN/trumbert-r6-turnaround-template-1x4.png&quot; 14
+for base in r5gold r6sword; do
+  # E1 requires complementary controls because sword/back moved into panels
+  # 1/2. Keep both packs so the original baseline cannot suppress those views.
+  audit_stem &quot;trumbert-r7-order-reverse-$base-flash31&quot; 1x4 &quot;$GEN/trumbert-r6-turnaround-template-1x4.png&quot; 14 1,2
+  audit_stem &quot;trumbert-r7-order-reverse-$base-flash31&quot; 1x4 &quot;$GEN/trumbert-r6-turnaround-template-1x4.png&quot; 14 3,4
+  audit_stem &quot;trumbert-r7-layout-2x2-$base-flash31&quot; 2x2 &quot;$GEN/trumbert-r7-template-2x2-grey14-border.png&quot; 14
+  audit_stem &quot;trumbert-r7-divider-grey14-noborder-$base-flash31&quot; 1x4 &quot;$GEN/trumbert-r7-template-1x4-grey14-noborder.png&quot; 14
+  audit_stem &quot;trumbert-r7-divider-black14-noborder-$base-flash31&quot; 1x4 &quot;$GEN/trumbert-r7-template-1x4-black14-noborder.png&quot; 14
+  audit_stem &quot;trumbert-r7-divider-grey4-noborder-$base-flash31&quot; 1x4 &quot;$GEN/trumbert-r7-template-1x4-grey4-noborder.png&quot; 4
+done
+audit_stem trumbert-r7-selfrepair-direct-flash31 1x4 &quot;$GEN/trumbert-r6-turnaround-template-1x4.png&quot; 14
+audit_stem trumbert-r7-selfrepair-singleedge-flash31 1x4 &quot;$GEN/trumbert-r6-turnaround-template-1x4.png&quot; 14</code></pre>
 <p>Audit each roll as it lands, append verdicts to <code>reviews.json</code>, and build the eventual <code>r7-panel</code> review. Outcomes live in <code>rounds.md</code> and the panel, never in this runbook. Stop early if Phase 0 cannot be calibrated, a cell breaks view/identity, both repair prompts regress clean panels, or a recipe confirms.</p>
 </details></div>
 </main>
