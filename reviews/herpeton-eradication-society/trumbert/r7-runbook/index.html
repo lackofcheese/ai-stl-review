@@ -297,7 +297,7 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 <li>Whole-sheet img2img reconstruction tax during self-repair.</li>
 </ol>
 <h3>Commands (run only after sign-off)</h3>
-<p>The local detector command is implemented and tested in detector PR #129, but that PR must land before Phase 0 runs. The template CLI additions (<code>--no-outer-border</code>, <code>--line-color</code>) are not yet implemented, so the fresh- generation commands remain disabled until those flags land and the Phase-0 evidence pack is reviewed. No paid command runs while any gate is open.</p>
+<p>The local detector command is implemented and tested. The template CLI additions (<code>--no-outer-border</code>, <code>--line-color</code>) are not yet implemented, so the fresh-generation commands remain disabled until those flags land and the Phase-0 evidence pack is reviewed. No paid command runs while either gate is open.</p>
 <pre class="code"><code>set -euo pipefail
 
 CH=projects/herpeton-eradication-society/trumbert
@@ -333,8 +333,8 @@ for base in B1 B2; do
   done
 done
 
-# Hard stop before any generation call. Leave this gate in place until detector
-# PR #129 and the template flags land, and Dimitri approves the Phase-0 pack.
+# Hard stop before any generation call. Leave this gate in place until the
+# template flags land and Dimitri approves the Phase-0 evidence pack.
 TEMPLATE_HELP=$(python3 tools/make_turnaround_template.py --help)
 case &quot;$TEMPLATE_HELP&quot; in *--line-color*) ;; *) echo &quot;BLOCKED: --line-color is not implemented&quot; &gt;&amp;2; exit 1;; esac
 case &quot;$TEMPLATE_HELP&quot; in *--no-outer-border*) ;; *) echo &quot;BLOCKED: --no-outer-border is not implemented&quot; &gt;&amp;2; exit 1;; esac
