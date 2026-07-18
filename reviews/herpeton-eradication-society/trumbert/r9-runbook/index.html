@@ -283,7 +283,12 @@ python3 - &lt;&lt;&#x27;PY&#x27;
 import trimesh
 raw = &#x27;projects/herpeton-eradication-society/trumbert/models/round-9/trumbert-r9-&lt;cell&gt;-m1-raw.stl&#x27;
 m = trimesh.load(raw)
-m.apply_scale(24.0 / m.extents[2])
+# scale from the MAIN shell&#x27;s height, not the scene bbox — a detached floating
+# fragment above/below the body would otherwise undersize the figure and
+# de-calibrate the fixed-mm thin-part thresholds; the whole mesh (detached
+# props included) still gets the same scale so the probe sees everything
+main = max(m.split(only_watertight=False), key=lambda c: len(c.faces))
+m.apply_scale(24.0 / main.extents[2])
 m.export(raw.replace(&#x27;-raw.stl&#x27;, &#x27;-24mm.stl&#x27;))
 PY
 python3 tools/mesh_thin_parts.py --stl $P/models/round-9/trumbert-r9-&lt;cell&gt;-m1-24mm.stl --pitch 0.28
