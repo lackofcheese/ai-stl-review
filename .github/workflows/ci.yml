@@ -23,6 +23,9 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
+          # full history: the publication-history guard compares
+          # reviews.json against the PR merge-base
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
@@ -34,3 +37,10 @@ jobs:
 
       - name: Validate generated site
         run: python -B scripts/validate_site.py .
+
+      - name: Publication history is append-only
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch -q --no-tags origin "${{ github.event.pull_request.base.sha }}"
+          base="$(git merge-base HEAD "${{ github.event.pull_request.base.sha }}")"
+          python -B scripts/validate_history.py --base "$base"
