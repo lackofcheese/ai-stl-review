@@ -276,9 +276,11 @@ python3 tools/meshy_manifest.py run \
 # (all commands run from the repo root; P = the project directory)
 P=projects/herpeton-eradication-society/trumbert
 bash tools/drive_sync.sh push $P/models
-python3 tools/mesh_validate.py --stl $P/models/round-9/trumbert-r9-&lt;cell&gt;-m1-raw.stl
-python3 tools/mesh_thin_parts.py --stl $P/models/round-9/trumbert-r9-&lt;cell&gt;-m1-raw.stl --pitch 0.28 --erode 1
-python3 tools/stl_render.py --stl $P/models/round-9/trumbert-r9-&lt;cell&gt;-m1-raw.stl --out $P/generated/renders/round-9/
+python3 tools/mesh_validate.py --stl $P/models/round-9/trumbert-r9-&lt;cell&gt;-m1-raw.stl --label trumbert-r9-&lt;cell&gt;-m1
+python3 tools/mesh_thin_parts.py --stl $P/models/round-9/trumbert-r9-&lt;cell&gt;-m1-raw.stl --pitch 0.28
+python3 tools/stl_render.py --stl $P/models/round-9/trumbert-r9-&lt;cell&gt;-m1-raw.stl \
+  --out-dir $P/generated/renders/round-9 --stem trumbert-r9-&lt;cell&gt;-m1 --mode turnaround
+# zoom crops of hands/props per mesh as needed: --mode zoom --z-min/--z-max
 # fresh-context per-feature comparative audit -&gt; review_log.py -&gt; r9-panel</code></pre>
 <p>Verdicts land in <code>reviews.jsonl</code>; the round closes with the <code>r9-panel</code> inline artifact (mesh viewers embedded), a <code>rounds.md</code> entry, and this runbook&#x27;s panel cross-link going live. Results live there, never here.</p>
 </details></div>
