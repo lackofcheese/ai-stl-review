@@ -244,7 +244,7 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 <div class="tablewrap"><table><thead><tr><th>Choice</th><th>What it tests</th><th>Input(s)</th><th>Rolls</th></tr></thead><tbody><tr><td>g14 · R7 divider-deviator</td><td>The R7 &quot;ignored-template&quot; keeper: crisp panels, divider lines cut away, P1 scale-matched</td><td>r7-divider-grey14-noborder-r6sword-1 + its crops</td><td>1</td></tr><tr><td>nt14 · no-template 1×4</td><td>R8&#x27;s words-only wide strip (recipe A)</td><td>r8-notmpl-1x4-flash31-2 + its crops</td><td>1</td></tr><tr><td>nt22 · no-template 2×2</td><td>R8&#x27;s words-only grid (recipe B)</td><td>r8-notmpl-2x2-flash31-3 + its crops</td><td>1</td></tr><tr><td>bl14 · blank-canvas 1×4</td><td>R8&#x27;s dividerless sizing-canvas strip (recipe C, the ghost-free 3512-class width)</td><td>r8-blank-1x4-flash31-2 + its crops</td><td>1</td></tr><tr><td>bl22 · blank-canvas 2×2</td><td>R8&#x27;s dividerless sizing-canvas grid (recipe D)</td><td>r8-blank-2x2-flash31-2 + its crops</td><td>1</td></tr></tbody></table></div>
 <p>Five Meshy image runs total — no reserve rolls; a defect that looks stochastic rather than recipe-driven becomes a follow-up ask, not silent extra spend. (Deviation from the two-roll default, Dimitri&#x27;s explicit call: breadth across five recipes instead of roll insurance on fewer.)</p>
 <h2>How the round is judged</h2>
-<p>Each returned mesh: immediate Drive push (before anything else), then programmatic validation (watertightness / components / non-manifold edges / Euler via <code>mesh_validate.py</code>, scale note ~24 mm figure), the thin-connection probe (<code>mesh_thin_parts.py</code>, tight settings — scimitar blade/tip, ankh, ears and hair locks are the expected risk features), 4-view turnaround renders plus hand/prop zoom crops, and a fresh-context per-feature COMPARATIVE audit across the five meshes walking the full checklist (scimitar shape+grip, digit counts — thumb+3 expected from the shared r6sword base, shield, chest sunburst, ankh pendant, fur cloak, ears, feet/ground contact, phantom geometry). Verdicts to <code>reviews.json</code>; the r9-panel carries interactive 3D viewers (decimated display proxies over the ~16 MiB artifact cap; exact STLs stay on Drive). Dimitri&#x27;s live-3D look is the final gate, incl. the pathway comparison against the R1 direct-text baseline mesh.</p>
+<p>Each returned mesh: immediate Drive push (before anything else), then programmatic validation (watertightness / components / non-manifold edges / Euler via <code>mesh_validate.py</code>, scale note ~24 mm figure), the thin-connection probe (<code>mesh_thin_parts.py</code>, tight settings — scimitar blade/tip, ankh, ears and hair locks are the expected risk features), 4-view turnaround renders plus hand/prop zoom crops, and a fresh-context per-feature COMPARATIVE audit across the five meshes walking the full checklist (scimitar shape+grip, digit counts — thumb+3 expected from the shared r6sword base, shield, chest sunburst, ankh pendant, fur cloak, ears, feet/ground contact, phantom geometry). Verdicts to <code>reviews.jsonl</code>; the r9-panel carries interactive 3D viewers (decimated display proxies over the ~16 MiB artifact cap; exact STLs stay on Drive). Dimitri&#x27;s live-3D look is the final gate, incl. the pathway comparison against the R1 direct-text baseline mesh.</p>
 <h2>What we need from you</h2>
 <ol>
 <li><strong>Crop check (pre-spend):</strong> the five pre-flight composites (cut bands + panel boxes drawn) are on this page&#x27;s base-assets grid and on Drive (<code>generated/meshy/round-9/</code>) — a quick eye that no figure/prop is clipped and the g14 divider lines are gone.</li>
@@ -273,12 +273,14 @@ python3 tools/meshy_manifest.py run \
 #   python3 tools/meshy_manifest.py resume --run RUN_ID
 
 # 2. per mesh, the moment it lands: Drive push FIRST, then validate + render
-bash tools/drive_sync.sh push projects/herpeton-eradication-society/trumbert/models
-python3 tools/mesh_validate.py --stl models/round-9/trumbert-r9-&lt;cell&gt;-m1-raw.stl
-python3 tools/mesh_thin_parts.py --stl ... --pitch 0.28 --erode 1
-python3 tools/stl_render.py --stl ... --out generated/renders/round-9/...
+# (all commands run from the repo root; P = the project directory)
+P=projects/herpeton-eradication-society/trumbert
+bash tools/drive_sync.sh push $P/models
+python3 tools/mesh_validate.py --stl $P/models/round-9/trumbert-r9-&lt;cell&gt;-m1-raw.stl
+python3 tools/mesh_thin_parts.py --stl $P/models/round-9/trumbert-r9-&lt;cell&gt;-m1-raw.stl --pitch 0.28 --erode 1
+python3 tools/stl_render.py --stl $P/models/round-9/trumbert-r9-&lt;cell&gt;-m1-raw.stl --out $P/generated/renders/round-9/
 # fresh-context per-feature comparative audit -&gt; review_log.py -&gt; r9-panel</code></pre>
-<p>Verdicts land in <code>reviews.json</code>; the round closes with the <code>r9-panel</code> inline artifact (mesh viewers embedded), a <code>rounds.md</code> entry, and this runbook&#x27;s panel cross-link going live. Results live there, never here.</p>
+<p>Verdicts land in <code>reviews.jsonl</code>; the round closes with the <code>r9-panel</code> inline artifact (mesh viewers embedded), a <code>rounds.md</code> entry, and this runbook&#x27;s panel cross-link going live. Results live there, never here.</p>
 </details></div>
 </main>
 <div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
