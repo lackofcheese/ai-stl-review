@@ -2,7 +2,6 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="269c19d288522dbdc6ca58e8868eb0c379ed1e307cdb2107b4c112f2092c85c8">
 <title>Gorgon v2 — Round 1 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -219,6 +218,52 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 /* Keep some readable structure on narrow screens rather than crushing three
    prose columns to nothing; .tablewrap scrolls only past this floor. */
 .md table { min-width:34rem }
+/* A choices-table row whose label names a case links to that case's inputs. */
+a.caselink { color:inherit; text-decoration:none;
+  border-bottom:1px dotted var(--accent) }
+a.caselink:hover { color:var(--accent) }
+
+/* --- Inputs section: one block per case, images grouped by artifact ------- */
+.rb-inputs { margin:2.2rem 0 1.4rem }
+.rb-inputs > h2 { font-size:1.15rem; margin:0 0 .3rem }
+.rb-case { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.8rem 1rem 1rem; margin:.9rem 0; scroll-margin-top:1rem }
+.rb-case:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.rb-case-h { display:flex; flex-wrap:wrap; align-items:baseline; gap:.2rem .6rem;
+  margin:0; font-size:1rem }
+.rb-case-count { color:var(--dim); font-size:.72rem; font-weight:400;
+  font-variant-numeric:tabular-nums }
+.rb-case-note { color:var(--dim); font-size:.88rem; margin:.3rem 0 0; max-width:78ch }
+.rb-art { margin:.85rem 0 0 }
+.rb-art-h { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem;
+  margin:0 0 .4rem }
+.rb-art-label { font-size:.7rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--accent) }
+.rb-art-id { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  color:var(--dim); overflow-wrap:anywhere }
+.rb-art .ibtn { padding:.08rem .5rem; font-size:.66rem }
+.rb-strip { display:grid; gap:10px;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr)) }
+.rb-fig { margin:0; min-width:0; background:var(--well); border:1px solid var(--line);
+  border-radius:6px; overflow:hidden; display:flex; flex-direction:column }
+.rb-fig .imgwrap { border-bottom:1px solid var(--line) }
+.rb-fig .imgwrap img { max-height:300px }
+.rb-fig figcaption { color:var(--dim); font-size:.7rem; padding:.3rem .5rem }
+.rb-none { color:var(--dim); font-size:.86rem; margin:.6rem 0 0 }
+details.rb-prompt { margin:.85rem 0 0; background:var(--pre); border:1px solid var(--line);
+  border-radius:6px; padding:0 .9rem }
+details.rb-prompt > summary { cursor:pointer; padding:.55rem 0; font-size:.82rem;
+  font-weight:600; color:var(--accent); list-style:none }
+details.rb-prompt > summary::-webkit-details-marker { display:none }
+details.rb-prompt > summary::before { content:'\25B8\A0' }
+details.rb-prompt[open] > summary::before { content:'\25BE\A0' }
+details.rb-prompt .rb-size { color:var(--dim); font-weight:400; font-size:.72rem }
+details.rb-prompt .path { color:var(--dim); font-size:.72rem; margin:0 0 .4rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere;
+  background:var(--bg); border:1px solid var(--line); border-radius:6px;
+  padding:.7rem .85rem; font-size:.78rem; line-height:1.5; max-height:32rem;
+  overflow:auto; margin:0 0 .85rem }
 </style></head><body><main>
 <nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Cyber-Amazons</a><span class="sep">&rsaquo;</span><a href="../">Gorgon v2</a></nav>
 <h1>Gorgon v2 — Round 1 runbook</h1>
@@ -229,13 +274,83 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 <p>This round stops at the body recipe. It deliberately uses no original Gorgon image, so the previous long legs, small head and naturalistic hands cannot condition the new lineage.</p>
 <h2>The choices on the table</h2>
 <p>The four ratified fresh-concept defaults — <code>flash31</code>, <code>gptimage2</code>, <code>seedream45</code> and <code>grokq</code> — render both choices. Every other character, kit, pose and camera sentence is held constant.</p>
-<div class="tablewrap"><table><thead><tr><th>Choice</th><th>What it tests</th><th>Input(s)</th><th>Rolls</th></tr></thead><tbody><tr><td><strong>H1 — classic heroic</strong></td><td>~6.75 heads tall; head, hands and boots ~15% oversized; tall athletic pewter-sports silhouette</td><td>text-only H1 prompt + v2 spec</td><td>4 (one per model)</td></tr><tr><td><strong>H2 — heavy heroic</strong></td><td>~5.75 heads tall; deeper torso, thicker joints and ~25% oversized head/hands/boots; maximum blocker mass before caricature</td><td>text-only H2 prompt + v2 spec</td><td>4 (one per model)</td></tr></tbody></table></div>
+<div class="tablewrap"><table><thead><tr><th>Choice</th><th>What it tests</th><th>Input(s)</th><th>Rolls</th></tr></thead><tbody><tr><td><a class="caselink" href="#case-h1-classic-heroic" title="Jump to this case's inputs"><strong>H1 — classic heroic</strong></a></td><td>~6.75 heads tall; head, hands and boots ~15% oversized; tall athletic pewter-sports silhouette</td><td>text-only H1 prompt + v2 spec</td><td>4 (one per model)</td></tr><tr><td><a class="caselink" href="#case-h2-heavy-heroic" title="Jump to this case's inputs"><strong>H2 — heavy heroic</strong></a></td><td>~5.75 heads tall; deeper torso, thicker joints and ~25% oversized head/hands/boots; maximum blocker mass before caricature</td><td>text-only H2 prompt + v2 spec</td><td>4 (one per model)</td></tr></tbody></table></div>
 <p>That is <strong>8 image calls total</strong>: 2 proportion recipes × 4 model attractors.</p>
+</div>
+<section class="rb-inputs">
+<h2>Inputs — what this round runs on</h2>
+<p class="blurb">Everything that goes in, grouped by the choice it belongs to. Click any image to zoom; open a prompt to read the exact text this round spends against. Crop sets show both the cut overview and every exact output crop.</p>
+<section class="rb-case" id="case-h1-classic-heroic">
+<h3 class="rb-case-h">H1 — classic heroic<span class="rb-case-count">1 prompt</span></h3>
+<p class="rb-case-note">~6.75 heads tall; head, hands and boots ~15% oversized; tall athletic pewter-sports silhouette</p>
+<p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
+<details class="rb-prompt"><summary>Prompt — r1-h1-classic-heroic.txt <span class="rb-size">6 kB</span></summary><p class="path">projects/cyber-amazons/gorgon-v2/prompts/r1-h1-classic-heroic.txt</p><pre>No images are attached. Create a brand-new text-to-image concept; do not copy any previous Gorgon artwork.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed specifically as production concept art for a 32 mm HEROIC-SCALE resin fantasy-football miniature, in the visual language of a chunky pewter sports sculpt. Show one figure only, straight-on FRONT view, centered on a plain neutral gray studio background with even soft lighting. Use a near-orthographic, very-long-lens studio view with minimal foreshortening so head, torso, both arms, both hands, legs and boots can be compared as a proportion sheet. Her entire body and both boots are visible with space around them. This is character concept art, not a photograph of a toy: no base, pedestal, scenic ground, labels or presentation card.
+
+HEROIC PROPORTION TARGET — H1 CLASSIC HEROIC
+Build her at roughly SIX-AND-THREE-QUARTERS HEADS TALL. Compared with naturalistic character art, enlarge her head, both hands and both boots by about fifteen percent. Give her the long-but-sturdy read of a classic heroic-scale pewter sports sculpt: thick neck, deep ribcage and pelvis, broad readable muscle planes, thick wrists and ankles, compact limb segments and substantial joints. Her head must not look small between her shoulders; both hands must read clearly at thumbnail size; her combat boots must feel weighty enough for a Blood Bowl miniature. She remains tall, athletic and visibly female, never chibi or squat. Absolutely no fashion-model proportions, tiny head, tiny hands, narrow wrists, long delicate legs or slender ankles.
+
+HELD-CONSTANT CHARACTER PROGRAM
+GORGON is a female cyberpunk fantasy-football BLOCKER: a corporate super-soldier washout turned cold street-team enforcer. She is one of the two biggest players on the roster, a heavyweight powerlifter with a tall V-shaped silhouette: extremely broad shoulders, a deep upper torso, thick neck, dense back and lats, compact waist and massive thighs. Her menace is disciplined stillness, not rage; high cheekbones, level unsmiling stare, never a snarl and never a pin-up.
+
+FRONT-VIEW SIDE MAP: the VIEWER&#x27;S LEFT side contains the completely exposed cyber-shoulder, the clear head-jack temple landing zone, the dread drape, the continuous covered leg and the in-plane stiff-arm. The VIEWER&#x27;S RIGHT side contains the single shoulder pad, the bare garter leg and the hanging fist. This side map is absolute for the whole image: do not swap or mirror it.
+
+Both arms are complete military-grade cyberarms from shoulder to fingertips: symmetrical gunmetal armored volumes, slightly oversized, with broad beveled plates and DEEP recessed seams that will survive a small resin print. They are precise mil-spec grafts, never skinny android limbs and never exposed industrial hydraulics. Both hands are deliberately oversized heroic-scale chrome hands, each with exactly four thick fingers and one thumb.
+
+Both temples are clean-shaved with NO socket, jewel, port or forehead mark. The entire temple on the clear-zone/dread-drape side, from brow to above the ear, stays completely free of hair so a head-jack can be added there later; the mane begins behind that landing zone and never rises across it. A dense mane of thumb-thick cable-dreadlocks sweeps straight back and rests as one connected printable mass over the exposed-shoulder side. The locks have blunt connected ends: no thin tips, loops or floating strands. Behind the mane, a bold segmented vertebral ridge runs from the back of her head to mid-back; its large plates are visible only where the front camera naturally permits, never as spikes.
+
+Her kit is scuffed anti-corporate cyberpunk sports armor in matte black and gunmetal with restrained hot-magenta accents: a compression playing suit, broad armor planes, chunky low-relief studs and a torn-off corporate chest patch with no readable lettering. ONE layered angular fantasy-football shoulder pad sits on the pad side only. The opposite stiff-arm side is the completely exposed rounded cyber-shoulder: NO second pad, cap, strap or mirrored plate. No number, team emblem, animal logo, word or readable graffiti anywhere.
+
+Her leg asymmetry is explicit. The pad-side leg is bare muscular flesh from mid-thigh to the boot and wears one wide studded leather garter plus a strapped leather knee pad. The stiff-arm-side leg is covered by ONE continuous unbroken leather-and-armor legging from the hip crease all the way into the boot, with a hard armored knee and shin plate: no bare-thigh gap, no garter, no rip, no cutout. Both feet wear oversized buckled fantasy-football combat boots with broad toe boxes and thick lugged soles, never sneakers.
+
+POSE AND BASING
+She advances in a shallow, controlled stagger with BOTH feet firmly reaching the same ground plane and two generous glue patches. The front boot is flat from heel through ball; the rear boot is also visibly grounded through heel and ball. No lifted foot, tiptoe or long running stride. Torso upright and square, chin level. The stiff-arm-side cyberarm extends diagonally outward at shoulder height, about FORTY DEGREES away from the torso and wholly within the image plane, elbow slightly bent; it does NOT point toward the camera. Its open palm faces the camera so all four joined fingers and the separate thumb are clearly readable without shortening the arm. The pad-side cyberarm hangs beside her body with a loose empty fist. Both hands are empty. No limb crosses, merges into or hides behind the torso.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a 37 mm-tall resin figure: bold planes, thick connected forms, deep relief, no hairline seams. Cyberarm panel lines are engraved at least 0.15 mm at final scale. No weapon, ball, other person, jungle motif, cape, antenna, free cable, blade, thin spike, transparent material, base or text.
+</pre></details>
+</section>
+<section class="rb-case" id="case-h2-heavy-heroic">
+<h3 class="rb-case-h">H2 — heavy heroic<span class="rb-case-count">1 prompt</span></h3>
+<p class="rb-case-note">~5.75 heads tall; deeper torso, thicker joints and ~25% oversized head/hands/boots; maximum blocker mass before caricature</p>
+<p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
+<details class="rb-prompt"><summary>Prompt — r1-h2-heavy-heroic.txt <span class="rb-size">6 kB</span></summary><p class="path">projects/cyber-amazons/gorgon-v2/prompts/r1-h2-heavy-heroic.txt</p><pre>No images are attached. Create a brand-new text-to-image concept; do not copy any previous Gorgon artwork.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed specifically as production concept art for a 32 mm HEROIC-SCALE resin fantasy-football miniature, in the visual language of a chunky pewter sports sculpt. Show one figure only, straight-on FRONT view, centered on a plain neutral gray studio background with even soft lighting. Use a near-orthographic, very-long-lens studio view with minimal foreshortening so head, torso, both arms, both hands, legs and boots can be compared as a proportion sheet. Her entire body and both boots are visible with space around them. This is character concept art, not a photograph of a toy: no base, pedestal, scenic ground, labels or presentation card.
+
+HEROIC PROPORTION TARGET — H2 HEAVY HEROIC
+Build her at roughly FIVE-AND-THREE-QUARTERS HEADS TALL. Compared with naturalistic character art, enlarge her head, both hands and both boots by about twenty-five percent. Push the emphatic mass of a heavy heroic-scale pewter sports sculpt: much deeper barrel ribcage, thicker pelvis, huge shoulder girdle, very thick neck, forearms, wrists, knees, calves and ankles, short powerful limb segments and strongly oversized joints. Her head must stay substantial between the shoulders; both hands must be bold focal shapes at thumbnail size; her boots must anchor the whole figure like fantasy-football equipment. This is the strongest, chunkiest blocker treatment that still reads tall, athletic and visibly female. Never chibi, squat, comic or male-coded. Absolutely no fashion-model proportions, tiny head, tiny hands, narrow wrists, long delicate legs or slender ankles.
+
+HELD-CONSTANT CHARACTER PROGRAM
+GORGON is a female cyberpunk fantasy-football BLOCKER: a corporate super-soldier washout turned cold street-team enforcer. She is one of the two biggest players on the roster, a heavyweight powerlifter with a tall V-shaped silhouette: extremely broad shoulders, a deep upper torso, thick neck, dense back and lats, compact waist and massive thighs. Her menace is disciplined stillness, not rage; high cheekbones, level unsmiling stare, never a snarl and never a pin-up.
+
+FRONT-VIEW SIDE MAP: the VIEWER&#x27;S LEFT side contains the completely exposed cyber-shoulder, the clear head-jack temple landing zone, the dread drape, the continuous covered leg and the in-plane stiff-arm. The VIEWER&#x27;S RIGHT side contains the single shoulder pad, the bare garter leg and the hanging fist. This side map is absolute for the whole image: do not swap or mirror it.
+
+Both arms are complete military-grade cyberarms from shoulder to fingertips: symmetrical gunmetal armored volumes, slightly oversized, with broad beveled plates and DEEP recessed seams that will survive a small resin print. They are precise mil-spec grafts, never skinny android limbs and never exposed industrial hydraulics. Both hands are deliberately oversized heroic-scale chrome hands, each with exactly four thick fingers and one thumb.
+
+Both temples are clean-shaved with NO socket, jewel, port or forehead mark. The entire temple on the clear-zone/dread-drape side, from brow to above the ear, stays completely free of hair so a head-jack can be added there later; the mane begins behind that landing zone and never rises across it. A dense mane of thumb-thick cable-dreadlocks sweeps straight back and rests as one connected printable mass over the exposed-shoulder side. The locks have blunt connected ends: no thin tips, loops or floating strands. Behind the mane, a bold segmented vertebral ridge runs from the back of her head to mid-back; its large plates are visible only where the front camera naturally permits, never as spikes.
+
+Her kit is scuffed anti-corporate cyberpunk sports armor in matte black and gunmetal with restrained hot-magenta accents: a compression playing suit, broad armor planes, chunky low-relief studs and a torn-off corporate chest patch with no readable lettering. ONE layered angular fantasy-football shoulder pad sits on the pad side only. The opposite stiff-arm side is the completely exposed rounded cyber-shoulder: NO second pad, cap, strap or mirrored plate. No number, team emblem, animal logo, word or readable graffiti anywhere.
+
+Her leg asymmetry is explicit. The pad-side leg is bare muscular flesh from mid-thigh to the boot and wears one wide studded leather garter plus a strapped leather knee pad. The stiff-arm-side leg is covered by ONE continuous unbroken leather-and-armor legging from the hip crease all the way into the boot, with a hard armored knee and shin plate: no bare-thigh gap, no garter, no rip, no cutout. Both feet wear oversized buckled fantasy-football combat boots with broad toe boxes and thick lugged soles, never sneakers.
+
+POSE AND BASING
+She advances in a shallow, controlled stagger with BOTH feet firmly reaching the same ground plane and two generous glue patches. The front boot is flat from heel through ball; the rear boot is also visibly grounded through heel and ball. No lifted foot, tiptoe or long running stride. Torso upright and square, chin level. The stiff-arm-side cyberarm extends diagonally outward at shoulder height, about FORTY DEGREES away from the torso and wholly within the image plane, elbow slightly bent; it does NOT point toward the camera. Its open palm faces the camera so all four joined fingers and the separate thumb are clearly readable without shortening the arm. The pad-side cyberarm hangs beside her body with a loose empty fist. Both hands are empty. No limb crosses, merges into or hides behind the torso.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a 37 mm-tall resin figure: bold planes, thick connected forms, deep relief, no hairline seams. Cyberarm panel lines are engraved at least 0.15 mm at final scale. No weapon, ball, other person, jungle motif, cape, antenna, free cable, blade, thin spike, transparent material, base or text.
+</pre></details>
+</section>
+</section>
+<div class="md">
 <h2>How the round is judged</h2>
-<p>Every output gets the standard blind-detect pass plus a fresh-context crop audit. H1 and H2 are compared only as four <strong>within-model pairs</strong>, never as two pooled groups. On each near-orthographic, very-long-lens front image, the audit records pixel landmarks for crown, chin and sole; shoulder endpoints; the left/right bounds of the head and face; the hanging fist and in-plane open-hand bounding boxes; the widest boot, calf, wrist, forearm and ankle spans; and the stiff-arm shoulder, elbow, wrist and middle-fingertip centers. Record heads-tall, head/shoulder, hand/face, boot/calf, wrist/forearm and ankle/calf ratios as diagnostics.</p>
-<p>The paired verdict uses seven predeclared contract metrics, each normalized to crown-to-sole height except heads-tall: heads-tall and stiff-arm polyline length (shoulder–elbow–wrist–fingertip) must decrease from H1 to H2; shoulder breadth, mean hand maximum dimension, mean boot width, mean wrist width and mean ankle width must increase. A relative change smaller than <strong>5%</strong> in either direction is neutral annotation/model noise. One model pair counts as heavy-heroic movement only when at least four of the seven metrics cross 5% in their stated direction. H2 must do that in at least three of the four model pairs. Otherwise the valid round result is <strong>no measurable separation</strong> and a later runbook must re-spread the bracket; the panel must not invent a winner by pooling model styles or changing the metric set after seeing the outputs.</p>
-<p>The audit also judges torso depth and whether the result still reads tall, femme and athletic rather than chibi or male-coded, then checks exactly one pad, both cyberarms, both distinct legs, two grounded feet, all digits, empty hands, connected dreads, a clear anatomical-right-temple landing zone on the <strong>VIEWER&#x27;S LEFT</strong> side, and absence of text/base.</p>
-<p>Any disagreement between the blind detector and crop audit is highlighted for the human panel. Dimitri, Jason and Jeremy make the actual “this belongs beside a Blood Bowl team” call; machine scores only screen obvious misses.</p>
+<p>Jason and Jeremy make the call, with Dimitri: does this body read like a blocker who belongs beside the rest of the team?</p>
+<p>Compare H1 against H2 <strong>within each model</strong> — the four models draw faces, kit and lighting quite differently, so an H1 from one against an H2 from another compares house styles, not proportions.</p>
+<p>Machine checks run on every image before you see them, but treat them as <strong>experimental and still in development</strong>: a blind detector, a fresh-context crop audit, and a set of landmark measurements testing whether H2 really did come back heavier than H1 (the exact metrics are in the technical plan). They exist to catch obvious misses — a missing shoulder pad, three fingers, a mirrored side map — and to flag where the two machine readers disagree with each other. They do not pick a winner, and your call overrides them.</p>
+<p>One machine result is worth acting on: if the measurements say H1 and H2 barely differ, that is a real finding rather than a tie to break — better to widen the bracket in a later round than to pick one and pretend.</p>
 <h2>What we need from you</h2>
 <p>Pick H1, H2 or a blend as the v2 proportion contract, then pick one concept render as the lineage base — or record no measurable separation/reject all 8 with a clearer body target. That choice greenlights a separate r2 pose/camera refinement; no turnaround or Meshy spend is bundled into this round.</p>
 <h2>Cost</h2>
@@ -256,6 +371,11 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 <li><code>riverflow25</code> remains a supported, project-proven Gorgon specialist, but this body-proportion round does not need a fifth model attractor. Its historical aspect-locked limitation is not carried forward: the <a href="https://openrouter.ai/api/v1/images/models">public OpenRouter image catalog</a>, checked 2026-08-02, exposes 2K plus <code>aspect_ratio</code>, including <code>2:3</code>, for <code>sourceful/riverflow-v2.5-pro</code>. A later runbook that names Riverflow must recheck the live schema and pass explicit <code>--aspect 2:3</code> for this full-body portrait framing rather than relying on <code>auto</code>.</li>
 <li>This round does not add the head jack, jersey number or Jaguar emblem; those remain standalone late assets so mirrors are recoverable and micro-hardware is not judged from a full-body render.</li>
 </ul>
+<h3>The experimental machine checks (screening only, not a gate)</h3>
+<p>Every output gets the standard blind-detect pass plus a fresh-context crop audit. Both are screens for the human panel, and this round&#x27;s landmark measurement is itself under development — it is being trialled here, not trusted. Disagreement between the blind detector and the crop audit is highlighted for the humans rather than resolved by score.</p>
+<p>H1 and H2 are compared only as four <strong>within-model pairs</strong>, never as two pooled groups. On each near-orthographic, very-long-lens front image, the audit records pixel landmarks for crown, chin and sole; shoulder endpoints; the left/right bounds of the head and face; the hanging fist and in-plane open-hand bounding boxes; the widest boot, calf, wrist, forearm and ankle spans; and the stiff-arm shoulder, elbow, wrist and middle-fingertip centers. Record heads-tall, head/shoulder, hand/face, boot/calf, wrist/forearm and ankle/calf ratios as diagnostics.</p>
+<p>The paired reading uses seven predeclared contract metrics, each normalized to crown-to-sole height except heads-tall: heads-tall and stiff-arm polyline length (shoulder–elbow–wrist–fingertip) must decrease from H1 to H2; shoulder breadth, mean hand maximum dimension, mean boot width, mean wrist width and mean ankle width must increase. A relative change smaller than <strong>5%</strong> in either direction is neutral annotation/model noise. One model pair counts as heavy-heroic movement only when at least four of the seven metrics cross 5% in their stated direction, and H2 must do that in at least three of the four model pairs. Otherwise the honest machine result is <strong>no measurable separation</strong>: report it as such for the human panel — never pool model styles or change the metric set after seeing the outputs to manufacture one.</p>
+<p>The audit also judges torso depth and whether the result still reads tall, femme and athletic rather than chibi or male-coded, then checks exactly one pad, both cyberarms, both distinct legs, two grounded feet, all digits, empty hands, connected dreads, a clear anatomical-right-temple landing zone on the <strong>VIEWER&#x27;S LEFT</strong> side, and absence of text/base.</p>
 <h3>Experiment matrix</h3>
 <div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Variant axes</th><th>Prompt</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>1</td><td>text only; no images</td><td>H1 classic heroic × four models</td><td><code>prompts/r1-h1-classic-heroic.txt</code></td><td><code>gorgon-v2-r1-h1</code></td></tr><tr><td>2</td><td>text only; no images</td><td>H2 heavy heroic × four models</td><td><code>prompts/r1-h2-heavy-heroic.txt</code></td><td><code>gorgon-v2-r1-h2</code></td></tr></tbody></table></div>
 <p>Each stem yields one model-suffixed artifact per model; repeated runs append and never overwrite.</p>
@@ -267,6 +387,7 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 python3 tools/render_runbook.py \
   --runbook projects/cyber-amazons/gorgon-v2/runbooks/r1-runbook.md \
   --lineage projects/cyber-amazons/gorgon-v2/lineage.json \
+  --cases projects/cyber-amazons/gorgon-v2/runbooks/r1-cases.json \
   --review-pending --project &quot;Cyber-Amazons&quot; --character &quot;Gorgon v2&quot; \
   --out /tmp/gorgon-v2-r1-runbook
 python3 tools/publish_review.py /tmp/gorgon-v2-r1-runbook \
