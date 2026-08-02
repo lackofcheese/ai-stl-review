@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+
+<title>Martial Frogs — Team Brief</title>
+<style>
+:root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.coreinputs { margin:1.2rem 0 .4rem }
+.coreinputs h2 { margin:0 0 .5rem }
+.coreinputs .hint { color:var(--dim); font-weight:400; font-size:.85rem }
+.inputrow { display:flex; flex-wrap:wrap; gap:12px }
+.coreinput { margin:0; width:210px; max-width:100%;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.coreinput .imgwrap { border-bottom:1px solid var(--line) }
+.coreinput .imgwrap img { max-height:230px }
+.coreinput figcaption { color:var(--dim); font-size:.7rem; padding:.35rem .5rem;
+  word-break:break-all; font-family:ui-monospace,SFMono-Regular,Menlo,monospace }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.statrow { display:flex; flex-wrap:wrap; gap:.15rem .5rem; margin:0 0 .1rem;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.72rem;
+  color:var(--dim) }
+.statrow span { white-space:nowrap }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.chip.unclear { color:var(--dim); border-color:var(--dim) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:calc(100vh - 7rem); object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-meta { display:flex; flex-direction:column; align-items:center; gap:.35rem;
+  min-height:2.2rem; position:relative; z-index:20 }
+.lb-refrow { display:flex; align-items:center; justify-content:center; gap:.35rem;
+  flex-wrap:wrap }
+.lb-refrow[hidden] { display:none }
+.lb-refrow .refid { background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn { color:#bbb; border-color:#55515d;
+  background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+
+.md h2 { font-size:1.15rem; margin:2.2rem 0 .3rem }
+.md h3 { font-size:1rem; margin:1.6rem 0 .3rem }
+.md h4 { font-size:.9rem; margin:1.2rem 0 .3rem; color:var(--dim) }
+.md p { max-width:78ch }
+.md ul, .md ol { max-width:78ch; padding-left:1.4rem }
+.md li { margin:.25rem 0 }
+.md a { color:var(--accent) }
+.md code { background:var(--pre); border:1px solid var(--line); border-radius:4px;
+  padding:.05rem .3rem; font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
+.md pre.code { background:var(--pre); border:1px solid var(--line); border-radius:6px;
+  padding:.75rem 1rem; overflow-x:auto; font-size:.82rem; line-height:1.5 }
+.md pre.code code { background:none; border:0; padding:0 }
+.md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+.md dl.rb-meta { display:grid; grid-template-columns:auto 1fr; gap:.3rem 1.1rem;
+  max-width:60ch; margin:.2rem 0 1.8rem; padding:.9rem 1.15rem; background:var(--pre);
+  border:1px solid var(--line); border-radius:8px; font-size:.9rem }
+.md dl.rb-meta dt { color:var(--dim); font-weight:600; white-space:nowrap }
+.md dl.rb-meta dd { margin:0 }
+.md details { max-width:78ch; margin:1.8rem 0; border:1px solid var(--line);
+  border-radius:8px; background:var(--pre); padding:0 1.15rem }
+.md details[open] { padding-bottom:.4rem }
+.md details > summary { cursor:pointer; padding:.85rem 0; font-weight:600;
+  color:var(--accent); list-style:none }
+.md details > summary::-webkit-details-marker { display:none }
+.md details > summary::before { content:'\25B8\A0' }
+.md details[open] > summary::before { content:'\25BE\A0' }
+.md details > summary + * { margin-top:.2rem }
+/* Runbook tables carry PROSE (the "choices on the table" comparison, the
+   build-step gates), not the review panel's short IDs. review_page.py's global
+   table CSS pins cols 1-2 to white-space:nowrap and col 2 to a monospace font —
+   right for id columns, but here it forces long option/recommendation cells
+   onto one unbreakable line: the table blows past the page width (the awkward
+   left-right scroll) and the other columns get starved into tall, ragged stacks
+   (the lopsided whitespace). Undo both inside .md so every cell wraps to its
+   column and auto table-layout balances the widths to the page. */
+.md .tablewrap { margin:.4rem 0 1.6rem }
+.md th, .md td { white-space:normal; overflow-wrap:break-word;
+  font-family:inherit }
+.md td code { overflow-wrap:anywhere }
+/* Keep some readable structure on narrow screens rather than crushing three
+   prose columns to nothing; .tablewrap scrolls only past this floor. */
+.md table { min-width:34rem }
+/* A choices-table row whose label names a case links to that case's inputs. */
+a.caselink { color:inherit; text-decoration:none;
+  border-bottom:1px dotted var(--accent) }
+a.caselink:hover { color:var(--accent) }
+
+/* --- Inputs section: one block per case, images grouped by artifact ------- */
+.rb-inputs { margin:2.2rem 0 1.4rem }
+.rb-inputs > h2 { font-size:1.15rem; margin:0 0 .3rem }
+.rb-case { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.8rem 1rem 1rem; margin:.9rem 0; scroll-margin-top:1rem }
+.rb-case:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.rb-case-h { display:flex; flex-wrap:wrap; align-items:baseline; gap:.2rem .6rem;
+  margin:0; font-size:1rem }
+.rb-case-count { color:var(--dim); font-size:.72rem; font-weight:400;
+  font-variant-numeric:tabular-nums }
+.rb-case-note { color:var(--dim); font-size:.88rem; margin:.3rem 0 0; max-width:78ch }
+.rb-art { margin:.85rem 0 0 }
+.rb-art-h { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem;
+  margin:0 0 .4rem }
+.rb-art-label { font-size:.7rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--accent) }
+.rb-art-id { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  color:var(--dim); overflow-wrap:anywhere }
+.rb-art .ibtn { padding:.08rem .5rem; font-size:.66rem }
+.rb-strip { display:grid; gap:10px;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr)) }
+.rb-fig { margin:0; min-width:0; background:var(--well); border:1px solid var(--line);
+  border-radius:6px; overflow:hidden; display:flex; flex-direction:column }
+.rb-fig .imgwrap { border-bottom:1px solid var(--line) }
+.rb-fig .imgwrap img { max-height:300px }
+.rb-fig figcaption { color:var(--dim); font-size:.7rem; padding:.3rem .5rem }
+.rb-none { color:var(--dim); font-size:.86rem; margin:.6rem 0 0 }
+details.rb-prompt { margin:.85rem 0 0; background:var(--pre); border:1px solid var(--line);
+  border-radius:6px; padding:0 .9rem }
+details.rb-prompt > summary { cursor:pointer; padding:.55rem 0; font-size:.82rem;
+  font-weight:600; color:var(--accent); list-style:none }
+details.rb-prompt > summary::-webkit-details-marker { display:none }
+details.rb-prompt > summary::before { content:'\25B8\A0' }
+details.rb-prompt[open] > summary::before { content:'\25BE\A0' }
+details.rb-prompt .rb-size { color:var(--dim); font-weight:400; font-size:.72rem }
+details.rb-prompt .path { color:var(--dim); font-size:.72rem; margin:0 0 .4rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere;
+  background:var(--bg); border:1px solid var(--line); border-radius:6px;
+  padding:.7rem .85rem; font-size:.78rem; line-height:1.5; max-height:32rem;
+  overflow:auto; margin:0 0 .85rem }
+</style></head><body><main>
+<h1>Martial Frogs — Team Brief</h1>
+<div class="md"><p>*Draft v1.2 — 2026-08-02. Companion to <code>PROJECT.md</code> (project state). Drafted ahead of Jawaknight&#x27;s answers to the open questions; every block affected by an open question says so inline, and §10 collects them (with the 2026-08-02 answers marked: sumo RED ONI krox — Jawaknight&#x27;s oni idea + Dimitri&#x27;s sumo ruling — no-bare-weapons policy, 16-model set). Expect character-block revisions from Jawaknight&#x27;s feedback — he is the client.*</p>
+<p>*For: Jawaknight — league mate, owner of the competing Hero Forge commando-theme Slann team, and the person these frogs must be unique to.*</p>
+<p>This is the master context document for the whole team. Each miniature gets its own spec when we start it, derived from its character block in §6 — the per-model spec is where poses and props get pinned to pipeline standard (explicit prop geometry, every hand accounted for, provable camera angles).</p>
+<h2>1. Project overview</h2>
+<p>A martial-arts-themed <strong>Slann</strong> (frog) Blood Bowl team, produced via the established AI pipeline. The theme, per Jawaknight: <strong>ancient kung fu / ninja, played straight — explicitly NOT TMNT.</strong></p>
+<p>Design goals, in priority order:</p>
+<ol>
+<li><strong>Reads as a Blood Bowl team at arm&#x27;s length.</strong> Positional roles must be distinguishable across the table — and this theme hands us that for free: three real martial cultures with genuinely different silhouettes (§3).</li>
+<li><strong>Unique to Jawaknight.</strong> Nobody else&#x27;s frogs. In particular, distinct from Ugni&#x27;s existing samurai-ninja miniature designs (not frogs, but the nearest take on the theme), and visibly bespoke — built on the frog-first principle (§3) rather than assembled from stock parts.</li>
+<li><strong>Frogs first.</strong> The martial-arts costume is tailored to frog anatomy, not human armor recolored. Dome eyes, wide mouths, squat torsos, long digitigrade legs, webbed hands and feet are design features to celebrate, never bugs to hide.</li>
+<li><strong>Every model distinct.</strong> Distinctness is geometric (build, stance, costume weight, signature mass) — NOT paint-dependent, because the pipeline works in monochrome clay-sculpt renders.</li>
+<li><strong>Cool, not comedy.</strong> Wuxia / jidaigeki tone. Humor lives in names and fluff only, never in the sculpt. *(Assumed from &quot;not TMNT&quot;; tone check is open question §10.8.)*</li>
+</ol>
+<h2>2. Roster reference (Slann — classic &quot;Teams of Legend&quot; values, TO VERIFY)</h2>
+<p><strong>The BB2025 / Season 3 roster reference was unreachable from this session (bloodbowlbase.ru and mirrors 403 through the proxy). The table below is the classic BB2020 &quot;Teams of Legend&quot; Slann roster from prior knowledge — treat EVERYTHING in it, slot limits included, as to-confirm before any rules-sensitive decision. Replace this section with a verified BB2025 snapshot when a session can reach one.</strong></p>
+<div class="tablewrap"><table><thead><tr><th>Position</th><th>Qty</th><th>MA</th><th>ST</th><th>AG</th><th>PA</th><th>AV</th><th>Skills</th><th>Cost</th></tr></thead><tbody><tr><td>Lineman</td><td>0-16</td><td>6</td><td>3</td><td>3+</td><td>4+</td><td>9+</td><td>Leap, Very Long Legs</td><td>60K</td></tr><tr><td>Catcher</td><td>0-4</td><td>7</td><td>2</td><td>2+</td><td>4+</td><td>8+</td><td>Diving Catch, Leap, Very Long Legs</td><td>80K</td></tr><tr><td>Blitzer</td><td>0-4</td><td>7</td><td>3</td><td>3+</td><td>4+</td><td>9+</td><td>Diving Tackle, Jump Up, Leap, Very Long Legs</td><td>110K</td></tr><tr><td>Kroxigor</td><td>0-1</td><td>6</td><td>5</td><td>5+</td><td>–</td><td>10+</td><td>Bone Head, Loner, Mighty Blow, Prehensile Tail, Thick Skull</td><td>140K</td></tr></tbody></table></div>
+<p>Re-roll 50K. Apothecary yes.</p>
+<p>The martial-arts reading of the stat line: everyone leaps. Leap + Very Long Legs across the whole roster IS the kung-fu/wuxia fantasy — sky-walking martial artists — which is why this theme fits Slann better than any other team in the game. The Kroxigor is the one non-leaper: the immovable big man.</p>
+<p><strong>Model set (Dimitri, 2026-08-02 — §10.4):</strong> <strong>16 models — 11 linefrogs + 2 catchers + 2 blitzers + 1 Kroxigor.</strong> A full 16-frog matchday roster; the lino tail-end is lowest production priority (concepted in this brief, built last). Two per specialist slot also stays legal under any plausible BB2025 slot limits, so the unverified table above no longer gates the set. Four additional specialist concepts are kept as bench alternates (§6) in case Jawaknight prefers a swap or later expansion.</p>
+</div>
+
+<div class="md">
+<h2>3. Team concept</h2>
+<p><strong>One temple, three schools</strong> *(proposal — Jawaknight&#x27;s call, §10.9; every character block in §6 sits on it, as does the frog-first principle below)*. The team is a single ancient monastery-academy whose disciples follow three traditions, one per positional role:</p>
+<ul>
+<li><strong>Linemen → the KUNG FU school.</strong> The temple&#x27;s core: unarmored, robed-and-wrapped fighters, each devoted to a classic animal style — their stance IS their silhouette. Mostly empty hands, wide grounded stances, flowing-but-thickened robes.</li>
+<li><strong>Catchers → the NINJA school.</strong> The temple&#x27;s shadow arm: lean, wrapped, hooded infiltrators. Amphibious-infiltrator flavor rendered strictly in ancient kit (bind-wraps, rope, reed and rice-straw gear). The wet-work echo of his commando team&#x27;s catchers now lives only in the benched Tide alternate (§6); question §10.11 applies only if he is promoted.</li>
+<li><strong>Blitzers → the SAMURAI school.</strong> The temple&#x27;s armored elite: lamellar do-maru, sode shoulder plates, kabuto helmets designed AROUND the dome eyes. The only armored silhouettes on the team — positional identification at ten paces.</li>
+<li><strong>Kroxigor → the GRAND CHAMPION: sumo RED ONI</strong> — a mountain of demon amphibian in a mawashi. Oni is Jawaknight&#x27;s idea (2026-08-02), sumo is Dimitri&#x27;s ruling (§10.2) — and they fuse naturally: classic oni are drawn as massive wrestler-bodied giants in a loincloth, so the oni features ride the sumo silhouette instead of replacing it. &quot;Red&quot; is strictly paint stage; the sculpt carries &quot;oni&quot; in geometry alone (twin horns + tusks, §6). The sōhei warrior-monk alternate stays retired.</li>
+</ul>
+<p><strong>The frog-first principle (uniqueness lever #1).</strong> Our edge is costume genuinely tailored to frog anatomy — something neither stock-part kits nor human-bodied samurai designs offer: kabuto bowls with molded eye-turret cutouts, ninja hoods stretched over dome eyes with the mask below, obi wrapped high on a squat torso, hakama cut for long folded digitigrade legs, bare webbed feet everywhere (grip is a martial virtue — footwear is minimal or absent team-wide). Every per-model spec should ask: &quot;what does this garment look like ON A FROG?&quot; before pinning geometry.</p>
+<p><strong>Age flavor.</strong> *(Open question §10.1 — are the frogs ancient, or just the arts?)* Default proposal: the arts are ancient, most practitioners are in their athletic prime, and ONE elder master lino (Sifu, §6) carries the ancient-frog flavor. If Jawaknight wants the whole team old and venerable, age cues scale up across the roster (posture, robe weight, skin texture — never thin wispy beards, which don&#x27;t survive reconstruction).</p>
+<h2>4. Team-wide visual language</h2>
+<p><strong>Kit (every model):</strong> ancient martial sports kit — recognizable fantasy-football silhouette built from period materials (cloth, lacquered lamellar, rope, straw).</p>
+<ul>
+<li><strong>The temple mon (gang mark):</strong> a <strong>webbed frog-forefoot print roundel</strong> — a four-toed webbed print inside a circle. Bold, flat, geometric, stencil-friendly, unique to this team, and <strong>mirror-cheap</strong> (near-symmetric, so mirrored generations stay fixable with one flip). Default placement: the obi&#x27;s front knot-plate for unarmored models; the LEFT sode&#x27;s top plate for samurai — Ronin&#x27;s single sode IS his left and carries it, and Tessen (no sode) uses the obi knot-plate like the unarmored schools. Applied via a late stencil/edit asset pass, not baked into concept rolls (the cyber-amazons socket lesson: marks get their own standalone asset round before they appear in generations).</li>
+<li><strong>The obi (unifying garment):</strong> every model wears a broad wrapped belt/sash, knotted at the back — the one garment shared by monk, ninja, samurai, and sumo (the mawashi is its extreme form). Team-standard wrap direction and knot, per-school materials.</li>
+<li><strong>Player number:</strong> engraved on a small rectangular obi tag (unarmored schools, and Tessen) or the left sode (Daimyo, Ronin, Kabuto), ≥0.15mm engraving. Assign numbers at spec time.</li>
+<li><strong>Forearm/shin wraps</strong> on the unarmored schools — practical, unifying, and they thicken thin amphibian limbs for printing.</li>
+<li><strong>The ball (where held):</strong> classic spiked/laced Blood Bowl ball silhouette — never gadgetified, never period-ified. Ball readability is sacred.</li>
+<li><strong>Weapons policy (settled by Dimitri, 2026-08-02 — §10.3/§10.10; Jawaknight may still adjust):</strong> <strong>NO bare weapons.</strong> Nothing is ever carried in hand, drawn, raised, or wielded — blade, fan, or otherwise (the draft&#x27;s folded-fan-in-hand carve-out is REJECTED; Tessen&#x27;s fan rides tucked in his obi). Sheathed/stowed weapons appear where appropriate to the school, as costume: samurai wear sheathed daishō at the obi (saya pinned flush against hip/leg in every view); ninja may wear a short sheathed ninjatō slung flush across the back; the kung fu school and Yokozuna carry nothing. This keeps BB tone right and dodges the wielded-thin-blade print hazard; the ghost-prop reconstruction hazard is handled per-model — every spec makes every hand provably empty or (for the ball) provably holding its one intended object in at least one view.</li>
+</ul>
+<p><strong>Print-survival grading:</strong> identity-critical features must be big and geometric — kabuto crests as bold flat maedate shapes, menpō masks with deep chunky relief, prayer beads as fat spheres. Anything below ~2% of figure height goes to the paint stage or gets a standalone asset round, not chased in generation rolls.</p>
+<p><strong>Body diversity is load-bearing:</strong> builds range wiry → athletic → dense → mountainous across the roster (§7 matrix). Frogs offer great range here — tree-frog lean through bullfrog massive.</p>
+<p><strong>Palette</strong> (paint stage only — sculpts are monochrome): moss/jade skins, lacquer black + deep red armor, raw linen wraps, one gold accent (the mon). Noted for painting; never constrains generation.</p>
+<p><strong>IP guardrails:</strong> original sculpts only. No GW iconography or trademarks (no &quot;Blood Bowl&quot; text anywhere). Nothing TMNT-adjacent: no four color-coded frogs, no signature-weapon quartet, no half-shell anything. Generic historical martial arts only — no named film/comic references.</p>
+<h2>5. Team name (proposals — Jawaknight&#x27;s call, §10.7)</h2>
+<p>Candidates to react to, sports-club framing first:</p>
+<ol>
+<li><strong>The Jade Temple Leapers</strong> — straight, evocative, paints the palette.</li>
+<li><strong>Stillwater Temple FC</strong> — calm-master energy, &quot;still pond&quot; wuxia flavor.</li>
+<li><strong>The Lotus Leap</strong> — short, leap-skill pun that stays dignified.</li>
+<li><strong>The Croaking Fist</strong> — leans into frog + kung-fu-manual naming; the comedy edge of acceptable.</li>
+</ol>
+<h2>6. The sixteen</h2>
+<p>Format: <strong>HANDLE</strong> — position. Concept. *Silhouette hooks* (the geometric features that make them unmistakable in monochrome). Pose sketch (pinned properly at per-model spec time; all poses obey the basing rule, §8).</p>
+<p>The specialist picks (which 2 of the 4 drafted catchers and blitzers make the set) are the author&#x27;s proposal — Kage + Mist and Daimyo + Ronin for strongest silhouette spread; Dimitri or Jawaknight can swap any pick with its bench alternate at no cost before specs start.</p>
+<h3>Kroxigor / Grand Champion</h3>
+<p><strong>YOKOZUNA</strong> — Kroxigor. The temple&#x27;s grand champion: a <strong>Sumo RED ONI frog</strong> (Jawaknight&#x27;s oni + Dimitri&#x27;s sumo, 2026-08-02, §10.2) — angry aka-oni energy on a bullfrog-massive rikishi frame. *Hooks:* the team&#x27;s one mountainous silhouette — vast belly, hunched power shoulders, thick tail as the third mass; the head is the oni read: TWO thick forward-swept horns and two bold lower tusks (horns and tusks alike sculpted as chunky, blunt forms — never long thin spikes) on a deep scowling snarl (snarl, not full roar — a deep open gape is an occlusion cavity the reconstruction handles badly; pin the gape moderate at spec time). No mane — frogs have no hair, and the head silhouette is horns + tusks alone. &quot;Red&quot; lives at PAINT stage only — the sculpt is monochrome and must carry &quot;oni&quot; in geometry alone. Mawashi with kesho-mawashi front apron (big flat surface, carries the mon large); the braided tsuna champion&#x27;s rope worn at the WAIST, its paper zigzags sculpted chunky and connected. Ceremonial dress on the pitch is deliberate — the apron is the team&#x27;s large mon surface; a competition-plain mawashi is the fallback (question §10.12). No armor, no weapons — the oni&#x27;s traditional kanabō club stays home (no bare weapons, and the krox gets no sheathed exception). Pose: sumo crouch — feet wide, knuckles or open palms forward, weight sunk, head lowered so the horns lead.</p>
+<h3>Blitzers / Samurai school</h3>
+<p><strong>DAIMYO</strong> — Blitzer #1, captain. The armored commander; calm authority in lacquered lamellar. *Hooks:* the team&#x27;s most ornate armor — full do-maru, paired sode, kabuto with a bold flat sunburst-fan maedate crest built around the eye domes; short jinbaori over-vest for a unique upper-body mass; sheathed daishō at the obi. Pose: commanding mid-stride advance, one open palm forward (stiff-arm / halt gesture).</p>
+<p><strong>RONIN</strong> — Blitzer #2. The weathered wanderer who came back to the temple. *Hooks:* minimal mismatched armor — one sode only, his LEFT (the asymmetry hook; it carries mon + number; per-view viewer-frame translations at spec time), worn haori with frayed hem (thickened), wide-brimmed kasa straw hat slung on his back (big chunky disc — reads at any distance), sheathed katana. Pose: low iai-ready stance — knees bent, lead hand resting flat ON the sheathed saya (clearly touching, never hovering, never drawn), other hand open and clearly empty. Spec note: the main camera must avoid the profile that silhouettes the saya in front of his body.</p>
+<h3>Catchers / Ninja school</h3>
+<p><strong>KAGE</strong> — Catcher #1. The school&#x27;s lead shadow. *Hooks:* classic shinobi shozoku with the hood stretched over the eye domes and mask below (the signature frog-ninja head silhouette), tight wraps everywhere, and the school&#x27;s one visible blade — a short sheathed ninjatō slung flush across the back (§4 policy: sheathed, never in hand). Pose: full low sprint — dynamic slot 1, both feet reaching ground.</p>
+<p><strong>MIST</strong> — Catcher #2. Half-there; the one nobody saw. *Hooks:* layered wrapped scarves and a short drape-cloak (all hems thickened and pinned to the body), the only draped silhouette among the catchers; hood up, face masked (any eye-glow is strictly paint-stage). Pose: mid-juke slip — torso twisted, both feet planted (dynamic slot 3, §8).</p>
+<h3>Linefrogs / Kung fu school</h3>
+<p><strong>SIFU</strong> — Lino #1. The elder master; the temple in one frog. *(Carries the &quot;ancient&quot; flavor — scales with §10.1.)* *Hooks:* hunched-but-poised posture, heavy layered robe (thick hems), fat prayer-bead necklace (big spheres), and age carried in BIG geometry — a heavy sculpted brow ridge and a deep dewlap throat sac, never wispy hair. Hands folded into opposite sleeves in front of the obi (one connected mass, both hands provably accounted for) — the only non-combat stance on the team, and somehow the most dangerous-looking. Pose: standing exactly still, chin slightly raised.</p>
+<p><strong>TIGER</strong> — Lino #2. The power stylist; the one who hits first. *Hooks:* densest lino build, knotted hachimaki headband (chunky knot, short pinned tails), torn-off sleeves (bare wrapped forearms), tiger-claw open-hand guard, wide bow stance. Pose: deep bow stance, both claws presented.</p>
+<p><strong>CRANE</strong> — Lino #3. The tallest, leanest, stillest. *Hooks:* longest limbs on the team, high narrow robe with a tall mandarin collar framing the head, arms swept back-and-wide as folded crane wings. Pose: crane guard adapted for basing — arms winged, weight sunk on BOTH grounded feet (no lifted-leg crane stance; the silhouette lives in the arms).</p>
+<p><strong>MANTIS</strong> — Lino #4. Angular, wiry, all elbows. *Hooks:* thinnest silhouette, small round monk&#x27;s skullcap, mantis-hook wrists (both hands crooked forward), high-cut robe showing wrapped shins, sharp elbow-out angles nothing else on the team has. Pose: mantis double-hook guard, staggered stance.</p>
+<p><strong>MONKEY</strong> — Lino #5. The low tumbler; irrepressible. *Hooks:* most compact lino, plain rope circlet around the crown, deep crouch with knuckles down (three-point contact — a gift to printing and basing), kit reduced to obi and wraps. Pose: low monkey crouch, one knuckle-hand grounded, eyes up.</p>
+<p><strong>SERPENT</strong> — Lino #6. Flow made frog. *Hooks:* the one flowing silhouette among the linos — a long weighted sash whose tail wraps up over one shoulder and around the neck (thickened, pinned against the body in every view), smooth untorn robe, S-curved weaving guard with both open palms leading. Pose: serpent guard, weight split, both feet flat.</p>
+<p><strong>DRAGON</strong> — Lino #7. The senior stylist; power that moves like water. *Hooks:* scale-quilted shoulder mantle rising behind the head (the head frame — big geometric diamond-quilt texture that survives reconstruction), full-length robe, twisting coiled torso. Pose: dragon guard — torso wound a quarter-turn, both palms staggered vertically, feet planted wide.</p>
+<p><strong>LEOPARD</strong> — Lino #8. Speed and repetition; the flurry fighter. *Hooks:* compact-muscular build, tight crown head-wrap knotted at the back (covers the crown — distinct from Tiger&#x27;s brow-band hachimaki), cropped sleeveless vest, studded knuckle wraps on both fists. Pose: mid-rush double hammer-fist chamber, ordinary stride frame (not a dynamic slot).</p>
+<p><strong>IRON</strong> — Lino #9. Iron-shirt conditioning made visible; the anvil of the line. *Hooks:* widest lino — near-blocker mass but zero armor; thick knotted conditioning ropes wrapped across the torso, a chunky iron neck-ring collar (his head-adjacent hook), bare arms. Pose: square horse stance, both fists chambered at the hips.</p>
+<p><strong>GOURD</strong> — Lino #10. The drunken-boxing master; never as off-balance as he looks. *Hooks:* loose open robe half-fallen off one shoulder (the bunched robe sits ON the shoulder — his head-adjacent hook), a big drinking gourd slung tight at his hip (chunky stowed prop, never in hand), sway-backed stance. Pose: drunken sway — weight rocked back, arms loose, both open palms visible, BOTH feet flat and planted (the sway is in the spine, not the footing).</p>
+<p><strong>TADPOLE</strong> — Lino #11. The newest disciple; all heart, no seniority. *Hooks:* smallest frame on the team, hand-me-down robe two sizes too big (rope-belted twice), oversized straw kasa worn low over the eye domes (worn on the head — distinct from Ronin&#x27;s back-slung kasa). Pose: eager mid-run scramble (ordinary stride, not a dynamic slot) — one hand steadying the hat brim, the other pumping, both hands clearly accounted for.</p>
+<h3>Bench alternates (not in the 16-model set)</h3>
+<p>Kept as swap-in options or later expansion; no spec work unless promoted. Each trades one-for-one with its school&#x27;s picks above.</p>
+<p><strong>KABUTO</strong> — Blitzer alternate. The wall; the school&#x27;s heaviest armor. *Hooks:* fullest plate coverage on the team — big paired sode like gates, heavy shoulder-to-knee lamellar skirt, menpō half-mask sculpted as a snarling frog-face (deep bold relief, opaque matte), kabuto with wide flared neck guard. Densest blitzer build. Pose: braced two-arm block, square stance.</p>
+<p><strong>TESSEN</strong> — Blitzer alternate. The duelist-signaler; fastest of the samurai. *Hooks:* lightest samurai armor (do-maru only, no sode — mon and number ride the obi, §4), his FOLDED iron war fan tucked front-and-visible into the obi (stowed like a blade, never in hand — §4 policy), sleek kabuto with a small crescent crest, clean sashimono-free back. Pose: mid-pivot, one hand extended pointing a route, the other open at his side — both clearly empty.</p>
+<p><strong>TIDE</strong> — Catcher alternate. The swimmer; the school&#x27;s deep-water specialist. *Hooks:* sleek full-body bind-wraps in the ancient pearl-diver tradition (matte in sculpt — no oil-sheen cues in generation), the wrap continuing up over the skull as a fitted cowl leaving the eye domes bare (his head hook — a bare-headed Tide is a reject), coiled rope across the chest, bare webbed feet emphasized largest on the team. If promoted, the wet-work echo question (§10.11) applies, and his diving-catch lunge needs a free dynamic slot. Pose: low diving-catch lunge, both feet bottoming out at ground level.</p>
+<p><strong>RIPPLE</strong> — Catcher alternate. Smallest and quickest; the scout. *Hooks:* hood down — mask and wrap bunched around the neck (off-duty ninja, unmistakably still ninja), shoulder-strapped line-kit, tight grappling-line coil at the hip (coiled flush, no free loops). If promoted, note his smallest-frame niche is now Tadpole&#x27;s — differentiate by kit and pose. Pose: easy jog, head turned sharply to call for the pass, both hands visibly empty.</p>
+<h2>7. Distinctness matrix</h2>
+<p>No two rows may converge during generation. If a generated sheet drifts toward another character&#x27;s column entries, that&#x27;s a reject.</p>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Handle</th><th>Pos</th><th>Build</th><th>Head</th><th>Kit weight</th><th>Signature mass</th><th>Pose family</th></tr></thead><tbody><tr><td>1</td><td>Yokozuna</td><td>Krox</td><td>mountainous</td><td>twin horns + tusks</td><td>mawashi + tsuna</td><td>the belly</td><td>sumo crouch</td></tr><tr><td>2</td><td>Daimyo</td><td>Blitzer</td><td>athletic-heavy</td><td>kabuto + sun crest</td><td>full ornate</td><td>jinbaori vest</td><td>command advance</td></tr><tr><td>3</td><td>Ronin</td><td>Blitzer</td><td>lean-weathered</td><td>bare + back kasa</td><td>partial, asym</td><td>kasa disc</td><td>iai-ready</td></tr><tr><td>4</td><td>Kage</td><td>Catcher</td><td>lean</td><td>hood + mask</td><td>full wraps</td><td>back ninjatō</td><td>low sprint</td></tr><tr><td>5</td><td>Mist</td><td>Catcher</td><td>lean-draped</td><td>hood, masked</td><td>wraps + drape</td><td>scarf layers</td><td>juke slip</td></tr><tr><td>6</td><td>Sifu</td><td>Lino</td><td>slight, hunched</td><td>brow ridge + dewlap</td><td>heavy robe</td><td>bead necklace</td><td>stillness</td></tr><tr><td>7</td><td>Tiger</td><td>Lino</td><td>densest lino</td><td>hachimaki knot</td><td>torn robe</td><td>claw guard</td><td>bow stance</td></tr><tr><td>8</td><td>Crane</td><td>Lino</td><td>tallest-lean</td><td>high collar</td><td>high robe</td><td>wing arms</td><td>crane guard</td></tr><tr><td>9</td><td>Mantis</td><td>Lino</td><td>thinnest</td><td>skullcap</td><td>high-cut robe</td><td>hook wrists</td><td>double hook</td></tr><tr><td>10</td><td>Monkey</td><td>Lino</td><td>compact-crouched</td><td>rope circlet</td><td>obi + wraps</td><td>grounded knuckles</td><td>low crouch</td></tr><tr><td>11</td><td>Serpent</td><td>Lino</td><td>athletic</td><td>bare + neck-wrapped sash</td><td>smooth robe</td><td>shoulder-wrapped sash</td><td>weaving guard</td></tr><tr><td>12</td><td>Dragon</td><td>Lino</td><td>athletic-senior</td><td>scale mantle frame</td><td>full robe</td><td>quilted mantle</td><td>wound-torso guard</td></tr><tr><td>13</td><td>Leopard</td><td>Lino</td><td>compact-muscular</td><td>crown head-wrap</td><td>cropped vest</td><td>knuckle studs</td><td>hammer-fist rush</td></tr><tr><td>14</td><td>Iron</td><td>Lino</td><td>widest lino</td><td>iron neck-ring</td><td>rope-bound torso</td><td>conditioning ropes</td><td>horse stance</td></tr><tr><td>15</td><td>Gourd</td><td>Lino</td><td>average, sway-backed</td><td>robe bunched on shoulder</td><td>loose open robe</td><td>hip gourd</td><td>drunken sway</td></tr><tr><td>16</td><td>Tadpole</td><td>Lino</td><td>smallest</td><td>oversized worn kasa</td><td>baggy robe</td><td>too-big hat</td><td>scramble + hat grab</td></tr></tbody></table></div>
+<p>Bench alternates (Kabuto, Tessen, Tide, Ripple — §6) keep their old hooks and must re-check convergence against this table if promoted.</p>
+<p>Head silhouettes: two kabuto variants (Daimyo&#x27;s crested, and the bench&#x27;s), two hoods (Kage / Mist), Ronin&#x27;s kasa-backed bare head, Tadpole&#x27;s worn kasa (on-head vs Ronin&#x27;s back-slung), and the remaining heads each carrying a GEOMETRIC hook — twin horns + tusks, dewlap + brow ridge, hachimaki knot, mandarin collar, skullcap, rope circlet, neck-wrapped sash, scale mantle, crown wrap, iron neck-ring, shoulder-bunched robe. Distinctness stays geometric; expression and skin texture are paint-stage bonuses, never the distinguishing feature. Builds: 1 mountainous, 3 dense/wide, 4 lean-athletic, ~4 average variants, 1 smallest, 1 tallest, 1 thinnest, 1 hunched.</p>
+<h2>8. Technical specs</h2>
+<ul>
+<li><strong>Scale:</strong> 32mm heroic, matching the established house standard (Igor / cyber-amazons); confirm exact frog eye-line convention against a printed reference before batch production. Slann proportions — squat torso, long folded legs — will need a per-team height calibration on the first model. *(Match to Jawaknight&#x27;s existing collection: open question §10.5.)*</li>
+<li><strong>Bases:</strong> 32mm round team-wide; the Kroxigor&#x27;s base size follows whatever convention Jawaknight&#x27;s collection uses — an open question (§10.5), not a default.</li>
+<li><strong>Print target:</strong> resin, one-piece per model strongly preferred. Thin elements ≥0.6mm, engraved details ≥0.15mm.</li>
+<li><strong>Basing rule:</strong> minimum TWO contact points; default pose is both feet planted at ground level. <strong>Dynamic-pose budget: 2 of ~3 used</strong> — Kage&#x27;s sprint and Mist&#x27;s juke slip; one slot reserved (Tide&#x27;s dive-lunge claims it if he is promoted from the bench). Even dynamic poses bottom out both feet at ground level. Criterion: a dynamic slot is a deep-lean sprint/lunge/slip frame; ordinary walk-cycle strides and scrambles (Daimyo, Leopard, Tadpole) don&#x27;t consume slots. Monkey&#x27;s grounded knuckle adds a bonus contact point.</li>
+<li><strong>Theme-specific print hazards</strong> (flag at spec time, every model): sash and scarf tails (thicken, pin against body), kasa brims (chunky disc, no thin edge), saya/scabbard tips (pin flush to leg), fans always folded and stowed in the obi (never in hand, never open — §4, settled), rope coils (flush, no free loops), maedate crests (flat bold shapes, no thin spikes), oni horns and tusks (chunky blunt forms, never long thin spikes — Yokozuna), prayer beads (fat spheres, connected), webbed digits (naturally connected — good), frog throat/chin (keep clear of clutter so the silhouette reads).</li>
+<li><strong>Materials rule (team-wide):</strong> every surface is opaque solid matte clay in generation — no gloss, oil-sheen, translucency, mirror, or glow cues in any prompt. Tide&#x27;s &quot;oiled&quot; wraps and any eye-glow are paint-stage effects only (the cyber-amazons mirrored-visor lesson).</li>
+<li><strong>Left/right convention (global policy):</strong> every side reference in prompts, specs, and audits is the <strong>VIEWER&#x27;S left/right</strong>, anchored to a named view; profile views named by visible feature (&quot;the sode side&quot;). Character anatomy stated once per spec as ground truth, then translated.</li>
+<li><strong>Chirality/mirror planning:</strong> the mon is near-symmetric by design; number tags and any asymmetric kit (Ronin&#x27;s single sode) get one explicit negative per round and a flip-recipe fallback, per the skill&#x27;s attractor rules.</li>
+<li><strong>Pipeline:</strong> per the <code>miniature-concept-pipeline</code> skill — runbook-first rounds, monochrome clay-sculpt turnarounds, Meshy multi-view, trimesh validation, fresh-context audits, blind-detect on every generation round.</li>
+</ul>
+<h2>9. Production order (proposal)</h2>
+<p>Start with ONE model to establish the team standard — frog anatomy calibration, obi/wrap construction, webbed-foot treatment — as a visual exemplar, then reuse its approved sheet as the kit reference for the rest.</p>
+<p>First model: <strong>TIGER</strong> (Lino #7 in the matrix) — mid-complexity, no helmet/hood/drape to complicate reconstruction, dense forgiving build, bare frog head and feet front-and-center (locks the anatomy standard where it matters most). Then one of each school to stress the extremes — <strong>KAGE</strong> (hood+mask construction) → <strong>DAIMYO</strong> (kabuto/armor-over-frog construction) → <strong>YOKOZUNA</strong> (the mountain) — then the remaining specialists and linos, with the lino tail-end (roughly Dragon through Tadpole) built last per Dimitri&#x27;s prioritization. <strong>Jawaknight picks what he wants to see next</strong> at every step.</p>
+<p><strong>Exemplar plan for the hard constructions:</strong> kabuto-built-around-eye-domes and hood-stretched-over-eye-domes are prior-LESS, STRUCTURAL features (no training-data prior exists for either, and they change head geometry), so per the skill&#x27;s triage they must be right in the BASE image of their lineages — text alone will not hold them. Before KAGE&#x27;s and DAIMYO&#x27;s concept rounds, run a dedicated head-construction exemplar round whose winning crops become the reference assets, exactly as the mon gets its own stencil asset round (§4).</p>
+<h2>10. Open items (Jawaknight&#x27;s calls, carried from PROJECT.md)</h2>
+<p>Status key: items marked <strong>ANSWERED</strong> are settled from our side on 2026-08-02 (attribution per item); Jawaknight can still override any of them — he is the client.</p>
+<ol>
+<li><strong>Ancient frogs or just ancient arts?</strong> Brief assumes prime-age athletes + one elder (Sifu). Affects §3, §6.</li>
+<li><strong>Kroxigor theme — ANSWERED: sumo RED ONI</strong> (Jawaknight&#x27;s oni idea + Dimitri&#x27;s sumo ruling, 2026-08-02; handle stays Yokozuna). §3, §6.</li>
+<li><strong>Weapons policy — ANSWERED (Dimitri): NO bare weapons; sheathed ones where appropriate (ninjas &amp; samurai).</strong> §4.</li>
+<li><strong>Model count — ANSWERED (Dimitri): 16 = 11 linefrogs + 2 catchers + 2 blitzers + 1 krox (the standard full roster); lino tail-end deprioritized in production.</strong> Which 2+2 specialists make the set is still swappable (§6 bench). §2.</li>
+<li><strong>Scale/bases</strong> to match his collection; krox base size. §8.</li>
+<li><strong>Ugni differentiation:</strong> what do his samurai-ninja designs look like, so we steer visibly clear? §1.</li>
+<li><strong>Team name:</strong> four candidates in §5.</li>
+<li><strong>Tone check:</strong> cool/straight assumed. §1.</li>
+</ol>
+<p>New questions raised by this draft (not in <code>PROJECT.md</code>&#x27;s original list):</p>
+<ol>
+<li><strong>The one-temple/three-schools premise and the frog-first principle</strong> — the draft&#x27;s two biggest creative bets; everything in §3 and §6 sits on them.</li>
+<li><strong>The folded-fan carve-out — REJECTED (Dimitri, per #3): no bare weapons.</strong> Tessen&#x27;s fan (bench, §6) rides tucked in his obi, never in hand.</li>
+<li><strong>Tide&#x27;s wet-work echo</strong> of the commando team&#x27;s catchers — now bench-only (§6); applies only if Tide is promoted.</li>
+<li><strong>Yokozuna&#x27;s ceremonial dress</strong> (kesho-mawashi apron + tsuna rope, which carries the big mon) vs a competition-plain mawashi. §6.</li>
+</ol></div>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbRefRow=document.getElementById('lb-refrow'),lbRef=document.getElementById('lb-ref'),
+      lbCopyId=document.getElementById('lb-copy-id'),lbCopyLink=document.getElementById('lb-copy-link'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  const ref=z.dataset.ref||'',anchor=z.dataset.anchor||'';
+  lbRefRow.hidden=!(ref&&anchor);
+  if(ref&&anchor){
+    lbRef.textContent='#'+ref;
+    lbCopyId.dataset.copyId='#'+ref;
+    lbCopyLink.dataset.copy=anchor;
+  }
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy a card's short display id, or copy/share its deep link. The URL is this
+// page plus the card's #id anchor, so a recipient lands scrolled to (and
+// highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  const ci=e.target.closest('[data-copy-id]');
+  if(ci){copyText(ci.dataset.copyId,ci);e.preventDefault();return;}
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+</body></html>
