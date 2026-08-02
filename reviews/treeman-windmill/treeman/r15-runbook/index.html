@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="cc77e5d7ad6db4d65f2fa0327db30e7dc6255eec35f1b4458acc128182211b7f">
+<meta name="ai-stl-plan-digest" content="20bca4a378df8921ce80988e3e2ab646b7cbfd562e9333c477c25179d1154334">
 <title>Treeman-windmill — Round 15 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -268,275 +268,62 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere;
 </style></head><body><main>
 <h1>Treeman-windmill — Round 15 runbook</h1>
 <span class="crosslink" style="opacity:.55;pointer-events:none" title="Published at round close">&#128203; Review panel &mdash; at round close</span>
-<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>photographic-reference preparation + turnaround sweep (clean re-run of r14)</dd><dt>Status</dt><dd>Draft — pre-crop · awaiting sign-off · no images generated yet. The crop manifest and the cleaned reference images do not exist yet; they land in a second version of this page, together with the crop evidence, before sign-off is asked for.</dd><dt>Owner</dt><dd>Claude (local) → Dimitri review (Babs has the final POC say)</dd><dt>Date opened</dt><dd>2026-08-02</dd><dt>Inputs</dt><dd><code>treeman-r12-source-treemolin</code> (the 5-shot TreeMolin sculpt montage) + the r14 sail prompts <code>prompts/r14-clay-turnaround-{A,B,C}.txt</code>, reused byte-identical</dd><dt>Produces</dt><dd><code>treeman-r15-panel-{tr,tl,ml,mr}</code>, <code>treeman-r15-source-4view-turntable-{2x2,1x4}</code>, <code>treeman-r15-template-{2x2,1x4}</code>, <code>treeman-r15-sheet-{A,B,C}-{2x2,1x4}-{grokq,flash31}</code></dd><dt>Branch</dt><dd><code>claude/treeman-r15-runbook-13da17</code></dd><dt>Gemini mode</dt><dd>batch (asynchronous, 50% price; a job may queue minutes–hours against a 24 h provider target — the six flash31 cells are independent and submit in parallel up front, each audited as it lands)</dd><dt>Prior round</dt><dd>r14&#x27;s closing feedback (final, 2026-07-12): r14 stands as a normal round, and its one real defect is the source-panel cropping — raw whole-figure photo crops pasted onto grey slots with the blue backdrop, black display bases and PR logo left in, at inconsistent per-panel scale and framing. Dimitri&#x27;s instruction: re-do the r14 process (same reorder order, same models, same sail treatments) with higher-quality cropping, and document the cropping discipline in the pipeline skill. Every r14 finding — single-view breaks at the rotor, grokq &gt; flash31, treatment B the best sail read, keeper <code>grokq · B · 2×2</code> — is therefore <strong>provisional</strong>, because it was measured on that input.</dd></dl>
+<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>photographic-reference preparation + Meshy run</dd><dt>Status</dt><dd>Awaiting sign-off · no credits spent yet. The reference crops are built and are on the page below; the named-human crop approval is part of this sign-off.</dd><dt>Owner</dt><dd>Claude (local) → Dimitri review (Babs has the final POC say)</dd><dt>Date opened</dt><dd>2026-08-02</dd><dt>Inputs</dt><dd><code>treeman-r12-source-treemolin</code> (the 5-shot TreeMolin sculpt montage), cut into <code>treeman-r15-panel-{tr,tl,ml,mr}</code></dd><dt>Produces</dt><dd><code>treeman-r15-source-4view-turntable-{2x2,1x4}</code>, <code>treeman-r15-template-{2x2,1x4}</code>, and the meshes <code>models/round-15/treeman-r15-photo-m{1,2}</code></dd><dt>Branch</dt><dd><code>claude/treeman-r15-publish</code></dd><dt>Prior round</dt><dd>r14&#x27;s closing feedback (final, 2026-07-12) sent us to re-crop the TreeMolin source properly. The first attempt at that was rejected on 2026-08-02: parts of the sculpt cut out including holes in the hands, backdrop still showing in the gaps between the arms and legs, and the base cut shearing the feet. Dimitri asked for two crop approaches — a simpler rectangular one and a second isolation attempt — and, once the crop was fixed, for the cleaned turnaround to be fed <strong>straight into Meshy</strong> as a worthwhile experiment. This round is that experiment, on the rectangular crop.</dd></dl>
 <h2>Goal</h2>
-<p>Re-run round 14 with one variable changed: the source the model copies from. r14&#x27;s four reference panels still carried the photograph around the sculpt — blue studio backdrop, black display plinths, the PR logo — and each panel was framed and scaled differently, all of which the image model reads as part of the subject. This round rebuilds that reference properly (each figure isolated, everything outside it painted a uniform background, per-panel scale and framing normalized), then repeats r14&#x27;s sweep on it unchanged, so the twelve sheets are directly comparable to r14&#x27;s twelve and we learn what the dirty input actually cost us. Nothing else moves: same rotational panel order, same two models, same two layouts, same three sail treatments, same prompts.</p>
+<p>Two things. <strong>(1)</strong> Settle the reference: cut the four sculpt photos as identically-sized rectangles anchored on each display base, with the backdrop and base left exactly as photographed. <strong>(2)</strong> Test the shortcut. Every round since r11 has assumed the path to an STL runs through a generated clay turnaround — photos in, clay sheet out, clay sheet into Meshy. This round asks whether that middle step is needed at all by feeding the photographic turnaround directly to Meshy. If the reconstruction is good, a whole class of generation rounds stops being necessary; if it breaks, we know what the clay conversion is actually buying us and r16 proceeds with that settled.</p>
 <h2>The choices on the table</h2>
-<p>Everything below runs on the <strong>same cleaned rotational turntable</strong> built in this round&#x27;s first step, and each cell attaches two images — that turntable plus the matching blank panel template. Every treatment runs on <strong>both models (grokq and flash31)</strong> at <strong>both layouts (2×2 and 1×4)</strong>, so each row is four calls. The three rows are the same three sail treatments r14 tested; r14 answered the sail question empirically in favour of B, but it answered it on the dirty input, so all three are back on the table for one clean comparison.</p>
-<div class="tablewrap"><table><thead><tr><th>Choice</th><th>What it tests</th><th>Input(s)</th><th>Rolls</th></tr></thead><tbody><tr><td><a class="caselink" href="#case-a-full-fidelity-sails" title="Jump to this case's inputs">A — full-fidelity sails</a></td><td>Whether a clean reference lets either model hold the sculpt&#x27;s real sail build — a spar rail with plank boards and frayed cloth webs between them. On the dirty input grokq ignored this and flattened it to a slab anyway.</td><td>Cleaned turntable + template</td><td>4</td></tr><tr><td><a class="caselink" href="#case-b-boarded-solid-sails" title="Jump to this case's inputs">B — boarded-solid sails</a></td><td>The compromise r14 landed on: spar plus thick boards, gaps filled solid, no thin cloth. Favoured because the r14 Meshy probe showed the rotor is the fragile, break-prone feature.</td><td>Cleaned turntable + template</td><td>4</td></tr><tr><td><a class="caselink" href="#case-c-solid-slab-sails" title="Jump to this case's inputs">C — solid-slab sails</a></td><td>Accepting a plain tattered slab and relaxing the C2 detector — the simplest thing to print, the least faithful to the sculpt.</td><td>Cleaned turntable + template</td><td>4</td></tr></tbody></table></div>
-<p>Twelve generation calls in total, matching r14 cell for cell.</p>
+<p>The crop is not a choice any more — the rectangular approach is what this round runs, and the second isolation attempt is parked (see below). The choice is what we learn from two Meshy rolls on it.</p>
+<div class="tablewrap"><table><thead><tr><th>Choice</th><th>What it tests</th><th>Input(s)</th><th>Rolls</th></tr></thead><tbody><tr><td><a class="caselink" href="#case-photographic-turnaround-straight-to-meshy" title="Jump to this case's inputs">Photographic turnaround, straight to Meshy</a></td><td>Whether Meshy reconstructs acceptably from photographs of the real sculpt, skipping clay conversion entirely</td><td>The four r15 rectangular panels, as a 4-view Meshy task</td><td>2</td></tr></tbody></table></div>
+<p>Two rolls, not one: feature defects are a per-roll lottery, so the standing rule is two rolls per keeper and pick the defect-free one. Both rolls take identical inputs — the difference between them is Meshy&#x27;s own stochasticity, which is the thing being measured.</p>
+<p><strong>Why the rectangular crop, and what happened to the other one.</strong> The rejected crop was an isolating one: mask the figure, paint out everything else, cut the base away. The second attempt fixed two of the three defects — bounded hysteresis stopped the sculpt being bitten, and subtracting the base as a *region* rather than cutting below its far rim stopped the feet being sheared (that was the actual bug: the ellipse&#x27;s top arc is the base&#x27;s far rim, and the feet live below it). It still leaked in one panel and left a ragged fringe. More importantly, measuring the backdrop showed why this is hard: it is blue in two panels and chromatically neutral in a third, where the *painted sail* reads bluer than the background behind it. Any rule confident enough to clear the backdrop is confident enough to erase a sail. The rectangular crop has no such rule to get wrong — it changes no pixels at all — so it is what this round uses. The isolation work is preserved on Drive under <code>generated/r15-crop-attempt2/</code> in case a later round wants it.</p>
 </div>
 <section class="rb-inputs">
 <h2>Inputs — what this round runs on</h2>
 <p class="blurb">Everything that goes in, grouped by the choice it belongs to. Click any image to zoom; open a prompt to read the exact text this round spends against. Crop sets show both the cut overview and every exact output crop.</p>
-<section class="rb-case" id="case-shared-input-the-cleaned-rotational-turntable">
-<h3 class="rb-case-h">Shared input — the cleaned rotational turntable<span class="rb-case-count">5 images</span></h3>
-<p class="rb-case-note">Every cell below attaches two images: the turntable for its layout, and the matching blank panel template. The four panels are the TreeMolin sculpt photos isolated one at a time — studio backdrop and display base removed, the PR shield excluded by the source box — then composed in rotational order TR, TL, ML, MR (-20 degrees, 0, +45, 180) at a single figure scale. This is the one thing r15 changes from r14, which used the same photographs almost as-is.</p>
-<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Cleaned turntable, 2x2</span><code class="rb-art-id">treeman-r15-source-4view-turntable-2x2</code><button class="ibtn" data-inputs="in-0">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ab4d5c744879c411.jpg" data-cap="treeman-r15-source-4view-turntable-2x2"><img src="../../../../assets/e718b27ef2b9015c.jpg" alt="treeman-r15-source-4view-turntable-2x2" loading="lazy"></div></figure>
+<section class="rb-case" id="case-the-reference-this-round-runs-on">
+<h3 class="rb-case-h">The reference this round runs on<span class="rb-case-count">6 images</span></h3>
+<p class="rb-case-note">Four sculpt photos cut as identically-sized 430x560 rectangles, each anchored on its own display base, in rotational order TR, TL, ML, MR (-20 degrees, 0, +45, 180). Nothing is masked, painted or cut: the backdrop and display base are exactly as photographed, which is why none of the defects that sank the first attempt can occur here. The composed turntables are what r16 would use; this round feeds Meshy the four panels directly.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">tr — near-front, -20 deg</span><code class="rb-art-id">treeman-r15-panel-tr</code><button class="ibtn" data-inputs="in-0">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/17fd47b04201d37d.jpg" data-cap="treeman-r15-panel-tr"><img src="../../../../assets/17fd47b04201d37d.jpg" alt="treeman-r15-panel-tr" loading="lazy"></div></figure>
 </div></div>
-<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Cleaned turntable, 1x4</span><code class="rb-art-id">treeman-r15-source-4view-turntable-1x4</code><button class="ibtn" data-inputs="in-1">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/a24edb15da9e7235.jpg" data-cap="treeman-r15-source-4view-turntable-1x4"><img src="../../../../assets/f10adf795789a91a.jpg" alt="treeman-r15-source-4view-turntable-1x4" loading="lazy"></div></figure>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">tl — front, 0 deg (Meshy front view)</span><code class="rb-art-id">treeman-r15-panel-tl</code><button class="ibtn" data-inputs="in-1">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/2dddbd7033505278.jpg" data-cap="treeman-r15-panel-tl"><img src="../../../../assets/2dddbd7033505278.jpg" alt="treeman-r15-panel-tl" loading="lazy"></div></figure>
 </div></div>
-<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Blank template, 2x2</span><code class="rb-art-id">treeman-r15-template-2x2</code><button class="ibtn" data-inputs="in-2">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/cd5cfe22cf5bd2d2.jpg" data-cap="treeman-r15-template-2x2"><img src="../../../../assets/836041f8e68290bf.jpg" alt="treeman-r15-template-2x2" loading="lazy"></div></figure>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">ml — right three-quarter, +45 deg</span><code class="rb-art-id">treeman-r15-panel-ml</code><button class="ibtn" data-inputs="in-2">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/28301d681ef228ce.jpg" data-cap="treeman-r15-panel-ml"><img src="../../../../assets/28301d681ef228ce.jpg" alt="treeman-r15-panel-ml" loading="lazy"></div></figure>
 </div></div>
-<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Blank template, 1x4</span><code class="rb-art-id">treeman-r15-template-1x4</code><button class="ibtn" data-inputs="in-3">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/06461bd1d06154d6.jpg" data-cap="treeman-r15-template-1x4"><img src="../../../../assets/dd4888baebfaba81.jpg" alt="treeman-r15-template-1x4" loading="lazy"></div></figure>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">mr — back, 180 deg</span><code class="rb-art-id">treeman-r15-panel-mr</code><button class="ibtn" data-inputs="in-3">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/96a2dd544bb475a0.jpg" data-cap="treeman-r15-panel-mr"><img src="../../../../assets/96a2dd544bb475a0.jpg" alt="treeman-r15-panel-mr" loading="lazy"></div></figure>
 </div></div>
-<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">The montage all four panels are cut from</span><code class="rb-art-id">treeman-r12-source-treemolin</code><button class="ibtn" data-inputs="in-4">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/414da03c8a5c8ce9.jpg" data-cap="treeman-r12-source-treemolin"><img src="../../../../assets/7a17e76db8c8012d.jpg" alt="treeman-r12-source-treemolin" loading="lazy"></div></figure>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Composed turntable, 2x2</span><code class="rb-art-id">treeman-r15-source-4view-turntable-2x2</code><button class="ibtn" data-inputs="in-4">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b9532aea464e11b2.jpg" data-cap="treeman-r15-source-4view-turntable-2x2"><img src="../../../../assets/e56e91ef8741b548.jpg" alt="treeman-r15-source-4view-turntable-2x2" loading="lazy"></div></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Composed turntable, 1x4</span><code class="rb-art-id">treeman-r15-source-4view-turntable-1x4</code><button class="ibtn" data-inputs="in-5">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ffc477c1082ed307.jpg" data-cap="treeman-r15-source-4view-turntable-1x4"><img src="../../../../assets/66059956bd76cd15.jpg" alt="treeman-r15-source-4view-turntable-1x4" loading="lazy"></div></figure>
 </div></div>
 </section>
-<section class="rb-case" id="case-a-full-fidelity-sails">
-<h3 class="rb-case-h">A — full-fidelity sails<span class="rb-case-count">1 prompt</span></h3>
-<p class="rb-case-note">Asks for the sculpt&#x27;s real sail build: a spar rail with about three plank boards down one side and frayed cloth webs in the gaps.</p>
+<section class="rb-case" id="case-photographic-turnaround-straight-to-meshy">
+<h3 class="rb-case-h">Photographic turnaround, straight to Meshy<span class="rb-case-count">1 prompt</span></h3>
+<p class="rb-case-note">Two rolls on identical inputs, so the only difference between them is Meshy&#x27;s own stochasticity. The question is whether the clay-conversion step every round since r11 has assumed is needed at all.</p>
 <p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
-<details class="rb-prompt"><summary>Prompt — r14-clay-turnaround-A.txt <span class="rb-size">4 kB</span></summary><p class="path">projects/treeman-windmill/prompts/r14-clay-turnaround-A.txt</p><pre>TWO images are attached. Image 1 is a 4-view REFERENCE turnaround of ONE
-physical sculpted miniature — an ancient hulking treeman fused with a
-ruined windmill — with its panels ALREADY in the target slot order, a
-smooth rotational turntable: slot 1 = NEAR-FRONT (body turned only ~20°, the
-face angled slightly toward the VIEWER&#x27;S LEFT); slot 2 = straight FRONT,
-face square to the viewer; slot 3 = RIGHT THREE-QUARTER (body yawed ~45° so
-the smooth pauldron shoulder turns toward the camera and the face angles
-toward the VIEWER&#x27;S RIGHT); slot 4 = BACK (the full rotor X and ball hub
-centered, the face hidden). Image 2 is a blank panel template.
-
-TASK: repaint this EXACT sculpt as a clean monochrome matte CLAY-SCULPT
-concept turnaround, like a ZBrush screenshot. Repaint each reference panel
-into the MATCHING template slot, following the template&#x27;s reading order
-(a single horizontal row = left to right; a 2x2 grid = top-left, top-right,
-then bottom-left, bottom-right). Keep the SAME camera angle per slot as the
-reference, and the SAME design, hulking pose and proportions in every slot.
-The reference is the truth for every feature: the gaping root-fang maw
-embedded in the chest, the heavy bark brow, the pinecone-scale beard, the
-branch-stub crown with the tilted conical thatched mill cap and mushrooms,
-the horizontal brick courses banding the belly, the smooth wooden pauldron
-plate on one shoulder, the jagged plank along the opposite forearm, the
-horned beast head sculpted into the back of that same forearm (visible in
-the back view), the twisted vine sash, the round puffball growths at the
-hips, the huge chunky segmented talon-claws, and the thick flared
-root-trunk legs.
-
-THE ROTOR: exactly FOUR weathered plank sails in an X configuration
-(diagonals), radiating from a large wooden BALL hub on the mid-back. In the
-near-front and front views (slots 1 and 2) only the two UPPER blades project
-past the silhouette; the lower two stay hidden behind the body and arms. In
-the BACK view (slot 4) the full X and ball hub are centered and clearly
-visible.
-
-SAIL CONSTRUCTION: build each of the four sails exactly as the reference
-sculpt shows — a single rigid SPAR RAIL rooted in the ball hub with ALL of
-the sail&#x27;s surface hanging to ONE side of that rail; about THREE plank
-BOARDS branch off that side, and thin frayed SAIL-CLOTH webs stretch in the
-gaps between the boards (torn scalloped edges, sagging knotted scraps,
-furled rather than flat). Keep the spar + boards + cloth read distinct. Fill
-only the source&#x27;s small round through-holes; KEEP the cloth webs. Rebuild
-the source&#x27;s broken bare lower-left spar (back view) into a matching
-spar+boards+cloth sail.
-
-SIDE ANCHORS (do not mirror the body): the smooth wooden pauldron plate, the
-jagged plank forearm and the pincer hand are all the SAME arm. In the
-near-front and front views (slots 1 and 2) that pauldron/plank/pincer arm is
-on the VIEWER&#x27;S LEFT and the BIG CLAW hand is on the VIEWER&#x27;S RIGHT. In slot
-3 (right three-quarter) the pauldron shoulder is the one rotated toward the
-camera. In the BACK view (slot 4) the pauldron/plank arm is on the VIEWER&#x27;S
-RIGHT, and the horned beast head on the back of the opposite (big-claw)
-forearm appears on the VIEWER&#x27;S LEFT.
-
-MASONRY: mortar-lined horizontal brick courses band the belly/mid-torso and,
-as the reference shows, also course the legs — level horizontal masonry with
-mortar lines (leg brick is correct; keep it level, not slanted).
-
-REMOVE / DO NOT COPY from the photos: the round black display bases and
-cylinder plinths (he stands directly on bare ground — NO base, pedestal,
-rock or ground slab of any kind, both flared root-bells planted flat); the
-dark blue photo backdrop (use a plain uniform LIGHT GREY background); any
-logo or text remnants; the bluish specular highlights on the flat planks
-(that is photo lighting, not material — render everything as uniform matte
-clay, no shine, no metal, no color). Do NOT add a crow or any bird, and no
-new props. Grim, brutal, ancient — never silly, never horror. No text or
-labels anywhere.
-</pre></details>
-</section>
-<section class="rb-case" id="case-b-boarded-solid-sails">
-<h3 class="rb-case-h">B — boarded-solid sails<span class="rb-case-count">1 prompt</span></h3>
-<p class="rb-case-note">Spar plus thick boards with every gap filled solid and no thin cloth, so each sail is one connected slab that still reads as planked.</p>
-<p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
-<details class="rb-prompt"><summary>Prompt — r14-clay-turnaround-B.txt <span class="rb-size">4 kB</span></summary><p class="path">projects/treeman-windmill/prompts/r14-clay-turnaround-B.txt</p><pre>TWO images are attached. Image 1 is a 4-view REFERENCE turnaround of ONE
-physical sculpted miniature — an ancient hulking treeman fused with a
-ruined windmill — with its panels ALREADY in the target slot order, a
-smooth rotational turntable: slot 1 = NEAR-FRONT (body turned only ~20°, the
-face angled slightly toward the VIEWER&#x27;S LEFT); slot 2 = straight FRONT,
-face square to the viewer; slot 3 = RIGHT THREE-QUARTER (body yawed ~45° so
-the smooth pauldron shoulder turns toward the camera and the face angles
-toward the VIEWER&#x27;S RIGHT); slot 4 = BACK (the full rotor X and ball hub
-centered, the face hidden). Image 2 is a blank panel template.
-
-TASK: repaint this EXACT sculpt as a clean monochrome matte CLAY-SCULPT
-concept turnaround, like a ZBrush screenshot. Repaint each reference panel
-into the MATCHING template slot, following the template&#x27;s reading order
-(a single horizontal row = left to right; a 2x2 grid = top-left, top-right,
-then bottom-left, bottom-right). Keep the SAME camera angle per slot as the
-reference, and the SAME design, hulking pose and proportions in every slot.
-The reference is the truth for every feature: the gaping root-fang maw
-embedded in the chest, the heavy bark brow, the pinecone-scale beard, the
-branch-stub crown with the tilted conical thatched mill cap and mushrooms,
-the horizontal brick courses banding the belly, the smooth wooden pauldron
-plate on one shoulder, the jagged plank along the opposite forearm, the
-horned beast head sculpted into the back of that same forearm (visible in
-the back view), the twisted vine sash, the round puffball growths at the
-hips, the huge chunky segmented talon-claws, and the thick flared
-root-trunk legs.
-
-THE ROTOR: exactly FOUR weathered plank sails in an X configuration
-(diagonals), radiating from a large wooden BALL hub on the mid-back. In the
-near-front and front views (slots 1 and 2) only the two UPPER blades project
-past the silhouette; the lower two stay hidden behind the body and arms. In
-the BACK view (slot 4) the full X and ball hub are centered and clearly
-visible.
-
-SAIL CONSTRUCTION: build each of the four sails as a single SOLID piece —
-a spar rail carrying about THREE thick plank BOARDS along one side,
-weathered and tattered at the ends. NO thin cloth webbing and NO holes: any
-gaps between the boards are filled solid so each sail is ONE connected solid
-slab, yet still reads as a constructed plank windmill sail (the separate
-boards show as raised relief, but there is no see-through gap). Rebuild the
-source&#x27;s broken bare lower-left spar (back view) into a matching solid
-boarded sail.
-
-SIDE ANCHORS (do not mirror the body): the smooth wooden pauldron plate, the
-jagged plank forearm and the pincer hand are all the SAME arm. In the
-near-front and front views (slots 1 and 2) that pauldron/plank/pincer arm is
-on the VIEWER&#x27;S LEFT and the BIG CLAW hand is on the VIEWER&#x27;S RIGHT. In slot
-3 (right three-quarter) the pauldron shoulder is the one rotated toward the
-camera. In the BACK view (slot 4) the pauldron/plank arm is on the VIEWER&#x27;S
-RIGHT, and the horned beast head on the back of the opposite (big-claw)
-forearm appears on the VIEWER&#x27;S LEFT.
-
-MASONRY: mortar-lined horizontal brick courses band the belly/mid-torso and,
-as the reference shows, also course the legs — level horizontal masonry with
-mortar lines (leg brick is correct; keep it level, not slanted).
-
-REMOVE / DO NOT COPY from the photos: the round black display bases and
-cylinder plinths (he stands directly on bare ground — NO base, pedestal,
-rock or ground slab of any kind, both flared root-bells planted flat); the
-dark blue photo backdrop (use a plain uniform LIGHT GREY background); any
-logo or text remnants; the bluish specular highlights on the flat planks
-(that is photo lighting, not material — render everything as uniform matte
-clay, no shine, no metal, no color). Do NOT add a crow or any bird, and no
-new props. Grim, brutal, ancient — never silly, never horror. No text or
-labels anywhere.
-</pre></details>
-</section>
-<section class="rb-case" id="case-c-solid-slab-sails">
-<h3 class="rb-case-h">C — solid-slab sails<span class="rb-case-count">1 prompt</span></h3>
-<p class="rb-case-note">A plain tattered slab, no construction clause — the simplest thing to print and the least faithful to the sculpt.</p>
-<p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
-<details class="rb-prompt"><summary>Prompt — r14-clay-turnaround-C.txt <span class="rb-size">4 kB</span></summary><p class="path">projects/treeman-windmill/prompts/r14-clay-turnaround-C.txt</p><pre>TWO images are attached. Image 1 is a 4-view REFERENCE turnaround of ONE
-physical sculpted miniature — an ancient hulking treeman fused with a
-ruined windmill — with its panels ALREADY in the target slot order, a
-smooth rotational turntable: slot 1 = NEAR-FRONT (body turned only ~20°, the
-face angled slightly toward the VIEWER&#x27;S LEFT); slot 2 = straight FRONT,
-face square to the viewer; slot 3 = RIGHT THREE-QUARTER (body yawed ~45° so
-the smooth pauldron shoulder turns toward the camera and the face angles
-toward the VIEWER&#x27;S RIGHT); slot 4 = BACK (the full rotor X and ball hub
-centered, the face hidden). Image 2 is a blank panel template.
-
-TASK: repaint this EXACT sculpt as a clean monochrome matte CLAY-SCULPT
-concept turnaround, like a ZBrush screenshot. Repaint each reference panel
-into the MATCHING template slot, following the template&#x27;s reading order
-(a single horizontal row = left to right; a 2x2 grid = top-left, top-right,
-then bottom-left, bottom-right). Keep the SAME camera angle per slot as the
-reference, and the SAME design, hulking pose and proportions in every slot.
-The reference is the truth for every feature: the gaping root-fang maw
-embedded in the chest, the heavy bark brow, the pinecone-scale beard, the
-branch-stub crown with the tilted conical thatched mill cap and mushrooms,
-the horizontal brick courses banding the belly, the smooth wooden pauldron
-plate on one shoulder, the jagged plank along the opposite forearm, the
-horned beast head sculpted into the back of that same forearm (visible in
-the back view), the twisted vine sash, the round puffball growths at the
-hips, the huge chunky segmented talon-claws, and the thick flared
-root-trunk legs.
-
-THE ROTOR: exactly FOUR weathered plank sails in an X configuration
-(diagonals), radiating from a large wooden BALL hub on the mid-back. In the
-near-front and front views (slots 1 and 2) only the two UPPER blades project
-past the silhouette; the lower two stay hidden behind the body and arms. In
-the BACK view (slot 4) the full X and ball hub are centered and clearly
-visible.
-
-SAIL CONSTRUCTION: render each of the four sails as ONE connected,
-fully-closed SOLID slab — weathered, tattered and ragged at the edges, but
-with NO holes, NO gaps between boards, NO open framework and NO thin cloth.
-Rebuild the source&#x27;s broken bare lower-left spar (back view) into a solid
-tattered slab like its three siblings.
-
-SIDE ANCHORS (do not mirror the body): the smooth wooden pauldron plate, the
-jagged plank forearm and the pincer hand are all the SAME arm. In the
-near-front and front views (slots 1 and 2) that pauldron/plank/pincer arm is
-on the VIEWER&#x27;S LEFT and the BIG CLAW hand is on the VIEWER&#x27;S RIGHT. In slot
-3 (right three-quarter) the pauldron shoulder is the one rotated toward the
-camera. In the BACK view (slot 4) the pauldron/plank arm is on the VIEWER&#x27;S
-RIGHT, and the horned beast head on the back of the opposite (big-claw)
-forearm appears on the VIEWER&#x27;S LEFT.
-
-MASONRY: mortar-lined horizontal brick courses band the belly/mid-torso and,
-as the reference shows, also course the legs — level horizontal masonry with
-mortar lines (leg brick is correct; keep it level, not slanted).
-
-REMOVE / DO NOT COPY from the photos: the round black display bases and
-cylinder plinths (he stands directly on bare ground — NO base, pedestal,
-rock or ground slab of any kind, both flared root-bells planted flat); the
-dark blue photo backdrop (use a plain uniform LIGHT GREY background); any
-logo or text remnants; the bluish specular highlights on the flat planks
-(that is photo lighting, not material — render everything as uniform matte
-clay, no shine, no metal, no color). Do NOT add a crow or any bird, and no
-new props. Grim, brutal, ancient — never silly, never horror. No text or
-labels anywhere.
-</pre></details>
-</section>
-<section class="rb-case" id="case-crop-evidence-what-the-gate-approves">
-<h3 class="rb-case-h">Crop evidence — what the gate approves<span class="rb-case-count">4 images · 1 prompt</span></h3>
-<p class="rb-case-note">Each source box at 2x beside the silhouette that survived it: the retained outline in green, everything dropped faded out. This is the comparison the named human makes before r15 spends anything. Known residue to judge: a few hundred pixels of backdrop (0.3-0.9% of each silhouette) survive in enclosed gaps between the rotor arms and between the legs, and figure heights are normalized on the silhouette bounding box, which is exact for the box but leaves the sculpt itself within about 5% across views.</p>
-<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">tr (-20 deg)</span><code class="rb-art-id">treeman-r15-crop-evidence-tr</code><button class="ibtn" data-inputs="in-5">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/9a993a8801801793.jpg" data-cap="treeman-r15-crop-evidence-tr"><img src="../../../../assets/38540c81e896047d.jpg" alt="treeman-r15-crop-evidence-tr" loading="lazy"></div></figure>
-</div></div>
-<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">tl (0 deg)</span><code class="rb-art-id">treeman-r15-crop-evidence-tl</code><button class="ibtn" data-inputs="in-6">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/980678802b65e765.jpg" data-cap="treeman-r15-crop-evidence-tl"><img src="../../../../assets/e0a8ccf2ef3801e5.jpg" alt="treeman-r15-crop-evidence-tl" loading="lazy"></div></figure>
-</div></div>
-<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">ml (+45 deg)</span><code class="rb-art-id">treeman-r15-crop-evidence-ml</code><button class="ibtn" data-inputs="in-7">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/2cc20cb35caba0cf.jpg" data-cap="treeman-r15-crop-evidence-ml"><img src="../../../../assets/0e3ce06f6c1abadd.jpg" alt="treeman-r15-crop-evidence-ml" loading="lazy"></div></figure>
-</div></div>
-<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">mr (180 deg)</span><code class="rb-art-id">treeman-r15-crop-evidence-mr</code><button class="ibtn" data-inputs="in-8">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/cc7bdd50d138e9aa.jpg" data-cap="treeman-r15-crop-evidence-mr"><img src="../../../../assets/106ceab1e654213c.jpg" alt="treeman-r15-crop-evidence-mr" loading="lazy"></div></figure>
-</div></div>
-<details class="rb-prompt"><summary>Manifest — Crop manifest (source boxes and base rims) <span class="rb-size">2 kB</span></summary><p class="path">projects/treeman-windmill/runbooks/r15-reference-crops.json</p><pre>{
+<details class="rb-prompt"><summary>Manifest — Crop manifest — source boxes, base anchors, rectangle size <span class="rb-size">3 kB</span></summary><p class="path">projects/treeman-windmill/runbooks/r15-reference-crops.json</p><pre>{
   &quot;purpose&quot;: &quot;photographic-reference&quot;,
   &quot;source&quot;: &quot;../concept-art/round-12/treeman-r12-source-treemolin.jpg&quot;,
   &quot;threshold&quot;: 90,
   &quot;background&quot;: [230, 230, 230],
 
   &quot;_boxes&quot;: &quot;Source boxes are cut INSIDE each montage cell, clear of the PR shield at x 536-652, y 606-742. The shield straddles both the row gutter and the vertical seam, so it reaches into all four cells; the mid-row boxes stop at x=528 / start at x=660 and the top-row boxes stop at y=604 to keep it out. Excluding it by BOX rather than by exclude_boxes matters: the shield sits on the left/right edge bands the background ramp is estimated from, so leaving it inside a box poisons the background model for every row it touches — which is why r14&#x27;s automatic attempt was rejected here.&quot;,
-  &quot;_base_ellipses&quot;: &quot;cx, cy, rx, ry of each display base&#x27;s TOP surface, in panel pixels. tl/ml/mr were fitted from the mask&#x27;s own bottom silhouette and then frozen; tr was measured by hand off a pixel grid, because its threshold mask leaks into the black cylinder and drags an automatic fit ~40px too low. Each is widened 8px in x (2px in y) past the fitted rim so the disc&#x27;s outer edge goes with it.&quot;,
+  &quot;_base_ellipses&quot;: &quot;cx, cy, rx, ry of each display base&#x27;s TOP surface, in panel pixels. In rectangle mode these are no longer a cut — nothing is cut — they are the ANCHOR: the sculpt stands in the middle of its base, so the base&#x27;s centre and near rim place an identically-sized window the same way in every panel. tl/ml/mr were fitted from the mask&#x27;s own bottom silhouette; tr was measured by hand off a pixel grid, because its threshold mask leaks into the bright corner.&quot;,
+  &quot;_rectangle&quot;: &quot;Approach 1 (Dimitri, 2026-08-02), after the isolating crop was rejected: parts of the sculpt cut out, holes in the hands, backdrop still showing in the gaps, and the base cut shearing the feet. The four photos were shot at ONE camera distance, so identical rectangles preserve the sculpt&#x27;s true relative scale exactly — better than normalising a silhouette box, which breathes with the raised arm. Nothing is masked, painted or cut: backdrop and display base stay as photographed, so none of those four defects can occur by construction. The tool still computes a mask, but only to CHECK the subject fits inside the window; if it does not, the run fails.&quot;,
+  &quot;rectangle&quot;: {&quot;size&quot;: [430, 560], &quot;foot_pad&quot;: 18},
   &quot;_order&quot;: &quot;Rotational turntable, unchanged from r14: tr = -20 deg (near-front), tl = 0 (front), ml = +45 (right three-quarter), mr = 180 (back). Dimitri&#x27;s angle read from the physical sculpt in hand.&quot;,
-  &quot;_slots&quot;: &quot;Slot aspect (0.89) is deliberately wider than the widest panel&#x27;s (mr, 0.85) so panel HEIGHT binds for all four and the figures come out at one scale. Sheet heights match r14&#x27;s references (3584 and ~900) so this round changes the reference&#x27;s cleanliness, not its size.&quot;,
+  &quot;_slots&quot;: &quot;All four panels are the same 430x560 rectangle, so the slot scales them identically and the sculpt&#x27;s true relative scale survives composition. Sheet heights match r14&#x27;s references (3584 and ~900), so what changed against r14 is the framing, not the size.&quot;,
 
   &quot;panels&quot;: [
-    {&quot;id&quot;: &quot;tr&quot;, &quot;box&quot;: [660, 4, 1164, 604], &quot;base_ellipse&quot;: [204, 534, 104, 26], &quot;margin&quot;: 16},
-    {&quot;id&quot;: &quot;tl&quot;, &quot;box&quot;: [4, 4, 528, 604], &quot;base_ellipse&quot;: [256, 539, 112, 28], &quot;margin&quot;: 16},
-    {&quot;id&quot;: &quot;ml&quot;, &quot;box&quot;: [4, 625, 528, 1218], &quot;base_ellipse&quot;: [266, 529, 116, 29], &quot;margin&quot;: 16},
-    {&quot;id&quot;: &quot;mr&quot;, &quot;box&quot;: [660, 625, 1164, 1218], &quot;base_ellipse&quot;: [204, 520, 118, 30], &quot;margin&quot;: 16}
+    {&quot;id&quot;: &quot;tr&quot;, &quot;box&quot;: [660, 4, 1164, 604], &quot;base_ellipse&quot;: [204, 534, 104, 26]},
+    {&quot;id&quot;: &quot;tl&quot;, &quot;box&quot;: [4, 4, 528, 604], &quot;base_ellipse&quot;: [256, 539, 112, 28]},
+    {&quot;id&quot;: &quot;ml&quot;, &quot;box&quot;: [4, 625, 528, 1218], &quot;base_ellipse&quot;: [266, 529, 116, 29]},
+    {&quot;id&quot;: &quot;mr&quot;, &quot;box&quot;: [660, 625, 1164, 1218], &quot;base_ellipse&quot;: [204, 520, 118, 30]}
   ],
   &quot;review_order&quot;: [&quot;tr&quot;, &quot;tl&quot;, &quot;ml&quot;, &quot;mr&quot;],
   &quot;layouts&quot;: [
@@ -546,97 +333,91 @@ labels anywhere.
 }
 </pre></details>
 </section>
+<section class="rb-case" id="case-crop-evidence-what-the-gate-approves">
+<h3 class="rb-case-h">Crop evidence — what the gate approves<span class="rb-case-count">4 images</span></h3>
+<p class="rb-case-note">Each source box at 2x with the rectangle taken (green), the subject box the tool checked against it (cyan), and the base anchor it was placed by (orange), beside the resulting crop. The crops are byte-identical to the source pixels beneath them. tr and mr were each nudged 11px to stay inside their source box, so they are not exactly base-centred; the report records the offset rather than hiding it.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">tr (-20 deg)</span><code class="rb-art-id">treeman-r15-crop-evidence-tr</code><button class="ibtn" data-inputs="in-6">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/da66a15a6b3d2c34.jpg" data-cap="treeman-r15-crop-evidence-tr"><img src="../../../../assets/663e7bf1246301a6.jpg" alt="treeman-r15-crop-evidence-tr" loading="lazy"></div></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">tl (0 deg)</span><code class="rb-art-id">treeman-r15-crop-evidence-tl</code><button class="ibtn" data-inputs="in-7">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/471ca0b4d9545ade.jpg" data-cap="treeman-r15-crop-evidence-tl"><img src="../../../../assets/aed4e0abf0c627e5.jpg" alt="treeman-r15-crop-evidence-tl" loading="lazy"></div></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">ml (+45 deg)</span><code class="rb-art-id">treeman-r15-crop-evidence-ml</code><button class="ibtn" data-inputs="in-8">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/a18f820274fdffc2.jpg" data-cap="treeman-r15-crop-evidence-ml"><img src="../../../../assets/3aee49dcb5060fdf.jpg" alt="treeman-r15-crop-evidence-ml" loading="lazy"></div></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">mr (180 deg)</span><code class="rb-art-id">treeman-r15-crop-evidence-mr</code><button class="ibtn" data-inputs="in-9">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/f3404b3f08a0a59a.jpg" data-cap="treeman-r15-crop-evidence-mr"><img src="../../../../assets/987cb5ff91c9480a.jpg" alt="treeman-r15-crop-evidence-mr" loading="lazy"></div></figure>
+</div></div>
+</section>
 </section>
 <div class="md">
 <h2>How the round is judged</h2>
-<p><strong>A named-human crop gate comes first, before any paid call.</strong> The r14 post-mortem imposed this for the next two photographic-reference preparation rounds, and r15 is the first of the two: the crop step emits every source and output silhouette plus a geometry/hash report, and a named human compares them at 2× and records reviewer, date and verdict in <code>rounds.md</code>. No response means hold. The overview thumbnail proves ordering only — it is not the gate. This source in particular needs reviewed explicit masks: its automatic settings were already rejected once because the plinth touches the roots and the logo overlaps the lower panels&#x27; crop region.</p>
-<p>Once sheets start landing, each roll is screened three ways as it arrives, not in a batch at the end:</p>
-<ul>
-<li>the <code>C1</code>–<code>C9</code> detectors under the corrected review spec (v2), unchanged from r13/r14, so the numbers are comparable across rounds;</li>
-<li>the standard unbiased blind-detect pass, which describes each sheet without ever seeing the brief and then grades it against the spec (budgeted below);</li>
-<li>a fresh-context crop audit subagent.</li>
-</ul>
-<p>Any disagreement between the blind pass and the crop audit is a mandatory human look. One round-specific item on top of the standard checklist: for each treatment, compare the clean-input sheet against its r14 dirty-input counterpart at the same model and layout, and say whether the r14 findings survive — grokq over flash31, treatment B as the sail answer, and the <code>grokq · B · 2×2</code> keeper. Dimitri&#x27;s eye is the gate on the keeper; Babs has the final POC say.</p>
+<p><strong>The crop gate comes first and is part of this sign-off.</strong> r15 is the first of the two photographic-reference rounds that need a named human to approve the crop evidence at 2× before any paid call — evidence is on this page and in <code>treeman-r15-crop-evidence-{tr,tl,ml,mr}.png</code>, each showing the source box with the rectangle taken, the subject box, and the base anchor, beside the resulting crop. The mechanical checks that back it: the tool refuses outright if the subject falls outside its rectangle, all four crops are byte-identical to the source pixels under them, and any rectangle nudged off its base anchor to stay inside the source box reports the offset (<code>tr</code> and <code>mr</code> are each shifted 11px).</p>
+<p>Each returned mesh is then judged as any mesh is: pushed to Drive the moment it lands, validated with trimesh for watertightness and scaled to target height, probed with <code>mesh_thin_parts.py</code> at the tight setting (pitch ~0.28, erode 1) for thin necks around the rotor, and rendered as a turnaround plus zoomed crops of the hands, sails and feet. A fresh-context per-feature review compares each roll against the source photographs as gold, walking a complete feature checklist rather than looking holistically. That review is a pre-filter, not the gate: the gate is Dimitri rotating the real STL in a viewer, at ~50 mm on the longest axis.</p>
+<p>The round-specific question on top of that: <strong>does this mesh beat what the r14 clay path produced?</strong> The r14 diagnostic probe broke at the rotor. If the photographic reconstruction holds the rotor together, the clay sweep planned for r16 is probably unnecessary.</p>
 <h2>What we need from you</h2>
-<p>Three things, at three different moments:</p>
 <ol>
-<li><strong>Now — sign off this plan</strong> and the twelve-cell shape, before the crop work starts.</li>
-<li><strong>Mid-round — approve the crop evidence by name</strong>, comparing source and output silhouettes at 2×. This is a hard gate: paid generation does not start without it, and it is required for this round and one more after it.</li>
-<li><strong>At close — confirm the keeper</strong> and whether treatment B stands as the resolution of the sail question (<code>C2</code>), now that it has been tested on a clean input.</li>
+<li><strong>Approve the crops by name</strong> — this is the hard gate, and no credits are spent without it.</li>
+<li><strong>Green-light 40 Meshy credits</strong> for the two rolls.</li>
+<li><strong>At close — the call on r16:</strong> whether the clay-conversion sweep still needs to run, and Babs&#x27;s read on the mesh.</li>
 </ol>
 <h2>Cost</h2>
-<p>Generation: 6 grokq rolls at ≈$0.08 and 6 flash31 rolls at ≈$0.10 (batch halves the flash31 half in practice) → <strong>≤ $1.10</strong>. Blind-detect: ~2 <code>gemini-2.5-flash</code> calls per roll → <strong>≤ $0.15</strong>. Detector review across twelve sheets → <strong>≤ $0.25</strong>. Round cap <strong>$1.50</strong>; these are conservative ceilings, not measurements. No Meshy credits — the STL round is r16.</p>
+<p>Two Meshy runs at ~20 credits each → <strong>~40 credits</strong>. No image generation, so no Gemini or OpenRouter spend and no <code>Gemini mode</code> line. Mesh validation and rendering are local and free.</p>
 <details>
-<summary>Technical plan — models, prompts, commands (pipeline detail)</summary>
+<summary>Technical plan — crops, Meshy inputs, commands (pipeline detail)</summary>
 <h3>What changed going in (spec / prompt / process deltas)</h3>
 <ul>
-<li><strong>The reference is rebuilt through <code>tools/reference_crops.py</code></strong>, the tool the r14 post-mortem produced, driven by a committed manifest (<code>runbooks/r15-reference-crops.json</code>) so every destructive decision — source box, panel order, background threshold, replacement colour, base cutoff, exclusions — is reviewable text rather than a claim. Per-panel: isolate the figure, paint everything outside it a uniform background, normalize scale and framing. <strong>Explicit reviewed masks, not automatic cutoff/exclusion:</strong> the tool&#x27;s own draft on this source rejected the automatic settings because the plinth touches the roots and the logo overlaps the lower panels&#x27; crop region, and it refuses edge-clipped foreground rather than silently tightening the box. The bottom 70 mm scale shot stays unused.</li>
-<li><strong>Panel order is unchanged from r14:</strong> <code>TR → TL → ML → MR</code> = −20° → 0° → +45° → 180°, Dimitri&#x27;s angle read from the physical sculpt in hand. The honest weak spot is unchanged too and is not fixable by cropping: the source has no true 90° side profile and no rear-three-quarter on either side, so coverage runs −20°→180° with a ~135° gap before the back and nothing on the 180°–340° arc.</li>
-<li><strong>New templates</strong> regenerated from the cleaned panels (<code>make_turnaround_template.py --match-image</code>), because normalizing per-panel framing moves the figure bounding box the slot aspect is matched to. If the cleaned bbox turns out to match r14&#x27;s within a few percent, reuse <code>treeman-r14-template-{2x2,1x4}</code> unchanged and say so in <code>rounds.md</code> rather than minting a near-identical asset.</li>
-<li><strong>Prompts are unchanged, deliberately.</strong> This round reuses <code>prompts/r14-clay-turnaround-{A,B,C}.txt</code> byte-identical — already committed, so <code>git diff</code> against r14 is empty and the &quot;only the input changed&quot; claim is verified by diff rather than by prose. The three files share one held-constant identity/program block and differ only in their SAIL CONSTRUCTION paragraph. Each declares its exact attached inputs (&quot;TWO images are attached. Image 1 is … Image 2 is …&quot;) and each describes the slot order this round still uses, so nothing in them needs re-editing.</li>
-<li><strong><code>review-spec.json</code> is unchanged</strong> (v2, the corrected anchors). Holding the detectors fixed is what makes the r15-vs-r14 comparison meaningful.</li>
-<li><strong>Model policy unchanged:</strong> grokq (<code>x-ai/grok-imagine-image-quality</code>, 2K, via <code>openrouter_gen.py</code>, aspect forced per layout) and flash31 (<code>gemini-3.1-flash-image</code>, 2K, via <code>gemini_gen.py</code>, Batch by default, inherits the template&#x27;s shape natively). flash31 is retained despite r14 ghost-smearing its right-3Q/back panels in treatments B and C, precisely because a clean input is the standing explanation for that.</li>
+<li><strong><code>tools/reference_crops.py</code> gains a rectangle mode.</strong> Driven by <code>runbooks/r15-reference-crops.json</code>, which now carries a <code>rectangle</code> block (<code>size: [430, 560]</code>, <code>foot_pad: 18</code>) alongside the per-panel source boxes and base ellipses. In this mode the base ellipse is no longer a cut — nothing is cut — it is the *anchor*: the sculpt stands in the middle of its base, so the base&#x27;s centre and near rim place an identically-sized window the same way in every panel. Because the four frames were shot at one camera distance, identical rectangles preserve the sculpt&#x27;s true relative scale exactly, where normalising a silhouette bounding box only approximates it (that box breathes with the raised arm). A mask is still computed, but only to check the subject fits; if it does not, the run fails rather than trimming a limb.</li>
+<li><strong>Panel order is unchanged from r14 and r15&#x27;s first attempt:</strong> <code>TR → TL → ML → MR</code> = −20° → 0° → +45° → 180°, Dimitri&#x27;s angle read from the physical sculpt in hand. The source&#x27;s honest weak spot is unchanged and is not fixable by cropping: no true 90° side profile and no rear-three-quarter on either side, so coverage runs −20°→180° with a ~135° gap before the back and nothing on the 180°–340° arc. For a Meshy round this matters more than it did for an image round — the reconstruction will have to invent both sides, and the review should look there first.</li>
+<li><strong>The PR shield is excluded by source box, not by an exclusion rectangle.</strong> It straddles the row gutter and the vertical seam, so it reaches into all four cells; and because it sits on the edge bands the background ramp is estimated from, leaving it inside a box poisons the background model for every row it touches.</li>
+<li><strong>Meshy inputs are the four panels as-is</strong> — no <code>meshy_crops.py</code> pass. That tool&#x27;s rectangular slot split is for clean generated sheets; these panels are already the individual views.</li>
+<li><strong>No remesh.</strong> <code>--no-remesh</code> as standard, so we see what the reconstruction actually produced.</li>
 </ul>
 <h3>Experiment matrix</h3>
-<p>Step 0 — reference preparation (no paid calls, gated on the named-human crop approval):</p>
-<div class="tablewrap"><table><thead><tr><th>#</th><th>Source (input)</th><th>Operation</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>P1</td><td><code>treeman-r12-source-treemolin</code></td><td><code>reference_crops.py</code>, explicit masks, uniform bg</td><td><code>treeman-r15-panel-{tr,tl,ml,mr}</code></td></tr><tr><td>P2</td><td>the four cleaned panels</td><td>assemble in <code>TR→TL→ML→MR</code></td><td><code>treeman-r15-source-4view-turntable-{2x2,1x4}</code></td></tr><tr><td>P3</td><td><code>treeman-r15-panel-tl</code></td><td><code>make_turnaround_template.py --match-image</code></td><td><code>treeman-r15-template-{2x2,1x4}</code></td></tr></tbody></table></div>
-<p>Steps 1–3 — the sweep, twelve cells, all independent (the six flash31 cells submit to Batch in parallel up front):</p>
-<div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Variant axes</th><th>Prompt</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>1</td><td><code>…-turntable-2x2</code> + <code>…-template-2x2</code></td><td>A · grokq · <code>--aspect 3:4</code></td><td><code>r14-clay-turnaround-A.txt</code></td><td><code>treeman-r15-sheet-A-2x2-grokq</code></td></tr><tr><td>2</td><td><code>…-turntable-2x2</code> + <code>…-template-2x2</code></td><td>A · flash31 · native</td><td><code>r14-clay-turnaround-A.txt</code></td><td><code>treeman-r15-sheet-A-2x2-flash31</code></td></tr><tr><td>3</td><td><code>…-turntable-1x4</code> + <code>…-template-1x4</code></td><td>A · grokq · <code>--aspect 3:1</code></td><td><code>r14-clay-turnaround-A.txt</code></td><td><code>treeman-r15-sheet-A-1x4-grokq</code></td></tr><tr><td>4</td><td><code>…-turntable-1x4</code> + <code>…-template-1x4</code></td><td>A · flash31 · native</td><td><code>r14-clay-turnaround-A.txt</code></td><td><code>treeman-r15-sheet-A-1x4-flash31</code></td></tr><tr><td>5</td><td><code>…-turntable-2x2</code> + <code>…-template-2x2</code></td><td>B · grokq · <code>--aspect 3:4</code></td><td><code>r14-clay-turnaround-B.txt</code></td><td><code>treeman-r15-sheet-B-2x2-grokq</code></td></tr><tr><td>6</td><td><code>…-turntable-2x2</code> + <code>…-template-2x2</code></td><td>B · flash31 · native</td><td><code>r14-clay-turnaround-B.txt</code></td><td><code>treeman-r15-sheet-B-2x2-flash31</code></td></tr><tr><td>7</td><td><code>…-turntable-1x4</code> + <code>…-template-1x4</code></td><td>B · grokq · <code>--aspect 3:1</code></td><td><code>r14-clay-turnaround-B.txt</code></td><td><code>treeman-r15-sheet-B-1x4-grokq</code></td></tr><tr><td>8</td><td><code>…-turntable-1x4</code> + <code>…-template-1x4</code></td><td>B · flash31 · native</td><td><code>r14-clay-turnaround-B.txt</code></td><td><code>treeman-r15-sheet-B-1x4-flash31</code></td></tr><tr><td>9</td><td><code>…-turntable-2x2</code> + <code>…-template-2x2</code></td><td>C · grokq · <code>--aspect 3:4</code></td><td><code>r14-clay-turnaround-C.txt</code></td><td><code>treeman-r15-sheet-C-2x2-grokq</code></td></tr><tr><td>10</td><td><code>…-turntable-2x2</code> + <code>…-template-2x2</code></td><td>C · flash31 · native</td><td><code>r14-clay-turnaround-C.txt</code></td><td><code>treeman-r15-sheet-C-2x2-flash31</code></td></tr><tr><td>11</td><td><code>…-turntable-1x4</code> + <code>…-template-1x4</code></td><td>C · grokq · <code>--aspect 3:1</code></td><td><code>r14-clay-turnaround-C.txt</code></td><td><code>treeman-r15-sheet-C-1x4-grokq</code></td></tr><tr><td>12</td><td><code>…-turntable-1x4</code> + <code>…-template-1x4</code></td><td>C · flash31 · native</td><td><code>r14-clay-turnaround-C.txt</code></td><td><code>treeman-r15-sheet-C-1x4-flash31</code></td></tr></tbody></table></div>
+<p>Reference preparation (no credits, gated on the named-human crop approval):</p>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Source (input)</th><th>Operation</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>P1</td><td><code>treeman-r12-source-treemolin</code></td><td><code>reference_crops.py</code>, rectangle mode</td><td><code>treeman-r15-panel-{tr,tl,ml,mr}</code></td></tr><tr><td>P2</td><td>the four panels</td><td>compose in <code>TR→TL→ML→MR</code></td><td><code>treeman-r15-source-4view-turntable-{2x2,1x4}</code></td></tr><tr><td>P3</td><td><code>treeman-r15-panel-tl</code></td><td><code>make_turnaround_template.py --match-image</code></td><td><code>treeman-r15-template-{2x2,1x4}</code></td></tr></tbody></table></div>
+<p>Meshy (40 credits), two independent rolls on identical inputs:</p>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Front</th><th>Other views</th><th>Out</th></tr></thead><tbody><tr><td>M1</td><td><code>treeman-r15-panel-tl</code> (0°)</td><td><code>tr</code> (−20°), <code>ml</code> (+45°), <code>mr</code> (180°)</td><td><code>models/round-15/treeman-r15-photo-m1</code></td></tr><tr><td>M2</td><td><code>treeman-r15-panel-tl</code> (0°)</td><td><code>tr</code> (−20°), <code>ml</code> (+45°), <code>mr</code> (180°)</td><td><code>models/round-15/treeman-r15-photo-m2</code></td></tr></tbody></table></div>
+<p>The templates (P3) are not used by this round — they are built here because r16 needs them and they derive from these panels.</p>
 <h3>Commands (run after sign-off)</h3>
-<p>Setup — dependencies, secrets, and the source binaries (binaries are gitignored and live on Drive):</p>
+<p>Setup — dependencies and the source binaries (binaries are gitignored and live on Drive):</p>
 <pre class="code"><code>pip install -r requirements.txt
-tools/drive_sync.sh pull projects/treeman-windmill/concept-art/round-12
-tools/drive_sync.sh pull projects/treeman-windmill/generated</code></pre>
-<p>Step 0 — reference preparation. Emits panels, layouts, the labelled overview and the geometry/hash report; <strong>stop here</strong> and put the evidence in front of a named human before anything paid runs:</p>
+tools/drive_sync.sh pull projects/treeman-windmill/concept-art/round-12</code></pre>
+<p>Reference preparation. Emits panels, layouts, the labelled overview and the geometry/hash report; <strong>stop here</strong> and put the evidence in front of a named human before anything paid runs:</p>
 <pre class="code"><code>python3 tools/reference_crops.py \
   --manifest projects/treeman-windmill/runbooks/r15-reference-crops.json \
-  --out-dir projects/treeman-windmill/generated
-python3 tools/make_turnaround_template.py --grid 2x2 \
-  --match-image projects/treeman-windmill/generated/treeman-r15-panel-tl.png \
-  --out projects/treeman-windmill/generated/treeman-r15-template-2x2.png
-python3 tools/make_turnaround_template.py --grid 1x4 \
-  --match-image projects/treeman-windmill/generated/treeman-r15-panel-tl.png \
-  --out projects/treeman-windmill/generated/treeman-r15-template-1x4.png
+  --out-dir projects/treeman-windmill/generated/r15-crops
 tools/drive_sync.sh push projects/treeman-windmill/generated</code></pre>
-<p>Compare every source and output silhouette at 2×, record the reviewer, date and verdict in <code>rounds.md</code>, and only then continue.</p>
-<p>Steps 1–3 — the sweep, one command per treatment, all three launched together so the flash31 Batch jobs queue in parallel:</p>
+<p>Both Meshy rolls, expressed as one manifest so the task ids are durable and polling is concurrent:</p>
 <pre class="code"><code>G=projects/treeman-windmill/generated
-P=projects/treeman-windmill/prompts
-for T in A B C; do
-  python3 tools/compare_gen.py --variants grokq,flash31 \
-    --image $G/treeman-r15-source-4view-turntable-2x2.png \
-    --image $G/treeman-r15-template-2x2.png \
-    --prompt-file $P/r14-clay-turnaround-$T.txt \
-    --out-dir $G --out-stem treeman-r15-sheet-$T-2x2 &amp;
-  python3 tools/compare_gen.py --variants grokq,flash31 \
-    --image $G/treeman-r15-source-4view-turntable-1x4.png \
-    --image $G/treeman-r15-template-1x4.png \
-    --prompt-file $P/r14-clay-turnaround-$T.txt \
-    --out-dir $G --out-stem treeman-r15-sheet-$T-1x4 &amp;
-done; wait</code></pre>
-<p>If grokq ignores the layout aspect through <code>compare_gen.py</code> as it did in r14, re-run just that cell through <code>openrouter_gen.py</code> with <code>--aspect 3:4</code> (2×2) or <code>3:1</code> (1×4). Push each sheet to Drive as it lands.</p>
-<p>Screening, per roll, as it arrives:</p>
-<pre class="code"><code>python3 tools/blind_detect.py --image $G/&lt;stem&gt;-1.png \
-  --brief projects/treeman-windmill/spec.md --json - \
-  | python3 tools/review_log.py --project treeman-windmill --json -
-python3 tools/gemini_review.py --spec projects/treeman-windmill/review-spec.json \
-  --sheet $G/&lt;stem&gt;-1.png --out projects/treeman-windmill/concept-art/round-15/</code></pre>
-<p>Dispatch the fresh-context crop audit alongside each of those, log its verdict to <code>reviews.jsonl</code>, then build the panel (<code>tools/review_page.py --inline</code> → claude.ai artifact, plus the unlisted Pages copy per PROJECT.md). The durable log is <a href="../rounds.md"><code>../rounds.md</code></a> — that and the <code>r15-panel</code> review, not this runbook, are where the round&#x27;s outcome and verdicts live.</p>
+python3 tools/meshy_manifest.py run --no-remesh \
+  --task &quot;treeman-r15-photo-m1:front=$G/treeman-r15-panel-tl.png,\
+views=$G/treeman-r15-panel-tr.png:$G/treeman-r15-panel-ml.png:$G/treeman-r15-panel-mr.png&quot; \
+  --task &quot;treeman-r15-photo-m2:front=$G/treeman-r15-panel-tl.png,\
+views=$G/treeman-r15-panel-tr.png:$G/treeman-r15-panel-ml.png:$G/treeman-r15-panel-mr.png&quot; \
+  --out-dir projects/treeman-windmill/models/round-15</code></pre>
+<p>Record the emitted run id. After any interruption use <code>meshy_manifest.py resume --run RUN_ID</code> — never repeat the manifest as a new run. Push each mesh to Drive <strong>the moment it lands</strong>, before validation:</p>
+<pre class="code"><code>tools/drive_sync.sh push projects/treeman-windmill/models
+python3 tools/mesh_validate.py projects/treeman-windmill/models/round-15/treeman-r15-photo-m1.glb --target-height 50
+python3 tools/mesh_thin_parts.py projects/treeman-windmill/models/round-15/treeman-r15-photo-m1.glb --pitch 0.28 --erode 1
+python3 tools/stl_render.py projects/treeman-windmill/models/round-15/treeman-r15-photo-m1.glb --turntable --crops hands sails feet</code></pre>
+<p>Then the fresh-context per-feature review against the source photographs as gold, verdicts to <code>reviews.jsonl</code>, and the <code>r15-panel</code> review page with an interactive viewer per mesh (<code>review_page.py --inline</code>, <code>mesh</code> set on every card). The durable log is <a href="../rounds.md"><code>../rounds.md</code></a> — that and the <code>r15-panel</code> review, not this runbook, are where the round&#x27;s outcome and verdicts live.</p>
 </details></div>
 </main>
 <div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
 <div id="ilb" hidden><div class="panel">
 <button class="x" data-close aria-label="close">&times;</button>
 <div id="ilb-body"></div></div></div>
-<template id="in-0"><h2>treeman-r15-source-4view-turntable-2x2</h2><p class="gmeta">?</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-tr (not on this machine)" alt="treeman-r15-panel-tr (not on this machine)"><figcaption>treeman-r15-panel-tr (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-tl (not on this machine)" alt="treeman-r15-panel-tl (not on this machine)"><figcaption>treeman-r15-panel-tl (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-ml (not on this machine)" alt="treeman-r15-panel-ml (not on this machine)"><figcaption>treeman-r15-panel-ml (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-mr (not on this machine)" alt="treeman-r15-panel-mr (not on this machine)"><figcaption>treeman-r15-panel-mr (not on this machine)</figcaption></figure></div></template>
-<template id="in-1"><h2>treeman-r15-source-4view-turntable-1x4</h2><p class="gmeta">?</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-tr (not on this machine)" alt="treeman-r15-panel-tr (not on this machine)"><figcaption>treeman-r15-panel-tr (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-tl (not on this machine)" alt="treeman-r15-panel-tl (not on this machine)"><figcaption>treeman-r15-panel-tl (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-ml (not on this machine)" alt="treeman-r15-panel-ml (not on this machine)"><figcaption>treeman-r15-panel-ml (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-mr (not on this machine)" alt="treeman-r15-panel-mr (not on this machine)"><figcaption>treeman-r15-panel-mr (not on this machine)</figcaption></figure></div></template>
-<template id="in-2"><h2>treeman-r15-template-2x2</h2><p class="gmeta">?</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
-<template id="in-3"><h2>treeman-r15-template-1x4</h2><p class="gmeta">?</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
-<template id="in-4"><h2>treeman-r12-source-treemolin</h2><p class="gmeta">?</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
-<template id="in-5"><h2>treeman-r15-crop-evidence-tr</h2><p class="gmeta">?</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-tr (not on this machine)" alt="treeman-r15-panel-tr (not on this machine)"><figcaption>treeman-r15-panel-tr (not on this machine)</figcaption></figure></div></template>
-<template id="in-6"><h2>treeman-r15-crop-evidence-tl</h2><p class="gmeta">?</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-tl (not on this machine)" alt="treeman-r15-panel-tl (not on this machine)"><figcaption>treeman-r15-panel-tl (not on this machine)</figcaption></figure></div></template>
-<template id="in-7"><h2>treeman-r15-crop-evidence-ml</h2><p class="gmeta">?</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-ml (not on this machine)" alt="treeman-r15-panel-ml (not on this machine)"><figcaption>treeman-r15-panel-ml (not on this machine)</figcaption></figure></div></template>
-<template id="in-8"><h2>treeman-r15-crop-evidence-mr</h2><p class="gmeta">?</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-mr (not on this machine)" alt="treeman-r15-panel-mr (not on this machine)"><figcaption>treeman-r15-panel-mr (not on this machine)</figcaption></figure></div></template>
+<template id="in-0"><h2>treeman-r15-panel-tr</h2><p class="gmeta">?</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r12-source-treemolin (not on this machine)" alt="treeman-r12-source-treemolin (not on this machine)"><figcaption>treeman-r12-source-treemolin (not on this machine)</figcaption></figure></div></template>
+<template id="in-1"><h2>treeman-r15-panel-tl</h2><p class="gmeta">?</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r12-source-treemolin (not on this machine)" alt="treeman-r12-source-treemolin (not on this machine)"><figcaption>treeman-r12-source-treemolin (not on this machine)</figcaption></figure></div></template>
+<template id="in-2"><h2>treeman-r15-panel-ml</h2><p class="gmeta">?</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r12-source-treemolin (not on this machine)" alt="treeman-r12-source-treemolin (not on this machine)"><figcaption>treeman-r12-source-treemolin (not on this machine)</figcaption></figure></div></template>
+<template id="in-3"><h2>treeman-r15-panel-mr</h2><p class="gmeta">?</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r12-source-treemolin (not on this machine)" alt="treeman-r12-source-treemolin (not on this machine)"><figcaption>treeman-r12-source-treemolin (not on this machine)</figcaption></figure></div></template>
+<template id="in-4"><h2>treeman-r15-source-4view-turntable-2x2</h2><p class="gmeta">?</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-tr (not on this machine)" alt="treeman-r15-panel-tr (not on this machine)"><figcaption>treeman-r15-panel-tr (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-tl (not on this machine)" alt="treeman-r15-panel-tl (not on this machine)"><figcaption>treeman-r15-panel-tl (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-ml (not on this machine)" alt="treeman-r15-panel-ml (not on this machine)"><figcaption>treeman-r15-panel-ml (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-mr (not on this machine)" alt="treeman-r15-panel-mr (not on this machine)"><figcaption>treeman-r15-panel-mr (not on this machine)</figcaption></figure></div></template>
+<template id="in-5"><h2>treeman-r15-source-4view-turntable-1x4</h2><p class="gmeta">?</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-tr (not on this machine)" alt="treeman-r15-panel-tr (not on this machine)"><figcaption>treeman-r15-panel-tr (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-tl (not on this machine)" alt="treeman-r15-panel-tl (not on this machine)"><figcaption>treeman-r15-panel-tl (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-ml (not on this machine)" alt="treeman-r15-panel-ml (not on this machine)"><figcaption>treeman-r15-panel-ml (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-mr (not on this machine)" alt="treeman-r15-panel-mr (not on this machine)"><figcaption>treeman-r15-panel-mr (not on this machine)</figcaption></figure></div></template>
+<template id="in-6"><h2>treeman-r15-crop-evidence-tr</h2><p class="gmeta">?</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-tr (not on this machine)" alt="treeman-r15-panel-tr (not on this machine)"><figcaption>treeman-r15-panel-tr (not on this machine)</figcaption></figure></div></template>
+<template id="in-7"><h2>treeman-r15-crop-evidence-tl</h2><p class="gmeta">?</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-tl (not on this machine)" alt="treeman-r15-panel-tl (not on this machine)"><figcaption>treeman-r15-panel-tl (not on this machine)</figcaption></figure></div></template>
+<template id="in-8"><h2>treeman-r15-crop-evidence-ml</h2><p class="gmeta">?</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-ml (not on this machine)" alt="treeman-r15-panel-ml (not on this machine)"><figcaption>treeman-r15-panel-ml (not on this machine)</figcaption></figure></div></template>
+<template id="in-9"><h2>treeman-r15-crop-evidence-mr</h2><p class="gmeta">?</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="treeman-r15-panel-mr (not on this machine)" alt="treeman-r15-panel-mr (not on this machine)"><figcaption>treeman-r15-panel-mr (not on this machine)</figcaption></figure></div></template>
 <script>
 const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
       lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
