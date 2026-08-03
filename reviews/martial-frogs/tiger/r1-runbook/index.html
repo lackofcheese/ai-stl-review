@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="5a10b42d25b223e467f7a72ddeba47befc85601d8d7dad3aeded0bd39a571028">
+<meta name="ai-stl-plan-digest" content="4e218ccdc046f65c12e09f0f9887c7bd351509cb3b613c77002fcaa32a0bb073">
 <title>Tiger — Round 1 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -369,7 +369,7 @@ Treat every feature as geometry for a roughly 35 mm-tall resin figure: bold plan
 <p>Machine checks run in two explicit lanes:</p>
 <ul>
 <li><strong>FAST:</strong> a fresh-context crop audit runs as each image lands, checking the held-constant program — hachimaki with short pinned tails, torn-off sleeves, high-wrapped obi, forearm/shin wraps, bare webbed feet with <strong>four connected webbed digits per hand and both hands empty</strong> in claw guard, both feet flat and planted, no weapon/ball/mon/number/text, smooth skin with no warts or hair, <strong>no tiger features (stripes, fur, whiskers, feline face — the style is tiger, the species is frog)</strong>, and a serious wuxia non-cartoon tone. Once all FAST verdicts are logged, a private review may be shared as <strong>PROVISIONAL — slow checks pending</strong> so eye-review can start.</li>
-<li><strong>SLOW:</strong> after all 18 images land, one <code>blind_detect_round.py</code> manifest submits every spec-blind description in a single Gemini Batch wave and every dependent comparison in a second Batch wave. Completed records append to <code>reviews.jsonl</code>; every blind-vs-crop disagreement gets a mandatory human look. The same panel is rebuilt as <strong>COMPLETE</strong> only after the canonical review log contains one successful record from that Batch run for each of the exact 18 planned artifact ids. A partial detector run remains incomplete even when the coordinator exits normally. The provisional panel cannot close the round, promote a keeper, or authorize downstream work.</li>
+<li><strong>SLOW:</strong> after all 18 images land, one <code>blind_detect_round.py</code> manifest submits every spec-blind description in a single Gemini Batch wave and every dependent comparison in a second Batch wave. Completed records append to <code>reviews.jsonl</code>; every blind-vs-crop disagreement gets a mandatory human look. Dimitri then appends one authoritative verdict per artifact, after both machine records, whose summary starts <code>RECONCILED — AGREE:</code> when the screens agree or <code>RECONCILED — RESOLVED:</code> with the human resolution when they do not. The same panel is rebuilt as <strong>COMPLETE</strong> only after the canonical review log contains crop audits, successful records from that exact Batch run, and later reconciliation verdicts for all and only the exact 18 planned artifact ids. A partial detector run, a missing crop audit, or an unresolved disagreement remains incomplete even when the coordinator exits normally. The provisional panel cannot close the round, promote a keeper, or authorize downstream work.</li>
 </ul>
 <p>The machines screen for misses; they do not pick the winner. The three flashlite31 trial renders get the identical screening; they are judged separately on the trial&#x27;s own question — does a 1K Flash Lite render hold silhouette, pose, and the held-constant program well enough to serve future cheap selection bake-offs? — and never count toward the F1/F2/F3 pick.</p>
 <h2>What we need from you</h2>
@@ -388,7 +388,7 @@ Treat every feature as geometry for a roughly 35 mm-tall resin figure: bold plan
 <li>Per the brief&#x27;s asset-round rules, the temple mon and player number are explicitly OMITTED from generation: prompts describe the obi/robe plain, and audits treat their absence as expected.</li>
 <li>Tiger is deliberately mirror-cheap (symmetric kit, knots at the back), so no per-round chirality negatives are needed for the front concept; facing attractors get handled at turnaround time.</li>
 <li>Style follows policy: fresh concepts render in their natural photoreal/material style; the clay turnaround comes directly from the chosen concept in a later round.</li>
-<li>Pre-spend plan amendment (Dimitri, 2026-08-03): production blind detection uses the newly merged round coordinator, not 18 synchronous <code>blind_detect.py</code> invocations. One manifest covers all outputs in two Batch waves, with durable <code>--resume-run</code> recovery and direct canonical <code>reviews.jsonl</code> finalization. The manifest is built from the independently enumerated 18 planned ids, and COMPLETE/public handoff fails closed unless all 18 have successful records from that exact detector run. The generation matrix and $3.25 cap do not change.</li>
+<li>Pre-spend plan amendment (Dimitri, 2026-08-03): production blind detection uses the newly merged round coordinator, not 18 synchronous <code>blind_detect.py</code> invocations. One manifest covers all outputs in two Batch waves, with durable <code>--resume-run</code> recovery and direct canonical <code>reviews.jsonl</code> finalization. The manifest is built from the independently enumerated 18 planned ids, and COMPLETE/public handoff fails closed unless all 18 have successful records from that exact detector run. COMPLETE also requires exact crop-audit coverage and a later Dimitri reconciliation verdict for every artifact, so every agreement is explicit and every disagreement is human-resolved. The generation matrix and $3.25 cap do not change.</li>
 </ul>
 <h3>Experiment matrix</h3>
 <div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Variant axes</th><th>Prompt</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>1</td><td>text only; no images</td><td>F1 true bullfrog × four standard models</td><td><code>prompts/r1-f1-true-bullfrog.txt</code></td><td><code>tiger-r1-f1</code></td></tr><tr><td>2</td><td>text only; no images</td><td>F2 heroic temple frog × four standard models</td><td><code>prompts/r1-f2-heroic-temple-frog.txt</code></td><td><code>tiger-r1-f2</code></td></tr><tr><td>3</td><td>text only; no images</td><td>F3 anthro athlete frog × four standard models</td><td><code>prompts/r1-f3-anthro-athlete-frog.txt</code></td><td><code>tiger-r1-f3</code></td></tr><tr><td>4</td><td>text only; no images</td><td>F1 × riverflow25 (2K, <code>--aspect 2:3</code>)</td><td><code>prompts/r1-f1-true-bullfrog.txt</code></td><td><code>tiger-r1-f1-riverflow25</code></td></tr><tr><td>5</td><td>text only; no images</td><td>F2 × riverflow25 (2K, <code>--aspect 2:3</code>)</td><td><code>prompts/r1-f2-heroic-temple-frog.txt</code></td><td><code>tiger-r1-f2-riverflow25</code></td></tr><tr><td>6</td><td>text only; no images</td><td>F3 × riverflow25 (2K, <code>--aspect 2:3</code>)</td><td><code>prompts/r1-f3-anthro-athlete-frog.txt</code></td><td><code>tiger-r1-f3-riverflow25</code></td></tr><tr><td>7</td><td>text only; no images</td><td>F1 × flashlite31 (trial)</td><td><code>prompts/r1-f1-true-bullfrog.txt</code></td><td><code>tiger-r1-f1-flashlite31</code></td></tr><tr><td>8</td><td>text only; no images</td><td>F2 × flashlite31 (trial)</td><td><code>prompts/r1-f2-heroic-temple-frog.txt</code></td><td><code>tiger-r1-f2-flashlite31</code></td></tr><tr><td>9</td><td>text only; no images</td><td>F3 × flashlite31 (trial)</td><td><code>prompts/r1-f3-anthro-athlete-frog.txt</code></td><td><code>tiger-r1-f3-flashlite31</code></td></tr></tbody></table></div>
@@ -522,16 +522,43 @@ else
 fi
 
 # Coordinator completion is not sufficient: PARTIAL is a durable terminal
-# state too. Require this exact run to have all and only the expected 18
-# successful blind-detect records before COMPLETE/public handoff.
+# state too. After the blind run lands, Dimitri appends one authoritative
+# judgment record per artifact through review_log.py. Its final KEEPER/FIXABLE/
+# REJECT call is the panel verdict, and its summary must begin with exactly one
+# of these evidence markers:
+#   RECONCILED — AGREE: &lt;why the crop and blind screens agree&gt;
+#   RECONCILED — RESOLVED: &lt;what disagreed and Dimitri&#x27;s resolution&gt;
+# Append that record only after reading both source records. The check below
+# requires all and only the expected 18 crop audits, same-run blind records,
+# and later human reconciliations before COMPLETE/public handoff.
 jq -e -s --arg run &quot;$DETECT_RUN&quot; --rawfile expected &quot;$EXPECTED&quot; &#x27;
   ($expected | split(&quot;\n&quot;) | map(select(length &gt; 0)) | sort) as $want
-  | ([.[]
-      | select(.reviewer == &quot;blind-detect&quot; and .batch_run_id == $run)
-      | .artifact] | unique | sort) as $got
-  | ($want | length) == 18 and $got == $want
+  | to_entries as $rows
+  | ([$rows[]
+      | select(.value.reviewer | endswith(&quot;-crop-audit&quot;))]) as $crops
+  | ([$rows[]
+      | select(.value.reviewer == &quot;blind-detect&quot;
+               and .value.batch_run_id == $run)]) as $blinds
+  | ([$rows[]
+      | select(.value.reviewer == &quot;dimitri&quot;
+               and ((.value.summary // &quot;&quot;)
+                    | test(&quot;^RECONCILED — (AGREE|RESOLVED): .+&quot;)))]) as $human
+  | ([$crops[].value.artifact] | unique | sort) as $crop_ids
+  | ([$blinds[].value.artifact] | unique | sort) as $blind_ids
+  | ([$human[].value.artifact] | unique | sort) as $human_ids
+  | ($want | length) == 18
+    and $crop_ids == $want
+    and $blind_ids == $want
+    and $human_ids == $want
+    and all($human[];
+      (.value.call // &quot;&quot;) | test(&quot;^(KEEPER|FIXABLE|REJECT)&quot;))
+    and all($want[]; . as $id |
+      ([$crops[] | select(.value.artifact == $id) | .key] | max) as $crop_i
+      | ([$blinds[] | select(.value.artifact == $id) | .key] | max) as $blind_i
+      | ([$human[] | select(.value.artifact == $id) | .key] | max) as $human_i
+      | $human_i &gt; $crop_i and $human_i &gt; $blind_i)
 &#x27; &quot;$T/reviews.jsonl&quot; &gt; /dev/null</code></pre>
-<p>Run the fresh-context crop audit on each roll as it lands and append those FAST verdicts through <code>tools/review_log.py</code>. Once FAST is complete, build the r1 review panel with <code>tools/review_page.py --inline</code> and share it privately as <strong>PROVISIONAL — slow checks pending</strong>. The command above submits the SLOW lane as one round-level Batch run. Only after the fail-closed postcondition verifies all exact 18 same-run records, reconcile every crop/blind disagreement, rebuild the same config as <strong>COMPLETE</strong>, and publish that complete panel to Pages — <strong>Dimitri pre-approved the r1 panel&#x27;s public Pages publication on 2026-08-03</strong> (per-review OK under <code>docs/agents/publication.md</code>; recorded in <code>rounds.md</code>), since Jawaknight has no Claude account and makes the pick. The provisional panel is always private. Results, detector run/job telemetry, and verdicts belong in <code>rounds.md</code> and <code>r1-panel.json</code>, never back in this runbook.</p>
+<p>Run the fresh-context crop audit on each roll as it lands and append those FAST verdicts through <code>tools/review_log.py</code>. Once FAST is complete, build the r1 review panel with <code>tools/review_page.py --inline</code> and share it privately as <strong>PROVISIONAL — slow checks pending</strong>. The command above submits the SLOW lane as one round-level Batch run. After it lands, append Dimitri&#x27;s 18 final reconciliation verdicts through <code>review_log.py</code>, using the exact summary marker documented above. Only after the fail-closed postcondition verifies exact crop, same-run blind, and later human-reconciliation coverage may the same config be rebuilt as <strong>COMPLETE</strong> and the complete panel published to Pages — <strong>Dimitri pre-approved the r1 panel&#x27;s public Pages publication on 2026-08-03</strong> (per-review OK under <code>docs/agents/publication.md</code>; recorded in <code>rounds.md</code>), since Jawaknight has no Claude account and makes the pick. The provisional panel is always private. Results, detector run/job telemetry, and verdicts belong in <code>rounds.md</code> and <code>r1-panel.json</code>, never back in this runbook.</p>
 </details></div>
 </main>
 <div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
