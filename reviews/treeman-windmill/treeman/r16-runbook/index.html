@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="ced745cc16e8506d623118b3058a9658cd2bd7867fa00874625ba1f6812251ff">
+<meta name="ai-stl-plan-digest" content="da56347459ce627774fe26e16e9bd182b62d7b9b2fdcf876b13c7f2521a38982">
 <title>Treeman-windmill — Round 16 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -601,6 +601,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere;
         &quot;gamma&quot;: 0.55,
         &quot;gain&quot;: 1.0,
         &quot;contrast&quot;: 1.0,
+        &quot;measured_over&quot;: &quot;window&quot;,
         &quot;saturated_black_fraction&quot;: 0.006697,
         &quot;saturated_white_fraction&quot;: 3e-06,
         &quot;newly_saturated_black_fraction&quot;: 0.0,
@@ -647,7 +648,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere;
 <summary>Technical plan — tone tooling, Meshy inputs, commands (pipeline detail)</summary>
 <h3>What changed going in (spec / prompt / process deltas)</h3>
 <ul>
-<li><strong><code>tools/reference_crops.py</code> gains a manifest-declared <code>tone</code> adjustment</strong> (this runbook&#x27;s PR): an optional per-panel <code>{&quot;gamma&quot;, &quot;gain&quot;, &quot;contrast&quot;}</code> spec applied as one monotonic per-channel LUT, with parameters and black/ white clipping fractions echoed in the crop report. Geometry checks run on the original pixels; the LUT can re-map values but never move, tint, or invent geometry. This is the standard mechanism Dimitri asked for so future rounds inherit the capability instead of ingesting ad-hoc edits.</li>
+<li><strong><code>tools/reference_crops.py</code> gains a manifest-declared <code>tone</code> adjustment</strong> (this runbook&#x27;s PR): an optional per-panel <code>{&quot;gamma&quot;, &quot;gain&quot;, &quot;contrast&quot;}</code> spec applied as one monotonic per-channel LUT, with parameters and both saturation measures echoed in the crop report. Geometry checks run on the original pixels; the LUT re-maps values but never moves or invents geometry. It is channel-symmetric, not colour-preserving — a nonlinear curve shifts channel ratios, so gamma &lt; 1 visibly desaturates; that shift is part of what the gate&#x27;s eye check covers. This is the standard mechanism Dimitri asked for so future rounds inherit the capability instead of ingesting ad-hoc edits.</li>
 <li><strong><code>runbooks/r16-reference-crops.json</code></strong> is the r15 manifest byte-for-byte on geometry (same source, boxes, base ellipses, 430×560 rectangle, foot pad) plus <code>&quot;tone&quot;: {&quot;gamma&quot;: 0.55}</code> on <code>mr</code> only, and no composed layouts (the round feeds Meshy the four individual panels; no turntable sheet is consumed). Its report is committed as <code>runbooks/r16-crop-report.json</code>.</li>
 <li><strong>Only one new input file exists.</strong> <code>tl</code>/<code>tr</code>/<code>ml</code> are not re-cut or re-saved for r16: the Meshy manifest references the r15 panel files themselves, so &quot;unchanged&quot; is enforced by construction, not by comparison.</li>
 <li><strong>Committed Meshy manifest.</strong> <code>notes/r16-meshy-manifest.json</code> pins both identical calls: <code>meshy-6</code>, triangle topology, <code>remesh: false</code>, front = <code>tl</code> (0°), views = <code>tr</code> (−20°), <code>ml</code> (+45°), <code>mr</code> (180°, brightened), with distinct <code>-raw.stl</code> outputs under <code>models/round-16/</code>.</li>
