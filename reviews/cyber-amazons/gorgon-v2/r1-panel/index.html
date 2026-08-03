@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Gorgon v2 R1 — heroic-proportion selection</title>
+<style>
+:root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.coreinputs { margin:1.2rem 0 .4rem }
+.coreinputs h2 { margin:0 0 .5rem }
+.coreinputs .hint { color:var(--dim); font-weight:400; font-size:.85rem }
+.inputrow { display:flex; flex-wrap:wrap; gap:12px }
+.coreinput { margin:0; width:210px; max-width:100%;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.coreinput .imgwrap { border-bottom:1px solid var(--line) }
+.coreinput .imgwrap img { max-height:230px }
+.coreinput figcaption { color:var(--dim); font-size:.7rem; padding:.35rem .5rem;
+  word-break:break-all; font-family:ui-monospace,SFMono-Regular,Menlo,monospace }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.statrow { display:flex; flex-wrap:wrap; gap:.15rem .5rem; margin:0 0 .1rem;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.72rem;
+  color:var(--dim) }
+.statrow span { white-space:nowrap }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.chip.unclear { color:var(--dim); border-color:var(--dim) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:calc(100vh - 7rem); object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-meta { display:flex; flex-direction:column; align-items:center; gap:.35rem;
+  min-height:2.2rem; position:relative; z-index:20 }
+.lb-refrow { display:flex; align-items:center; justify-content:center; gap:.35rem;
+  flex-wrap:wrap }
+.lb-refrow[hidden] { display:none }
+.lb-refrow .refid { background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn { color:#bbb; border-color:#55515d;
+  background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+</style></head><body><main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Cyber-Amazons</a><span class="sep">&rsaquo;</span><a href="../">Gorgon v2</a></nav>
+<div class="eyebrow">Firewall FC · Blocker #2 · Gorgon v2 · round 1 · 2026-08-03</div>
+<h1>Gorgon v2 R1 — heroic-proportion selection</h1>
+<a class="crosslink" href="../r1-runbook/">&#128214; Round runbook &rarr;</a>
+<p class="sub">Eight text-only concepts test the same Gorgon identity in two explicit 32 mm body recipes: H1 classic heroic and H2 heavy heroic, once through each of four models. Compare H1 against H2 within each model pair; model house style makes cross-model proportion comparisons misleading. Machine checks are screening evidence only — Dimitri, Jason and Jeremy make the call.</p>
+<div class="callout"><strong>Machine headline: no measurable separation.</strong> Only two of four model pairs crossed the predeclared 4/7 movement threshold, short of the required three. All eight blind audits reject their concepts. Every artifact has at least one crop/blind factual disagreement exposed below for a human look. The crop audit calls GPT Image 2 H1 <strong>FIXABLE</strong>, making it the sole outcome-level disagreement and localized-repair candidate.</div>
+<div class="callout asks"><p class="boxhead">Verdicts needed</p><p class="intro">Rejecting all eight is a first-class answer. The machines found no reliable H1/H2 separation and do not choose the next body contract.</p><ol><li><span class="q">What should become the v2 proportion contract?</span><span class="who">Dimitri + Jason + Jeremy</span><p class="d">The literal paired screen says no measurable separation; Grok demonstrates the clearest heavy-body bracket inside unusable concepts.</p><ul><li>Keep <strong>H1 classic heroic</strong> as written and repair GPT Image 2 H1.</li><li>Keep <strong>H2 heavy heroic</strong> as written, using Grok only as body-mass evidence.</li><li>Specify a <strong>blend</strong> in plain language for a new round.</li><li><strong>Reject both recipes</strong> and give a clearer height/mass target.</li></ul></li><li><span class="q">Is GPT Image 2 H1 worth a localized repair round, or reject all eight?</span><span class="who">Dimitri + Jason + Jeremy</span><p class="d">Crop audit: FIXABLE at about 6.55 heads tall with correct main chirality, but wrong-side dread mane, emblem-like chest patch and fragile separated fingers/locks/spikes. Blind audit: REJECT, additionally reporting two pads and leg/hair contradictions. Please settle that disagreement by eye.</p><ul><li>Repair GPT Image 2 H1 while freezing its successful body recipe.</li><li>Use it only as body-proportion reference; re-sweep identity and pose.</li><li>Reject all eight and start R2 from a rewritten bracket.</li></ul></li><li><span class="q">Confirm the eight crop/blind reconciliations</span><span class="who">Dimitri + Jason + Jeremy</span><p class="d">Each card now carries an append-only reconciliation record, and the full eight-item checklist appears above. Please settle the visible pad, leg, arm, hair, emblem and attachment facts before any one image becomes lineage evidence. This does not rescue a failed proportion screen; it keeps machine mistakes out of the next round.</p></li></ol></div>
+<h2>Machine pre-read — paired proportion screen</h2>
+<div class="tablewrap"><table><tr><th>Model</th><th>H1 heads tall</th><th>H2 heads tall</th><th>Correct movement metrics</th><th>Reading</th></tr><tr><td>Flash 3.1</td><td>5.11</td><td>5.36</td><td>4/7</td><td>Invalid multi-view inputs; wrong heads-tall direction.</td></tr><tr><td>GPT Image 2</td><td>6.55</td><td>6.69</td><td>1/7</td><td>No H1→H2 separation; H1 is the sole repair candidate.</td></tr><tr><td>Seedream 4.5</td><td>5.86</td><td>5.51</td><td>3/7</td><td>H2 contains two incompatible figures.</td></tr><tr><td>Grok Quality</td><td>7.11</td><td>5.52</td><td>6/7</td><td>Clearest body bracket, but both concepts fail identity and pose.</td></tr></table></div>
+<h2>Required human reconciliations — every artifact</h2>
+<p class="blurb">These are not machine votes to average. The later append-only reconciliation records correct pure viewer-frame reasoning errors and leave visible factual conflicts for Dimitri, Jason and Jeremy to settle from the cards.</p>
+<div class="tablewrap"><table><tr><th>Artifact</th><th>Crop/blind conflict to check by eye</th></tr><tr><td>H1 Flash</td><td>one vs two pads; correct vs reversed legs; absent vs present chest emblem</td></tr><tr><td>H2 Flash</td><td>one vs two pads; correct vs reversed legs; blind mis-maps viewer-left open/viewer-right fist and viewer-right dread drape</td></tr><tr><td>H1 GPT Image 2</td><td><strong>FIXABLE vs REJECT</strong>; one vs two pads; leg coverage; blind mis-maps the viewer-left right-temple zone</td></tr><tr><td>H2 GPT Image 2</td><td>one vs two pads; asymmetric vs symmetric legs</td></tr><tr><td>H1 Seedream</td><td>blind labels its own viewer-left bare/viewer-right covered legs and viewer-right mane as correct; both are reversed in front view</td></tr><tr><td>H2 Seedream</td><td>screens evaluated different figures; pad/leg/hair facts differ; blind fist-side label is reversed</td></tr><tr><td>H1 Grok</td><td>complete vs incomplete cyberarms; correct vs wrong leg sides; absent vs present chest logo</td></tr><tr><td>H2 Grok</td><td>asymmetric vs symmetric legs; full vs incomplete cyberarms; absent vs present rear block/prop</td></tr></table></div>
+<h2>H1 — classic heroic</h2>
+<p class="blurb">Target: about 6.75 heads tall, tall athletic blocker silhouette, head/hands/boots about 15% oversized. GPT Image 2 H1 is the only crop-audit FIXABLE candidate; all four blind audits reject.</p>
+<div class="grid">
+<div class="card" id="gorgon-v2-r1-h1-flash31-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/a1284b722b1063d3.jpg" data-cap="H1 · Flash 3.1 — reject (extra arms / multi-view)" data-ref="h1-flash31-1" data-anchor="gorgon-v2-r1-h1-flash31-1"><img src="../../../../assets/617919acb5ac6ec2.jpg" alt="H1 · Flash 3.1 — reject (extra arms / multi-view)" loading="lazy"></div><div class="meta"><header><h3>H1 · Flash 3.1 — reject (extra arms / multi-view)</h3><span class="cost">~$0.05</span><span class="call reject" title="REJECT — crop/blind disagreement requires human check">REJECT</span></header><div class="cardref"><a class="refid" href="#gorgon-v2-r1-h1-flash31-1" title="Deep link to this image">#h1-flash31-1</a><button class="refbtn" data-copy-id="#h1-flash31-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="gorgon-v2-r1-h1-flash31-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="gorgon-v2-r1-h1-flash31-1" data-title="H1 · Flash 3.1 — reject (extra arms / multi-view)" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="figure-count/camera — three separate figures, not one front concept">figure-count/came…</span><span class="chip bad" title="anatomy — pose view has a third arm">anatomy — pose vi…</span><span class="chip bad" title="stiff-arm — central figure has both arms hanging">stiff-arm — centr…</span><span class="chip bad" title="hands/dreads — digits ambiguous and free-floating locks">hands/dreads — di…</span><span class="chip bad" title="blind cross-check — REJECT — Figure has two extra arms, completely reversed chirality, and a forbidden emblem.">blind cross-check</span><span class="chip warn" title="build — central figure ~5.11 heads tall, heavy rather than H1 classic heroic">build — central f…</span><span class="chip warn" title="pad count — Crop sees one viewer-right pad on the central front figure; blind description reports pads on both shoulders.">pad count</span><span class="chip warn" title="leg chirality — Crop records the required asymmetry; blind description reports the bare-garter and covered legs reversed.">leg chirality</span></div><details class="more"><summary>5 more detectors (13 total)</summary><div class="chips"><span class="chip warn" title="chest emblem — Crop records no text/emblem; blind description reports an irregular chest emblem.">chest emblem</span><span class="chip ok" title="single left shoulder pad — central front pad on viewer right">single left shoul…</span><span class="chip ok" title="leg asymmetry and grounded boots">leg asymmetry and…</span><span class="chip ok" title="viewer-left right-temple landing zone clear">viewer-left right…</span><span class="chip ok" title="no text/base/props">no text/base/props</span></div></details><p>Reject; human-check pad count, leg chirality and chest emblem.</p><details class="more"><summary>full note</summary><p class="chipnote">REJECT. Strong styling cannot rescue a three-view sheet with an extra arm, missing required central stiff-arm, ambiguous hands and floating cable-dreads. RECONCILIATION: Both screens reject the multi-view/extra-arm output, but they disagree on pad count, leg chirality and whether a chest emblem is present. Human review must settle those visible facts.</p></details><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="gorgon-v2-r1-h1-gptimage2-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/d0ab7cda36085c70.png" data-cap="H1 · GPT Image 2 — crop FIXABLE / blind REJECT" data-ref="h1-gptimage2-1" data-anchor="gorgon-v2-r1-h1-gptimage2-1"><img src="../../../../assets/a9114a6025196e89.jpg" alt="H1 · GPT Image 2 — crop FIXABLE / blind REJECT" loading="lazy"></div><div class="meta"><header><h3>H1 · GPT Image 2 — crop FIXABLE / blind REJECT</h3><span class="cost">$0.17</span><span class="call fixable" title="FIXABLE/REJECT disagreement — human verdict required">FIXABLE/REJECT disagr…</span></header><div class="cardref"><a class="refid" href="#gorgon-v2-r1-h1-gptimage2-1" title="Deep link to this image">#h1-gptimage2-1</a><button class="refbtn" data-copy-id="#h1-gptimage2-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="gorgon-v2-r1-h1-gptimage2-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="gorgon-v2-r1-h1-gptimage2-1" data-title="H1 · GPT Image 2 — crop FIXABLE / blind REJECT" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="dread mane drapes over viewer-right padded shoulder, wrong side">dread mane drapes…</span><span class="chip bad" title="magenta chest patch reads as an emblem">magenta chest pat…</span><span class="chip bad" title="print safety — separated fingers, loose locks, pad spikes">print safety — se…</span><span class="chip bad" title="blind cross-check — REJECT — Multiple critical identity and chirality errors, including two shoulder pads, incorrect dreadlock placement and thickness, hair on the head-jack landing zone, an unauthorized emblem, and incorrect leg coverage details.">blind cross-check</span><span class="chip warn" title="hands — complete and empty but fingers too separated">hands — complete…</span><span class="chip warn" title="dreads remain separate tubes">dreads remain sep…</span><span class="chip warn" title="overall repairability — Crop calls the body and main chirality FIXABLE; blind rejects on accumulated identity contradictions.">overall repairabi…</span><span class="chip warn" title="pad count — Crop sees one pad; blind description reports two.">pad count</span></div><details class="more"><summary>6 more detectors (14 total)</summary><div class="chips"><span class="chip warn" title="leg asymmetry — Crop records the required asymmetric legs; blind records both coverage programs wrong.">leg asymmetry</span><span class="chip warn" title="right-temple mapping correction — Blind description says viewer-left is shaved, which is the required landing zone for her right temple. The blind detector nevertheless marks that zone bad by reasoning from viewer-right hair.">right-temple mapp…</span><span class="chip ok" title="camera/build — straight front and ~6.55 heads tall, close to H1 target">camera/build — st…</span><span class="chip ok" title="single pad/cyberarms/leg asymmetry/grounded feet">single pad/cybera…</span><span class="chip ok" title="stiff-arm on viewer left with readable joints">stiff-arm on view…</span><span class="chip ok" title="viewer-left right-temple landing zone clear">viewer-left right…</span></div></details><p>Human gate: repair candidate or reject; check pads, legs and viewer-left temple.</p><details class="more"><summary>full note</summary><p class="chipnote">FIXABLE. Credible classic-heroic blocker with correct main chirality and ~6.55-head body; wrong-side mane, emblem-like chest mark and fragile fingers/locks/spikes need edits. RECONCILIATION: This is the only outcome-level disagreement: crop says localized repair is viable while blind says reject. Human review must decide repairability and settle pad count, leg coverage and the right-temple mapping.</p></details><button class="ibtn" data-inputs="in-1">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="gorgon-v2-r1-h1-seedream45-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/229cf77da863ab78.jpg" data-cap="H1 · Seedream 4.5 — reject" data-ref="h1-seedream45-1" data-anchor="gorgon-v2-r1-h1-seedream45-1"><img src="../../../../assets/0804efeb57822e21.jpg" alt="H1 · Seedream 4.5 — reject" loading="lazy"></div><div class="meta"><header><h3>H1 · Seedream 4.5 — reject</h3><span class="cost">$0.04</span><span class="call reject" title="REJECT — blind side-map corrections recorded">REJECT</span></header><div class="cardref"><a class="refid" href="#gorgon-v2-r1-h1-seedream45-1" title="Deep link to this image">#h1-seedream45-1</a><button class="refbtn" data-copy-id="#h1-seedream45-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="gorgon-v2-r1-h1-seedream45-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="gorgon-v2-r1-h1-seedream45-1" data-title="H1 · Seedream 4.5 — reject" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="two shoulder pads and only one complete cyberarm">two shoulder pads…</span><span class="chip bad" title="no stiff-arm; both arms hang">no stiff-arm; bot…</span><span class="chip bad" title="leg and temple chirality mirrored">leg and temple ch…</span><span class="chip bad" title="separate dread strands">separate dread st…</span><span class="chip bad" title="readable chest letters and floor markers">readable chest le…</span><span class="chip bad" title="thin spikes/loops/free dread ends">thin spikes/loops…</span><span class="chip bad" title="blind cross-check — REJECT — Numerous critical deviations from core identity, pose, and chirality.">blind cross-check</span><span class="chip warn" title="~5.86 heads tall, short for H1; pin-up styling drift">~5.86 heads tall,…</span></div><details class="more"><summary>4 more detectors (12 total)</summary><div class="chips"><span class="chip warn" title="leg frame-map correction — Blind description says viewer-left is bare/gartered and viewer-right covered, which is reversed from the required viewer-right bare and viewer-left covered. Its detector incorrectly labels this correct; crop labels it mirrored.">leg frame-map cor…</span><span class="chip warn" title="dread frame-map correction — Blind description places the mane on viewer-right and incorrectly treats that as her right shoulder. The required front-view drape is viewer-left.">dread frame-map c…</span><span class="chip ok" title="single centered full figure">single centered f…</span><span class="chip ok" title="grounded boots and complete empty hands">grounded boots an…</span></div></details><p>Reject; blind leg and dread chirality labels are frame-map errors.</p><details class="more"><summary>full note</summary><p class="chipnote">REJECT. Attractive render but structurally wrong: two pads, one full cyberarm, mirrored legs/temple, no stiff-arm, readable text and fragile free details. RECONCILIATION: Both screens reject. The crop audit is consistent with the literal blind description on mirrored legs; the blind detector&#x27;s positive chirality labels are frame-map errors. Human review should confirm the visible sides.</p></details><button class="ibtn" data-inputs="in-2">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="gorgon-v2-r1-h1-grokq-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/507721b8b524757b.png" data-cap="H1 · Grok Quality — reject" data-ref="h1-grokq-1" data-anchor="gorgon-v2-r1-h1-grokq-1"><img src="../../../../assets/6cad5e7612730c41.jpg" alt="H1 · Grok Quality — reject" loading="lazy"></div><div class="meta"><header><h3>H1 · Grok Quality — reject</h3><span class="cost">$0.07</span><span class="call reject" title="REJECT — crop/blind disagreement requires human check">REJECT</span></header><div class="cardref"><a class="refid" href="#gorgon-v2-r1-h1-grokq-1" title="Deep link to this image">#h1-grokq-1</a><button class="refbtn" data-copy-id="#h1-grokq-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="gorgon-v2-r1-h1-grokq-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="gorgon-v2-r1-h1-grokq-1" data-title="H1 · Grok Quality — reject" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="two shoulder pads and incomplete viewer-right cyberarm">two shoulder pads…</span><span class="chip bad" title="both hands hang open; no stiff-arm/fist">both hands hang o…</span><span class="chip bad" title="separate dreads block viewer-left temple">separate dreads b…</span><span class="chip bad" title="redundant pad and free dreads clutter silhouette">redundant pad and…</span><span class="chip bad" title="blind cross-check — REJECT — numerous critical contradictions in identity, chirality, and pose">blind cross-check</span><span class="chip warn" title="single figure but perspective walk, not square orthographic pose">single figure but…</span><span class="chip warn" title="cyberarm completeness — Crop sees an incomplete viewer-right cyberarm; blind infers symmetrical cyberarms from generic armor language.">cyberarm complete…</span><span class="chip warn" title="leg asymmetry — Crop records correct leg asymmetry; blind description reports the garter/coverage sides wrong.">leg asymmetry</span></div><details class="more"><summary>4 more detectors (12 total)</summary><div class="chips"><span class="chip warn" title="chest logo — Crop records no text/base/props; blind description reports a jagged magenta chest symbol.">chest logo</span><span class="chip ok" title="~7.11 heads tall, near H1 target">~7.11 heads tall,…</span><span class="chip ok" title="leg asymmetry and grounded boots">leg asymmetry and…</span><span class="chip ok" title="no text/base/props">no text/base/props</span></div></details><p>Reject; human-check cyberarm completeness, leg sides and chest mark.</p><details class="more"><summary>full note</summary><p class="chipnote">REJECT. Good H1-scale blocker mass and leg asymmetry, but two pads, incomplete cyberarms, wrong pose, blocked temple and free dread ends fail the concept. RECONCILIATION: Both screens reject the wrong pose, two pads and blocked temple. Human review must settle cyberarm completeness, leg sides and whether the magenta chest mark reads as a forbidden logo.</p></details><button class="ibtn" data-inputs="in-3">inputs — prompt &amp; refs</button></div></div>
+</div>
+<h2>H2 — heavy heroic</h2>
+<p class="blurb">Target: about 5.75 heads tall with deeper torso, thicker joints and about 25% oversized head/hands/boots. Grok shows the strongest body-scale movement but misses the defining pose and identity map.</p>
+<div class="grid">
+<div class="card" id="gorgon-v2-r1-h2-flash31-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/70311140b3d21cfc.jpg" data-cap="H2 · Flash 3.1 — reject (multi-view / wrist stump)" data-ref="h2-flash31-1" data-anchor="gorgon-v2-r1-h2-flash31-1"><img src="../../../../assets/4dd29e9e00d78051.jpg" alt="H2 · Flash 3.1 — reject (multi-view / wrist stump)" loading="lazy"></div><div class="meta"><header><h3>H2 · Flash 3.1 — reject (multi-view / wrist stump)</h3><span class="cost">~$0.05</span><span class="call reject" title="REJECT — crop/blind disagreement requires human check">REJECT</span></header><div class="cardref"><a class="refid" href="#gorgon-v2-r1-h2-flash31-1" title="Deep link to this image">#h2-flash31-1</a><button class="refbtn" data-copy-id="#h2-flash31-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="gorgon-v2-r1-h2-flash31-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="gorgon-v2-r1-h2-flash31-1" data-title="H2 · Flash 3.1 — reject (multi-view / wrist stump)" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="figure-count/camera — three separate figures, not one front concept">figure-count/came…</span><span class="chip bad" title="anatomy — pose-view cyberarm ends in an open wrist stump">anatomy — pose-vi…</span><span class="chip bad" title="stiff-arm — central figure has both arms hanging">stiff-arm — centr…</span><span class="chip bad" title="hands — required pose view has one hand absent">hands — required…</span><span class="chip bad" title="forbidden right-temple port appears in pose view">forbidden right-t…</span><span class="chip bad" title="blind cross-check — REJECT — Numerous critical identity features, including cyberarms, heroic proportions, and all major chirality elements, are incorrect or contradicted.">blind cross-check</span><span class="chip warn" title="dreads remain separate strands">dreads remain sep…</span><span class="chip warn" title="pad count — Crop sees one viewer-right pad on the central figure; blind description reports two pads.">pad count</span></div><details class="more"><summary>7 more detectors (15 total)</summary><div class="chips"><span class="chip warn" title="leg chirality — Crop records correct leg asymmetry; blind description reports the sides reversed.">leg chirality</span><span class="chip warn" title="blind frame-map correction — Blind description says viewer-left open hand and viewer-right fist, which is the required front-view chirality. Its own verdict incorrectly calls that mapping opposite; pose extension still fails.">blind frame-map c…</span><span class="chip warn" title="dread frame-map correction — Blind description places the mane on viewer-right but labels that as her right shoulder. In front view her right shoulder is viewer-left, so the described drape is wrong-side.">dread frame-map c…</span><span class="chip ok" title="heavy heroic build — central figure ~5.35 heads tall">heavy heroic buil…</span><span class="chip ok" title="single left shoulder pad — central front pad on viewer right">single left shoul…</span><span class="chip ok" title="leg asymmetry and grounded oversized boots">leg asymmetry and…</span><span class="chip ok" title="no text/base/props">no text/base/props</span></div></details><p>Reject; correct blind side mapping and human-check pads/legs.</p><details class="more"><summary>full note</summary><p class="chipnote">REJECT. Convincing heavy-heroic central design, but the three-view sheet has an amputated cyberarm and a forbidden temple port. RECONCILIATION: Both screens reject the multi-view output. The blind pass additionally contains two viewer-frame mapping errors; human review must settle pad count and leg sides while treating viewer-left open/viewer-right fist as correct chirality but an inadequate stiff-arm pose.</p></details><button class="ibtn" data-inputs="in-4">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="gorgon-v2-r1-h2-gptimage2-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/bb074615d458be9b.png" data-cap="H2 · GPT Image 2 — reject / detector disagreement" data-ref="h2-gptimage2-1" data-anchor="gorgon-v2-r1-h2-gptimage2-1"><img src="../../../../assets/0dcc0d0b479226c0.jpg" alt="H2 · GPT Image 2 — reject / detector disagreement" loading="lazy"></div><div class="meta"><header><h3>H2 · GPT Image 2 — reject / detector disagreement</h3><span class="cost">$0.14</span><span class="call reject" title="REJECT — crop/blind disagreement requires human check">REJECT</span></header><div class="cardref"><a class="refid" href="#gorgon-v2-r1-h2-gptimage2-1" title="Deep link to this image">#h2-gptimage2-1</a><button class="refbtn" data-copy-id="#h2-gptimage2-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="gorgon-v2-r1-h2-gptimage2-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="gorgon-v2-r1-h2-gptimage2-1" data-title="H2 · GPT Image 2 — reject / detector disagreement" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="H2 is ~6.69 heads tall; normalized shoulder, boot, wrist and ankle sizes shrink">H2 is ~6.69 heads…</span><span class="chip bad" title="dreads terminate as independent tubes">dreads terminate…</span><span class="chip bad" title="print safety — loose dread ends and separated fingers">print safety — lo…</span><span class="chip bad" title="blind cross-check — REJECT — Multiple core identity features like single shoulder pad, leg asymmetry, and dreadlock thickness are contradicted.">blind cross-check</span><span class="chip warn" title="hands complete but fingers separated">hands complete bu…</span><span class="chip warn" title="stiff-arm is shortened and mildly toward-camera">stiff-arm is shor…</span><span class="chip warn" title="pad count — Crop sees one viewer-right pad; blind description reports two.">pad count</span><span class="chip warn" title="leg asymmetry — Crop sees the required covered viewer-left and bare-garter viewer-right legs; blind description reports symmetric bare thighs/garters.">leg asymmetry</span></div><details class="more"><summary>4 more detectors (12 total)</summary><div class="chips"><span class="chip ok" title="camera/heavy femme blocker build">camera/heavy femm…</span><span class="chip ok" title="single viewer-right pad, both cyberarms, asymmetric legs, grounded boots">single viewer-rig…</span><span class="chip ok" title="dread side and viewer-left temple clearance">dread side and vi…</span><span class="chip ok" title="no text/emblem/base/props">no text/emblem/ba…</span></div></details><p>Reject H2; human-check pad count and leg asymmetry.</p><details class="more"><summary>full note</summary><p class="chipnote">REJECT for H2. Identity map and heavyweight torso are strong, but ~6.69 heads tall and 1/7 contract movement show no heavy-heroic proportion separation. Crop audit contradicts blind claims of two pads and symmetric legs; human reconciliation required. RECONCILIATION: The H2 proportion contract fails regardless, but human review must settle the blind/crop disagreement on pad count and leg asymmetry before carrying identity evidence forward.</p></details><button class="ibtn" data-inputs="in-5">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="gorgon-v2-r1-h2-seedream45-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/34c41508989ebc8d.jpg" data-cap="H2 · Seedream 4.5 — reject (two figures)" data-ref="h2-seedream45-1" data-anchor="gorgon-v2-r1-h2-seedream45-1"><img src="../../../../assets/ffd1914e678a4a15.jpg" alt="H2 · Seedream 4.5 — reject (two figures)" loading="lazy"></div><div class="meta"><header><h3>H2 · Seedream 4.5 — reject (two figures)</h3><span class="cost">$0.04</span><span class="call reject" title="REJECT — two-figure detector selection requires human check">REJECT</span></header><div class="cardref"><a class="refid" href="#gorgon-v2-r1-h2-seedream45-1" title="Deep link to this image">#h2-seedream45-1</a><button class="refbtn" data-copy-id="#h2-seedream45-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="gorgon-v2-r1-h2-seedream45-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="gorgon-v2-r1-h2-seedream45-1" data-title="H2 · Seedream 4.5 — reject (two figures)" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="two separate full-body figures">two separate full…</span><span class="chip bad" title="both figures fail single-pad and complete-cyberarm program">both figures fail…</span><span class="chip bad" title="no stiff-arm/fist">no stiff-arm/fist</span><span class="chip bad" title="dominant figure has symmetric covered legs">dominant figure h…</span><span class="chip bad" title="separate dreads and blocked viewer-left temple">separate dreads a…</span><span class="chip bad" title="duplicate figure and hanging accessory break silhouette">duplicate figure…</span><span class="chip bad" title="blind cross-check — REJECT — Core identity features (hair, cyberarms, pose chirality) are fundamentally incorrect.">blind cross-check</span><span class="chip warn" title="figure selection — Crop audits both figures and rejects their single-pad/leg programs; blind evaluates Figure R as the brief-facing subject and reports one correct-side pad with possible leg asymmetry.">figure selection</span></div><details class="more"><summary>4 more detectors (12 total)</summary><div class="chips"><span class="chip warn" title="fist frame-map correction — Blind description puts the fist on viewer-left but calls that correct for her left hand. In front view her left hand is viewer-right, so the described fist is wrong-side.">fist frame-map co…</span><span class="chip warn" title="hair/temple — Crop reports separate dreads blocking viewer-left on the dominant figure; blind&#x27;s selected Figure R is shaved with no dreads. Human review must identify which figure each screen evaluated.">hair/temple</span><span class="chip ok" title="dominant figure ~5.51 heads tall, close to H2 target">dominant figure ~…</span><span class="chip ok" title="grounded boots">grounded boots</span></div></details><p>Reject; screens evaluated different figures and blind fist mapping is wrong.</p><details class="more"><summary>full note</summary><p class="chipnote">REJECT. H2 size target lands on the dominant figure, but the image contains two incompatible characters and fails core identity, pose and reconstruction constraints. RECONCILIATION: Both screens reject the two-figure result, but they evaluated different figures or attributes. Human review must settle pad/leg/hair facts and treat the blind fist-chirality label as a mapping error.</p></details><button class="ibtn" data-inputs="in-6">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="gorgon-v2-r1-h2-grokq-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/a98168e4e264d838.png" data-cap="H2 · Grok Quality — reject (best body bracket)" data-ref="h2-grokq-1" data-anchor="gorgon-v2-r1-h2-grokq-1"><img src="../../../../assets/801622581cbeeee8.jpg" alt="H2 · Grok Quality — reject (best body bracket)" loading="lazy"></div><div class="meta"><header><h3>H2 · Grok Quality — reject (best body bracket)</h3><span class="cost">$0.07</span><span class="call reject" title="REJECT — crop/blind disagreement requires human check">REJECT</span></header><div class="cardref"><a class="refid" href="#gorgon-v2-r1-h2-grokq-1" title="Deep link to this image">#h2-grokq-1</a><button class="refbtn" data-copy-id="#h2-grokq-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="gorgon-v2-r1-h2-grokq-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="gorgon-v2-r1-h2-grokq-1" data-title="H2 · Grok Quality — reject (best body bracket)" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="two shoulder pads and flesh upper arms">two shoulder pads…</span><span class="chip bad" title="both hands hang open; no stiff-arm/fist">both hands hang o…</span><span class="chip bad" title="separate dreads block viewer-left temple">separate dreads b…</span><span class="chip bad" title="forbidden rear block/attached prop">forbidden rear bl…</span><span class="chip bad" title="redundant pad, rear block and free dread tips">redundant pad, re…</span><span class="chip bad" title="blind cross-check — REJECT — Multiple critical failures in chirality, pose, and printability.">blind cross-check</span><span class="chip warn" title="single frontal figure but staggered depth/rear block">single frontal fi…</span><span class="chip warn" title="leg asymmetry — Crop records the required asymmetric legs; blind description reports symmetrical leg treatment.">leg asymmetry</span></div><details class="more"><summary>4 more detectors (12 total)</summary><div class="chips"><span class="chip warn" title="cyberarm completeness — Crop sees flesh upper arms/incomplete cyberarms; blind describes gauntlets but leaves full shoulder-to-fingertip cyberarms unclear.">cyberarm complete…</span><span class="chip warn" title="rear attachment — Crop records a forbidden rear block/attached prop; blind records no props, apparently considering only held objects.">rear attachment</span><span class="chip ok" title="~5.52 heads tall; strong heavy-heroic proportions">~5.52 heads tall;…</span><span class="chip ok" title="leg asymmetry and grounded oversized boots">leg asymmetry and…</span></div></details><p>Reject; human-check legs, cyberarms and rear attachment.</p><details class="more"><summary>full note</summary><p class="chipnote">REJECT. H2 proportions landed strongly, but two pads, incomplete cyberarms, wrong hands/pose, blocked temple, free dreads and a rear block fail identity and reconstruction. RECONCILIATION: Both screens reject the identity and pose despite strong H2 body scale. Human review must settle leg asymmetry, cyberarm completeness and whether the rear block is an attached prop.</p></details><button class="ibtn" data-inputs="in-7">inputs — prompt &amp; refs</button></div></div>
+</div>
+<div class="callout steps"><p class="boxhead">Proposed next steps</p><p class="intro">No turnaround or Meshy work starts from R1. The human proportion/base verdict defines a separately approved R2.</p><ol><li><span class="t">Localized-repair track</span><span class="when">if GPT Image 2 H1 is kept</span><p class="d">Freeze its body proportions and main chirality; repair the dread-mane side, remove the chest emblem, consolidate fragile fingers/locks/spikes, and resolve any pad/leg discrepancy confirmed by eye.</p></li><li><span class="t">Fresh-bracket track</span><span class="when">if all eight are rejected</span><p class="d">Write a new R2 body target from the human verdict. Retain Grok only as evidence that a large scale bracket can land, not as an identity or pose base.</p></li><li><span class="t">Next approval boundary</span><p class="d">Publish and sign off the R2 runbook before any new generation. Turnaround and Meshy remain later rounds after a concept passes the human gate.</p></li></ol></div>
+<footer>Known R1 spend $0.889805 · conservative all-in bound including five interrupted reservations $1.206605 of the $1.35 cap · 8/8 concepts on Drive · 8/8 crop audits and 8/8 blind audits recorded in reviews.jsonl.</footer>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="lb-meta"><div class="cap" id="lb-cap"></div><div class="lb-refrow" id="lb-refrow" hidden><span class="refid" id="lb-ref"></span><button class="refbtn" id="lb-copy-id" title="Copy this image id">copy id</button><button class="refbtn" id="lb-copy-link" title="Copy a link to this image">copy link</button></div></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+
+<template id="in-0"><h2>H1 · Flash 3.1 — reject (extra arms / multi-view)</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-02T14:59:46</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon-v2/prompts/r1-h1-classic-heroic.txt</p><pre>No images are attached. Create a brand-new text-to-image concept; do not copy any previous Gorgon artwork.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed specifically as production concept art for a 32 mm HEROIC-SCALE resin fantasy-football miniature, in the visual language of a chunky pewter sports sculpt. Show one figure only, straight-on FRONT view, centered on a plain neutral gray studio background with even soft lighting. Use a near-orthographic, very-long-lens studio view with minimal foreshortening so head, torso, both arms, both hands, legs and boots can be compared as a proportion sheet. Her entire body and both boots are visible with space around them. This is character concept art, not a photograph of a toy: no base, pedestal, scenic ground, labels or presentation card.
+
+HEROIC PROPORTION TARGET — H1 CLASSIC HEROIC
+Build her at roughly SIX-AND-THREE-QUARTERS HEADS TALL. Compared with naturalistic character art, enlarge her head, both hands and both boots by about fifteen percent. Give her the long-but-sturdy read of a classic heroic-scale pewter sports sculpt: thick neck, deep ribcage and pelvis, broad readable muscle planes, thick wrists and ankles, compact limb segments and substantial joints. Her head must not look small between her shoulders; both hands must read clearly at thumbnail size; her combat boots must feel weighty enough for a Blood Bowl miniature. She remains tall, athletic and visibly female, never chibi or squat. Absolutely no fashion-model proportions, tiny head, tiny hands, narrow wrists, long delicate legs or slender ankles.
+
+HELD-CONSTANT CHARACTER PROGRAM
+GORGON is a female cyberpunk fantasy-football BLOCKER: a corporate super-soldier washout turned cold street-team enforcer. She is one of the two biggest players on the roster, a heavyweight powerlifter with a tall V-shaped silhouette: extremely broad shoulders, a deep upper torso, thick neck, dense back and lats, compact waist and massive thighs. Her menace is disciplined stillness, not rage; high cheekbones, level unsmiling stare, never a snarl and never a pin-up.
+
+FRONT-VIEW SIDE MAP: the VIEWER&#x27;S LEFT side contains the completely exposed cyber-shoulder, the clear head-jack temple landing zone, the dread drape, the continuous covered leg and the in-plane stiff-arm. The VIEWER&#x27;S RIGHT side contains the single shoulder pad, the bare garter leg and the hanging fist. This side map is absolute for the whole image: do not swap or mirror it.
+
+Both arms are complete military-grade cyberarms from shoulder to fingertips: symmetrical gunmetal armored volumes, slightly oversized, with broad beveled plates and DEEP recessed seams that will survive a small resin print. They are precise mil-spec grafts, never skinny android limbs and never exposed industrial hydraulics. Both hands are deliberately oversized heroic-scale chrome hands, each with exactly four thick fingers and one thumb.
+
+Both temples are clean-shaved with NO socket, jewel, port or forehead mark. The entire temple on the clear-zone/dread-drape side, from brow to above the ear, stays completely free of hair so a head-jack can be added there later; the mane begins behind that landing zone and never rises across it. A dense mane of thumb-thick cable-dreadlocks sweeps straight back and rests as one connected printable mass over the exposed-shoulder side. The locks have blunt connected ends: no thin tips, loops or floating strands. Behind the mane, a bold segmented vertebral ridge runs from the back of her head to mid-back; its large plates are visible only where the front camera naturally permits, never as spikes.
+
+Her kit is scuffed anti-corporate cyberpunk sports armor in matte black and gunmetal with restrained hot-magenta accents: a compression playing suit, broad armor planes, chunky low-relief studs and a torn-off corporate chest patch with no readable lettering. ONE layered angular fantasy-football shoulder pad sits on the pad side only. The opposite stiff-arm side is the completely exposed rounded cyber-shoulder: NO second pad, cap, strap or mirrored plate. No number, team emblem, animal logo, word or readable graffiti anywhere.
+
+Her leg asymmetry is explicit. The pad-side leg is bare muscular flesh from mid-thigh to the boot and wears one wide studded leather garter plus a strapped leather knee pad. The stiff-arm-side leg is covered by ONE continuous unbroken leather-and-armor legging from the hip crease all the way into the boot, with a hard armored knee and shin plate: no bare-thigh gap, no garter, no rip, no cutout. Both feet wear oversized buckled fantasy-football combat boots with broad toe boxes and thick lugged soles, never sneakers.
+
+POSE AND BASING
+She advances in a shallow, controlled stagger with BOTH feet firmly reaching the same ground plane and two generous glue patches. The front boot is flat from heel through ball; the rear boot is also visibly grounded through heel and ball. No lifted foot, tiptoe or long running stride. Torso upright and square, chin level. The stiff-arm-side cyberarm extends diagonally outward at shoulder height, about FORTY DEGREES away from the torso and wholly within the image plane, elbow slightly bent; it does NOT point toward the camera. Its open palm faces the camera so all four joined fingers and the separate thumb are clearly readable without shortening the arm. The pad-side cyberarm hangs beside her body with a loose empty fist. Both hands are empty. No limb crosses, merges into or hides behind the torso.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a 37 mm-tall resin figure: bold planes, thick connected forms, deep relief, no hairline seams. Cyberarm panel lines are engraved at least 0.15 mm at final scale. No weapon, ball, other person, jungle motif, cape, antenna, free cable, blade, thin spike, transparent material, base or text.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-1"><h2>H1 · GPT Image 2 — crop FIXABLE / blind REJECT</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=high · $0.17 · 2026-08-02T15:00:24</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon-v2/prompts/r1-h1-classic-heroic.txt</p><pre>No images are attached. Create a brand-new text-to-image concept; do not copy any previous Gorgon artwork.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed specifically as production concept art for a 32 mm HEROIC-SCALE resin fantasy-football miniature, in the visual language of a chunky pewter sports sculpt. Show one figure only, straight-on FRONT view, centered on a plain neutral gray studio background with even soft lighting. Use a near-orthographic, very-long-lens studio view with minimal foreshortening so head, torso, both arms, both hands, legs and boots can be compared as a proportion sheet. Her entire body and both boots are visible with space around them. This is character concept art, not a photograph of a toy: no base, pedestal, scenic ground, labels or presentation card.
+
+HEROIC PROPORTION TARGET — H1 CLASSIC HEROIC
+Build her at roughly SIX-AND-THREE-QUARTERS HEADS TALL. Compared with naturalistic character art, enlarge her head, both hands and both boots by about fifteen percent. Give her the long-but-sturdy read of a classic heroic-scale pewter sports sculpt: thick neck, deep ribcage and pelvis, broad readable muscle planes, thick wrists and ankles, compact limb segments and substantial joints. Her head must not look small between her shoulders; both hands must read clearly at thumbnail size; her combat boots must feel weighty enough for a Blood Bowl miniature. She remains tall, athletic and visibly female, never chibi or squat. Absolutely no fashion-model proportions, tiny head, tiny hands, narrow wrists, long delicate legs or slender ankles.
+
+HELD-CONSTANT CHARACTER PROGRAM
+GORGON is a female cyberpunk fantasy-football BLOCKER: a corporate super-soldier washout turned cold street-team enforcer. She is one of the two biggest players on the roster, a heavyweight powerlifter with a tall V-shaped silhouette: extremely broad shoulders, a deep upper torso, thick neck, dense back and lats, compact waist and massive thighs. Her menace is disciplined stillness, not rage; high cheekbones, level unsmiling stare, never a snarl and never a pin-up.
+
+FRONT-VIEW SIDE MAP: the VIEWER&#x27;S LEFT side contains the completely exposed cyber-shoulder, the clear head-jack temple landing zone, the dread drape, the continuous covered leg and the in-plane stiff-arm. The VIEWER&#x27;S RIGHT side contains the single shoulder pad, the bare garter leg and the hanging fist. This side map is absolute for the whole image: do not swap or mirror it.
+
+Both arms are complete military-grade cyberarms from shoulder to fingertips: symmetrical gunmetal armored volumes, slightly oversized, with broad beveled plates and DEEP recessed seams that will survive a small resin print. They are precise mil-spec grafts, never skinny android limbs and never exposed industrial hydraulics. Both hands are deliberately oversized heroic-scale chrome hands, each with exactly four thick fingers and one thumb.
+
+Both temples are clean-shaved with NO socket, jewel, port or forehead mark. The entire temple on the clear-zone/dread-drape side, from brow to above the ear, stays completely free of hair so a head-jack can be added there later; the mane begins behind that landing zone and never rises across it. A dense mane of thumb-thick cable-dreadlocks sweeps straight back and rests as one connected printable mass over the exposed-shoulder side. The locks have blunt connected ends: no thin tips, loops or floating strands. Behind the mane, a bold segmented vertebral ridge runs from the back of her head to mid-back; its large plates are visible only where the front camera naturally permits, never as spikes.
+
+Her kit is scuffed anti-corporate cyberpunk sports armor in matte black and gunmetal with restrained hot-magenta accents: a compression playing suit, broad armor planes, chunky low-relief studs and a torn-off corporate chest patch with no readable lettering. ONE layered angular fantasy-football shoulder pad sits on the pad side only. The opposite stiff-arm side is the completely exposed rounded cyber-shoulder: NO second pad, cap, strap or mirrored plate. No number, team emblem, animal logo, word or readable graffiti anywhere.
+
+Her leg asymmetry is explicit. The pad-side leg is bare muscular flesh from mid-thigh to the boot and wears one wide studded leather garter plus a strapped leather knee pad. The stiff-arm-side leg is covered by ONE continuous unbroken leather-and-armor legging from the hip crease all the way into the boot, with a hard armored knee and shin plate: no bare-thigh gap, no garter, no rip, no cutout. Both feet wear oversized buckled fantasy-football combat boots with broad toe boxes and thick lugged soles, never sneakers.
+
+POSE AND BASING
+She advances in a shallow, controlled stagger with BOTH feet firmly reaching the same ground plane and two generous glue patches. The front boot is flat from heel through ball; the rear boot is also visibly grounded through heel and ball. No lifted foot, tiptoe or long running stride. Torso upright and square, chin level. The stiff-arm-side cyberarm extends diagonally outward at shoulder height, about FORTY DEGREES away from the torso and wholly within the image plane, elbow slightly bent; it does NOT point toward the camera. Its open palm faces the camera so all four joined fingers and the separate thumb are clearly readable without shortening the arm. The pad-side cyberarm hangs beside her body with a loose empty fist. Both hands are empty. No limb crosses, merges into or hides behind the torso.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a 37 mm-tall resin figure: bold planes, thick connected forms, deep relief, no hairline seams. Cyberarm panel lines are engraved at least 0.15 mm at final scale. No weapon, ball, other person, jungle motif, cape, antenna, free cable, blade, thin spike, transparent material, base or text.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-2"><h2>H1 · Seedream 4.5 — reject</h2><p class="gmeta">bytedance-seed/seedream-4.5 via openrouter · resolution=2K · $0.04 · 2026-08-02T14:58:43</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon-v2/prompts/r1-h1-classic-heroic.txt</p><pre>No images are attached. Create a brand-new text-to-image concept; do not copy any previous Gorgon artwork.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed specifically as production concept art for a 32 mm HEROIC-SCALE resin fantasy-football miniature, in the visual language of a chunky pewter sports sculpt. Show one figure only, straight-on FRONT view, centered on a plain neutral gray studio background with even soft lighting. Use a near-orthographic, very-long-lens studio view with minimal foreshortening so head, torso, both arms, both hands, legs and boots can be compared as a proportion sheet. Her entire body and both boots are visible with space around them. This is character concept art, not a photograph of a toy: no base, pedestal, scenic ground, labels or presentation card.
+
+HEROIC PROPORTION TARGET — H1 CLASSIC HEROIC
+Build her at roughly SIX-AND-THREE-QUARTERS HEADS TALL. Compared with naturalistic character art, enlarge her head, both hands and both boots by about fifteen percent. Give her the long-but-sturdy read of a classic heroic-scale pewter sports sculpt: thick neck, deep ribcage and pelvis, broad readable muscle planes, thick wrists and ankles, compact limb segments and substantial joints. Her head must not look small between her shoulders; both hands must read clearly at thumbnail size; her combat boots must feel weighty enough for a Blood Bowl miniature. She remains tall, athletic and visibly female, never chibi or squat. Absolutely no fashion-model proportions, tiny head, tiny hands, narrow wrists, long delicate legs or slender ankles.
+
+HELD-CONSTANT CHARACTER PROGRAM
+GORGON is a female cyberpunk fantasy-football BLOCKER: a corporate super-soldier washout turned cold street-team enforcer. She is one of the two biggest players on the roster, a heavyweight powerlifter with a tall V-shaped silhouette: extremely broad shoulders, a deep upper torso, thick neck, dense back and lats, compact waist and massive thighs. Her menace is disciplined stillness, not rage; high cheekbones, level unsmiling stare, never a snarl and never a pin-up.
+
+FRONT-VIEW SIDE MAP: the VIEWER&#x27;S LEFT side contains the completely exposed cyber-shoulder, the clear head-jack temple landing zone, the dread drape, the continuous covered leg and the in-plane stiff-arm. The VIEWER&#x27;S RIGHT side contains the single shoulder pad, the bare garter leg and the hanging fist. This side map is absolute for the whole image: do not swap or mirror it.
+
+Both arms are complete military-grade cyberarms from shoulder to fingertips: symmetrical gunmetal armored volumes, slightly oversized, with broad beveled plates and DEEP recessed seams that will survive a small resin print. They are precise mil-spec grafts, never skinny android limbs and never exposed industrial hydraulics. Both hands are deliberately oversized heroic-scale chrome hands, each with exactly four thick fingers and one thumb.
+
+Both temples are clean-shaved with NO socket, jewel, port or forehead mark. The entire temple on the clear-zone/dread-drape side, from brow to above the ear, stays completely free of hair so a head-jack can be added there later; the mane begins behind that landing zone and never rises across it. A dense mane of thumb-thick cable-dreadlocks sweeps straight back and rests as one connected printable mass over the exposed-shoulder side. The locks have blunt connected ends: no thin tips, loops or floating strands. Behind the mane, a bold segmented vertebral ridge runs from the back of her head to mid-back; its large plates are visible only where the front camera naturally permits, never as spikes.
+
+Her kit is scuffed anti-corporate cyberpunk sports armor in matte black and gunmetal with restrained hot-magenta accents: a compression playing suit, broad armor planes, chunky low-relief studs and a torn-off corporate chest patch with no readable lettering. ONE layered angular fantasy-football shoulder pad sits on the pad side only. The opposite stiff-arm side is the completely exposed rounded cyber-shoulder: NO second pad, cap, strap or mirrored plate. No number, team emblem, animal logo, word or readable graffiti anywhere.
+
+Her leg asymmetry is explicit. The pad-side leg is bare muscular flesh from mid-thigh to the boot and wears one wide studded leather garter plus a strapped leather knee pad. The stiff-arm-side leg is covered by ONE continuous unbroken leather-and-armor legging from the hip crease all the way into the boot, with a hard armored knee and shin plate: no bare-thigh gap, no garter, no rip, no cutout. Both feet wear oversized buckled fantasy-football combat boots with broad toe boxes and thick lugged soles, never sneakers.
+
+POSE AND BASING
+She advances in a shallow, controlled stagger with BOTH feet firmly reaching the same ground plane and two generous glue patches. The front boot is flat from heel through ball; the rear boot is also visibly grounded through heel and ball. No lifted foot, tiptoe or long running stride. Torso upright and square, chin level. The stiff-arm-side cyberarm extends diagonally outward at shoulder height, about FORTY DEGREES away from the torso and wholly within the image plane, elbow slightly bent; it does NOT point toward the camera. Its open palm faces the camera so all four joined fingers and the separate thumb are clearly readable without shortening the arm. The pad-side cyberarm hangs beside her body with a loose empty fist. Both hands are empty. No limb crosses, merges into or hides behind the torso.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a 37 mm-tall resin figure: bold planes, thick connected forms, deep relief, no hairline seams. Cyberarm panel lines are engraved at least 0.15 mm at final scale. No weapon, ball, other person, jungle motif, cape, antenna, free cable, blade, thin spike, transparent material, base or text.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-3"><h2>H1 · Grok Quality — reject</h2><p class="gmeta">x-ai/grok-imagine-image-quality via openrouter · resolution=2K · $0.07 · 2026-08-02T14:58:25</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon-v2/prompts/r1-h1-classic-heroic.txt</p><pre>No images are attached. Create a brand-new text-to-image concept; do not copy any previous Gorgon artwork.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed specifically as production concept art for a 32 mm HEROIC-SCALE resin fantasy-football miniature, in the visual language of a chunky pewter sports sculpt. Show one figure only, straight-on FRONT view, centered on a plain neutral gray studio background with even soft lighting. Use a near-orthographic, very-long-lens studio view with minimal foreshortening so head, torso, both arms, both hands, legs and boots can be compared as a proportion sheet. Her entire body and both boots are visible with space around them. This is character concept art, not a photograph of a toy: no base, pedestal, scenic ground, labels or presentation card.
+
+HEROIC PROPORTION TARGET — H1 CLASSIC HEROIC
+Build her at roughly SIX-AND-THREE-QUARTERS HEADS TALL. Compared with naturalistic character art, enlarge her head, both hands and both boots by about fifteen percent. Give her the long-but-sturdy read of a classic heroic-scale pewter sports sculpt: thick neck, deep ribcage and pelvis, broad readable muscle planes, thick wrists and ankles, compact limb segments and substantial joints. Her head must not look small between her shoulders; both hands must read clearly at thumbnail size; her combat boots must feel weighty enough for a Blood Bowl miniature. She remains tall, athletic and visibly female, never chibi or squat. Absolutely no fashion-model proportions, tiny head, tiny hands, narrow wrists, long delicate legs or slender ankles.
+
+HELD-CONSTANT CHARACTER PROGRAM
+GORGON is a female cyberpunk fantasy-football BLOCKER: a corporate super-soldier washout turned cold street-team enforcer. She is one of the two biggest players on the roster, a heavyweight powerlifter with a tall V-shaped silhouette: extremely broad shoulders, a deep upper torso, thick neck, dense back and lats, compact waist and massive thighs. Her menace is disciplined stillness, not rage; high cheekbones, level unsmiling stare, never a snarl and never a pin-up.
+
+FRONT-VIEW SIDE MAP: the VIEWER&#x27;S LEFT side contains the completely exposed cyber-shoulder, the clear head-jack temple landing zone, the dread drape, the continuous covered leg and the in-plane stiff-arm. The VIEWER&#x27;S RIGHT side contains the single shoulder pad, the bare garter leg and the hanging fist. This side map is absolute for the whole image: do not swap or mirror it.
+
+Both arms are complete military-grade cyberarms from shoulder to fingertips: symmetrical gunmetal armored volumes, slightly oversized, with broad beveled plates and DEEP recessed seams that will survive a small resin print. They are precise mil-spec grafts, never skinny android limbs and never exposed industrial hydraulics. Both hands are deliberately oversized heroic-scale chrome hands, each with exactly four thick fingers and one thumb.
+
+Both temples are clean-shaved with NO socket, jewel, port or forehead mark. The entire temple on the clear-zone/dread-drape side, from brow to above the ear, stays completely free of hair so a head-jack can be added there later; the mane begins behind that landing zone and never rises across it. A dense mane of thumb-thick cable-dreadlocks sweeps straight back and rests as one connected printable mass over the exposed-shoulder side. The locks have blunt connected ends: no thin tips, loops or floating strands. Behind the mane, a bold segmented vertebral ridge runs from the back of her head to mid-back; its large plates are visible only where the front camera naturally permits, never as spikes.
+
+Her kit is scuffed anti-corporate cyberpunk sports armor in matte black and gunmetal with restrained hot-magenta accents: a compression playing suit, broad armor planes, chunky low-relief studs and a torn-off corporate chest patch with no readable lettering. ONE layered angular fantasy-football shoulder pad sits on the pad side only. The opposite stiff-arm side is the completely exposed rounded cyber-shoulder: NO second pad, cap, strap or mirrored plate. No number, team emblem, animal logo, word or readable graffiti anywhere.
+
+Her leg asymmetry is explicit. The pad-side leg is bare muscular flesh from mid-thigh to the boot and wears one wide studded leather garter plus a strapped leather knee pad. The stiff-arm-side leg is covered by ONE continuous unbroken leather-and-armor legging from the hip crease all the way into the boot, with a hard armored knee and shin plate: no bare-thigh gap, no garter, no rip, no cutout. Both feet wear oversized buckled fantasy-football combat boots with broad toe boxes and thick lugged soles, never sneakers.
+
+POSE AND BASING
+She advances in a shallow, controlled stagger with BOTH feet firmly reaching the same ground plane and two generous glue patches. The front boot is flat from heel through ball; the rear boot is also visibly grounded through heel and ball. No lifted foot, tiptoe or long running stride. Torso upright and square, chin level. The stiff-arm-side cyberarm extends diagonally outward at shoulder height, about FORTY DEGREES away from the torso and wholly within the image plane, elbow slightly bent; it does NOT point toward the camera. Its open palm faces the camera so all four joined fingers and the separate thumb are clearly readable without shortening the arm. The pad-side cyberarm hangs beside her body with a loose empty fist. Both hands are empty. No limb crosses, merges into or hides behind the torso.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a 37 mm-tall resin figure: bold planes, thick connected forms, deep relief, no hairline seams. Cyberarm panel lines are engraved at least 0.15 mm at final scale. No weapon, ball, other person, jungle motif, cape, antenna, free cable, blade, thin spike, transparent material, base or text.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-4"><h2>H2 · Flash 3.1 — reject (multi-view / wrist stump)</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-02T15:00:06</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon-v2/prompts/r1-h2-heavy-heroic.txt</p><pre>No images are attached. Create a brand-new text-to-image concept; do not copy any previous Gorgon artwork.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed specifically as production concept art for a 32 mm HEROIC-SCALE resin fantasy-football miniature, in the visual language of a chunky pewter sports sculpt. Show one figure only, straight-on FRONT view, centered on a plain neutral gray studio background with even soft lighting. Use a near-orthographic, very-long-lens studio view with minimal foreshortening so head, torso, both arms, both hands, legs and boots can be compared as a proportion sheet. Her entire body and both boots are visible with space around them. This is character concept art, not a photograph of a toy: no base, pedestal, scenic ground, labels or presentation card.
+
+HEROIC PROPORTION TARGET — H2 HEAVY HEROIC
+Build her at roughly FIVE-AND-THREE-QUARTERS HEADS TALL. Compared with naturalistic character art, enlarge her head, both hands and both boots by about twenty-five percent. Push the emphatic mass of a heavy heroic-scale pewter sports sculpt: much deeper barrel ribcage, thicker pelvis, huge shoulder girdle, very thick neck, forearms, wrists, knees, calves and ankles, short powerful limb segments and strongly oversized joints. Her head must stay substantial between the shoulders; both hands must be bold focal shapes at thumbnail size; her boots must anchor the whole figure like fantasy-football equipment. This is the strongest, chunkiest blocker treatment that still reads tall, athletic and visibly female. Never chibi, squat, comic or male-coded. Absolutely no fashion-model proportions, tiny head, tiny hands, narrow wrists, long delicate legs or slender ankles.
+
+HELD-CONSTANT CHARACTER PROGRAM
+GORGON is a female cyberpunk fantasy-football BLOCKER: a corporate super-soldier washout turned cold street-team enforcer. She is one of the two biggest players on the roster, a heavyweight powerlifter with a tall V-shaped silhouette: extremely broad shoulders, a deep upper torso, thick neck, dense back and lats, compact waist and massive thighs. Her menace is disciplined stillness, not rage; high cheekbones, level unsmiling stare, never a snarl and never a pin-up.
+
+FRONT-VIEW SIDE MAP: the VIEWER&#x27;S LEFT side contains the completely exposed cyber-shoulder, the clear head-jack temple landing zone, the dread drape, the continuous covered leg and the in-plane stiff-arm. The VIEWER&#x27;S RIGHT side contains the single shoulder pad, the bare garter leg and the hanging fist. This side map is absolute for the whole image: do not swap or mirror it.
+
+Both arms are complete military-grade cyberarms from shoulder to fingertips: symmetrical gunmetal armored volumes, slightly oversized, with broad beveled plates and DEEP recessed seams that will survive a small resin print. They are precise mil-spec grafts, never skinny android limbs and never exposed industrial hydraulics. Both hands are deliberately oversized heroic-scale chrome hands, each with exactly four thick fingers and one thumb.
+
+Both temples are clean-shaved with NO socket, jewel, port or forehead mark. The entire temple on the clear-zone/dread-drape side, from brow to above the ear, stays completely free of hair so a head-jack can be added there later; the mane begins behind that landing zone and never rises across it. A dense mane of thumb-thick cable-dreadlocks sweeps straight back and rests as one connected printable mass over the exposed-shoulder side. The locks have blunt connected ends: no thin tips, loops or floating strands. Behind the mane, a bold segmented vertebral ridge runs from the back of her head to mid-back; its large plates are visible only where the front camera naturally permits, never as spikes.
+
+Her kit is scuffed anti-corporate cyberpunk sports armor in matte black and gunmetal with restrained hot-magenta accents: a compression playing suit, broad armor planes, chunky low-relief studs and a torn-off corporate chest patch with no readable lettering. ONE layered angular fantasy-football shoulder pad sits on the pad side only. The opposite stiff-arm side is the completely exposed rounded cyber-shoulder: NO second pad, cap, strap or mirrored plate. No number, team emblem, animal logo, word or readable graffiti anywhere.
+
+Her leg asymmetry is explicit. The pad-side leg is bare muscular flesh from mid-thigh to the boot and wears one wide studded leather garter plus a strapped leather knee pad. The stiff-arm-side leg is covered by ONE continuous unbroken leather-and-armor legging from the hip crease all the way into the boot, with a hard armored knee and shin plate: no bare-thigh gap, no garter, no rip, no cutout. Both feet wear oversized buckled fantasy-football combat boots with broad toe boxes and thick lugged soles, never sneakers.
+
+POSE AND BASING
+She advances in a shallow, controlled stagger with BOTH feet firmly reaching the same ground plane and two generous glue patches. The front boot is flat from heel through ball; the rear boot is also visibly grounded through heel and ball. No lifted foot, tiptoe or long running stride. Torso upright and square, chin level. The stiff-arm-side cyberarm extends diagonally outward at shoulder height, about FORTY DEGREES away from the torso and wholly within the image plane, elbow slightly bent; it does NOT point toward the camera. Its open palm faces the camera so all four joined fingers and the separate thumb are clearly readable without shortening the arm. The pad-side cyberarm hangs beside her body with a loose empty fist. Both hands are empty. No limb crosses, merges into or hides behind the torso.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a 37 mm-tall resin figure: bold planes, thick connected forms, deep relief, no hairline seams. Cyberarm panel lines are engraved at least 0.15 mm at final scale. No weapon, ball, other person, jungle motif, cape, antenna, free cable, blade, thin spike, transparent material, base or text.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-5"><h2>H2 · GPT Image 2 — reject / detector disagreement</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=high · $0.14 · 2026-08-02T14:59:52</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon-v2/prompts/r1-h2-heavy-heroic.txt</p><pre>No images are attached. Create a brand-new text-to-image concept; do not copy any previous Gorgon artwork.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed specifically as production concept art for a 32 mm HEROIC-SCALE resin fantasy-football miniature, in the visual language of a chunky pewter sports sculpt. Show one figure only, straight-on FRONT view, centered on a plain neutral gray studio background with even soft lighting. Use a near-orthographic, very-long-lens studio view with minimal foreshortening so head, torso, both arms, both hands, legs and boots can be compared as a proportion sheet. Her entire body and both boots are visible with space around them. This is character concept art, not a photograph of a toy: no base, pedestal, scenic ground, labels or presentation card.
+
+HEROIC PROPORTION TARGET — H2 HEAVY HEROIC
+Build her at roughly FIVE-AND-THREE-QUARTERS HEADS TALL. Compared with naturalistic character art, enlarge her head, both hands and both boots by about twenty-five percent. Push the emphatic mass of a heavy heroic-scale pewter sports sculpt: much deeper barrel ribcage, thicker pelvis, huge shoulder girdle, very thick neck, forearms, wrists, knees, calves and ankles, short powerful limb segments and strongly oversized joints. Her head must stay substantial between the shoulders; both hands must be bold focal shapes at thumbnail size; her boots must anchor the whole figure like fantasy-football equipment. This is the strongest, chunkiest blocker treatment that still reads tall, athletic and visibly female. Never chibi, squat, comic or male-coded. Absolutely no fashion-model proportions, tiny head, tiny hands, narrow wrists, long delicate legs or slender ankles.
+
+HELD-CONSTANT CHARACTER PROGRAM
+GORGON is a female cyberpunk fantasy-football BLOCKER: a corporate super-soldier washout turned cold street-team enforcer. She is one of the two biggest players on the roster, a heavyweight powerlifter with a tall V-shaped silhouette: extremely broad shoulders, a deep upper torso, thick neck, dense back and lats, compact waist and massive thighs. Her menace is disciplined stillness, not rage; high cheekbones, level unsmiling stare, never a snarl and never a pin-up.
+
+FRONT-VIEW SIDE MAP: the VIEWER&#x27;S LEFT side contains the completely exposed cyber-shoulder, the clear head-jack temple landing zone, the dread drape, the continuous covered leg and the in-plane stiff-arm. The VIEWER&#x27;S RIGHT side contains the single shoulder pad, the bare garter leg and the hanging fist. This side map is absolute for the whole image: do not swap or mirror it.
+
+Both arms are complete military-grade cyberarms from shoulder to fingertips: symmetrical gunmetal armored volumes, slightly oversized, with broad beveled plates and DEEP recessed seams that will survive a small resin print. They are precise mil-spec grafts, never skinny android limbs and never exposed industrial hydraulics. Both hands are deliberately oversized heroic-scale chrome hands, each with exactly four thick fingers and one thumb.
+
+Both temples are clean-shaved with NO socket, jewel, port or forehead mark. The entire temple on the clear-zone/dread-drape side, from brow to above the ear, stays completely free of hair so a head-jack can be added there later; the mane begins behind that landing zone and never rises across it. A dense mane of thumb-thick cable-dreadlocks sweeps straight back and rests as one connected printable mass over the exposed-shoulder side. The locks have blunt connected ends: no thin tips, loops or floating strands. Behind the mane, a bold segmented vertebral ridge runs from the back of her head to mid-back; its large plates are visible only where the front camera naturally permits, never as spikes.
+
+Her kit is scuffed anti-corporate cyberpunk sports armor in matte black and gunmetal with restrained hot-magenta accents: a compression playing suit, broad armor planes, chunky low-relief studs and a torn-off corporate chest patch with no readable lettering. ONE layered angular fantasy-football shoulder pad sits on the pad side only. The opposite stiff-arm side is the completely exposed rounded cyber-shoulder: NO second pad, cap, strap or mirrored plate. No number, team emblem, animal logo, word or readable graffiti anywhere.
+
+Her leg asymmetry is explicit. The pad-side leg is bare muscular flesh from mid-thigh to the boot and wears one wide studded leather garter plus a strapped leather knee pad. The stiff-arm-side leg is covered by ONE continuous unbroken leather-and-armor legging from the hip crease all the way into the boot, with a hard armored knee and shin plate: no bare-thigh gap, no garter, no rip, no cutout. Both feet wear oversized buckled fantasy-football combat boots with broad toe boxes and thick lugged soles, never sneakers.
+
+POSE AND BASING
+She advances in a shallow, controlled stagger with BOTH feet firmly reaching the same ground plane and two generous glue patches. The front boot is flat from heel through ball; the rear boot is also visibly grounded through heel and ball. No lifted foot, tiptoe or long running stride. Torso upright and square, chin level. The stiff-arm-side cyberarm extends diagonally outward at shoulder height, about FORTY DEGREES away from the torso and wholly within the image plane, elbow slightly bent; it does NOT point toward the camera. Its open palm faces the camera so all four joined fingers and the separate thumb are clearly readable without shortening the arm. The pad-side cyberarm hangs beside her body with a loose empty fist. Both hands are empty. No limb crosses, merges into or hides behind the torso.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a 37 mm-tall resin figure: bold planes, thick connected forms, deep relief, no hairline seams. Cyberarm panel lines are engraved at least 0.15 mm at final scale. No weapon, ball, other person, jungle motif, cape, antenna, free cable, blade, thin spike, transparent material, base or text.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-6"><h2>H2 · Seedream 4.5 — reject (two figures)</h2><p class="gmeta">bytedance-seed/seedream-4.5 via openrouter · resolution=2K · $0.04 · 2026-08-02T14:58:27</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon-v2/prompts/r1-h2-heavy-heroic.txt</p><pre>No images are attached. Create a brand-new text-to-image concept; do not copy any previous Gorgon artwork.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed specifically as production concept art for a 32 mm HEROIC-SCALE resin fantasy-football miniature, in the visual language of a chunky pewter sports sculpt. Show one figure only, straight-on FRONT view, centered on a plain neutral gray studio background with even soft lighting. Use a near-orthographic, very-long-lens studio view with minimal foreshortening so head, torso, both arms, both hands, legs and boots can be compared as a proportion sheet. Her entire body and both boots are visible with space around them. This is character concept art, not a photograph of a toy: no base, pedestal, scenic ground, labels or presentation card.
+
+HEROIC PROPORTION TARGET — H2 HEAVY HEROIC
+Build her at roughly FIVE-AND-THREE-QUARTERS HEADS TALL. Compared with naturalistic character art, enlarge her head, both hands and both boots by about twenty-five percent. Push the emphatic mass of a heavy heroic-scale pewter sports sculpt: much deeper barrel ribcage, thicker pelvis, huge shoulder girdle, very thick neck, forearms, wrists, knees, calves and ankles, short powerful limb segments and strongly oversized joints. Her head must stay substantial between the shoulders; both hands must be bold focal shapes at thumbnail size; her boots must anchor the whole figure like fantasy-football equipment. This is the strongest, chunkiest blocker treatment that still reads tall, athletic and visibly female. Never chibi, squat, comic or male-coded. Absolutely no fashion-model proportions, tiny head, tiny hands, narrow wrists, long delicate legs or slender ankles.
+
+HELD-CONSTANT CHARACTER PROGRAM
+GORGON is a female cyberpunk fantasy-football BLOCKER: a corporate super-soldier washout turned cold street-team enforcer. She is one of the two biggest players on the roster, a heavyweight powerlifter with a tall V-shaped silhouette: extremely broad shoulders, a deep upper torso, thick neck, dense back and lats, compact waist and massive thighs. Her menace is disciplined stillness, not rage; high cheekbones, level unsmiling stare, never a snarl and never a pin-up.
+
+FRONT-VIEW SIDE MAP: the VIEWER&#x27;S LEFT side contains the completely exposed cyber-shoulder, the clear head-jack temple landing zone, the dread drape, the continuous covered leg and the in-plane stiff-arm. The VIEWER&#x27;S RIGHT side contains the single shoulder pad, the bare garter leg and the hanging fist. This side map is absolute for the whole image: do not swap or mirror it.
+
+Both arms are complete military-grade cyberarms from shoulder to fingertips: symmetrical gunmetal armored volumes, slightly oversized, with broad beveled plates and DEEP recessed seams that will survive a small resin print. They are precise mil-spec grafts, never skinny android limbs and never exposed industrial hydraulics. Both hands are deliberately oversized heroic-scale chrome hands, each with exactly four thick fingers and one thumb.
+
+Both temples are clean-shaved with NO socket, jewel, port or forehead mark. The entire temple on the clear-zone/dread-drape side, from brow to above the ear, stays completely free of hair so a head-jack can be added there later; the mane begins behind that landing zone and never rises across it. A dense mane of thumb-thick cable-dreadlocks sweeps straight back and rests as one connected printable mass over the exposed-shoulder side. The locks have blunt connected ends: no thin tips, loops or floating strands. Behind the mane, a bold segmented vertebral ridge runs from the back of her head to mid-back; its large plates are visible only where the front camera naturally permits, never as spikes.
+
+Her kit is scuffed anti-corporate cyberpunk sports armor in matte black and gunmetal with restrained hot-magenta accents: a compression playing suit, broad armor planes, chunky low-relief studs and a torn-off corporate chest patch with no readable lettering. ONE layered angular fantasy-football shoulder pad sits on the pad side only. The opposite stiff-arm side is the completely exposed rounded cyber-shoulder: NO second pad, cap, strap or mirrored plate. No number, team emblem, animal logo, word or readable graffiti anywhere.
+
+Her leg asymmetry is explicit. The pad-side leg is bare muscular flesh from mid-thigh to the boot and wears one wide studded leather garter plus a strapped leather knee pad. The stiff-arm-side leg is covered by ONE continuous unbroken leather-and-armor legging from the hip crease all the way into the boot, with a hard armored knee and shin plate: no bare-thigh gap, no garter, no rip, no cutout. Both feet wear oversized buckled fantasy-football combat boots with broad toe boxes and thick lugged soles, never sneakers.
+
+POSE AND BASING
+She advances in a shallow, controlled stagger with BOTH feet firmly reaching the same ground plane and two generous glue patches. The front boot is flat from heel through ball; the rear boot is also visibly grounded through heel and ball. No lifted foot, tiptoe or long running stride. Torso upright and square, chin level. The stiff-arm-side cyberarm extends diagonally outward at shoulder height, about FORTY DEGREES away from the torso and wholly within the image plane, elbow slightly bent; it does NOT point toward the camera. Its open palm faces the camera so all four joined fingers and the separate thumb are clearly readable without shortening the arm. The pad-side cyberarm hangs beside her body with a loose empty fist. Both hands are empty. No limb crosses, merges into or hides behind the torso.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a 37 mm-tall resin figure: bold planes, thick connected forms, deep relief, no hairline seams. Cyberarm panel lines are engraved at least 0.15 mm at final scale. No weapon, ball, other person, jungle motif, cape, antenna, free cable, blade, thin spike, transparent material, base or text.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-7"><h2>H2 · Grok Quality — reject (best body bracket)</h2><p class="gmeta">x-ai/grok-imagine-image-quality via openrouter · resolution=2K · $0.07 · 2026-08-02T14:58:26</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon-v2/prompts/r1-h2-heavy-heroic.txt</p><pre>No images are attached. Create a brand-new text-to-image concept; do not copy any previous Gorgon artwork.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed specifically as production concept art for a 32 mm HEROIC-SCALE resin fantasy-football miniature, in the visual language of a chunky pewter sports sculpt. Show one figure only, straight-on FRONT view, centered on a plain neutral gray studio background with even soft lighting. Use a near-orthographic, very-long-lens studio view with minimal foreshortening so head, torso, both arms, both hands, legs and boots can be compared as a proportion sheet. Her entire body and both boots are visible with space around them. This is character concept art, not a photograph of a toy: no base, pedestal, scenic ground, labels or presentation card.
+
+HEROIC PROPORTION TARGET — H2 HEAVY HEROIC
+Build her at roughly FIVE-AND-THREE-QUARTERS HEADS TALL. Compared with naturalistic character art, enlarge her head, both hands and both boots by about twenty-five percent. Push the emphatic mass of a heavy heroic-scale pewter sports sculpt: much deeper barrel ribcage, thicker pelvis, huge shoulder girdle, very thick neck, forearms, wrists, knees, calves and ankles, short powerful limb segments and strongly oversized joints. Her head must stay substantial between the shoulders; both hands must be bold focal shapes at thumbnail size; her boots must anchor the whole figure like fantasy-football equipment. This is the strongest, chunkiest blocker treatment that still reads tall, athletic and visibly female. Never chibi, squat, comic or male-coded. Absolutely no fashion-model proportions, tiny head, tiny hands, narrow wrists, long delicate legs or slender ankles.
+
+HELD-CONSTANT CHARACTER PROGRAM
+GORGON is a female cyberpunk fantasy-football BLOCKER: a corporate super-soldier washout turned cold street-team enforcer. She is one of the two biggest players on the roster, a heavyweight powerlifter with a tall V-shaped silhouette: extremely broad shoulders, a deep upper torso, thick neck, dense back and lats, compact waist and massive thighs. Her menace is disciplined stillness, not rage; high cheekbones, level unsmiling stare, never a snarl and never a pin-up.
+
+FRONT-VIEW SIDE MAP: the VIEWER&#x27;S LEFT side contains the completely exposed cyber-shoulder, the clear head-jack temple landing zone, the dread drape, the continuous covered leg and the in-plane stiff-arm. The VIEWER&#x27;S RIGHT side contains the single shoulder pad, the bare garter leg and the hanging fist. This side map is absolute for the whole image: do not swap or mirror it.
+
+Both arms are complete military-grade cyberarms from shoulder to fingertips: symmetrical gunmetal armored volumes, slightly oversized, with broad beveled plates and DEEP recessed seams that will survive a small resin print. They are precise mil-spec grafts, never skinny android limbs and never exposed industrial hydraulics. Both hands are deliberately oversized heroic-scale chrome hands, each with exactly four thick fingers and one thumb.
+
+Both temples are clean-shaved with NO socket, jewel, port or forehead mark. The entire temple on the clear-zone/dread-drape side, from brow to above the ear, stays completely free of hair so a head-jack can be added there later; the mane begins behind that landing zone and never rises across it. A dense mane of thumb-thick cable-dreadlocks sweeps straight back and rests as one connected printable mass over the exposed-shoulder side. The locks have blunt connected ends: no thin tips, loops or floating strands. Behind the mane, a bold segmented vertebral ridge runs from the back of her head to mid-back; its large plates are visible only where the front camera naturally permits, never as spikes.
+
+Her kit is scuffed anti-corporate cyberpunk sports armor in matte black and gunmetal with restrained hot-magenta accents: a compression playing suit, broad armor planes, chunky low-relief studs and a torn-off corporate chest patch with no readable lettering. ONE layered angular fantasy-football shoulder pad sits on the pad side only. The opposite stiff-arm side is the completely exposed rounded cyber-shoulder: NO second pad, cap, strap or mirrored plate. No number, team emblem, animal logo, word or readable graffiti anywhere.
+
+Her leg asymmetry is explicit. The pad-side leg is bare muscular flesh from mid-thigh to the boot and wears one wide studded leather garter plus a strapped leather knee pad. The stiff-arm-side leg is covered by ONE continuous unbroken leather-and-armor legging from the hip crease all the way into the boot, with a hard armored knee and shin plate: no bare-thigh gap, no garter, no rip, no cutout. Both feet wear oversized buckled fantasy-football combat boots with broad toe boxes and thick lugged soles, never sneakers.
+
+POSE AND BASING
+She advances in a shallow, controlled stagger with BOTH feet firmly reaching the same ground plane and two generous glue patches. The front boot is flat from heel through ball; the rear boot is also visibly grounded through heel and ball. No lifted foot, tiptoe or long running stride. Torso upright and square, chin level. The stiff-arm-side cyberarm extends diagonally outward at shoulder height, about FORTY DEGREES away from the torso and wholly within the image plane, elbow slightly bent; it does NOT point toward the camera. Its open palm faces the camera so all four joined fingers and the separate thumb are clearly readable without shortening the arm. The pad-side cyberarm hangs beside her body with a loose empty fist. Both hands are empty. No limb crosses, merges into or hides behind the torso.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a 37 mm-tall resin figure: bold planes, thick connected forms, deep relief, no hairline seams. Cyberarm panel lines are engraved at least 0.15 mm at final scale. No weapon, ball, other person, jungle motif, cape, antenna, free cable, blade, thin spike, transparent material, base or text.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbRefRow=document.getElementById('lb-refrow'),lbRef=document.getElementById('lb-ref'),
+      lbCopyId=document.getElementById('lb-copy-id'),lbCopyLink=document.getElementById('lb-copy-link'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  const ref=z.dataset.ref||'',anchor=z.dataset.anchor||'';
+  lbRefRow.hidden=!(ref&&anchor);
+  if(ref&&anchor){
+    lbRef.textContent='#'+ref;
+    lbCopyId.dataset.copyId='#'+ref;
+    lbCopyLink.dataset.copy=anchor;
+  }
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy a card's short display id, or copy/share its deep link. The URL is this
+// page plus the card's #id anchor, so a recipient lands scrolled to (and
+// highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  const ci=e.target.closest('[data-copy-id]');
+  if(ci){copyText(ci.dataset.copyId,ci);e.preventDefault();return;}
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+
+</body></html>
