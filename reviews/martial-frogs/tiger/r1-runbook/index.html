@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="b4b2b8012ed2ec7aff96e57d60a6adf575e99119c28f82e02058eaeeace2b220">
+<meta name="ai-stl-plan-digest" content="2cfbbec4640b65140c593cb919cdbec99fe883419f945451ba682f42177c3e6e">
 <title>Tiger — Round 1 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -417,19 +417,31 @@ python3 tools/discord_share.py --channel martial-frogs-design \
   --thread &lt;header-message-id&gt; --thread-name &quot;Round 1 — Tiger updates&quot; \
   --once tiger-r1-proposed-announcement \
   --message &quot;&lt;round-open announcement — see logs/discord-shares.jsonl for the posted text&gt;&quot;</code></pre>
-<h3>Commands (run after sign-off and durable greenlight verification)</h3>
-<p>Order matters (Codex review, 2026-08-03): the <code>Status:</code> flip is part of the runbook blob the gate manifest pins, so record the approval in the plan FIRST, then pin it. On Dimitri&#x27;s sign-off: flip <code>Status:</code> to <code>Approved — not started (Dimitri, &lt;date&gt;)</code>, commit and push that change, re-publish this page from that commit, and only then append the gate pinning that exact commit and its published render. Post the approval reply to the round&#x27;s Discord thread (and advance the header) once the status change is on <code>main</code>.</p>
-<pre class="code"><code>python3 tools/round_gate.py append \
-  --file projects/martial-frogs/tiger/round-gates.jsonl \
-  --round r1 --gate greenlight --actor dimitri --source cli \
-  --note &quot;&lt;quote or faithful summary of Dimitri&#x27;s approval&gt;&quot; \
-  --runbook-sha &quot;$(git rev-parse HEAD)&quot; \
-  --published-html &quot;$AI_STL_REVIEW_DIR/reviews/martial-frogs/tiger/r1-runbook/index.html&quot;
-# commit + push the gate line, then:
+<h3>Commands (run only after the merge-triggered start gate)</h3>
+<p>The approval and approved-not-started greenlight are already recorded. The start PR changes <code>Status:</code> to <code>In progress</code>, refreshes this page, and bundles the superseding status-only greenlight. <strong>Dimitri&#x27;s approval and merge of that PR are the trigger.</strong> Once it merges, start from the exact current <code>main</code>, then run this whole block successfully before any provider command. The reply is append-only, and the header can advance only from that completed reply&#x27;s event id; either Discord failure stops execution.</p>
+<pre class="code"><code>set -euo pipefail
+git fetch origin main
+test &quot;$(git rev-parse HEAD)&quot; = &quot;$(git rev-parse origin/main)&quot;
+
 python3 tools/round_gate.py verify \
   --file projects/martial-frogs/tiger/round-gates.jsonl --round r1 \
-  --published-html &quot;$AI_STL_REVIEW_DIR/reviews/martial-frogs/tiger/r1-runbook/index.html&quot;</code></pre>
-<p>Then the generation itself. The three <code>compare_gen.py</code> arms cover the four standard models (all four run through the shared spend-preflight ledger — <code>flash31</code> as a Gemini Batch cell, <code>gptimage2</code>/<code>seedream45</code>/<code>grokq</code> via OpenRouter); the riverflow25 arm runs as three direct <code>openrouter_gen.py</code> calls (aspect pinned) and the trial arm as three direct <code>gemini_gen.py</code> Batch calls. Neither direct tool has <code>--drive-sync</code>, so each direct call&#x27;s subshell pushes its output to Drive immediately on success (below) — those binaries must reach the canonical store even on a disposable host.</p>
+  --published-html &quot;$AI_STL_REVIEW_DIR/reviews/martial-frogs/tiger/r1-runbook/index.html&quot;
+
+python3 tools/discord_share.py --channel tiger \
+  --thread 1533802013417144424 --thread-name &quot;Round 1 — Tiger updates&quot; \
+  --once tiger-r1-started-20260803 \
+  --message &#x27;▶️ **Round 1 — Tiger — started** — the In-progress start PR is merged and its durable greenlight is verified. The 18-concept F1/F2/F3 sweep starts after this post; spend is $0.00 of the $3.25 cap, with no Meshy calls.&#x27;
+
+python3 tools/discord_share.py --channel tiger \
+  --update-header 1533802013417144424 \
+  --headline &quot;Round 1 — Tiger&quot; \
+  --status &quot;🟢 In progress — concept generation starting&quot; \
+  --decision &quot;When results land, Jawa picks F1 / F2 / F3 (or a blend)&quot; \
+  --spend-state &quot;\$0.00 of the \$3.25 cap; 18 concepts starting, no Meshy calls&quot; \
+  --artifact-link &quot;https://lackofcheese.github.io/ai-stl-review/reviews/martial-frogs/tiger/r1-runbook/&quot; \
+  --artifact-label &quot;Runbook&quot; \
+  --event-id tiger-r1-started-20260803</code></pre>
+<p>Then, and only after the full gate/Discord block succeeds, generation begins. The three <code>compare_gen.py</code> arms cover the four standard models (all four run through the shared spend-preflight ledger — <code>flash31</code> as a Gemini Batch cell, <code>gptimage2</code>/<code>seedream45</code>/<code>grokq</code> via OpenRouter); the riverflow25 arm runs as three direct <code>openrouter_gen.py</code> calls (aspect pinned) and the trial arm as three direct <code>gemini_gen.py</code> Batch calls. Neither direct tool has <code>--drive-sync</code>, so each direct call&#x27;s subshell pushes its output to Drive immediately on success (below) — those binaries must reach the canonical store even on a disposable host.</p>
 <pre class="code"><code>set -euo pipefail
 T=projects/martial-frogs/tiger
 mkdir -p &quot;$T/generated&quot;
