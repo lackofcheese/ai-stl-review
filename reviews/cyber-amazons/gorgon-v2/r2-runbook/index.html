@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="ai-stl-plan-digest" content="fc0a0d362f4cae1746d4163f0c6f23efd27aed65209dceca47780365dae6a43e">
+<title>Gorgon v2 — Round 2 runbook</title>
+<style>
+:root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.coreinputs { margin:1.2rem 0 .4rem }
+.coreinputs h2 { margin:0 0 .5rem }
+.coreinputs .hint { color:var(--dim); font-weight:400; font-size:.85rem }
+.inputrow { display:flex; flex-wrap:wrap; gap:12px }
+.coreinput { margin:0; width:210px; max-width:100%;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.coreinput .imgwrap { border-bottom:1px solid var(--line) }
+.coreinput .imgwrap img { max-height:230px }
+.coreinput figcaption { color:var(--dim); font-size:.7rem; padding:.35rem .5rem;
+  word-break:break-all; font-family:ui-monospace,SFMono-Regular,Menlo,monospace }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.statrow { display:flex; flex-wrap:wrap; gap:.15rem .5rem; margin:0 0 .1rem;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.72rem;
+  color:var(--dim) }
+.statrow span { white-space:nowrap }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.chip.unclear { color:var(--dim); border-color:var(--dim) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:calc(100vh - 7rem); object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-meta { display:flex; flex-direction:column; align-items:center; gap:.35rem;
+  min-height:2.2rem; position:relative; z-index:20 }
+.lb-refrow { display:flex; align-items:center; justify-content:center; gap:.35rem;
+  flex-wrap:wrap }
+.lb-refrow[hidden] { display:none }
+.lb-refrow .refid { background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn { color:#bbb; border-color:#55515d;
+  background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+
+.md h2 { font-size:1.15rem; margin:2.2rem 0 .3rem }
+.md h3 { font-size:1rem; margin:1.6rem 0 .3rem }
+.md h4 { font-size:.9rem; margin:1.2rem 0 .3rem; color:var(--dim) }
+.md p { max-width:78ch }
+.md ul, .md ol { max-width:78ch; padding-left:1.4rem }
+.md li { margin:.25rem 0 }
+.md a { color:var(--accent) }
+.md code { background:var(--pre); border:1px solid var(--line); border-radius:4px;
+  padding:.05rem .3rem; font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
+.md pre.code { background:var(--pre); border:1px solid var(--line); border-radius:6px;
+  padding:.75rem 1rem; overflow-x:auto; font-size:.82rem; line-height:1.5 }
+.md pre.code code { background:none; border:0; padding:0 }
+.md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+.md dl.rb-meta { display:grid; grid-template-columns:auto 1fr; gap:.3rem 1.1rem;
+  max-width:60ch; margin:.2rem 0 1.8rem; padding:.9rem 1.15rem; background:var(--pre);
+  border:1px solid var(--line); border-radius:8px; font-size:.9rem }
+.md dl.rb-meta dt { color:var(--dim); font-weight:600; white-space:nowrap }
+.md dl.rb-meta dd { margin:0 }
+.md details { max-width:78ch; margin:1.8rem 0; border:1px solid var(--line);
+  border-radius:8px; background:var(--pre); padding:0 1.15rem }
+.md details[open] { padding-bottom:.4rem }
+.md details > summary { cursor:pointer; padding:.85rem 0; font-weight:600;
+  color:var(--accent); list-style:none }
+.md details > summary::-webkit-details-marker { display:none }
+.md details > summary::before { content:'\25B8\A0' }
+.md details[open] > summary::before { content:'\25BE\A0' }
+.md details > summary + * { margin-top:.2rem }
+/* Runbook tables carry PROSE (the "choices on the table" comparison, the
+   build-step gates), not the review panel's short IDs. review_page.py's global
+   table CSS pins cols 1-2 to white-space:nowrap and col 2 to a monospace font —
+   right for id columns, but here it forces long option/recommendation cells
+   onto one unbreakable line: the table blows past the page width (the awkward
+   left-right scroll) and the other columns get starved into tall, ragged stacks
+   (the lopsided whitespace). Undo both inside .md so every cell wraps to its
+   column and auto table-layout balances the widths to the page. */
+.md .tablewrap { margin:.4rem 0 1.6rem }
+.md th, .md td { white-space:normal; overflow-wrap:break-word;
+  font-family:inherit }
+.md td code { overflow-wrap:anywhere }
+/* Keep some readable structure on narrow screens rather than crushing three
+   prose columns to nothing; .tablewrap scrolls only past this floor. */
+.md table { min-width:34rem }
+/* A choices-table row whose label names a case links to that case's inputs. */
+a.caselink { color:inherit; text-decoration:none;
+  border-bottom:1px dotted var(--accent) }
+a.caselink:hover { color:var(--accent) }
+
+/* --- Inputs section: one block per case, images grouped by artifact ------- */
+.rb-inputs { margin:2.2rem 0 1.4rem }
+.rb-inputs > h2 { font-size:1.15rem; margin:0 0 .3rem }
+.rb-case { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.8rem 1rem 1rem; margin:.9rem 0; scroll-margin-top:1rem }
+.rb-case:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.rb-case-h { display:flex; flex-wrap:wrap; align-items:baseline; gap:.2rem .6rem;
+  margin:0; font-size:1rem }
+.rb-case-count { color:var(--dim); font-size:.72rem; font-weight:400;
+  font-variant-numeric:tabular-nums }
+.rb-case-note { color:var(--dim); font-size:.88rem; margin:.3rem 0 0; max-width:78ch }
+.rb-art { margin:.85rem 0 0 }
+.rb-art-h { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem;
+  margin:0 0 .4rem }
+.rb-art-label { font-size:.7rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--accent) }
+.rb-art-id { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  color:var(--dim); overflow-wrap:anywhere }
+.rb-art .ibtn { padding:.08rem .5rem; font-size:.66rem }
+.rb-strip { display:grid; gap:10px;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr)) }
+.rb-fig { margin:0; min-width:0; background:var(--well); border:1px solid var(--line);
+  border-radius:6px; overflow:hidden; display:flex; flex-direction:column }
+.rb-fig .imgwrap { border-bottom:1px solid var(--line) }
+.rb-fig .imgwrap img { max-height:300px }
+.rb-fig figcaption { color:var(--dim); font-size:.7rem; padding:.3rem .5rem }
+.rb-none { color:var(--dim); font-size:.86rem; margin:.6rem 0 0 }
+details.rb-prompt { margin:.85rem 0 0; background:var(--pre); border:1px solid var(--line);
+  border-radius:6px; padding:0 .9rem }
+details.rb-prompt > summary { cursor:pointer; padding:.55rem 0; font-size:.82rem;
+  font-weight:600; color:var(--accent); list-style:none }
+details.rb-prompt > summary::-webkit-details-marker { display:none }
+details.rb-prompt > summary::before { content:'\25B8\A0' }
+details.rb-prompt[open] > summary::before { content:'\25BE\A0' }
+details.rb-prompt .rb-size { color:var(--dim); font-weight:400; font-size:.72rem }
+details.rb-prompt .path { color:var(--dim); font-size:.72rem; margin:0 0 .4rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere;
+  background:var(--bg); border:1px solid var(--line); border-radius:6px;
+  padding:.7rem .85rem; font-size:.78rem; line-height:1.5; max-height:32rem;
+  overflow:auto; margin:0 0 .85rem }
+</style></head><body><main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Cyber-Amazons</a><span class="sep">&rsaquo;</span><a href="../">Gorgon v2</a></nav>
+<h1>Gorgon v2 — Round 2 runbook</h1>
+<span class="crosslink" style="opacity:.55;pointer-events:none" title="Published at round close">&#128203; Review panel &mdash; at round close</span>
+<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>concept round — heroic proportions via the v1 golds (reference edit + text sweep)</dd><dt>Status</dt><dd>Proposed — awaiting sign-off</dd><dt>Owner</dt><dd>Claude (local) → Dimitri + Jason + Jeremy review</dd><dt>Date opened</dt><dd>2026-08-03</dd><dt>Prior round</dt><dd>r1 verdict + carried feedback (<code>round-feedback.jsonl</code> r1→r2): reject both numeric recipes, prompt an oversized head qualitatively, reinstate Riverflow, recover the r6-gold signature pose; Jeremy/AngryRasin&#x27;s v1 test-print readability feedback</dd><dt>Inputs</dt><dd>the v1 r6 gold <code>gorgon-r6-B2-riverflow25</code> (arm A edit base) and a heroic rewrite of the v1 r4 gold prompt (arm B, text only); updated <code>spec.md</code></dd><dt>Produces</dt><dd>7 side-view concepts <code>gorgon-v2-r2-{a,b}-&lt;model&gt;</code> under <code>generated/</code></dd><dt>Branch</dt><dd><code>claude/gorgon-v2-r2-runbook</code></dd><dt>Gemini mode</dt><dd>batch (asynchronous; submit all independent cells up front and audit each roll as it lands)</dd><dt>Durability</dt><dd>every generation cell uses <code>--drive-sync</code>; the openrouter riverflow cell is pushed to Drive the moment it lands</dd></dl>
+<h2>Goal</h2>
+<p>Get the heroic proportion contract to actually land, on the signature Gorgon. Round 1 proved two things: numeric heads-tall language suppresses the very head size it names, and the front-view proportion sheet costs us the pose that made Gorgon *Gorgon*. This round returns to the v1 golds&#x27; side-on stiff-arm stride and attacks proportions qualitatively — an explicitly oversized head, oversized hands and boots, chunky joints — while exaggerating every material boundary so the printed, unpainted figure reads (Jeremy&#x27;s v1 test print: cyber arms, bare flesh and the covered leg were indistinguishable; all belts and studs need to be thicker and bolder).</p>
+<h2>The choices on the table</h2>
+<p>Both arms share the same target: the r6 gold&#x27;s camera, pose, hair drape and nape implant, rebuilt to heroic proportions with print-readable exaggeration. They differ in how they get there.</p>
+<div class="tablewrap"><table><thead><tr><th>Choice</th><th>What it tests</th><th>Input(s)</th><th>Rolls</th></tr></thead><tbody><tr><td><a class="caselink" href="#case-a-heroic-edit-of-the-r6-gold" title="Jump to this case's inputs"><strong>A — heroic edit of the r6 gold</strong></a></td><td>Whether a reference edit can rebuild proportions and exaggerate materials while the gold&#x27;s pixels hold identity, pose and camera</td><td>r6 gold image + arm-A edit prompt</td><td>3 (riverflow25, gptimage2, flash31)</td></tr><tr><td><a class="caselink" href="#case-b-fresh-text-side-view-sweep" title="Jump to this case's inputs"><strong>B — fresh text side-view sweep</strong></a></td><td>Whether the r4 gold&#x27;s prompt, rewritten with qualitative oversized-head language and the readability program, reproduces the signature from text alone</td><td>arm-B prompt, text only</td><td>4 (riverflow25, gptimage2, flash31, grokq)</td></tr></tbody></table></div>
+<p>That is <strong>7 image calls total</strong>: 3 reference edits + 4 fresh generations. Model rationale: <code>gptimage2</code> was R1&#x27;s only promising attractor and is the supported identity-preserving editor; <code>riverflow25</code> produced both v1 golds and returns as the project-proven specialist; <code>flash31</code> is the standard control on both arms; <code>grokq</code> adds one cheap direction-obedient diversity roll to the text arm. <code>seedream45</code> sits out after R1&#x27;s composition violations.</p>
+</div>
+<section class="rb-inputs">
+<h2>Inputs — what this round runs on</h2>
+<p class="blurb">Everything that goes in, grouped by the choice it belongs to. Click any image to zoom; open a prompt to read the exact text this round spends against. Crop sets show both the cut overview and every exact output crop.</p>
+<section class="rb-case" id="case-a-heroic-edit-of-the-r6-gold">
+<h3 class="rb-case-h">A — heroic edit of the r6 gold<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">One reference edit per model of the v1 r6 gold: two pinned change programs (heroic proportions, print-readability exaggeration), everything else held identical by the gold&#x27;s pixels.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">v1 r6 gold (arm A edit base)</span><code class="rb-art-id">gorgon-r6-B2-riverflow25</code><button class="ibtn" data-inputs="in-0">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/17433209b39ec3e8.jpg" data-cap="gorgon-r6-B2-riverflow25"><img src="../../../../assets/0868f3be750b3277.jpg" alt="gorgon-r6-B2-riverflow25" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary>Prompt — r2-a-heroic-edit.txt <span class="rb-size">3 kB</span></summary><p class="path">projects/cyber-amazons/gorgon-v2/prompts/r2-a-heroic-edit.txt</p><pre>One image is attached. IMAGE 1 is the approved Gorgon concept: a photorealistic female cyberpunk gridiron blocker caught mid-stride in a stiff-arm advance, seen from her armored-shoulder side with the camera rotated toward her front, her cable-dread mane draped forward over her far shoulder and a segmented chrome spinal implant exposed at the nape of her neck, on a plain neutral gray studio backdrop.
+
+Recreate THIS EXACT image — the same character, the same camera angle, the same stride and stiff-arm pose, the same kit, colours, lighting and background — with EXACTLY TWO PROGRAMS OF CHANGE and nothing else.
+
+CHANGE 1 — HEROIC MINIATURE PROPORTIONS. Rebuild her body proportions as a 32 mm heroic-scale pewter sports miniature: her head becomes clearly OVERSIZED — noticeably larger relative to her shoulders and body than in the attached image, so it can never read as a small head on a big body. Enlarge both hands and both boots to match. Thicken her neck, wrists, ankles and every joint; deepen her ribcage; shorten and densify her limb segments into a chunky, compact read. She must look like a heroic-scale tabletop sculpt, never a naturalistic fashion illustration. She stays tall, athletic and visibly female; never chibi, squat or comic.
+
+CHANGE 2 — PRINT-READABILITY EXAGGERATION. Exaggerate every material boundary so an unpainted one-colour resin print of this figure reads instantly: the chrome cyberarms become more obviously CHUNKY MECHANICAL METAL — bigger beveled armor plates, deeper recessed seams, bold segmented joints, unmistakably machine and never flesh-like. The covered trailing leg&#x27;s legging becomes THICK padded cloth-and-armor that visibly stands off the leg, so covered-versus-bare is obvious from silhouette alone against the bare leading leg. Every studded leather band — the thigh garter and any strap — carries ONE single row of LARGE, obvious hemispherical studs; never two rows, never small studs. All belts and straps become thicker and bolder so they clearly show up in relief.
+
+EVERYTHING ELSE STAYS IDENTICAL to the attached image: the camera angle and framing, the flat-planted leading foot and heel-raised trailing foot, the fully extended open-palm stiff-arm, the single shoulder pad on the shoulder nearest the camera with its white number 4, the bare pad-free far cyber-shoulder, the forward-draped dread mane and exposed nape implant, the clean visible shaved temple with no socket or stud, the torn corporate patch, the combat boots, the matte black / gunmetal / magenta palette, the background and the lighting. Full figure, nothing cropped; no base, no text or logos beyond what the image already shows, no weapons, no other people.
+</pre></details>
+</section>
+<section class="rb-case" id="case-b-fresh-text-side-view-sweep">
+<h3 class="rb-case-h">B — fresh text side-view sweep<span class="rb-case-count">1 prompt</span></h3>
+<p class="rb-case-note">Text-only generations from the r4 gold prompt rewritten for the qualitative heroic contract, the r6 hair/nape delta, and the readability program. No image is attached; the r4 gold appears on this page only as arm A&#x27;s ancestor.</p>
+<p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
+<details class="rb-prompt"><summary>Prompt — r2-b-side-heroic.txt <span class="rb-size">7 kB</span></summary><p class="path">projects/cyber-amazons/gorgon-v2/prompts/r2-b-side-heroic.txt</p><pre>No images are attached. Create a brand-new text-to-image concept; do not copy any previous Gorgon artwork.
+
+A photorealistic full-body studio render of a female CYBERPUNK gridiron-football blocker, on a plain neutral gray studio backdrop with even soft studio lighting, her entire body visible from head to toe including her boots. High-detail character concept art with a heavy PUNK edge: she is a washout from a corporate super-soldier program gone street — every piece of corpo hardware on her has been defaced, spray-tagged, hand-modified, DIY-repaired. Cold, quiet, scary; disciplined military menace, never a pin-up. The punk is in her kit and grooming, not her expression.
+
+CAMERA: a SIDE VIEW rotated slightly toward the front. Start from a true side-on profile of her mid-stride, seen from her armored-shoulder side, then rotate the camera only about 25 to 30 degrees around toward her front. We are looking at her FROM THE SIDE as she strides forwards: she moves across the frame toward the RIGHT EDGE of the image, her stride and leading arm reading in clean side silhouette, her face and the front of her torso only partially turned toward the camera. Full figure, nothing cropped.
+
+HEROIC MINIATURE PROPORTIONS: she is designed as production concept art for a 32 mm HEROIC-SCALE resin miniature, in the visual language of a chunky pewter sports sculpt. Her head is deliberately OVERSIZED — clearly larger relative to her shoulders and body than any naturalistic character art, so it can never read as a small head on a big body. Both hands and both combat boots are oversized to match. Thick neck, thick wrists and ankles, substantial joints, deep ribcage and pelvis, short dense limb segments, broad readable muscle planes. She must read like a heroic-scale tabletop sculpt, never a naturalistic fashion illustration: absolutely no fashion-model proportions, tiny head, tiny hands, narrow wrists, long delicate legs or slender ankles. She stays tall, athletic and visibly female; never chibi, squat or comic.
+
+BUILD: a HEAVYWEIGHT — one of the most massive figures in her league, TALL and V-tapered rather than squat: very broad shoulders and a wide, thick, dense back tapering hard to the waist, a thick strong neck, and heavy powerlifter thighs. Her physique is hypertrophied yet engineered — and unmistakably HUGE. Never lean, never slim, never a fashion model.
+
+HEAD: femme features, high cheekbones, a cold level stare aimed forward along her direction of travel — her menace is stillness, not a snarl. Punk grooming: both temples shaved clear, thick cable-dreadlocks swept back from a high hairline and draped forward as ONE CONNECTED MASS over her FAR shoulder — the shoulder away from the camera — leaving the back of her neck completely clear: at the nape, a chunky segmented chrome SPINAL IMPLANT of large vertebral plates runs from the base of her skull down under her collar, clearly visible in this view. The locks are thumb-thick sculpted cords with blunt connected ends and no floating loops. The visible shaved temple is CLEAN BARE SKIN — do NOT draw any socket, stud or jewel on the visible temple or forehead.
+
+CHROME: BOTH arms are full military-grade cyberarms from the shoulder down — symmetric, obviously CHUNKY MECHANICAL METAL, clearly oversized versus flesh arms: big beveled armor plates, deep recessed panel seams, bold segmented joints, unmistakably machine and never flesh-like, NOT crude industrial hydraulics. The chrome is battle-scuffed, with small hand-sprayed stencil tags. Hands fully articulated chrome, four fingers and a thumb each, oversized to the heroic contract. Her legs are flesh and muscle.
+
+KIT (punk sports armor, matte black and gunmetal with hot magenta neon accent trim): a single asymmetric armored shoulder pad on ONE shoulder only — the NEAR shoulder, the one closest to the camera — two or three layered angular plasteel plates with a beveled rim, scuffed and spray-tagged, a white number 4 on the top plate. The FAR shoulder has NO pad: only the bare, smooth chrome ball of that cyberarm&#x27;s shoulder joint — no plate, no strap, no armor there. A snug armored compression bodysuit with a reinforced torso panel; on the chest, a darker torn rectangle where a corporate insignia patch was ripped away; THICK, BOLD studded leather straps and belts — every strap and belt is chunky enough to show up in resin relief, and every studded band carries ONE single row of LARGE hemispherical studs, never two rows, never small studs. ASYMMETRIC LEGS: the bodysuit legging covers ONLY the FAR leg — the trailing leg — as ONE CONTINUOUS legging from hip down into the boot: THICK padded cloth-and-armor that visibly stands off the leg so the covered leg reads obviously different from the bare leg in pure silhouette, with a reinforced thigh panel and an armored shin guard; the legging is fully intact, with NO rips, NO holes, NO cutouts and NO skin showing through it anywhere. The NEAR leg — the leading leg — is BARE muscular flesh from mid-thigh all the way down to the boot: the suit is cut away there with a single raw torn edge at mid-thigh, and a wide THICK STUDDED LEATHER GARTER strap — one single row of large hemispherical studs — wraps high around the bare thigh. The KNEE PADS DIFFER: on the covered leg, a hard ARMORED knee pad matching the shin guard&#x27;s plating; on the bare leg, a scuffed LEATHER knee pad strapped directly onto the bare skin with buckled straps. On both feet: BULKY OVERSIZED COMBAT BOOTS — heavy buckled military jump-boots with thick lugged soles and broad toe boxes, chunky and punk, never sneakers or cleats-shoes.
+
+POSE: caught MID-STRIDE in an upright walking advance, moving forward with unhurried menace — a frozen MID-STANCE frame from a walk cycle. The NEAR bare leg LEADS, and its foot is fully planted: the leading combat boot is PLANTED COMPLETELY FLAT on the ground ahead of her, with BOTH the HEEL AND the TOES of that boot pressed flat against the floor, the entire sole in contact from heel to toe, and her full body weight carried directly over that flat leading foot. The FAR armored leg TRAILS behind her, toes pointing forward, with only the BALL OF THE FOOT AND TOES pressed to the ground and the HEEL RAISED off the floor — a real walking push-off. Torso upright, shoulders square, hips driving forward, chin level. STIFF-ARM: the FAR arm is FULLY EXTENDED forward from the shoulder at shoulder height, reaching ahead of her along her direction of travel into open space, clearly separated ahead of her body — a &quot;you shall not pass&quot; strike frozen mid-extension, the open palm a full arm&#x27;s length ahead of her chest, elbow only very slightly bent. NOT a bent-elbow &quot;stop&quot; gesture held close to the body. The forearm angles about 20 degrees downward; the palm is OPEN, facing forward along her direction of travel, fingers together as a thick fan, thumb visible. The NEAR arm hangs at her side, slightly flexed, its chrome hand a loose fist. Both hands are clearly EMPTY.
+
+No weapons, no ball, no other people, no base or pedestal, and no text or logos anywhere except the number 4 on the shoulder pad and strictly illegible spray-stencil tags.
+</pre></details>
+</section>
+</section>
+<div class="md">
+<h2>How the round is judged</h2>
+<p>Dimitri, Jason and Jeremy make the call. Judge in this order:</p>
+<ol>
+<li><strong>Head first.</strong> Does the head finally read oversized against the body — never a small head on a big frame? This is the axis R1 failed.</li>
+<li><strong>Signature fidelity.</strong> Is this still the golds&#x27; Gorgon — camera, stride, stiff-arm, hair-forward drape, nape implant, kit asymmetry?</li>
+<li><strong>Print readability at thumbnail.</strong> Squint test: do chrome, flesh and covered cloth separate by geometry alone? Are the studs one big obvious row, and the belts thick enough to survive resin?</li>
+</ol>
+<p>Arm A is additionally judged for edit locality: what stayed unchanged counts as heavily as what was fixed. The standard machine screens run on every roll — blind detector plus a fresh-context crop audit — and any disagreement between them is a mandatory human look. Machines screen; your eye decides.</p>
+<h2>What we need from you</h2>
+<p>Pick the R2 keeper (and with it the arm) as the v2 lineage base — or reject all seven with a sharper direction. This round greenlights nothing further: turnaround and Meshy are separate later rounds.</p>
+<h2>Cost</h2>
+<p>Planning estimate: image generation ≈ <strong>$1.35</strong> (arm A: riverflow25 ~$0.37, gptimage2 ~$0.18, flash31 ~$0.10; arm B: riverflow25 ~$0.35, gptimage2 ~$0.18, flash31 ~$0.10, grokq ~$0.07 — figures from R1/v1 observed costs). Blind detection reserves <strong>at least $0.25</strong> (~$0.035 per roll observed in R1). Round cap: <strong>$2.00 USD</strong>, with no Meshy credits; the headroom covers conservative reservations for interrupted calls, which consumed R1&#x27;s margin. Live provider metadata and the spend preflight remain authoritative at execution time.</p>
+<details>
+<summary>Technical plan — models, prompts, commands (pipeline detail)</summary>
+<h3>What changed going in (spec / prompt / process deltas)</h3>
+<ul>
+<li><code>spec.md</code> retires the numeric heads-tall targets (R1 verdict): the proportion contract is now stated qualitatively — an explicitly OVERSIZED head, oversized hands/boots, thick joints — with no head-count or percentage figures anywhere in any prompt.</li>
+<li><code>spec.md</code> adds the bare-resin readability program from Jeremy&#x27;s v1 test print and AngryRasin&#x27;s Discord follow-up: obviously chunky metal cyberarms, thick stand-off cloth on the covered leg, a single row of large studs on every studded band, thick bold belts and straps.</li>
+<li>The pose contract returns to the v1 golds&#x27; signature: mid-stride stiff-arm, leading foot flat, trailing foot grounded through ball and toes with heel raised (print-proven by the v1 master); camera is the pad-side near-profile rotated ~20–30° toward her front, mane over the FAR shoulder, nape implant exposed.</li>
+<li>R2 generates in the golds&#x27; frame (pad on the NEAR shoulder, travel toward the viewer&#x27;s right) — pixels beat words for a reference lineage — and the single deterministic mirror restores team chirality late, exactly as v1 did. The design stays mirror-cheap: no readable glyphs beyond the pad&#x27;s 4.</li>
+<li><code>lineage.json</code> imports <code>gorgon-r4-side-riverflow25</code> and <code>gorgon-r6-B2-riverflow25</code> as v1 references (canonical records stay in the v1 project), superseding the &quot;no image parents&quot; note for arm A.</li>
+<li>Arm A&#x27;s prompt is a two-change self-edit in the proven r6 shape: CHANGE 1 heroic proportions, CHANGE 2 print-readability exaggeration, everything else pinned identical. It declares exactly one attached image.</li>
+<li>Arm B&#x27;s prompt is the r4 gold prompt with travel flipped to the golds&#x27; frame (toward the RIGHT edge), the r6 hair/nape delta folded in, the numeric-free heroic proportion paragraph added, and the exaggeration program applied to CHROME and KIT. It declares zero attached images.</li>
+<li><code>riverflow25</code> returns under its Supported status as the project-proven Gorgon specialist (both v1 golds are its work). Before any spend, recheck its live schema and pricing with <code>openrouter_gen.py --params sourceful/riverflow-v2.5-pro</code>; the text cell passes an explicit <code>--aspect 2:3</code> (the R1 runbook&#x27;s standing note), while the edit cell inherits the reference canvas.</li>
+</ul>
+<h3>Experiment matrix</h3>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Variant axes</th><th>Prompt</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>1</td><td><code>gorgon-r6-B2-riverflow25</code> (img2img)</td><td>A × riverflow25, gptimage2, flash31</td><td><code>prompts/r2-a-heroic-edit.txt</code></td><td><code>gorgon-v2-r2-a</code></td></tr><tr><td>2</td><td>text only; no images</td><td>B × gptimage2, flash31, grokq</td><td><code>prompts/r2-b-side-heroic.txt</code></td><td><code>gorgon-v2-r2-b</code></td></tr><tr><td>3</td><td>text only; no images</td><td>B × riverflow25 (direct call for explicit <code>--aspect 2:3</code>)</td><td><code>prompts/r2-b-side-heroic.txt</code></td><td><code>gorgon-v2-r2-b-riverflow25</code></td></tr></tbody></table></div>
+<p>Each compare_gen stem yields one model-suffixed artifact per variant; repeated runs append and never overwrite.</p>
+<h3>Commands (run after sign-off and the verified durable greenlight)</h3>
+<pre class="code"><code>set -euo pipefail
+G=projects/cyber-amazons/gorgon-v2
+V1=projects/cyber-amazons/gorgon
+mkdir -p &quot;$G/generated&quot;
+
+# The arm-A base must exist locally (binaries live on Drive, not git).
+tools/drive_sync.sh pull &quot;$V1/generated&quot;
+test -f &quot;$V1/generated/gorgon-r6-B2-riverflow25-1.png&quot;
+
+# Mandatory before the first paid Gemini call on this host.
+python3 tools/spend_preflight.py set-balance gemini AMOUNT_USD
+
+# Recheck riverflow&#x27;s live parameters and pricing before any spend.
+python3 tools/openrouter_gen.py --params sourceful/riverflow-v2.5-pro
+
+python3 tools/compare_gen.py \
+  --prompt-file &quot;$G/prompts/r2-a-heroic-edit.txt&quot; \
+  --image &quot;$V1/generated/gorgon-r6-B2-riverflow25-1.png&quot; \
+  --out-dir &quot;$G/generated&quot; --out-stem gorgon-v2-r2-a \
+  --variants riverflow25,gptimage2,flash31 \
+  --jobs 3 --drive-sync &amp;
+PA=$!
+python3 tools/compare_gen.py \
+  --prompt-file &quot;$G/prompts/r2-b-side-heroic.txt&quot; \
+  --out-dir &quot;$G/generated&quot; --out-stem gorgon-v2-r2-b \
+  --variants gptimage2,flash31,grokq \
+  --jobs 3 --drive-sync &amp;
+PB=$!
+python3 tools/openrouter_gen.py \
+  --prompt-file &quot;$G/prompts/r2-b-side-heroic.txt&quot; \
+  --out-dir &quot;$G/generated&quot; --out-stem gorgon-v2-r2-b-riverflow25 \
+  --model sourceful/riverflow-v2.5-pro --resolution 2K --aspect 2:3 &amp;
+PR=$!
+A_STATUS=0; B_STATUS=0; R_STATUS=0
+wait &quot;$PA&quot; || A_STATUS=$?
+wait &quot;$PB&quot; || B_STATUS=$?
+wait &quot;$PR&quot; || R_STATUS=$?
+tools/drive_sync.sh push &quot;$G/generated&quot;
+if (( A_STATUS != 0 || B_STATUS != 0 || R_STATUS != 0 )); then
+  echo &quot;generation cell failed: A=$A_STATUS B=$B_STATUS RF=$R_STATUS&quot; &gt;&amp;2
+  exit 1
+fi</code></pre>
+<p>Run <code>tools/blind_detect.py</code> and the fresh-context crop audit on each roll as it lands, append verdicts through <code>tools/review_log.py</code>, then build the private r2 review with <code>tools/review_page.py --inline</code>. Results belong in <code>rounds.md</code> and <code>r2-panel.json</code>, never back in this runbook.</p>
+</details></div>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+<template id="in-0"><h2>gorgon-r6-B2-riverflow25</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon/prompts/r6-BC-hairmove-edit.txt</p><pre>The attached image shows a female cyberpunk gridiron-football blocker frozen mid-stride in a stiff-arm pose — a photorealistic full-body studio render on a plain gray backdrop, seen in near-profile from her armored-shoulder side as she strides toward the VIEWER&#x27;S RIGHT. Recreate THIS EXACT image — the SAME character, same face, same massive heavyweight build, same pose, same kit, same materials, same styling and lighting — with EXACTLY TWO CHANGES and nothing else changed:
+
+CHANGE 1 — HAIR. In the attached image her thick cable-dreadlocks are swept back and hang down BEHIND her, down her back. Move them: gather the ENTIRE mass of dreadlocks and drape it forward over her FAR shoulder — the shoulder of the extended stiff-arm, the shoulder AWAY from the camera, the one WITHOUT the armored pad — so the whole bundle of thick sculpted cords hangs down the FRONT of that far shoulder toward her chest. After this change NO dreadlocks hang down her back: her upper back, the BACK OF HER NECK and her near pad-shoulder are completely clear of hair. On the newly exposed back of her neck, add the raised segmented SPINAL IMPLANT that the hair was hiding: a vertebral ridge of chunky bold chrome segments running from the back of her skull down the back of her neck and disappearing under the bodysuit&#x27;s collar, clearly visible in profile against the background.
+
+CHANGE 2 — CAMERA. Rotate the camera about 20 degrees further around toward her FRONT, keeping the same distance and height, so the view becomes slightly more of a three-quarter: more of the FRONT of her torso turns toward the camera, the OPEN PALM of her extended far hand becomes clearly visible to the camera, and her FAR trailing leg is clearly visible past her near leg instead of hiding behind it. She still strides toward the VIEWER&#x27;S RIGHT with the armored pad shoulder nearest the camera; the view stays side-biased, never a head-on front view.
+
+Everything else stays IDENTICAL to the attached image: same pose — mid-stride, the NEAR bare leg leading with its combat boot planted flat on the ground, the FAR covered leg trailing with toes down and heel raised; the FAR arm fully extended forward at shoulder height with the open palm facing forward, fingers together, thumb visible; the NEAR chrome arm hanging at her side in a loose empty fist. Same kit — a single armored shoulder pad with the white number 4 on the NEAR shoulder only; the far shoulder stays the bare smooth chrome ball of the cyberarm joint with NO pad, NO strap, NO armor (the draped hair is hair, not armor); both arms full gunmetal military cyberarms; one CONTINUOUS intact legging on the covered trailing leg only, joining the suit at the hip with no bare-skin gap, no rips and no holes; exactly ONE wide studded leather garter, high on the bare near thigh; a hard armored knee pad on the covered leg and a strapped leather knee pad on the bare leg; bulky buckled combat boots on both feet. Same heavyweight V-tapered build, same cold level stare, both temples shaved with NO socket, stud or jewel on the visible temple or forehead. No weapons, no ball, no other people, no base or pedestal, and no text or logos anywhere except the number 4 on the shoulder pad and strictly illegible spray-stencil tags. Full figure head to toe, nothing cropped.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/ab885b424ac004d1.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/c601f0a78083ad2a.jpg" data-cap="gorgon-r4-side-riverflow25-1.png" alt="gorgon-r4-side-riverflow25-1.png"><figcaption>gorgon-r4-side-riverflow25-1.png</figcaption></figure></div></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbRefRow=document.getElementById('lb-refrow'),lbRef=document.getElementById('lb-ref'),
+      lbCopyId=document.getElementById('lb-copy-id'),lbCopyLink=document.getElementById('lb-copy-link'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  const ref=z.dataset.ref||'',anchor=z.dataset.anchor||'';
+  lbRefRow.hidden=!(ref&&anchor);
+  if(ref&&anchor){
+    lbRef.textContent='#'+ref;
+    lbCopyId.dataset.copyId='#'+ref;
+    lbCopyLink.dataset.copy=anchor;
+  }
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy a card's short display id, or copy/share its deep link. The URL is this
+// page plus the card's #id anchor, so a recipient lands scrolled to (and
+// highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  const ci=e.target.closest('[data-copy-id]');
+  if(ci){copyText(ci.dataset.copyId,ci);e.preventDefault();return;}
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+</body></html>
