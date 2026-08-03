@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="dd3d0b62a6bc75081f0b7e1202c3f4c024ea123a7627df9dcadf727ba3c13494">
+<meta name="ai-stl-plan-digest" content="ced745cc16e8506d623118b3058a9658cd2bd7867fa00874625ba1f6812251ff">
 <title>Treeman-windmill — Round 16 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -329,7 +329,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere;
 </section>
 <section class="rb-case" id="case-tone-evidence-what-the-crop-gate-approves">
 <h3 class="rb-case-h">Tone evidence — what the crop gate approves<span class="rb-case-count">1 image · 2 prompts</span></h3>
-<p class="rb-case-note">The rear window at gamma 1.0 (original, as r15 ran it) beside the 0.75 / 0.65 / 0.55 / 0.50 candidates. Recommendation: gamma 0.55 — subject mean luminance 87 -&gt; 131, 0.0003% of pixels clipped to white — as the closest match to the brightness-lifted reference edit Babs supplied on Discord. The committed crop report records the tone parameters, clipping fractions, and the hash checks tying every panel back to the approved r15 crops.</p>
+<p class="rb-case-note">The rear window at gamma 1.0 (original, as r15 ran it) beside the 0.75 / 0.65 / 0.55 / 0.50 candidates. Recommendation: gamma 0.55 — subject mean luminance 87 -&gt; 131, and the map drives no value to saturation (the 0.67% black / 0.0003% white saturated after mapping are pre-existing in the photograph) — as the closest match to the brightness-lifted reference edit Babs supplied on Discord. The committed crop report records the tone parameters, both saturation measures, and the hash checks tying every panel back to the approved r15 crops.</p>
 <div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Original + four tone candidates</span><code class="rb-art-id">treeman-r16-crop-evidence-mr</code><button class="ibtn" data-inputs="in-4">how it was made</button></div><div class="rb-strip">
 <figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/dcfec66632e5d533.jpg" data-cap="treeman-r16-crop-evidence-mr"><img src="../../../../assets/ed86a581c561c4df.jpg" alt="treeman-r16-crop-evidence-mr" loading="lazy"></div></figure>
 </div></div>
@@ -426,7 +426,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere;
     &quot;mr&quot;
   ],
   &quot;layouts&quot;: [],
-  &quot;_tone&quot;: &quot;R16 single-variable change (Dimitri, 2026-08-03): the rear view is the darkest panel and its sails mangled in both r15 rolls; Babs&#x27;s brightness-lifted edit read much clearer. Only mr gets a tone map \u2014 gamma 0.55 chosen from a 0.75/0.65/0.55/0.50 candidate strip as the closest match to Babs&#x27;s edit with zero highlight clipping (subject mean luminance 87 -&gt; 131). tr/tl/ml must come out byte-identical to the approved r15 panels; the crop gate verifies that plus the mr tone evidence.&quot;,
+  &quot;_tone&quot;: &quot;R16 single-variable change (Dimitri, 2026-08-03): the rear view is the darkest panel and its sails mangled in both r15 rolls; Babs&#x27;s brightness-lifted edit read much clearer. Only mr gets a tone map \u2014 gamma 0.55 chosen from a 0.75/0.65/0.55/0.50 candidate strip as the closest match to Babs&#x27;s edit. The map drives no value to saturation (newly_saturated fractions are 0.0); the window&#x27;s post-map saturated fractions (0.67% black, 0.0003% white) are pre-existing in the photograph. Subject mean luminance rises 87 -&gt; 131. tr/tl/ml must come out byte-identical to the approved r15 panels; the crop gate verifies that plus the mr tone evidence.&quot;,
   &quot;_layouts&quot;: &quot;Empty by design: r16 feeds Meshy the four individual panels directly (front=tl, views=tr/ml/mr), same as r15; no composed turntable sheet is consumed, so none is produced.&quot;
 }</pre></details>
 <details class="rb-prompt"><summary>Manifest — Crop report (tone facts and hashes) <span class="rb-size">4 kB</span></summary><p class="path">projects/treeman-windmill/runbooks/r16-crop-report.json</p><pre>{
@@ -601,8 +601,10 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere;
         &quot;gamma&quot;: 0.55,
         &quot;gain&quot;: 1.0,
         &quot;contrast&quot;: 1.0,
-        &quot;clipped_black_fraction&quot;: 0.006697,
-        &quot;clipped_white_fraction&quot;: 3e-06
+        &quot;saturated_black_fraction&quot;: 0.006697,
+        &quot;saturated_white_fraction&quot;: 3e-06,
+        &quot;newly_saturated_black_fraction&quot;: 0.0,
+        &quot;newly_saturated_white_fraction&quot;: 0.0
       },
       &quot;warnings&quot;: [
         &quot;rectangle shifted [11, 0] px to stay inside the source box, so this panel is not exactly base-centred&quot;
@@ -630,7 +632,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere;
 </section>
 <div class="md">
 <h2>How the round is judged</h2>
-<p><strong>Crop gate first (second of two).</strong> The r14 post-mortem requires a named human to approve photographic-reference preparation evidence before paid downstream work, for two rounds; r15 was the first, this is the second. The evidence for this round is deliberately small because the change is small: <code>treeman-r16-crop-evidence-mr</code> shows the rear window at gamma 1.0 (original) beside 0.75 / 0.65 / 0.55 / 0.50 candidates. Gamma 0.55 is the recommendation — subject mean luminance rises 87 → 131 with negligible clipping (0.0003% of pixels driven to white) — as the closest match to the reference edit Babs supplied. The mechanical checks behind it: <code>tl</code>/<code>tr</code>/<code>ml</code> are pixel-identical to the approved r15 panels, <code>mr</code> equals the LUT applied to the approved r15 <code>mr</code> exactly, and the tone parameters and clipping fractions are recorded in <code>runbooks/r16-crop-report.json</code>. Approving a different gamma from the strip is a one-line manifest change and a re-run of the deterministic tool.</p>
+<p><strong>Crop gate first (second of two).</strong> The r14 post-mortem requires a named human to approve photographic-reference preparation evidence before paid downstream work, for two rounds; r15 was the first, this is the second. The evidence for this round is deliberately small because the change is small: <code>treeman-r16-crop-evidence-mr</code> shows the rear window at gamma 1.0 (original) beside 0.75 / 0.65 / 0.55 / 0.50 candidates. Gamma 0.55 is the recommendation — subject mean luminance rises 87 → 131, and the map drives no value to saturation (the report&#x27;s <code>newly_saturated</code> fractions are 0.0; the 0.67% black / 0.0003% white saturated after mapping are pre-existing in the photograph) — as the closest match to the reference edit Babs supplied. The mechanical checks behind it: <code>tl</code>/<code>tr</code>/<code>ml</code> are pixel-identical to the approved r15 panels, <code>mr</code> equals the LUT applied to the approved r15 <code>mr</code> exactly, and the tone parameters and both saturation measures are recorded in <code>runbooks/r16-crop-report.json</code>. (That report&#x27;s <code>tl</code>/<code>tr</code>/<code>ml</code> entries hash the tool&#x27;s own freshly re-encoded outputs, which are discarded — the files the round consumes are the r15 originals, verified against the *r15* crop report.) Approving a different gamma from the strip is a one-line manifest change and a re-run of the deterministic tool.</p>
 <p>Each returned raw mesh is pushed to Drive the moment it lands, then validated with trimesh (watertightness, components, bounds) and rendered as a turnaround plus level views of the display-base plane — identical treatment to r15, so the rounds compare like for like. A fresh-context per-feature review walks the complete checklist against the source photographs as gold, with one round-specific focus added at the top: <strong>the four sails, judged individually — straight or bent, spar/board construction present or slabbed — explicitly side by side with r15&#x27;s M1 and M2 renders.</strong> The display-base caveat carries over from r15 unchanged: a fused base is expected, judged separately on whether one clean cut plane exists, and no scaling or millimetre thin-part thresholds run on raw returns.</p>
 <p>The gate is human: Dimitri rotating the raw STLs, and Babs&#x27;s read on the sails, against r15&#x27;s M2 as the standing fallback keeper. Acceptance is concrete: straighter, better-formed sails than both r15 rolls, without regressing the body reconstruction that was already good enough.</p>
 <h2>What we need from you</h2>
