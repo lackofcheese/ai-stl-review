@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="c1649610b74e5c03e2e8d6c9afae0bd9b85cd5805c3a4124dc6c498186237243">
+<meta name="ai-stl-plan-digest" content="b7876d6c0ec716ed18127c5ae49f8758025dbf598cc10c03b0e259144db9e0d8">
 <title>Gorgon v2 — Round 2 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -269,7 +269,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere;
 <nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Cyber-Amazons</a><span class="sep">&rsaquo;</span><a href="../">Gorgon v2</a></nav>
 <h1>Gorgon v2 — Round 2 runbook</h1>
 <span class="crosslink" style="opacity:.55;pointer-events:none" title="Published at round close">&#128203; Review panel &mdash; at round close</span>
-<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>concept round — heroic proportions via the v1 golds (reference edit + text sweep)</dd><dt>Status</dt><dd>Proposed — awaiting sign-off</dd><dt>Owner</dt><dd>Claude (local) → Dimitri + Jason + Jeremy review</dd><dt>Date opened</dt><dd>2026-08-03</dd><dt>Prior round</dt><dd>r1 verdict + carried feedback (<code>round-feedback.jsonl</code> r1→r2): reject both numeric recipes, prompt an oversized head qualitatively, reinstate Riverflow, recover the r6-gold signature pose; Jeremy/AngryRasin&#x27;s v1 test-print readability feedback</dd><dt>Inputs</dt><dd>the v1 r6 gold <code>gorgon-r6-B2-riverflow25</code> (arm A edit base) and a heroic rewrite of the v1 r4 gold prompt (arm B, text only); updated <code>spec.md</code>; case grouping in <code>runbooks/r2-cases.json</code></dd><dt>Produces</dt><dd>7 side-view concepts <code>gorgon-v2-r2-{a,b}-&lt;model&gt;</code> under <code>generated/</code></dd><dt>Branch</dt><dd><code>claude/gorgon-v2-r2-runbook</code></dd><dt>Gemini mode</dt><dd>batch (asynchronous; submit all independent cells up front and audit each roll as it lands)</dd><dt>Durability</dt><dd>the compare_gen cells use <code>--drive-sync</code>; the direct openrouter riverflow cell chains an explicit Drive push on completion (openrouter_gen has no per-cell sync flag), and a final sweep push runs after all cells</dd></dl>
+<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>concept round — heroic proportions via the v1 golds (reference edit + text sweep)</dd><dt>Status</dt><dd>Proposed — awaiting sign-off</dd><dt>Owner</dt><dd>Claude (local) → Dimitri + Jason + Jeremy review</dd><dt>Date opened</dt><dd>2026-08-03</dd><dt>Prior round</dt><dd>r1 verdict + carried feedback (<code>round-feedback.jsonl</code> r1→r2): reject both numeric recipes, prompt an oversized head qualitatively, reinstate Riverflow, recover the r6-gold signature pose; Jeremy/AngryRasin&#x27;s v1 test-print readability feedback</dd><dt>Inputs</dt><dd>the v1 r6 gold <code>gorgon-r6-B2-riverflow25</code> (arm A edit base) and a heroic rewrite of the v1 r4 gold prompt (arm B, text only); updated <code>spec.md</code>; case grouping in <code>runbooks/r2-cases.json</code></dd><dt>Produces</dt><dd>7 side-view concepts <code>gorgon-v2-r2-{a,b}-&lt;model&gt;</code> under <code>generated/</code></dd><dt>Branch</dt><dd><code>claude/gorgon-v2-r2-runbook</code></dd><dt>Gemini mode</dt><dd>batch (asynchronous; submit all independent cells up front and audit each roll as it lands)</dd><dt>Evaluation lanes</dt><dd>FAST — fresh-context crop audit as each image lands; SLOW — one two-wave round-level Batch blind detector across all 7 images, then blind/crop reconciliation</dd><dt>Durability</dt><dd>the compare_gen cells use <code>--drive-sync</code>; the direct openrouter riverflow cell chains an explicit Drive push on completion (openrouter_gen has no per-cell sync flag), and a final sweep push runs after all cells</dd></dl>
 <h2>Goal</h2>
 <p>Get the heroic proportion contract to actually land, on the signature Gorgon. Round 1 proved two things: numeric heads-tall language suppresses the very head size it names, and the front-view proportion sheet costs us the pose that made Gorgon *Gorgon*. This round returns to the v1 golds&#x27; side-on stiff-arm stride and attacks proportions qualitatively — an explicitly oversized head, oversized hands and boots, chunky joints — while exaggerating every material boundary so the printed, unpainted figure reads (Jeremy&#x27;s v1 test print: cyber arms, bare flesh and the covered leg were indistinguishable; all belts and studs need to be thicker and bolder).</p>
 <h2>The choices on the table</h2>
@@ -333,11 +333,16 @@ No weapons, no ball, no other people, no base or pedestal, and no text, numbers 
 <li><strong>Signature fidelity.</strong> Is this still the golds&#x27; Gorgon — camera, stride, stiff-arm, hair-forward drape, nape implant, kit asymmetry?</li>
 <li><strong>Print readability at thumbnail.</strong> Squint test: do chrome, flesh and covered cloth separate by geometry alone? Are the studs one big obvious row, and the belts thick enough to survive resin?</li>
 </ol>
-<p>Arm A is additionally judged for edit locality: what stayed unchanged counts as heavily as what was fixed. The standard machine screens run on every roll — blind detector plus a fresh-context crop audit — and any disagreement between them is a mandatory human look. Machines screen; your eye decides.</p>
+<p>Arm A is additionally judged for edit locality: what stayed unchanged counts as heavily as what was fixed. Machine checks run in two explicit lanes:</p>
+<ul>
+<li><strong>FAST:</strong> a fresh-context crop audit runs as each image lands, checking the three decision axes above plus anatomy, single-figure composition, grounded feet, kit/chirality, and arm A&#x27;s edit locality. Once all FAST verdicts are logged, the private review may be shared as <strong>PROVISIONAL — slow checks pending</strong> so eye-review can start.</li>
+<li><strong>SLOW:</strong> after all 7 images land, one <code>blind_detect_round.py</code> manifest submits every spec-blind description in a single Gemini Batch wave and every dependent comparison in a second Batch wave. Completed records append to <code>reviews.jsonl</code>; every blind-vs-crop disagreement gets a mandatory human look. The same panel is rebuilt as <strong>COMPLETE</strong> only after the canonical review log contains one successful record from that Batch run for each of the exact 7 planned artifact ids. A partial detector run remains incomplete even when the coordinator exits normally. The provisional panel cannot close the round, promote a keeper, or authorize downstream work.</li>
+</ul>
+<p>Machines screen; your eye decides.</p>
 <h2>What we need from you</h2>
 <p>Pick the R2 keeper (and with it the arm) as the v2 lineage base — or reject all seven with a sharper direction. This round greenlights nothing further: turnaround and Meshy are separate later rounds.</p>
 <h2>Cost</h2>
-<p>Planning estimate: image generation ≈ <strong>$1.35</strong> (arm A: riverflow25 ~$0.37, gptimage2 ~$0.18, flash31 ~$0.10; arm B: riverflow25 ~$0.35, gptimage2 ~$0.18, flash31 ~$0.10, grokq ~$0.07 — figures from R1/v1 observed costs). Blind detection reserves <strong>at least $0.25</strong> (~$0.035 per roll observed in R1). Round cap: <strong>$2.00 USD</strong>, with no Meshy credits; the headroom covers conservative reservations for interrupted calls, which consumed R1&#x27;s margin. Live provider metadata and the spend preflight remain authoritative at execution time.</p>
+<p>Planning estimate: image generation ≈ <strong>$1.35</strong> (arm A: riverflow25 ~$0.37, gptimage2 ~$0.18, flash31 ~$0.10; arm B: riverflow25 ~$0.35, gptimage2 ~$0.18, flash31 ~$0.10, grokq ~$0.07 — figures from R1/v1 observed costs). FAST evaluation is unmetered. SLOW evaluation uses one two-wave, half-price Gemini Batch detector run across all 7 images and reserves <strong>$0.35</strong> (~$0.05 per image, conservatively sized from R1). Planned total is ≈ <strong>$1.70</strong>. Round cap remains <strong>$2.00 USD</strong>, with no Meshy credits; the headroom covers conservative reservations for interrupted calls, which consumed R1&#x27;s margin. Live provider metadata and the detector&#x27;s printed preflight ceiling remain authoritative at execution time.</p>
 <details>
 <summary>Technical plan — models, prompts, commands (pipeline detail)</summary>
 <h3>What changed going in (spec / prompt / process deltas)</h3>
@@ -351,6 +356,7 @@ No weapons, no ball, no other people, no base or pedestal, and no text, numbers 
 <li>Arm A&#x27;s prompt is a two-change self-edit in the proven r6 shape: CHANGE 1 heroic proportions, CHANGE 2 print-readability exaggeration, everything else pinned identical. It declares exactly one attached image.</li>
 <li>Arm B&#x27;s prompt is the r4 gold prompt with travel flipped to the golds&#x27; frame (toward the RIGHT edge), the r6 hair/nape delta folded in, the numeric-free heroic proportion paragraph added, and the exaggeration program applied to CHROME and KIT. It declares zero attached images.</li>
 <li><code>riverflow25</code> returns under its Supported status as the project-proven Gorgon specialist (both v1 golds are its work). Before any spend, recheck its live schema and pricing with <code>openrouter_gen.py --params sourceful/riverflow-v2.5-pro</code>; the text cell passes an explicit <code>--aspect 2:3</code> (the R1 runbook&#x27;s standing note), while the edit cell inherits the reference canvas.</li>
+<li>Pre-sign-off plan update (Dimitri, 2026-08-03): production blind detection uses the round-level Batch coordinator, not 7 synchronous <code>blind_detect.py</code> invocations. One manifest covers all outputs in two Batch waves, with durable <code>--resume-run</code> recovery and direct canonical <code>reviews.jsonl</code> finalization. The manifest is built from an independently enumerated set of 7 planned ids, and COMPLETE handoff fails closed unless all 7 have successful records from that exact detector run. The generation matrix and $2.00 cap do not change.</li>
 </ul>
 <h3>Experiment matrix</h3>
 <div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Variant axes</th><th>Prompt</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>1</td><td><code>gorgon-r6-B2-riverflow25</code> (img2img)</td><td>A × riverflow25, gptimage2, flash31</td><td><code>prompts/r2-a-heroic-edit.txt</code></td><td><code>gorgon-v2-r2-a</code></td></tr><tr><td>2</td><td>text only; no images</td><td>B × gptimage2, flash31, grokq</td><td><code>prompts/r2-b-side-heroic.txt</code></td><td><code>gorgon-v2-r2-b</code></td></tr><tr><td>3</td><td>text only; no images</td><td>B × riverflow25 (direct call for explicit <code>--aspect 2:3</code>)</td><td><code>prompts/r2-b-side-heroic.txt</code></td><td><code>gorgon-v2-r2-b-riverflow25</code></td></tr></tbody></table></div>
@@ -414,8 +420,75 @@ tools/drive_sync.sh push &quot;$G/generated&quot;
 if (( A_STATUS != 0 || B_STATUS != 0 || R_STATUS != 0 )); then
   echo &quot;generation cell failed: A=$A_STATUS B=$B_STATUS RF=$R_STATUS&quot; &gt;&amp;2
   exit 1
-fi</code></pre>
-<p>Run <code>tools/blind_detect.py</code> and the fresh-context crop audit on each roll as it lands, append verdicts through <code>tools/review_log.py</code>, then build the private r2 review with <code>tools/review_page.py --inline</code>. Results belong in <code>rounds.md</code> and <code>r2-panel.json</code>, never back in this runbook.</p>
+fi
+
+# Build one exact 7-artifact detector manifest after generation has finalized
+# every lineage record. The approved ids are enumerated independently of the
+# directory scan; refuse missing, duplicate, unsupported, or extra round files.
+mkdir -p &quot;$G/notes&quot;
+EXPECTED=&quot;$G/notes/r2-blind-expected.txt&quot;
+ACTUAL=&quot;$G/notes/r2-blind-actual.txt&quot;
+MANIFEST=&quot;$G/notes/r2-blind-manifest.json&quot;
+printf &#x27;%s\n&#x27; \
+  gorgon-v2-r2-a-riverflow25-1 \
+  gorgon-v2-r2-a-gptimage2-1 \
+  gorgon-v2-r2-a-flash31-1 \
+  gorgon-v2-r2-b-riverflow25-1 \
+  gorgon-v2-r2-b-gptimage2-1 \
+  gorgon-v2-r2-b-flash31-1 \
+  gorgon-v2-r2-b-grokq-1 \
+  | sort &gt; &quot;$EXPECTED&quot;
+
+find &quot;$G/generated&quot; -maxdepth 1 -type f \
+  \( -name &#x27;gorgon-v2-r2-a-*.png&#x27; -o -name &#x27;gorgon-v2-r2-a-*.jpg&#x27; -o \
+     -name &#x27;gorgon-v2-r2-a-*.jpeg&#x27; -o -name &#x27;gorgon-v2-r2-a-*.webp&#x27; -o \
+     -name &#x27;gorgon-v2-r2-b-*.png&#x27; -o -name &#x27;gorgon-v2-r2-b-*.jpg&#x27; -o \
+     -name &#x27;gorgon-v2-r2-b-*.jpeg&#x27; -o -name &#x27;gorgon-v2-r2-b-*.webp&#x27; \) \
+  -printf &#x27;%f\n&#x27; | sed -E &#x27;s/\.(png|jpe?g|webp)$//&#x27; | sort &gt; &quot;$ACTUAL&quot;
+diff -u &quot;$EXPECTED&quot; &quot;$ACTUAL&quot;
+
+ITEMS=()
+while IFS= read -r artifact; do
+  mapfile -t matches &lt; &lt;(find &quot;$G/generated&quot; -maxdepth 1 -type f \
+    \( -name &quot;$artifact.png&quot; -o -name &quot;$artifact.jpg&quot; -o \
+       -name &quot;$artifact.jpeg&quot; -o -name &quot;$artifact.webp&quot; \) -print)
+  (( ${#matches[@]} == 1 )) || {
+    echo &quot;expected exactly one supported image for $artifact&quot; &gt;&amp;2
+    exit 1
+  }
+  ITEMS+=(&quot;$(jq -cn --arg artifact &quot;$artifact&quot; --arg image &quot;${matches[0]}&quot; \
+    &#x27;{artifact: $artifact, image: $image}&#x27;)&quot;)
+done &lt; &quot;$EXPECTED&quot;
+printf &#x27;%s\n&#x27; &quot;${ITEMS[@]}&quot; | jq -s &#x27;{items: .}&#x27; &gt; &quot;$MANIFEST&quot;
+diff -u &quot;$EXPECTED&quot; &lt;(jq -r &#x27;.items[].artifact&#x27; &quot;$MANIFEST&quot; | sort)
+
+# SLOW lane: one round-level description Batch wave followed by one dependent
+# comparison Batch wave. Re-running this block resumes the recorded run; it
+# never creates a replacement run after an interruption or partial result.
+DETECT_LOG=&quot;$G/notes/r2-blind-detect.log&quot;
+if [[ -s &quot;$DETECT_LOG&quot; ]]; then
+  DETECT_RUN=&quot;$(sed -n &#x27;s/^batch run: //p&#x27; &quot;$DETECT_LOG&quot; | head -n 1)&quot;
+  test -n &quot;$DETECT_RUN&quot;
+  python3 tools/blind_detect_round.py --resume-run &quot;$DETECT_RUN&quot;
+else
+  python3 tools/blind_detect_round.py \
+    --manifest &quot;$MANIFEST&quot; --spec-file &quot;$G/spec.md&quot; \
+    --reviews &quot;$G/reviews.jsonl&quot; 2&gt; &gt;(tee &quot;$DETECT_LOG&quot; &gt;&amp;2)
+  DETECT_RUN=&quot;$(sed -n &#x27;s/^batch run: //p&#x27; &quot;$DETECT_LOG&quot; | head -n 1)&quot;
+  test -n &quot;$DETECT_RUN&quot;
+fi
+
+# Coordinator completion is not sufficient: PARTIAL is a durable terminal
+# state too. Require this exact run to have all and only the expected 7
+# successful blind-detect records before COMPLETE handoff.
+jq -e -s --arg run &quot;$DETECT_RUN&quot; --rawfile expected &quot;$EXPECTED&quot; &#x27;
+  ($expected | split(&quot;\n&quot;) | map(select(length &gt; 0)) | sort) as $want
+  | ([.[]
+      | select(.reviewer == &quot;blind-detect&quot; and .batch_run_id == $run)
+      | .artifact] | unique | sort) as $got
+  | ($want | length) == 7 and $got == $want
+&#x27; &quot;$G/reviews.jsonl&quot; &gt; /dev/null</code></pre>
+<p>Run the fresh-context crop audit on each roll as it lands and append those FAST verdicts through <code>tools/review_log.py</code>. Once FAST is complete, build the r2 review panel with <code>tools/review_page.py --inline</code> and share it privately as <strong>PROVISIONAL — slow checks pending</strong>. The command above submits the SLOW lane as one round-level Batch run. Only after the fail-closed postcondition verifies all exact 7 same-run records, reconcile every crop/blind disagreement and rebuild the same config as <strong>COMPLETE</strong>. Results, detector run/job telemetry, and verdicts belong in <code>rounds.md</code> and <code>r2-panel.json</code>, never back in this runbook.</p>
 </details></div>
 </main>
 <div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
