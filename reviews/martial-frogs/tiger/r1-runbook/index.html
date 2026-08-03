@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="bdda2c275d59e0a10a4311cbba2ac2ff17bae755edfe6e4d46b7827d3fd8599a">
+<meta name="ai-stl-plan-digest" content="46de55fb8b33ba7992c38ddd94530ad5b5d4d67b6dd05f50e80212a4debf1abb">
 <title>Tiger — Round 1 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -368,7 +368,7 @@ Treat every feature as geometry for a roughly 35 mm-tall resin figure: bold plan
 </ul>
 <p>Machine checks run on every image before the humans see them: the standard blind-detect pass (the detector never sees the spec) plus a fresh-context crop audit checking the held-constant program — hachimaki with short pinned tails, torn-off sleeves, high-wrapped obi, forearm/shin wraps, bare webbed feet with <strong>four connected webbed digits per hand and both hands empty</strong> in claw guard, both feet flat and planted, no weapon/ball/mon/number/text, smooth skin with no warts or hair, <strong>no tiger features (stripes, fur, whiskers, feline face — the style is tiger, the species is frog)</strong>, and a serious wuxia non-cartoon tone. Blind-vs-crop disagreement is flagged for a human look, never resolved by score. The machines screen for misses; they do not pick the winner. The three flashlite31 trial renders get the identical screening; they are judged separately on the trial&#x27;s own question — does a 1K Flash Lite render hold silhouette, pose, and the held-constant program well enough to serve future cheap selection bake-offs? — and never count toward the F1/F2/F3 pick.</p>
 <h2>What we need from you</h2>
-<p>Dimitri: sign off this plan (spend gate). Then, on the results panel, Jawaknight picks F1, F2, or F3 — or a blend (&quot;F2 body with F1&#x27;s head&quot;, say) — and one concept render becomes the lineage base; or he rejects all 12 with a sharper body target. That choice greenlights a separate r2 (pose/camera refinement or straight to turnaround); no turnaround or Meshy spend is bundled into this round.</p>
+<p>Dimitri: sign off this plan (spend gate). Then, on the results panel, Jawaknight picks F1, F2, or F3 — or a blend (&quot;F2 body with F1&#x27;s head&quot;, say) — and one concept render becomes the lineage base; or he rejects all 15 decision renders (the 3 trial images never carry the decision) with a sharper body target. That choice greenlights a separate r2 (pose/camera refinement or straight to turnaround); no turnaround or Meshy spend is bundled into this round.</p>
 <h2>Cost</h2>
 <p>Planning estimate: image generation ≈ <strong>$1.71</strong> for 18 concepts (per body-plan arm: flash31 ~$0.10, gptimage2 ~$0.17, seedream45 ~$0.04, grokq ~$0.08, riverflow25 ~$0.15 → $0.54 × 3 arms = $1.62; plus the flashlite31 trial arm ~$0.03 × 3 ≈ $0.09). Blind detection reserves <strong>$0.90</strong> (~$0.05 per roll × 18 — sized from the Gorgon v2 r1 experience, where detector costs overran a $0.01/roll estimate and forced a cap amendment). Planned total ≈ <strong>$2.61</strong>. Round cap: <strong>$3.25 USD</strong>, no Meshy credits — the ~25% headroom is a deliberate allowance for conservative in-flight reservations on interrupted calls, which on Gorgon v2 r1 transiently bounded ~36% above known spend and forced a second amendment round-trip; it is headroom for accounting, not for extra work. Live provider metadata and the spend preflight remain authoritative at execution time.</p>
 <details>
@@ -404,7 +404,7 @@ python3 tools/discord_share.py --channel martial-frogs-design \
   --post-header --headline &quot;Round 1 — Tiger&quot; \
   --status &quot;PROPOSED — awaiting sign-off; no image generation yet&quot; \
   --decision &quot;How frog are the frogs? Pick F1 true bullfrog / F2 heroic temple frog / F3 anthro athlete frog (or a blend)&quot; \
-  --spend-state &quot;\$0.00 of the cap; 15 concepts planned, no Meshy calls&quot; \
+  --spend-state &quot;\$0.00 of the \$&lt;cap&gt;; &lt;N&gt; concepts planned, no Meshy calls&quot; \
   --artifact-link &quot;https://lackofcheese.github.io/ai-stl-review/reviews/martial-frogs/tiger/r1-runbook/&quot; \
   --once tiger-r1-header
 python3 tools/discord_share.py --channel martial-frogs-design \
