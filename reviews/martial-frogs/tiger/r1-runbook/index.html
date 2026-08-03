@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="4e218ccdc046f65c12e09f0f9887c7bd351509cb3b613c77002fcaa32a0bb073">
+<meta name="ai-stl-plan-digest" content="8b016b323b76350531b39ae2240eb023217e5fb96490fdf4890776d72638db55">
 <title>Tiger — Round 1 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -526,12 +526,16 @@ fi
 # judgment record per artifact through review_log.py. Its final KEEPER/FIXABLE/
 # REJECT call is the panel verdict, and its summary must begin with exactly one
 # of these evidence markers:
-#   RECONCILED — AGREE: &lt;why the crop and blind screens agree&gt;
+#   RECONCILED — AGREE: &lt;why the crop and blind judgment classes agree&gt;
 #   RECONCILED — RESOLVED: &lt;what disagreed and Dimitri&#x27;s resolution&gt;
 # Append that record only after reading both source records. The check below
 # requires all and only the expected 18 crop audits, same-run blind records,
-# and later human reconciliations before COMPLETE/public handoff.
+# and later human reconciliations before COMPLETE/public handoff. It derives
+# each latest machine call&#x27;s KEEPER/FIXABLE/REJECT class and rejects AGREE when
+# those classes differ.
 jq -e -s --arg run &quot;$DETECT_RUN&quot; --rawfile expected &quot;$EXPECTED&quot; &#x27;
+  def call_class:
+    (. // &quot;&quot; | match(&quot;^(KEEPER|FIXABLE|REJECT)&quot;)?.string);
   ($expected | split(&quot;\n&quot;) | map(select(length &gt; 0)) | sort) as $want
   | to_entries as $rows
   | ([$rows[]
@@ -553,10 +557,17 @@ jq -e -s --arg run &quot;$DETECT_RUN&quot; --rawfile expected &quot;$EXPECTED&qu
     and all($human[];
       (.value.call // &quot;&quot;) | test(&quot;^(KEEPER|FIXABLE|REJECT)&quot;))
     and all($want[]; . as $id |
-      ([$crops[] | select(.value.artifact == $id) | .key] | max) as $crop_i
-      | ([$blinds[] | select(.value.artifact == $id) | .key] | max) as $blind_i
-      | ([$human[] | select(.value.artifact == $id) | .key] | max) as $human_i
-      | $human_i &gt; $crop_i and $human_i &gt; $blind_i)
+      ([$crops[] | select(.value.artifact == $id)] | max_by(.key)) as $crop
+      | ([$blinds[] | select(.value.artifact == $id)] | max_by(.key)) as $blind
+      | ([$human[] | select(.value.artifact == $id)] | max_by(.key)) as $recon
+      | ($crop.value.call | call_class) as $crop_class
+      | ($blind.value.call | call_class) as $blind_class
+      | $recon.key &gt; $crop.key
+        and $recon.key &gt; $blind.key
+        and (if $crop_class == $blind_class
+             then ($recon.value.summary | startswith(&quot;RECONCILED — AGREE:&quot;))
+             else ($recon.value.summary | startswith(&quot;RECONCILED — RESOLVED:&quot;))
+             end))
 &#x27; &quot;$T/reviews.jsonl&quot; &gt; /dev/null</code></pre>
 <p>Run the fresh-context crop audit on each roll as it lands and append those FAST verdicts through <code>tools/review_log.py</code>. Once FAST is complete, build the r1 review panel with <code>tools/review_page.py --inline</code> and share it privately as <strong>PROVISIONAL — slow checks pending</strong>. The command above submits the SLOW lane as one round-level Batch run. After it lands, append Dimitri&#x27;s 18 final reconciliation verdicts through <code>review_log.py</code>, using the exact summary marker documented above. Only after the fail-closed postcondition verifies exact crop, same-run blind, and later human-reconciliation coverage may the same config be rebuilt as <strong>COMPLETE</strong> and the complete panel published to Pages — <strong>Dimitri pre-approved the r1 panel&#x27;s public Pages publication on 2026-08-03</strong> (per-review OK under <code>docs/agents/publication.md</code>; recorded in <code>rounds.md</code>), since Jawaknight has no Claude account and makes the pick. The provisional panel is always private. Results, detector run/job telemetry, and verdicts belong in <code>rounds.md</code> and <code>r1-panel.json</code>, never back in this runbook.</p>
 </details></div>
