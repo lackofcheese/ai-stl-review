@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Gorgon v2 R2 — complete review · human verdict pending</title>
+<style>
+:root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.coreinputs { margin:1.2rem 0 .4rem }
+.coreinputs h2 { margin:0 0 .5rem }
+.coreinputs .hint { color:var(--dim); font-weight:400; font-size:.85rem }
+.inputrow { display:flex; flex-wrap:wrap; gap:12px }
+.coreinput { margin:0; width:210px; max-width:100%;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.coreinput .imgwrap { border-bottom:1px solid var(--line) }
+.coreinput .imgwrap img { max-height:230px }
+.coreinput figcaption { color:var(--dim); font-size:.7rem; padding:.35rem .5rem;
+  word-break:break-all; font-family:ui-monospace,SFMono-Regular,Menlo,monospace }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.statrow { display:flex; flex-wrap:wrap; gap:.15rem .5rem; margin:0 0 .1rem;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.72rem;
+  color:var(--dim) }
+.statrow span { white-space:nowrap }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.chip.unclear { color:var(--dim); border-color:var(--dim) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:calc(100vh - 7rem); object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-meta { display:flex; flex-direction:column; align-items:center; gap:.35rem;
+  min-height:2.2rem; position:relative; z-index:20 }
+.lb-refrow { display:flex; align-items:center; justify-content:center; gap:.35rem;
+  flex-wrap:wrap }
+.lb-refrow[hidden] { display:none }
+.lb-refrow .refid { background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn { color:#bbb; border-color:#55515d;
+  background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+</style></head><body><main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Cyber-Amazons</a><span class="sep">&rsaquo;</span><a href="../">Gorgon v2</a></nav>
+<div class="eyebrow">Firewall FC · Blocker #2 · Gorgon v2 · round 2 · MACHINE REVIEW COMPLETE · 2026-08-03</div>
+<h1>Gorgon v2 R2 — complete review · human verdict pending</h1>
+<a class="crosslink" href="../r2-runbook/">&#128214; Round runbook &rarr;</a>
+<p class="sub">Seven side-view concepts test qualitative heroic proportions and bare-resin readability against the signature v1 gold pose. The fresh-context crop lane, approved two-wave Gemini Batch blind lane, and append-only reconciliation are all present. Machine evidence is complete; no keeper, repair, downstream round or Meshy work is authorized until Dimitri makes the final eye-call.</p>
+<div class="callout"><strong>ONE HUMAN DECISION REMAINS.</strong> All seven blind comparisons reject. After direct visual reconciliation, arm A / Flash 3.1 remains the sole <strong>FIXABLE-CANDIDATE</strong>: its larger head, readable relief and strong pose/kit locality survive several blind frame-map overreads, but its face is different and the body is only partly compacted. The other six remain rejects. Choose focused repair, evidence-only, or reject-all — nothing is promoted automatically.</div>
+<div class="callout asks"><p class="boxhead">Final eye-call needed</p><p class="intro">The machine lanes are complete. Your verdict closes R2 and determines whether A / Flash 3.1 gets a tightly scoped repair round or whether all seven are rejected.</p><ol><li><span class="q">Does A / Flash 3.1 still look like the same Gorgon?</span><span class="who">Dimitri + Jason + Jeremy</span><p class="d">The crop audit sees excellent pose, camera, kit, hair-side and nape preservation, but a rounder/softer different face and only partial compactness.</p><ul><li>Advance it only to a focused face/compactness repair plan.</li><li>Use it only as heroic/readability evidence, not a lineage base.</li><li>Reject it with the rest.</li></ul></li><li><span class="q">Confirm the six machine rejects?</span><span class="who">Dimitri + Jason + Jeremy</span><p class="d">A/GPT and A/Riverflow fail edit locality; B/Flash is a two-figure montage; the other three B candidates miss the oversized-head objective and at least one signature identity relation. None is a repair recommendation.</p></li></ol></div>
+<section class="coreinputs"><h2>Core inputs<span class="hint"> — the base image(s) these candidates were built from</span></h2><div class="inputrow"><figure class="coreinput"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/218be4ea42a57cf3.webp" data-cap="Arm A core input — v1 r6 gold"><img src="../../../../assets/eab7b4ea35fa2835.jpg" alt="Arm A core input — v1 r6 gold" loading="lazy"></div><figcaption>Arm A core input — v1 r6 gold</figcaption></figure></div></section>
+<h2>FAST machine pre-read</h2>
+<p class="blurb">The primary gate is head scale. Edit-arm candidates must also preserve the exact gold identity and all untouched geometry; text-arm candidates must recreate the signature from scratch.</p>
+<div class="tablewrap"><table><tr><th>Candidate</th><th>FAST call</th><th>Why</th></tr><tr><td>A · Flash 3.1</td><td><strong>FIXABLE-CANDIDATE</strong></td><td>Oversized head and readability land; pose/camera/kit stay close; face drifts and compactness is partial.</td></tr><tr><td>A · GPT Image 2</td><td>Reject</td><td>Heroic/readability gains land, but face, expression, pose spacing and kit are broadly redesigned.</td></tr><tr><td>A · Riverflow</td><td>Reject</td><td>Heroic/readability gains land, but face, hair/nape, torso kit and stiff-arm drift beyond the two authorized edits.</td></tr><tr><td>B · Flash 3.1</td><td>Reject</td><td>Hard two-figure montage; also wrong hair side and double stud rows.</td></tr><tr><td>B · GPT Image 2</td><td>Reject</td><td>Strong signature geometry and readability, but the head remains small and the mane falls to the wrong shoulder.</td></tr><tr><td>B · Grok Quality</td><td>Reject</td><td>Small head, two pads, incomplete cyberarms, reversed gait, double stud rows and broken stiff-arm hand.</td></tr><tr><td>B · Riverflow</td><td>Reject</td><td>Small head, wrong-shoulder hair and incomplete pad-side cyberarm.</td></tr></table></div>
+<h2>SLOW blind lane + reconciliation</h2>
+<p class="blurb">Gemini first described all seven images without the brief, then compared those frozen descriptions to the spec. Every blind result rejects. Reconciliation corrects frame-map and cyberarm-shoulder-cap overreads without hiding the blind lane's risk signal.</p>
+<div class="tablewrap"><table><tr><th>Candidate</th><th>Blind call</th><th>Reconciled call</th></tr><tr><td>A · Flash 3.1</td><td>Reject</td><td><strong>FIXABLE/REJECT — human verdict</strong></td></tr><tr><td>A · GPT Image 2</td><td>Reject</td><td>Reject — nonlocal edit drift</td></tr><tr><td>A · Riverflow</td><td>Reject</td><td>Reject — nonlocal edit drift</td></tr><tr><td>B · Flash 3.1</td><td>Reject</td><td>Reject — two-figure hard fail</td></tr><tr><td>B · GPT Image 2</td><td>Reject</td><td>Reject — small head + wrong-side mane</td></tr><tr><td>B · Grok Quality</td><td>Reject</td><td>Reject — convergent core failures</td></tr><tr><td>B · Riverflow</td><td>Reject</td><td>Reject — small head + identity failures</td></tr></table></div><p><strong>Integrity note:</strong> five records parsed directly. A/Flash required a semantic-no-op quote escape; B/GPT Image 2 completed its call and full detector list before MAX_TOKENS truncated only the closing summary, which is transparently reconstructed and flagged. No provider request was resubmitted.</p>
+<h2>A — heroic edits of the v1 r6 gold</h2>
+<p class="blurb">All three edit models enlarge the head and improve bare-resin separation. The decision is whether any preserved enough of the gold's identity to justify repair rather than another base-generation round.</p>
+<div class="grid">
+<div class="card" id="gorgon-v2-r2-a-flash31-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/e32ecea502311de6.jpg" data-cap="A · Flash 3.1 — FIXABLE/REJECT: human verdict required" data-ref="a-flash31-1" data-anchor="gorgon-v2-r2-a-flash31-1"><img src="../../../../assets/3caafc61bb80d4f4.jpg" alt="A · Flash 3.1 — FIXABLE/REJECT: human verdict required" loading="lazy"></div><div class="meta"><header><h3>A · Flash 3.1 — FIXABLE/REJECT: human verdict required</h3><span class="cost">~$0.05</span><span class="call fixable" title="FIXABLE/REJECT disagreement — human verdict required">FIXABLE/REJECT disagr…</span></header><div class="cardref"><a class="refid" href="#gorgon-v2-r2-a-flash31-1" title="Deep link to this image">#a-flash31-1</a><button class="refbtn" data-copy-id="#a-flash31-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="gorgon-v2-r2-a-flash31-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="gorgon-v2-r2-a-flash31-1" data-title="A · Flash 3.1 — FIXABLE/REJECT: human verdict required" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="face identity and repairability — The face is materially resynthesized and the heroic rewrite is incomplete. Whether that can be repaired without losing the unusually strong pose/kit locality is the unresolved human decision.">face identity and…</span><span class="chip bad" title="blind cross-check — REJECT — Significant deviations in core identity, print readability, and pose details.">blind cross-check</span><span class="chip warn" title="outcome disagreement — The crop audit finds the sole R2 FIXABLE-CANDIDATE; the blind comparison rejects on accumulated identity, print and pose claims.">outcome disagreem…</span><span class="chip warn" title="team pad and cyberarms — The image has one dominant layered team pad. The blind description overreads the far cyberarm shoulder cap as a second equivalent pad; both arms read mechanical, although the exact shoulder transition remains a human live-image check.">team pad and cybe…</span></div><details class="more"><summary>2 more detectors (6 total)</summary><div class="chips"><span class="chip ok" title="heroic head and readable mass — Direct visual review supports the crop lane: the head, fist, wrists, boots, studs and straps are visibly enlarged/readable, though the torso and legs remain only partly compact.">heroic head and r…</span><span class="chip ok" title="leg and print-detail facts — The bare leading leg, covered trailing leg, large stud row and substantial straps are visibly present. Blind claims of reversed legs and uniformly small/thin hardware are not supported by the pixels.">leg and print-det…</span></div></details><p>Only repair candidate; blind overreads visible kit facts, but face drift and partial compactness require Dimitri&#x27;s call.</p><details class="more"><summary>full note</summary><p class="chipnote">The crop lane is more reliable on visible pad, leg and relief facts; the blind description contains shoulder-cap and frame-map overreads. The blind rejection still usefully emphasizes accumulated risk. Keep A/Flash as the sole provisional repair candidate, never as a keeper: Dimitri must decide whether the face drift and partial compactness are repairable enough to justify another round.</p></details><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="gorgon-v2-r2-a-gptimage2-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/76d6558e1bc0ddd2.png" data-cap="A · GPT Image 2 — reject: identity and kit drift" data-ref="a-gptimage2-1" data-anchor="gorgon-v2-r2-a-gptimage2-1"><img src="../../../../assets/4d4e44c39de89409.jpg" alt="A · GPT Image 2 — reject: identity and kit drift" loading="lazy"></div><div class="meta"><header><h3>A · GPT Image 2 — reject: identity and kit drift</h3><span class="cost">$0.18</span><span class="call reject" title="REJECT — outcome agrees; blind kit facts corrected">REJECT</span></header><div class="cardref"><a class="refid" href="#gorgon-v2-r2-a-gptimage2-1" title="Deep link to this image">#a-gptimage2-1</a><button class="refbtn" data-copy-id="#a-gptimage2-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="gorgon-v2-r2-a-gptimage2-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="gorgon-v2-r2-a-gptimage2-1" data-title="A · GPT Image 2 — reject: identity and kit drift" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="outcome — Both lanes reject.">outcome</span><span class="chip bad" title="edit locality — The crop audit&#x27;s decisive failure stands: face, expression, hair construction, pose spacing, kit geometry and markings drift beyond the two authorized edit programs.">edit locality</span><span class="chip bad" title="blind cross-check — REJECT — Numerous critical contradictions in chirality, asymmetry, printability, and pose.">blind cross-check</span><span class="chip warn" title="pad and leg facts — Direct review shows one dominant team pad plus cyberarm shoulder plating and the intended bare-leading/covered-trailing leg program. The blind two-pad and reversed/symmetric-leg claims are frame/semantic overreads.">pad and leg facts</span></div><details class="more"><summary>1 more detectors (5 total)</summary><div class="chips"><span class="chip ok" title="print readability — Studs, straps, boots and cyberarm masses are visibly bold; the blind small/thin-detail generalization is too severe, though free dread ends remain a real reconstruction risk.">print readability</span></div></details><p>Reject for nonlocal face/kit/pose drift; blind pad and leg claims are overreads.</p><details class="more"><summary>full note</summary><p class="chipnote">Both screens reject. Correct the blind lane&#x27;s pad, leg and broad print-readability claims in favor of the direct crop read; the candidate still fails independently because the reference edit is nonlocal and replaces too much of the character identity.</p></details><button class="ibtn" data-inputs="in-1">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="gorgon-v2-r2-a-riverflow25-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/08c9461199eb69ca.webp" data-cap="A · Riverflow — reject: nonlocal drift" data-ref="a-riverflow25-1" data-anchor="gorgon-v2-r2-a-riverflow25-1"><img src="../../../../assets/b75accf89bf9cb2a.jpg" alt="A · Riverflow — reject: nonlocal drift" loading="lazy"></div><div class="meta"><header><h3>A · Riverflow — reject: nonlocal drift</h3><span class="cost">$0.53</span><span class="call reject" title="REJECT — outcome agrees; blind frame-map errors corrected">REJECT</span></header><div class="cardref"><a class="refid" href="#gorgon-v2-r2-a-riverflow25-1" title="Deep link to this image">#a-riverflow25-1</a><button class="refbtn" data-copy-id="#a-riverflow25-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="gorgon-v2-r2-a-riverflow25-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="gorgon-v2-r2-a-riverflow25-1" data-title="A · Riverflow — reject: nonlocal drift" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="outcome — Both lanes reject.">outcome</span><span class="chip bad" title="edit locality — Face, crown/dread architecture, nape implant, torso seams, plate shapes, buckles, wear marks and stiff-arm angle were broadly resynthesized.">edit locality</span><span class="chip bad" title="blind cross-check — REJECT — Multiple critical deviations from core identity features, including reversed leg asymmetry, mirrored shoulder pads, incorrect dreadlock thickness and temple coverage, and a twisted torso.">blind cross-check</span><span class="chip warn" title="pad and leg facts — The direct image shows one dominant team pad, a bare leading leg and a continuously covered trailing leg. The blind two-pad/reversed-leg reading treats cyberarm shoulder plating and viewer-side wording too literally.">pad and leg facts</span><span class="chip warn" title="dreads and relief — The locks and major studs are visibly substantial rather than uniformly thin, but several free lock tips remain reconstruction hazards.">dreads and relief</span></div><p>Reject for broad identity and kit resynthesis; blind pad/leg mapping is not reliable.</p><details class="more"><summary>full note</summary><p class="chipnote">Both screens reject. The crop/direct read corrects blind side-map and thin-detail overstatements, but the result still fails the arm-A experiment because it is a broad redesign rather than a localized proportion/readability edit.</p></details><button class="ibtn" data-inputs="in-2">inputs — prompt &amp; refs</button></div></div>
+</div>
+<h2>B — fresh text side-view sweep</h2>
+<p class="blurb">The text arm does not produce a FAST keeper. Three candidates retain naturalistic small heads; Flash returns a two-figure montage.</p>
+<div class="grid">
+<div class="card" id="gorgon-v2-r2-b-flash31-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/6cc80bd66e11146c.jpg" data-cap="B · Flash 3.1 — reject: two-figure montage" data-ref="b-flash31-1" data-anchor="gorgon-v2-r2-b-flash31-1"><img src="../../../../assets/cf429db7c680e279.jpg" alt="B · Flash 3.1 — reject: two-figure montage" loading="lazy"></div><div class="meta"><header><h3>B · Flash 3.1 — reject: two-figure montage</h3><span class="cost">~$0.05</span><span class="call reject" title="REJECT — two-figure hard fail is independently decisive">REJECT</span></header><div class="cardref"><a class="refid" href="#gorgon-v2-r2-b-flash31-1" title="Deep link to this image">#b-flash31-1</a><button class="refbtn" data-copy-id="#b-flash31-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="gorgon-v2-r2-b-flash31-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="gorgon-v2-r2-b-flash31-1" data-title="B · Flash 3.1 — reject: two-figure montage" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="outcome — Both lanes reject.">outcome</span><span class="chip bad" title="figure count — Direct review confirms two complete duplicated figures in one frame. This alone makes the image unusable as a concept or reconstruction input.">figure count</span><span class="chip bad" title="stud rows and hair binding — Both visible figures carry double-row stud bands and the mane stays on the pad-side rather than crossing to the far stiff-arm shoulder.">stud rows and hai…</span><span class="chip bad" title="blind cross-check — REJECT — Numerous critical contradictions regarding asymmetry, proportions, pose, and detail execution (e.g., studs, leg covering, shoulder pads).">blind cross-check</span><span class="chip warn" title="blind subject selection — The blind comparison lists single-figure proportion/pose faults without making the duplicate the primary failure, so its subject selection is incomplete even though its reject outcome agrees.">blind subject sel…</span></div><p>Reject: duplicated two-figure montage, plus double stud rows and wrong-side mane.</p><details class="more"><summary>full note</summary><p class="chipnote">Reject regardless of any finer proportion reading: the frame is a two-figure montage. The crop/direct evidence is authoritative on that hard fail; blind detail claims are secondary.</p></details><button class="ibtn" data-inputs="in-3">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="gorgon-v2-r2-b-gptimage2-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5ffba99903ac3ac9.png" data-cap="B · GPT Image 2 — reject: small head" data-ref="b-gptimage2-1" data-anchor="gorgon-v2-r2-b-gptimage2-1"><img src="../../../../assets/0e89866cbb1f3226.jpg" alt="B · GPT Image 2 — reject: small head" loading="lazy"></div><div class="meta"><header><h3>B · GPT Image 2 — reject: small head</h3><span class="cost">$0.15</span><span class="call reject" title="REJECT — primary-axis failure survives blind frame errors">REJECT</span></header><div class="cardref"><a class="refid" href="#gorgon-v2-r2-b-gptimage2-1" title="Deep link to this image">#b-gptimage2-1</a><button class="refbtn" data-copy-id="#b-gptimage2-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="gorgon-v2-r2-b-gptimage2-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="gorgon-v2-r2-b-gptimage2-1" data-title="B · GPT Image 2 — reject: small head" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="outcome — Both lanes reject.">outcome</span><span class="chip bad" title="heroic head — Direct review confirms the round&#x27;s decisive miss: the head remains naturalistic and small against the shoulder and torso mass.">heroic head</span><span class="chip bad" title="hair and pose — The mane falls toward the padded near shoulder/back rather than the far stiff-arm shoulder; the stiff-arm is nearly level instead of descending.">hair and pose</span><span class="chip bad" title="blind cross-check — REJECT — Significant chirality errors for legs, multiple core design elements contradicted (shoulder pad, leg coverings, spinal ridge, dreads, torso pose), and detail level issues.">blind cross-check</span><span class="chip warn" title="kit and gait — The crop/direct read finds strong cyberarms, bare-leading/covered-trailing legs and a usable stride. The blind mirrored-frame leg claim and second-pad interpretation overread cyberarm shoulder plating.">kit and gait</span><span class="chip warn" title="output integrity — Gemini completed the call and detector list but hit MAX_TOKENS in the closing summary; the canonical record labels the local summary reconstruction.">output integrity</span></div><p>Reject: small naturalistic head and wrong-side mane; preserve kit/gait as reference evidence only.</p><details class="more"><summary>full note</summary><p class="chipnote">Reject on direct, independent evidence: the primary oversized-head objective failed and the mane is on the wrong shoulder. Blind frame-map and second-pad claims should not be carried forward; the strong kit/gait evidence remains useful reference material only.</p></details><button class="ibtn" data-inputs="in-4">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="gorgon-v2-r2-b-grokq-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/d395add3d244c543.png" data-cap="B · Grok Quality — reject: multiple core failures" data-ref="b-grokq-1" data-anchor="gorgon-v2-r2-b-grokq-1"><img src="../../../../assets/5f1108cc9fed1d02.jpg" alt="B · Grok Quality — reject: multiple core failures" loading="lazy"></div><div class="meta"><header><h3>B · Grok Quality — reject: multiple core failures</h3><span class="cost">$0.07</span><span class="call reject" title="REJECT — convergent core failures">REJECT</span></header><div class="cardref"><a class="refid" href="#gorgon-v2-r2-b-grokq-1" title="Deep link to this image">#b-grokq-1</a><button class="refbtn" data-copy-id="#b-grokq-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="gorgon-v2-r2-b-grokq-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="gorgon-v2-r2-b-grokq-1" data-title="B · Grok Quality — reject: multiple core failures" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="outcome — Both lanes reject.">outcome</span><span class="chip bad" title="primary proportions — The head remains small/naturalistic and the silhouette is broad but not the requested oversized-head heroic rewrite.">primary proportio…</span><span class="chip bad" title="identity and gait — Direct review confirms two large shoulder pads, exposed flesh gaps in both cyberarms, reversed bare/covered stride order and reversed foot-contact phase.">identity and gait</span><span class="chip bad" title="print and markings — Double-row studs, separated claw-like fingers, free dread tips and readable graffiti-like marks all violate the brief.">print and markings</span><span class="chip bad" title="blind cross-check — REJECT — Significant deviations in core identity, chirality, printability, and pose.">blind cross-check</span><span class="chip warn" title="frame mapping — Any finer blind left/right wording remains subordinate to the crop/direct relations above; the reject does not depend on it.">frame mapping</span></div><p>Reject: small head, two pads, incomplete cyberarms, reversed gait, double studs and broken stiff-arm.</p><details class="more"><summary>full note</summary><p class="chipnote">The lanes converge on a hard reject. Multiple directly visible failures independently defeat the candidate, so no blind side-map ambiguity changes the outcome.</p></details><button class="ibtn" data-inputs="in-5">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="gorgon-v2-r2-b-riverflow25-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/336e4434ae9f0c95.webp" data-cap="B · Riverflow — reject: small head" data-ref="b-riverflow25-1" data-anchor="gorgon-v2-r2-b-riverflow25-1"><img src="../../../../assets/585959d72f203227.jpg" alt="B · Riverflow — reject: small head" loading="lazy"></div><div class="meta"><header><h3>B · Riverflow — reject: small head</h3><span class="cost">$0.34</span><span class="call reject" title="REJECT — outcome agrees; gait evidence preserved">REJECT</span></header><div class="cardref"><a class="refid" href="#gorgon-v2-r2-b-riverflow25-1" title="Deep link to this image">#b-riverflow25-1</a><button class="refbtn" data-copy-id="#b-riverflow25-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="gorgon-v2-r2-b-riverflow25-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="gorgon-v2-r2-b-riverflow25-1" data-title="B · Riverflow — reject: small head" title="Share this image">share</button></div><div class="chips"><span class="chip bad" title="outcome — Both lanes reject.">outcome</span><span class="chip bad" title="heroic head — Direct review confirms a small naturalistic head against the very large shoulders and torso, failing the round&#x27;s primary axis.">heroic head</span><span class="chip bad" title="hair and cyberarm — The mane stays on the padded near/back side, and the hanging pad-side arm exposes a broad flesh shoulder/upper-arm gap instead of remaining cybernetic shoulder-to-fingertips.">hair and cyberarm</span><span class="chip bad" title="print hazards — Separated fingers and numerous free dread ends remain real miniature/reconstruction risks.">print hazards</span><span class="chip bad" title="blind cross-check — REJECT — Multiple critical deviations in chirality, cyberarm design, hair, and pose.">blind cross-check</span></div><details class="more"><summary>1 more detectors (6 total)</summary><div class="chips"><span class="chip ok" title="gait and pad facts — The crop/direct read supports the stride and foot contacts and sees one dominant team pad; the blind internal foot sentence and arm/pad chirality reasoning are unreliable.">gait and pad facts</span></div></details><p>Reject: small head, wrong-side mane and incomplete hanging cyberarm; gait itself is strong.</p><details class="more"><summary>full note</summary><p class="chipnote">Reject because the oversized-head objective, far-shoulder mane and complete-cyberarm identity all fail visibly. Preserve the strong gait evidence; do not carry forward the blind foot/pad mapping errors.</p></details><button class="ibtn" data-inputs="in-6">inputs — prompt &amp; refs</button></div></div>
+</div>
+<div class="callout steps"><p class="boxhead">Proposed next steps</p><p class="intro">No concept is promoted and no downstream work starts until the human verdict is appended.</p><ol><li><span class="t">Record the final human verdict</span><span class="when">after Dimitri&#x27;s eye-call</span><p class="d">Append the artifact verdict and round-level carry-forward feedback. If all seven are rejected, close R2 without a keeper.</p></li><li><span class="t">Plan the response, if any</span><p class="d">A face/compactness repair, evidence-only reset, new concept sweep, turnaround or Meshy run belongs to a separately reviewed and approved later round.</p></li></ol></div>
+<footer>MACHINE REVIEW COMPLETE · 7/7 concepts on Drive · 7/7 crop audits · 7/7 exact-run blind records · 7/7 reconciliations · detector run 558569d7b663441597f5d53bcf27575e · round spend $1.526246 of the $2.00 cap · $0.473754 remains · human verdict pending.</footer>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="lb-meta"><div class="cap" id="lb-cap"></div><div class="lb-refrow" id="lb-refrow" hidden><span class="refid" id="lb-ref"></span><button class="refbtn" id="lb-copy-id" title="Copy this image id">copy id</button><button class="refbtn" id="lb-copy-link" title="Copy a link to this image">copy link</button></div></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+
+<template id="in-0"><h2>A · Flash 3.1 — FIXABLE/REJECT: human verdict required</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-03T15:37:47</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon-v2/prompts/r2-a-heroic-edit.txt</p><pre>One image is attached. IMAGE 1 is the approved Gorgon concept: a photorealistic female cyberpunk gridiron blocker caught mid-stride in a stiff-arm advance, seen from her armored-shoulder side with the camera rotated toward her front, her cable-dread mane draped forward over her far shoulder and a segmented chrome spinal implant exposed at the nape of her neck, on a plain neutral gray studio backdrop.
+
+Recreate THIS EXACT image — the same character, the same camera angle, the same stride and stiff-arm pose, the same kit, colours, lighting and background — with EXACTLY TWO PROGRAMS OF CHANGE and nothing else.
+
+CHANGE 1 — HEROIC MINIATURE PROPORTIONS. Rebuild her body proportions as a 32 mm heroic-scale pewter sports miniature: her head becomes clearly OVERSIZED — noticeably larger relative to her shoulders and body than in the attached image, so it can never read as a small head on a big body. Enlarge both hands and both boots to match. Thicken her neck, wrists, ankles and every joint; deepen her ribcage; shorten and densify her limb segments into a chunky, compact read. She must look like a heroic-scale tabletop sculpt, never a naturalistic fashion illustration. She stays tall, athletic and visibly female; never chibi, squat or comic.
+
+CHANGE 2 — PRINT-READABILITY EXAGGERATION. Exaggerate every material boundary so an unpainted one-colour resin print of this figure reads instantly: the chrome cyberarms become more obviously CHUNKY MECHANICAL METAL — bigger beveled armor plates, deeper recessed seams, bold segmented joints, unmistakably machine and never flesh-like. The covered trailing leg&#x27;s legging becomes THICK padded cloth-and-armor that visibly stands off the leg, so covered-versus-bare is obvious from silhouette alone against the bare leading leg. Every studded leather band — the thigh garter and any strap — carries ONE single row of LARGE, obvious hemispherical studs; never two rows, never small studs. All belts and straps become thicker and bolder so they clearly show up in relief.
+
+EVERYTHING ELSE STAYS IDENTICAL to the attached image: the camera angle and framing, the flat-planted leading foot and heel-raised trailing foot, the fully extended open-palm stiff-arm, the single shoulder pad on the shoulder nearest the camera with its white number 4, the bare pad-free far cyber-shoulder, the forward-draped dread mane and exposed nape implant, the clean visible shaved temple with no socket or stud, the torn corporate patch, the combat boots, the matte black / gunmetal / magenta palette, the background and the lighting. Full figure, nothing cropped; no base, no text or logos beyond what the image already shows, no weapons, no other people.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/eab7b4ea35fa2835.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/218be4ea42a57cf3.webp" data-cap="gorgon-r6-B2-riverflow25-1.png" alt="gorgon-r6-B2-riverflow25-1.png"><figcaption>gorgon-r6-B2-riverflow25-1.png</figcaption></figure></div></template>
+<template id="in-1"><h2>A · GPT Image 2 — reject: identity and kit drift</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=high · $0.18 · 2026-08-03T15:36:53</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon-v2/prompts/r2-a-heroic-edit.txt</p><pre>One image is attached. IMAGE 1 is the approved Gorgon concept: a photorealistic female cyberpunk gridiron blocker caught mid-stride in a stiff-arm advance, seen from her armored-shoulder side with the camera rotated toward her front, her cable-dread mane draped forward over her far shoulder and a segmented chrome spinal implant exposed at the nape of her neck, on a plain neutral gray studio backdrop.
+
+Recreate THIS EXACT image — the same character, the same camera angle, the same stride and stiff-arm pose, the same kit, colours, lighting and background — with EXACTLY TWO PROGRAMS OF CHANGE and nothing else.
+
+CHANGE 1 — HEROIC MINIATURE PROPORTIONS. Rebuild her body proportions as a 32 mm heroic-scale pewter sports miniature: her head becomes clearly OVERSIZED — noticeably larger relative to her shoulders and body than in the attached image, so it can never read as a small head on a big body. Enlarge both hands and both boots to match. Thicken her neck, wrists, ankles and every joint; deepen her ribcage; shorten and densify her limb segments into a chunky, compact read. She must look like a heroic-scale tabletop sculpt, never a naturalistic fashion illustration. She stays tall, athletic and visibly female; never chibi, squat or comic.
+
+CHANGE 2 — PRINT-READABILITY EXAGGERATION. Exaggerate every material boundary so an unpainted one-colour resin print of this figure reads instantly: the chrome cyberarms become more obviously CHUNKY MECHANICAL METAL — bigger beveled armor plates, deeper recessed seams, bold segmented joints, unmistakably machine and never flesh-like. The covered trailing leg&#x27;s legging becomes THICK padded cloth-and-armor that visibly stands off the leg, so covered-versus-bare is obvious from silhouette alone against the bare leading leg. Every studded leather band — the thigh garter and any strap — carries ONE single row of LARGE, obvious hemispherical studs; never two rows, never small studs. All belts and straps become thicker and bolder so they clearly show up in relief.
+
+EVERYTHING ELSE STAYS IDENTICAL to the attached image: the camera angle and framing, the flat-planted leading foot and heel-raised trailing foot, the fully extended open-palm stiff-arm, the single shoulder pad on the shoulder nearest the camera with its white number 4, the bare pad-free far cyber-shoulder, the forward-draped dread mane and exposed nape implant, the clean visible shaved temple with no socket or stud, the torn corporate patch, the combat boots, the matte black / gunmetal / magenta palette, the background and the lighting. Full figure, nothing cropped; no base, no text or logos beyond what the image already shows, no weapons, no other people.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/eab7b4ea35fa2835.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/218be4ea42a57cf3.webp" data-cap="gorgon-r6-B2-riverflow25-1.png" alt="gorgon-r6-B2-riverflow25-1.png"><figcaption>gorgon-r6-B2-riverflow25-1.png</figcaption></figure></div></template>
+<template id="in-2"><h2>A · Riverflow — reject: nonlocal drift</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K · $0.53 · 2026-08-03T15:38:13</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon-v2/prompts/r2-a-heroic-edit.txt</p><pre>One image is attached. IMAGE 1 is the approved Gorgon concept: a photorealistic female cyberpunk gridiron blocker caught mid-stride in a stiff-arm advance, seen from her armored-shoulder side with the camera rotated toward her front, her cable-dread mane draped forward over her far shoulder and a segmented chrome spinal implant exposed at the nape of her neck, on a plain neutral gray studio backdrop.
+
+Recreate THIS EXACT image — the same character, the same camera angle, the same stride and stiff-arm pose, the same kit, colours, lighting and background — with EXACTLY TWO PROGRAMS OF CHANGE and nothing else.
+
+CHANGE 1 — HEROIC MINIATURE PROPORTIONS. Rebuild her body proportions as a 32 mm heroic-scale pewter sports miniature: her head becomes clearly OVERSIZED — noticeably larger relative to her shoulders and body than in the attached image, so it can never read as a small head on a big body. Enlarge both hands and both boots to match. Thicken her neck, wrists, ankles and every joint; deepen her ribcage; shorten and densify her limb segments into a chunky, compact read. She must look like a heroic-scale tabletop sculpt, never a naturalistic fashion illustration. She stays tall, athletic and visibly female; never chibi, squat or comic.
+
+CHANGE 2 — PRINT-READABILITY EXAGGERATION. Exaggerate every material boundary so an unpainted one-colour resin print of this figure reads instantly: the chrome cyberarms become more obviously CHUNKY MECHANICAL METAL — bigger beveled armor plates, deeper recessed seams, bold segmented joints, unmistakably machine and never flesh-like. The covered trailing leg&#x27;s legging becomes THICK padded cloth-and-armor that visibly stands off the leg, so covered-versus-bare is obvious from silhouette alone against the bare leading leg. Every studded leather band — the thigh garter and any strap — carries ONE single row of LARGE, obvious hemispherical studs; never two rows, never small studs. All belts and straps become thicker and bolder so they clearly show up in relief.
+
+EVERYTHING ELSE STAYS IDENTICAL to the attached image: the camera angle and framing, the flat-planted leading foot and heel-raised trailing foot, the fully extended open-palm stiff-arm, the single shoulder pad on the shoulder nearest the camera with its white number 4, the bare pad-free far cyber-shoulder, the forward-draped dread mane and exposed nape implant, the clean visible shaved temple with no socket or stud, the torn corporate patch, the combat boots, the matte black / gunmetal / magenta palette, the background and the lighting. Full figure, nothing cropped; no base, no text or logos beyond what the image already shows, no weapons, no other people.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/eab7b4ea35fa2835.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/218be4ea42a57cf3.webp" data-cap="gorgon-r6-B2-riverflow25-1.png" alt="gorgon-r6-B2-riverflow25-1.png"><figcaption>gorgon-r6-B2-riverflow25-1.png</figcaption></figure></div></template>
+<template id="in-3"><h2>B · Flash 3.1 — reject: two-figure montage</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-03T15:37:35</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon-v2/prompts/r2-b-side-heroic.txt</p><pre>No images are attached. Create a brand-new text-to-image concept; do not copy any previous Gorgon artwork.
+
+A photorealistic full-body studio render of a female CYBERPUNK gridiron-football blocker, on a plain neutral gray studio backdrop with even soft studio lighting, her entire body visible from head to toe including her boots. High-detail character concept art with a heavy PUNK edge: she is a washout from a corporate super-soldier program gone street — every piece of corpo hardware on her has been defaced, spray-tagged, hand-modified, DIY-repaired. Cold, quiet, scary; disciplined military menace, never a pin-up. The punk is in her kit and grooming, not her expression.
+
+CAMERA: a SIDE VIEW rotated slightly toward the front. Start from a true side-on profile of her mid-stride, seen from her armored-shoulder side, then rotate the camera only about 25 to 30 degrees around toward her front. We are looking at her FROM THE SIDE as she strides forwards: she moves toward the VIEWER&#x27;S RIGHT, her stride and leading arm reading in clean side silhouette, her face and the front of her torso only partially turned toward the camera. Full figure, nothing cropped.
+
+HEROIC MINIATURE PROPORTIONS: she is designed as production concept art for a 32 mm HEROIC-SCALE resin miniature, in the visual language of a chunky pewter sports sculpt. Her head is deliberately OVERSIZED — clearly larger relative to her shoulders and body than any naturalistic character art, so it can never read as a small head on a big body. Both hands and both combat boots are oversized to match. Thick neck, thick wrists and ankles, substantial joints, deep ribcage and pelvis, short dense limb segments, broad readable muscle planes. She must read like a heroic-scale tabletop sculpt, never a naturalistic fashion illustration: absolutely no fashion-model proportions, tiny head, tiny hands, narrow wrists, long delicate legs or slender ankles. She stays tall, athletic and visibly female; never chibi, squat or comic.
+
+BUILD: a HEAVYWEIGHT — one of the most massive figures in her league, TALL and V-tapered rather than squat: very broad shoulders and a wide, thick, dense back tapering hard to the waist, a thick strong neck, and heavy powerlifter thighs. Her physique is hypertrophied yet engineered — and unmistakably HUGE. Never lean, never slim, never a fashion model.
+
+HEAD: femme features, high cheekbones, a cold level stare aimed forward along her direction of travel, toward the VIEWER&#x27;S RIGHT — her menace is stillness, not a snarl. Punk grooming: both temples shaved clear, thick cable-dreadlocks swept back from a high hairline and draped forward as ONE CONNECTED MASS over her FAR shoulder — the shoulder away from the camera — leaving the back of her neck completely clear: at the nape, a chunky segmented chrome SPINAL IMPLANT of large vertebral plates runs from the base of her skull down under her collar, clearly visible in this view. The locks are thumb-thick sculpted cords with blunt connected ends and no floating loops. The visible shaved temple is CLEAN BARE SKIN — do NOT draw any socket, stud or jewel on the visible temple or forehead.
+
+CHROME: BOTH arms are full military-grade cyberarms from the shoulder down — symmetric, obviously CHUNKY MECHANICAL METAL, clearly oversized versus flesh arms: big beveled armor plates, deep recessed panel seams, bold segmented joints, unmistakably machine and never flesh-like, NOT crude industrial hydraulics. The chrome is battle-scuffed, with small hand-sprayed stencil tags. Hands fully articulated chrome, four fingers and a thumb each, oversized to the heroic contract. Her legs are flesh and muscle.
+
+KIT (punk sports armor, matte black and gunmetal with hot magenta neon accent trim): a single asymmetric armored shoulder pad on ONE shoulder only — the NEAR shoulder, the one closest to the camera — two or three layered angular plasteel plates with a beveled rim, scuffed and spray-tagged, its top plate clean with no number or emblem. The FAR shoulder has NO pad: only the bare, smooth chrome ball of that cyberarm&#x27;s shoulder joint — no plate, no strap, no armor there. A snug armored compression bodysuit with a reinforced torso panel; on the chest, a darker torn rectangle where a corporate insignia patch was ripped away; THICK, BOLD studded leather straps and belts — every strap and belt is chunky enough to show up in resin relief, and every studded band carries ONE single row of LARGE hemispherical studs, never two rows, never small studs. ASYMMETRIC LEGS: the bodysuit legging covers ONLY the FAR leg — the trailing leg — as ONE CONTINUOUS legging from hip down into the boot: THICK padded cloth-and-armor that visibly stands off the leg so the covered leg reads obviously different from the bare leg in pure silhouette, with a reinforced thigh panel and an armored shin guard; the legging is fully intact, with NO rips, NO holes, NO cutouts and NO skin showing through it anywhere. The NEAR leg — the leading leg — is BARE muscular flesh from mid-thigh all the way down to the boot: the suit is cut away there with a single raw torn edge at mid-thigh, and a wide THICK STUDDED LEATHER GARTER strap — one single row of large hemispherical studs — wraps high around the bare thigh. The KNEE PADS DIFFER: on the covered leg, a hard ARMORED knee pad matching the shin guard&#x27;s plating; on the bare leg, a scuffed LEATHER knee pad strapped directly onto the bare skin with buckled straps. On both feet: BULKY OVERSIZED COMBAT BOOTS — heavy buckled military jump-boots with thick lugged soles and broad toe boxes, chunky and punk, never sneakers or cleats-shoes.
+
+POSE: caught MID-STRIDE in an upright walking advance, moving forward with unhurried menace — a frozen MID-STANCE frame from a walk cycle. The NEAR bare leg LEADS, and its foot is fully planted: the leading combat boot is PLANTED COMPLETELY FLAT on the ground ahead of her, with BOTH the HEEL AND the TOES of that boot pressed flat against the floor, the entire sole in contact from heel to toe, and her full body weight carried directly over that flat leading foot. The FAR armored leg TRAILS behind her, toes pointing forward, with only the BALL OF THE FOOT AND TOES pressed to the ground and the HEEL RAISED off the floor — a real walking push-off. Torso upright, shoulders square, hips driving forward, chin level. STIFF-ARM: the FAR arm is FULLY EXTENDED forward from the shoulder at shoulder height, reaching ahead of her toward the VIEWER&#x27;S RIGHT into open space, clearly separated ahead of her body — a &quot;you shall not pass&quot; strike frozen mid-extension, the open palm a full arm&#x27;s length ahead of her chest, elbow only very slightly bent. NOT a bent-elbow &quot;stop&quot; gesture held close to the body. The forearm angles about 20 degrees downward; the palm is OPEN, facing forward along her direction of travel, fingers together as a thick fan, thumb visible. The NEAR arm hangs at her side, slightly flexed, its chrome hand a loose fist. Both hands are clearly EMPTY.
+
+No weapons, no ball, no other people, no base or pedestal, and no text, numbers or logos anywhere — the shoulder pad carries no number or emblem; the only markings are strictly illegible spray-stencil tags.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-4"><h2>B · GPT Image 2 — reject: small head</h2><p class="gmeta">openai/gpt-image-2 via openrouter · quality=high · $0.15 · 2026-08-03T15:36:30</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon-v2/prompts/r2-b-side-heroic.txt</p><pre>No images are attached. Create a brand-new text-to-image concept; do not copy any previous Gorgon artwork.
+
+A photorealistic full-body studio render of a female CYBERPUNK gridiron-football blocker, on a plain neutral gray studio backdrop with even soft studio lighting, her entire body visible from head to toe including her boots. High-detail character concept art with a heavy PUNK edge: she is a washout from a corporate super-soldier program gone street — every piece of corpo hardware on her has been defaced, spray-tagged, hand-modified, DIY-repaired. Cold, quiet, scary; disciplined military menace, never a pin-up. The punk is in her kit and grooming, not her expression.
+
+CAMERA: a SIDE VIEW rotated slightly toward the front. Start from a true side-on profile of her mid-stride, seen from her armored-shoulder side, then rotate the camera only about 25 to 30 degrees around toward her front. We are looking at her FROM THE SIDE as she strides forwards: she moves toward the VIEWER&#x27;S RIGHT, her stride and leading arm reading in clean side silhouette, her face and the front of her torso only partially turned toward the camera. Full figure, nothing cropped.
+
+HEROIC MINIATURE PROPORTIONS: she is designed as production concept art for a 32 mm HEROIC-SCALE resin miniature, in the visual language of a chunky pewter sports sculpt. Her head is deliberately OVERSIZED — clearly larger relative to her shoulders and body than any naturalistic character art, so it can never read as a small head on a big body. Both hands and both combat boots are oversized to match. Thick neck, thick wrists and ankles, substantial joints, deep ribcage and pelvis, short dense limb segments, broad readable muscle planes. She must read like a heroic-scale tabletop sculpt, never a naturalistic fashion illustration: absolutely no fashion-model proportions, tiny head, tiny hands, narrow wrists, long delicate legs or slender ankles. She stays tall, athletic and visibly female; never chibi, squat or comic.
+
+BUILD: a HEAVYWEIGHT — one of the most massive figures in her league, TALL and V-tapered rather than squat: very broad shoulders and a wide, thick, dense back tapering hard to the waist, a thick strong neck, and heavy powerlifter thighs. Her physique is hypertrophied yet engineered — and unmistakably HUGE. Never lean, never slim, never a fashion model.
+
+HEAD: femme features, high cheekbones, a cold level stare aimed forward along her direction of travel, toward the VIEWER&#x27;S RIGHT — her menace is stillness, not a snarl. Punk grooming: both temples shaved clear, thick cable-dreadlocks swept back from a high hairline and draped forward as ONE CONNECTED MASS over her FAR shoulder — the shoulder away from the camera — leaving the back of her neck completely clear: at the nape, a chunky segmented chrome SPINAL IMPLANT of large vertebral plates runs from the base of her skull down under her collar, clearly visible in this view. The locks are thumb-thick sculpted cords with blunt connected ends and no floating loops. The visible shaved temple is CLEAN BARE SKIN — do NOT draw any socket, stud or jewel on the visible temple or forehead.
+
+CHROME: BOTH arms are full military-grade cyberarms from the shoulder down — symmetric, obviously CHUNKY MECHANICAL METAL, clearly oversized versus flesh arms: big beveled armor plates, deep recessed panel seams, bold segmented joints, unmistakably machine and never flesh-like, NOT crude industrial hydraulics. The chrome is battle-scuffed, with small hand-sprayed stencil tags. Hands fully articulated chrome, four fingers and a thumb each, oversized to the heroic contract. Her legs are flesh and muscle.
+
+KIT (punk sports armor, matte black and gunmetal with hot magenta neon accent trim): a single asymmetric armored shoulder pad on ONE shoulder only — the NEAR shoulder, the one closest to the camera — two or three layered angular plasteel plates with a beveled rim, scuffed and spray-tagged, its top plate clean with no number or emblem. The FAR shoulder has NO pad: only the bare, smooth chrome ball of that cyberarm&#x27;s shoulder joint — no plate, no strap, no armor there. A snug armored compression bodysuit with a reinforced torso panel; on the chest, a darker torn rectangle where a corporate insignia patch was ripped away; THICK, BOLD studded leather straps and belts — every strap and belt is chunky enough to show up in resin relief, and every studded band carries ONE single row of LARGE hemispherical studs, never two rows, never small studs. ASYMMETRIC LEGS: the bodysuit legging covers ONLY the FAR leg — the trailing leg — as ONE CONTINUOUS legging from hip down into the boot: THICK padded cloth-and-armor that visibly stands off the leg so the covered leg reads obviously different from the bare leg in pure silhouette, with a reinforced thigh panel and an armored shin guard; the legging is fully intact, with NO rips, NO holes, NO cutouts and NO skin showing through it anywhere. The NEAR leg — the leading leg — is BARE muscular flesh from mid-thigh all the way down to the boot: the suit is cut away there with a single raw torn edge at mid-thigh, and a wide THICK STUDDED LEATHER GARTER strap — one single row of large hemispherical studs — wraps high around the bare thigh. The KNEE PADS DIFFER: on the covered leg, a hard ARMORED knee pad matching the shin guard&#x27;s plating; on the bare leg, a scuffed LEATHER knee pad strapped directly onto the bare skin with buckled straps. On both feet: BULKY OVERSIZED COMBAT BOOTS — heavy buckled military jump-boots with thick lugged soles and broad toe boxes, chunky and punk, never sneakers or cleats-shoes.
+
+POSE: caught MID-STRIDE in an upright walking advance, moving forward with unhurried menace — a frozen MID-STANCE frame from a walk cycle. The NEAR bare leg LEADS, and its foot is fully planted: the leading combat boot is PLANTED COMPLETELY FLAT on the ground ahead of her, with BOTH the HEEL AND the TOES of that boot pressed flat against the floor, the entire sole in contact from heel to toe, and her full body weight carried directly over that flat leading foot. The FAR armored leg TRAILS behind her, toes pointing forward, with only the BALL OF THE FOOT AND TOES pressed to the ground and the HEEL RAISED off the floor — a real walking push-off. Torso upright, shoulders square, hips driving forward, chin level. STIFF-ARM: the FAR arm is FULLY EXTENDED forward from the shoulder at shoulder height, reaching ahead of her toward the VIEWER&#x27;S RIGHT into open space, clearly separated ahead of her body — a &quot;you shall not pass&quot; strike frozen mid-extension, the open palm a full arm&#x27;s length ahead of her chest, elbow only very slightly bent. NOT a bent-elbow &quot;stop&quot; gesture held close to the body. The forearm angles about 20 degrees downward; the palm is OPEN, facing forward along her direction of travel, fingers together as a thick fan, thumb visible. The NEAR arm hangs at her side, slightly flexed, its chrome hand a loose fist. Both hands are clearly EMPTY.
+
+No weapons, no ball, no other people, no base or pedestal, and no text, numbers or logos anywhere — the shoulder pad carries no number or emblem; the only markings are strictly illegible spray-stencil tags.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-5"><h2>B · Grok Quality — reject: multiple core failures</h2><p class="gmeta">x-ai/grok-imagine-image-quality via openrouter · resolution=2K · $0.07 · 2026-08-03T15:35:01</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon-v2/prompts/r2-b-side-heroic.txt</p><pre>No images are attached. Create a brand-new text-to-image concept; do not copy any previous Gorgon artwork.
+
+A photorealistic full-body studio render of a female CYBERPUNK gridiron-football blocker, on a plain neutral gray studio backdrop with even soft studio lighting, her entire body visible from head to toe including her boots. High-detail character concept art with a heavy PUNK edge: she is a washout from a corporate super-soldier program gone street — every piece of corpo hardware on her has been defaced, spray-tagged, hand-modified, DIY-repaired. Cold, quiet, scary; disciplined military menace, never a pin-up. The punk is in her kit and grooming, not her expression.
+
+CAMERA: a SIDE VIEW rotated slightly toward the front. Start from a true side-on profile of her mid-stride, seen from her armored-shoulder side, then rotate the camera only about 25 to 30 degrees around toward her front. We are looking at her FROM THE SIDE as she strides forwards: she moves toward the VIEWER&#x27;S RIGHT, her stride and leading arm reading in clean side silhouette, her face and the front of her torso only partially turned toward the camera. Full figure, nothing cropped.
+
+HEROIC MINIATURE PROPORTIONS: she is designed as production concept art for a 32 mm HEROIC-SCALE resin miniature, in the visual language of a chunky pewter sports sculpt. Her head is deliberately OVERSIZED — clearly larger relative to her shoulders and body than any naturalistic character art, so it can never read as a small head on a big body. Both hands and both combat boots are oversized to match. Thick neck, thick wrists and ankles, substantial joints, deep ribcage and pelvis, short dense limb segments, broad readable muscle planes. She must read like a heroic-scale tabletop sculpt, never a naturalistic fashion illustration: absolutely no fashion-model proportions, tiny head, tiny hands, narrow wrists, long delicate legs or slender ankles. She stays tall, athletic and visibly female; never chibi, squat or comic.
+
+BUILD: a HEAVYWEIGHT — one of the most massive figures in her league, TALL and V-tapered rather than squat: very broad shoulders and a wide, thick, dense back tapering hard to the waist, a thick strong neck, and heavy powerlifter thighs. Her physique is hypertrophied yet engineered — and unmistakably HUGE. Never lean, never slim, never a fashion model.
+
+HEAD: femme features, high cheekbones, a cold level stare aimed forward along her direction of travel, toward the VIEWER&#x27;S RIGHT — her menace is stillness, not a snarl. Punk grooming: both temples shaved clear, thick cable-dreadlocks swept back from a high hairline and draped forward as ONE CONNECTED MASS over her FAR shoulder — the shoulder away from the camera — leaving the back of her neck completely clear: at the nape, a chunky segmented chrome SPINAL IMPLANT of large vertebral plates runs from the base of her skull down under her collar, clearly visible in this view. The locks are thumb-thick sculpted cords with blunt connected ends and no floating loops. The visible shaved temple is CLEAN BARE SKIN — do NOT draw any socket, stud or jewel on the visible temple or forehead.
+
+CHROME: BOTH arms are full military-grade cyberarms from the shoulder down — symmetric, obviously CHUNKY MECHANICAL METAL, clearly oversized versus flesh arms: big beveled armor plates, deep recessed panel seams, bold segmented joints, unmistakably machine and never flesh-like, NOT crude industrial hydraulics. The chrome is battle-scuffed, with small hand-sprayed stencil tags. Hands fully articulated chrome, four fingers and a thumb each, oversized to the heroic contract. Her legs are flesh and muscle.
+
+KIT (punk sports armor, matte black and gunmetal with hot magenta neon accent trim): a single asymmetric armored shoulder pad on ONE shoulder only — the NEAR shoulder, the one closest to the camera — two or three layered angular plasteel plates with a beveled rim, scuffed and spray-tagged, its top plate clean with no number or emblem. The FAR shoulder has NO pad: only the bare, smooth chrome ball of that cyberarm&#x27;s shoulder joint — no plate, no strap, no armor there. A snug armored compression bodysuit with a reinforced torso panel; on the chest, a darker torn rectangle where a corporate insignia patch was ripped away; THICK, BOLD studded leather straps and belts — every strap and belt is chunky enough to show up in resin relief, and every studded band carries ONE single row of LARGE hemispherical studs, never two rows, never small studs. ASYMMETRIC LEGS: the bodysuit legging covers ONLY the FAR leg — the trailing leg — as ONE CONTINUOUS legging from hip down into the boot: THICK padded cloth-and-armor that visibly stands off the leg so the covered leg reads obviously different from the bare leg in pure silhouette, with a reinforced thigh panel and an armored shin guard; the legging is fully intact, with NO rips, NO holes, NO cutouts and NO skin showing through it anywhere. The NEAR leg — the leading leg — is BARE muscular flesh from mid-thigh all the way down to the boot: the suit is cut away there with a single raw torn edge at mid-thigh, and a wide THICK STUDDED LEATHER GARTER strap — one single row of large hemispherical studs — wraps high around the bare thigh. The KNEE PADS DIFFER: on the covered leg, a hard ARMORED knee pad matching the shin guard&#x27;s plating; on the bare leg, a scuffed LEATHER knee pad strapped directly onto the bare skin with buckled straps. On both feet: BULKY OVERSIZED COMBAT BOOTS — heavy buckled military jump-boots with thick lugged soles and broad toe boxes, chunky and punk, never sneakers or cleats-shoes.
+
+POSE: caught MID-STRIDE in an upright walking advance, moving forward with unhurried menace — a frozen MID-STANCE frame from a walk cycle. The NEAR bare leg LEADS, and its foot is fully planted: the leading combat boot is PLANTED COMPLETELY FLAT on the ground ahead of her, with BOTH the HEEL AND the TOES of that boot pressed flat against the floor, the entire sole in contact from heel to toe, and her full body weight carried directly over that flat leading foot. The FAR armored leg TRAILS behind her, toes pointing forward, with only the BALL OF THE FOOT AND TOES pressed to the ground and the HEEL RAISED off the floor — a real walking push-off. Torso upright, shoulders square, hips driving forward, chin level. STIFF-ARM: the FAR arm is FULLY EXTENDED forward from the shoulder at shoulder height, reaching ahead of her toward the VIEWER&#x27;S RIGHT into open space, clearly separated ahead of her body — a &quot;you shall not pass&quot; strike frozen mid-extension, the open palm a full arm&#x27;s length ahead of her chest, elbow only very slightly bent. NOT a bent-elbow &quot;stop&quot; gesture held close to the body. The forearm angles about 20 degrees downward; the palm is OPEN, facing forward along her direction of travel, fingers together as a thick fan, thumb visible. The NEAR arm hangs at her side, slightly flexed, its chrome hand a loose fist. Both hands are clearly EMPTY.
+
+No weapons, no ball, no other people, no base or pedestal, and no text, numbers or logos anywhere — the shoulder pad carries no number or emblem; the only markings are strictly illegible spray-stencil tags.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-6"><h2>B · Riverflow — reject: small head</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K aspect_ratio=2:3 · $0.34 · 2026-08-03T15:37:16</p><h3>Prompt</h3><p class="path">projects/cyber-amazons/gorgon-v2/prompts/r2-b-side-heroic.txt</p><pre>No images are attached. Create a brand-new text-to-image concept; do not copy any previous Gorgon artwork.
+
+A photorealistic full-body studio render of a female CYBERPUNK gridiron-football blocker, on a plain neutral gray studio backdrop with even soft studio lighting, her entire body visible from head to toe including her boots. High-detail character concept art with a heavy PUNK edge: she is a washout from a corporate super-soldier program gone street — every piece of corpo hardware on her has been defaced, spray-tagged, hand-modified, DIY-repaired. Cold, quiet, scary; disciplined military menace, never a pin-up. The punk is in her kit and grooming, not her expression.
+
+CAMERA: a SIDE VIEW rotated slightly toward the front. Start from a true side-on profile of her mid-stride, seen from her armored-shoulder side, then rotate the camera only about 25 to 30 degrees around toward her front. We are looking at her FROM THE SIDE as she strides forwards: she moves toward the VIEWER&#x27;S RIGHT, her stride and leading arm reading in clean side silhouette, her face and the front of her torso only partially turned toward the camera. Full figure, nothing cropped.
+
+HEROIC MINIATURE PROPORTIONS: she is designed as production concept art for a 32 mm HEROIC-SCALE resin miniature, in the visual language of a chunky pewter sports sculpt. Her head is deliberately OVERSIZED — clearly larger relative to her shoulders and body than any naturalistic character art, so it can never read as a small head on a big body. Both hands and both combat boots are oversized to match. Thick neck, thick wrists and ankles, substantial joints, deep ribcage and pelvis, short dense limb segments, broad readable muscle planes. She must read like a heroic-scale tabletop sculpt, never a naturalistic fashion illustration: absolutely no fashion-model proportions, tiny head, tiny hands, narrow wrists, long delicate legs or slender ankles. She stays tall, athletic and visibly female; never chibi, squat or comic.
+
+BUILD: a HEAVYWEIGHT — one of the most massive figures in her league, TALL and V-tapered rather than squat: very broad shoulders and a wide, thick, dense back tapering hard to the waist, a thick strong neck, and heavy powerlifter thighs. Her physique is hypertrophied yet engineered — and unmistakably HUGE. Never lean, never slim, never a fashion model.
+
+HEAD: femme features, high cheekbones, a cold level stare aimed forward along her direction of travel, toward the VIEWER&#x27;S RIGHT — her menace is stillness, not a snarl. Punk grooming: both temples shaved clear, thick cable-dreadlocks swept back from a high hairline and draped forward as ONE CONNECTED MASS over her FAR shoulder — the shoulder away from the camera — leaving the back of her neck completely clear: at the nape, a chunky segmented chrome SPINAL IMPLANT of large vertebral plates runs from the base of her skull down under her collar, clearly visible in this view. The locks are thumb-thick sculpted cords with blunt connected ends and no floating loops. The visible shaved temple is CLEAN BARE SKIN — do NOT draw any socket, stud or jewel on the visible temple or forehead.
+
+CHROME: BOTH arms are full military-grade cyberarms from the shoulder down — symmetric, obviously CHUNKY MECHANICAL METAL, clearly oversized versus flesh arms: big beveled armor plates, deep recessed panel seams, bold segmented joints, unmistakably machine and never flesh-like, NOT crude industrial hydraulics. The chrome is battle-scuffed, with small hand-sprayed stencil tags. Hands fully articulated chrome, four fingers and a thumb each, oversized to the heroic contract. Her legs are flesh and muscle.
+
+KIT (punk sports armor, matte black and gunmetal with hot magenta neon accent trim): a single asymmetric armored shoulder pad on ONE shoulder only — the NEAR shoulder, the one closest to the camera — two or three layered angular plasteel plates with a beveled rim, scuffed and spray-tagged, its top plate clean with no number or emblem. The FAR shoulder has NO pad: only the bare, smooth chrome ball of that cyberarm&#x27;s shoulder joint — no plate, no strap, no armor there. A snug armored compression bodysuit with a reinforced torso panel; on the chest, a darker torn rectangle where a corporate insignia patch was ripped away; THICK, BOLD studded leather straps and belts — every strap and belt is chunky enough to show up in resin relief, and every studded band carries ONE single row of LARGE hemispherical studs, never two rows, never small studs. ASYMMETRIC LEGS: the bodysuit legging covers ONLY the FAR leg — the trailing leg — as ONE CONTINUOUS legging from hip down into the boot: THICK padded cloth-and-armor that visibly stands off the leg so the covered leg reads obviously different from the bare leg in pure silhouette, with a reinforced thigh panel and an armored shin guard; the legging is fully intact, with NO rips, NO holes, NO cutouts and NO skin showing through it anywhere. The NEAR leg — the leading leg — is BARE muscular flesh from mid-thigh all the way down to the boot: the suit is cut away there with a single raw torn edge at mid-thigh, and a wide THICK STUDDED LEATHER GARTER strap — one single row of large hemispherical studs — wraps high around the bare thigh. The KNEE PADS DIFFER: on the covered leg, a hard ARMORED knee pad matching the shin guard&#x27;s plating; on the bare leg, a scuffed LEATHER knee pad strapped directly onto the bare skin with buckled straps. On both feet: BULKY OVERSIZED COMBAT BOOTS — heavy buckled military jump-boots with thick lugged soles and broad toe boxes, chunky and punk, never sneakers or cleats-shoes.
+
+POSE: caught MID-STRIDE in an upright walking advance, moving forward with unhurried menace — a frozen MID-STANCE frame from a walk cycle. The NEAR bare leg LEADS, and its foot is fully planted: the leading combat boot is PLANTED COMPLETELY FLAT on the ground ahead of her, with BOTH the HEEL AND the TOES of that boot pressed flat against the floor, the entire sole in contact from heel to toe, and her full body weight carried directly over that flat leading foot. The FAR armored leg TRAILS behind her, toes pointing forward, with only the BALL OF THE FOOT AND TOES pressed to the ground and the HEEL RAISED off the floor — a real walking push-off. Torso upright, shoulders square, hips driving forward, chin level. STIFF-ARM: the FAR arm is FULLY EXTENDED forward from the shoulder at shoulder height, reaching ahead of her toward the VIEWER&#x27;S RIGHT into open space, clearly separated ahead of her body — a &quot;you shall not pass&quot; strike frozen mid-extension, the open palm a full arm&#x27;s length ahead of her chest, elbow only very slightly bent. NOT a bent-elbow &quot;stop&quot; gesture held close to the body. The forearm angles about 20 degrees downward; the palm is OPEN, facing forward along her direction of travel, fingers together as a thick fan, thumb visible. The NEAR arm hangs at her side, slightly flexed, its chrome hand a loose fist. Both hands are clearly EMPTY.
+
+No weapons, no ball, no other people, no base or pedestal, and no text, numbers or logos anywhere — the shoulder pad carries no number or emblem; the only markings are strictly illegible spray-stencil tags.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbRefRow=document.getElementById('lb-refrow'),lbRef=document.getElementById('lb-ref'),
+      lbCopyId=document.getElementById('lb-copy-id'),lbCopyLink=document.getElementById('lb-copy-link'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  const ref=z.dataset.ref||'',anchor=z.dataset.anchor||'';
+  lbRefRow.hidden=!(ref&&anchor);
+  if(ref&&anchor){
+    lbRef.textContent='#'+ref;
+    lbCopyId.dataset.copyId='#'+ref;
+    lbCopyLink.dataset.copy=anchor;
+  }
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy a card's short display id, or copy/share its deep link. The URL is this
+// page plus the card's #id anchor, so a recipient lands scrolled to (and
+// highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  const ci=e.target.closest('[data-copy-id]');
+  if(ci){copyText(ci.dataset.copyId,ci);e.preventDefault();return;}
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+
+</body></html>
