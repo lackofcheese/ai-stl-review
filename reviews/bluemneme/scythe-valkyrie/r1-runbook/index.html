@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="71ae45dbf8ade99871e446083b67ce2f82e3a481071278f3a4c3adabacf93af2">
+<meta name="ai-stl-plan-digest" content="9ecbf7c2d873ebea89111588dc41e2f863a6a8217d5697b868b7be28ac03005a">
 <title>Scythe Valkyrie — Round 1 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -392,7 +392,7 @@ Treat every feature as geometry for a resin display statue roughly 12-15 cm tall
 <p>The six trial renders get the identical screening but are judged separately on their own trial questions, and never count toward the direction pick: for <code>mai25pro</code>, does the new attractor deliver usable geometry/pose quality — with Azure output-moderation reliability and facing/chirality each recorded explicitly, per its trial notes; for <code>flashlite31</code>, does a 1K Flash Lite render hold silhouette, pose, and the held-constant program well enough for cheap selection bake-offs (its second admission context after Tiger r1)?</p>
 <p><strong>Basing-rule exception (restated as the spec requires):</strong> V1 and V3 keep the primary pose&#x27;s lifted foot, deviating from the pipeline&#x27;s both-feet-at-ground-level rule (Jason, 2026-07-10). <strong>Dimitri approved exploring aerial/ungrounded poses for this one-off display piece (2026-08-03)</strong> on the condition that the design includes a real mounting mechanism — V1&#x27;s hidden support column and V3&#x27;s designed blade-to-base contact are exactly that mechanism, and rendering them is part of what this round evaluates.</p>
 <h2>What we need from you</h2>
-<p>Dimitri: first a direction review of this draft (trim to two directions or keep three, adjust any treatment), then sign-off as the spend gate. On the results panel, Jake and Dimitri pick per axis: hood none/up/down (with its halo treatment), and the support/base approach — mix-and-match across directions and models is welcome — or reject all 15 decision renders (the 6 trial images never carry the decision) with a sharper target. The winning render becomes the lineage seed for r2, and the axis verdicts feed spec v1 pinning (hood, mounting, base; paint is already leaning painted). Sharing the results panel publicly for Jake needs Dimitri&#x27;s separate per-review OK as usual.</p>
+<p>Dimitri confirmed the directions, both trial arms, and the cap on 2026-08-04, and the runbook is published as a proposed draft so Jake can look first. Needed now: Jake&#x27;s comments (any tweaks fold in as plan edits before sign-off), then Dimitri&#x27;s sign-off as the spend gate. On the results panel, Jake and Dimitri pick per axis: hood none/up/down (with its halo treatment), and the support/base approach — mix-and-match across directions and models is welcome — or reject all 15 decision renders (the 6 trial images never carry the decision) with a sharper target. The winning render becomes the lineage seed for r2, and the axis verdicts feed spec v1 pinning (hood, mounting, base; paint is already leaning painted). Sharing the results panel publicly for Jake needs Dimitri&#x27;s separate per-review OK as usual.</p>
 <h2>Cost</h2>
 <p>Planning estimate: image generation ≈ <strong>$2.34</strong> for 21 concepts (decision-carrying, per direction: flash31 ~$0.10, gptimage2 ~$0.17, seedream45 ~$0.04, grokq ~$0.08, riverflow25 ~$0.15 → $0.54 × 3 directions = $1.62; plus the trial arms: mai25pro ~$0.20 × 3 ≈ $0.60 — token-metered on Azure, order-of-gptimage2 — and flashlite31 ~$0.04 × 3 ≈ $0.12). FAST evaluation is unmetered. SLOW evaluation uses one two-wave, half-price Gemini Batch detector run across all 21 images and reserves <strong>$1.05</strong> (≥$0.05 per image, per the skill&#x27;s floor and the Gorgon v2 r1 overrun lesson). Planned total ≈ <strong>$3.39</strong>. Proposed round cap <strong>$4.25 USD</strong>, no Meshy credits — the ~25% headroom is allowance for conservative in-flight reservations on interrupted calls, not for extra work. Live provider metadata and the detector&#x27;s printed preflight ceiling remain authoritative at execution time.</p>
 <details>
@@ -432,10 +432,12 @@ python3 tools/publish_review.py /tmp/scythe-valkyrie-r1-runbook \
   --message &quot;Publish Scythe Valkyrie round 1 runbook&quot;
 python3 tools/discord_share.py --channel scythe-valkyrie \
   --post-header --headline &quot;Round 1 — Scythe Valkyrie&quot; \
-  --status &quot;PROPOSED — awaiting sign-off; no image generation yet&quot; \
-  --decision &quot;Hood: none / up / down (and how it meets the death halo)? Support and base: hidden pillar + scenic / second foot contact + plinth / crescent tied into the base?&quot; \
-  --spend-state &quot;\$0.00 of the \$4.25 cap; 21 concepts planned (15 decision + 6 trial), no Meshy calls&quot; \
+  --status &quot;PROPOSED — draft published for Jake&#x27;s comment; awaiting sign-off; no image generation yet&quot; \
+  --decision &quot;Hood: none / up / down — and how it meets the death halo? Support &amp; base: hidden pillar + scenic / second foot contact + plinth / crescent tied into the base?&quot; \
+  --spend-state &quot;\$0.00 of the \$4.25 cap&quot; \
+  --spend-estimate &quot;≈\$3.39 planned: 21 concepts (15 decision + 6 trial), no Meshy calls&quot; \
   --artifact-link &quot;https://lackofcheese.github.io/ai-stl-review/reviews/bluemneme/scythe-valkyrie/r1-runbook/&quot; \
+  --artifact-label Runbook \
   --once scythe-valkyrie-r1-header
 python3 tools/discord_share.py --channel scythe-valkyrie \
   --thread &lt;header-message-id&gt; --thread-name &quot;Round 1 — Scythe Valkyrie updates&quot; \
@@ -573,13 +575,52 @@ fi
 
 # Coordinator completion is not sufficient: PARTIAL is a durable terminal
 # state too. After the blind run lands, Dimitri appends one authoritative
-# reconciliation record per artifact through review_log.py (summary marker
-# `RECONCILED — AGREE:` when the crop and blind classes agree, `RECONCILED —
-# RESOLVED:` with his resolution when they differ). COMPLETE requires all and
-# only the expected 21 crop audits, same-run blind records, and later human
-# reconciliations, per the fail-closed jq postcondition pattern in the Tiger
-# r1 runbook (adapted to these 21 ids) — run it before any COMPLETE/public
-# handoff.</code></pre>
+# judgment record per artifact through review_log.py. Its final KEEPER/FIXABLE/
+# REJECT call is the panel verdict, and its summary must begin with exactly one
+# of these evidence markers:
+#   RECONCILED — AGREE: &lt;why the crop and blind judgment classes agree&gt;
+#   RECONCILED — RESOLVED: &lt;what disagreed and Dimitri&#x27;s resolution&gt;
+# Append that record only after reading both source records. The check below
+# requires all and only the expected 21 crop audits, same-run blind records,
+# and later human reconciliations before COMPLETE/public handoff. It derives
+# each latest machine call&#x27;s KEEPER/FIXABLE/REJECT class and rejects AGREE when
+# those classes differ.
+jq -e -s --arg run &quot;$DETECT_RUN&quot; --rawfile expected &quot;$EXPECTED&quot; &#x27;
+  def call_class:
+    (. // &quot;&quot; | match(&quot;^(KEEPER|FIXABLE|REJECT)&quot;)?.string);
+  ($expected | split(&quot;\n&quot;) | map(select(length &gt; 0)) | sort) as $want
+  | to_entries as $rows
+  | ([$rows[]
+      | select(.value.reviewer | endswith(&quot;-crop-audit&quot;))]) as $crops
+  | ([$rows[]
+      | select(.value.reviewer == &quot;blind-detect&quot;
+               and .value.batch_run_id == $run)]) as $blinds
+  | ([$rows[]
+      | select(.value.reviewer == &quot;dimitri&quot;
+               and ((.value.summary // &quot;&quot;)
+                    | test(&quot;^RECONCILED — (AGREE|RESOLVED): .+&quot;)))]) as $human
+  | ([$crops[].value.artifact] | unique | sort) as $crop_ids
+  | ([$blinds[].value.artifact] | unique | sort) as $blind_ids
+  | ([$human[].value.artifact] | unique | sort) as $human_ids
+  | ($want | length) == 21
+    and $crop_ids == $want
+    and $blind_ids == $want
+    and $human_ids == $want
+    and all($human[];
+      (.value.call // &quot;&quot;) | test(&quot;^(KEEPER|FIXABLE|REJECT)&quot;))
+    and all($want[]; . as $id |
+      ([$crops[] | select(.value.artifact == $id)] | max_by(.key)) as $crop
+      | ([$blinds[] | select(.value.artifact == $id)] | max_by(.key)) as $blind
+      | ([$human[] | select(.value.artifact == $id)] | max_by(.key)) as $recon
+      | ($crop.value.call | call_class) as $crop_class
+      | ($blind.value.call | call_class) as $blind_class
+      | $recon.key &gt; $crop.key
+        and $recon.key &gt; $blind.key
+        and (if $crop_class == $blind_class
+             then ($recon.value.summary | startswith(&quot;RECONCILED — AGREE:&quot;))
+             else ($recon.value.summary | startswith(&quot;RECONCILED — RESOLVED:&quot;))
+             end))
+&#x27; &quot;$T/reviews.jsonl&quot; &gt; /dev/null</code></pre>
 <p>Run the fresh-context crop audit on each roll as it lands and append those FAST verdicts through <code>tools/review_log.py</code>. Once FAST is complete, build the r1 review panel with <code>tools/review_page.py --inline</code> and share it privately as <strong>PROVISIONAL — slow checks pending</strong>. After the SLOW lane and Dimitri&#x27;s 21 reconciliation verdicts land and the postcondition passes, the same config rebuilds as <strong>COMPLETE</strong>. Public Pages publication of the panel for Jake needs Dimitri&#x27;s separate per-review OK (<code>docs/agents/publication.md</code>); it is not pre-approved by this runbook. Results, detector run/job telemetry, and verdicts belong in <code>rounds.md</code> and <code>r1-panel.json</code>, never back in this runbook.</p>
 </details></div>
 </main>
