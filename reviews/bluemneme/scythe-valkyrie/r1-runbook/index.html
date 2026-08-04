@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="ai-stl-plan-digest" content="6a1760bc7cb32985ecbe805b39782c5811393ab13f835c4de31c5045a20e553a">
+<title>Scythe Valkyrie — Round 1 runbook</title>
+<style>
+:root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.coreinputs { margin:1.2rem 0 .4rem }
+.coreinputs h2 { margin:0 0 .5rem }
+.coreinputs .hint { color:var(--dim); font-weight:400; font-size:.85rem }
+.inputrow { display:flex; flex-wrap:wrap; gap:12px }
+.coreinput { margin:0; width:210px; max-width:100%;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.coreinput .imgwrap { border-bottom:1px solid var(--line) }
+.coreinput .imgwrap img { max-height:230px }
+.coreinput figcaption { color:var(--dim); font-size:.7rem; padding:.35rem .5rem;
+  word-break:break-all; font-family:ui-monospace,SFMono-Regular,Menlo,monospace }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.statrow { display:flex; flex-wrap:wrap; gap:.15rem .5rem; margin:0 0 .1rem;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.72rem;
+  color:var(--dim) }
+.statrow span { white-space:nowrap }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.chip.unclear { color:var(--dim); border-color:var(--dim) }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:calc(100vh - 7rem); object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-meta { display:flex; flex-direction:column; align-items:center; gap:.35rem;
+  min-height:2.2rem; position:relative; z-index:20 }
+.lb-refrow { display:flex; align-items:center; justify-content:center; gap:.35rem;
+  flex-wrap:wrap }
+.lb-refrow[hidden] { display:none }
+.lb-refrow .refid { background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn { color:#bbb; border-color:#55515d;
+  background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+
+.md h2 { font-size:1.15rem; margin:2.2rem 0 .3rem }
+.md h3 { font-size:1rem; margin:1.6rem 0 .3rem }
+.md h4 { font-size:.9rem; margin:1.2rem 0 .3rem; color:var(--dim) }
+.md p { max-width:78ch }
+.md ul, .md ol { max-width:78ch; padding-left:1.4rem }
+.md li { margin:.25rem 0 }
+.md a { color:var(--accent) }
+.md code { background:var(--pre); border:1px solid var(--line); border-radius:4px;
+  padding:.05rem .3rem; font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
+.md pre.code { background:var(--pre); border:1px solid var(--line); border-radius:6px;
+  padding:.75rem 1rem; overflow-x:auto; font-size:.82rem; line-height:1.5 }
+.md pre.code code { background:none; border:0; padding:0 }
+.md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+.md dl.rb-meta { display:grid; grid-template-columns:auto 1fr; gap:.3rem 1.1rem;
+  max-width:60ch; margin:.2rem 0 1.8rem; padding:.9rem 1.15rem; background:var(--pre);
+  border:1px solid var(--line); border-radius:8px; font-size:.9rem }
+.md dl.rb-meta dt { color:var(--dim); font-weight:600; white-space:nowrap }
+.md dl.rb-meta dd { margin:0 }
+.md details { max-width:78ch; margin:1.8rem 0; border:1px solid var(--line);
+  border-radius:8px; background:var(--pre); padding:0 1.15rem }
+.md details[open] { padding-bottom:.4rem }
+.md details > summary { cursor:pointer; padding:.85rem 0; font-weight:600;
+  color:var(--accent); list-style:none }
+.md details > summary::-webkit-details-marker { display:none }
+.md details > summary::before { content:'\25B8\A0' }
+.md details[open] > summary::before { content:'\25BE\A0' }
+.md details > summary + * { margin-top:.2rem }
+/* Runbook tables carry PROSE (the "choices on the table" comparison, the
+   build-step gates), not the review panel's short IDs. review_page.py's global
+   table CSS pins cols 1-2 to white-space:nowrap and col 2 to a monospace font —
+   right for id columns, but here it forces long option/recommendation cells
+   onto one unbreakable line: the table blows past the page width (the awkward
+   left-right scroll) and the other columns get starved into tall, ragged stacks
+   (the lopsided whitespace). Undo both inside .md so every cell wraps to its
+   column and auto table-layout balances the widths to the page. */
+.md .tablewrap { margin:.4rem 0 1.6rem }
+.md th, .md td { white-space:normal; overflow-wrap:break-word;
+  font-family:inherit }
+.md td code { overflow-wrap:anywhere }
+/* Keep some readable structure on narrow screens rather than crushing three
+   prose columns to nothing; .tablewrap scrolls only past this floor. */
+.md table { min-width:34rem }
+/* A choices-table row whose label names a case links to that case's inputs. */
+a.caselink { color:inherit; text-decoration:none;
+  border-bottom:1px dotted var(--accent) }
+a.caselink:hover { color:var(--accent) }
+
+/* --- Inputs section: one block per case, images grouped by artifact ------- */
+.rb-inputs { margin:2.2rem 0 1.4rem }
+.rb-inputs > h2 { font-size:1.15rem; margin:0 0 .3rem }
+.rb-case { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.8rem 1rem 1rem; margin:.9rem 0; scroll-margin-top:1rem }
+.rb-case:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.rb-case-h { display:flex; flex-wrap:wrap; align-items:baseline; gap:.2rem .6rem;
+  margin:0; font-size:1rem }
+.rb-case-count { color:var(--dim); font-size:.72rem; font-weight:400;
+  font-variant-numeric:tabular-nums }
+.rb-case-note { color:var(--dim); font-size:.88rem; margin:.3rem 0 0; max-width:78ch }
+.rb-art { margin:.85rem 0 0 }
+.rb-art-h { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem;
+  margin:0 0 .4rem }
+.rb-art-label { font-size:.7rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--accent) }
+.rb-art-id { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  color:var(--dim); overflow-wrap:anywhere }
+.rb-art .ibtn { padding:.08rem .5rem; font-size:.66rem }
+.rb-strip { display:grid; gap:10px;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr)) }
+.rb-fig { margin:0; min-width:0; background:var(--well); border:1px solid var(--line);
+  border-radius:6px; overflow:hidden; display:flex; flex-direction:column }
+.rb-fig .imgwrap { border-bottom:1px solid var(--line) }
+.rb-fig .imgwrap img { max-height:300px }
+.rb-fig figcaption { color:var(--dim); font-size:.7rem; padding:.3rem .5rem }
+.rb-none { color:var(--dim); font-size:.86rem; margin:.6rem 0 0 }
+details.rb-prompt { margin:.85rem 0 0; background:var(--pre); border:1px solid var(--line);
+  border-radius:6px; padding:0 .9rem }
+details.rb-prompt > summary { cursor:pointer; padding:.55rem 0; font-size:.82rem;
+  font-weight:600; color:var(--accent); list-style:none }
+details.rb-prompt > summary::-webkit-details-marker { display:none }
+details.rb-prompt > summary::before { content:'\25B8\A0' }
+details.rb-prompt[open] > summary::before { content:'\25BE\A0' }
+details.rb-prompt .rb-size { color:var(--dim); font-weight:400; font-size:.72rem }
+details.rb-prompt .path { color:var(--dim); font-size:.72rem; margin:0 0 .4rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere;
+  background:var(--bg); border:1px solid var(--line); border-radius:6px;
+  padding:.7rem .85rem; font-size:.78rem; line-height:1.5; max-height:32rem;
+  overflow:auto; margin:0 0 .85rem }
+</style></head><body><main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">BlueMneme</a><span class="sep">&rsaquo;</span><a href="../">Scythe Valkyrie</a></nav>
+<h1>Scythe Valkyrie — Round 1 runbook</h1>
+<span class="crosslink" style="opacity:.55;pointer-events:none" title="Published at round close">&#128203; Review panel &mdash; at round close</span>
+<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>concept sweep — hood/halo and support/base direction selection</dd><dt>Status</dt><dd>Awaiting sign-off · no images generated yet (proposed — directions confirmed by Dimitri 2026-08-04; shared with Jake for comment before sign-off)</dd><dt>Owner</dt><dd>Claude (cloud) → Dimitri + Jake review</dd><dt>Date opened</dt><dd>2026-08-04</dd><dt>Inputs</dt><dd>text-only <code>spec.md</code> (living draft) — no reference images are conditioned in this round; Jake&#x27;s supplied references informed the spec text and stay out of generation per <code>design-direction.md</code>&#x27;s per-case conditioning rule</dd><dt>Produces</dt><dd>21 photoreal concepts under <code>generated/</code>: 15 decision-carrying <code>scythe-valkyrie-r1-v{1,2,3}-&lt;model&gt;</code> (five models per direction) plus 6 trial-arm <code>scythe-valkyrie-r1-v{1,2,3}-{mai25pro,flashlite31}</code></dd><dt>Branch</dt><dd><code>claude/scythe-valkyrie-concepts-5qpspe</code></dd><dt>Gemini mode</dt><dd>batch (asynchronous, 50% price; submit all independent arms up front and audit each roll as it lands)</dd><dt>Evaluation lanes</dt><dd>FAST — fresh-context crop audit as each image lands; SLOW — one two-wave round-level Batch blind detector across all 21 images, then blind/crop reconciliation</dd><dt>Prior round</dt><dd>first round of the project — carried context is Jake&#x27;s 2026-08-03 reference-pack intake and the 2026-08-04 lunch feedback (<code>notes/jake-feedback-2026-08-04.md</code>): Jake is happy with the concept so far and agreed to a multi-model variation sweep; his priority is pinning down hood versus no hood and how the hood interacts with the death halo/crown; Dimitri is leaning painted; mounting and base go together and are worth trying out visually</dd></dl>
+<h2>Goal</h2>
+<p>Jake is happy with the Scythe Valkyrie concept; what&#x27;s undecided is a small set of design questions the spec lists as open decisions — above all the hood, and how a hood coexists with her death halo/crown. Rather than argue those in the abstract, this round renders <strong>three complete character directions across five decision-carrying image models</strong> so Jake and Dimitri can map the design space by eye: every image is the same valkyrie, same pose, same palette — only the hood/halo treatment and the support/base treatment change. The winning answers feed straight into pinning spec v1. (Two additional trial models render each direction as admission evidence for the model policy; those images never carry the design decision.)</p>
+<h2>The choices on the table</h2>
+<p>Five decision-carrying models each render all three directions: the four ratified fresh-concept defaults — <code>flash31</code>, <code>gptimage2</code>, <code>seedream45</code>, <code>grokq</code> — plus <code>riverflow25</code> as a named Supported specialist (proven text-to-image concept quality: it produced Gorgon v1&#x27;s r4 gold concept, and this display piece sets a higher rendering bar than a gaming mini). Every identity, wing, scythe, pose, and palette sentence is held byte-identical across the three prompts; only the two named variant paragraphs — HOOD AND HALO, and SUPPORT AND BASE — differ.</p>
+<p>Alongside them, <strong>two named trial arms</strong> run the same three prompts (Dimitri, 2026-08-04, explicitly widening this round beyond the one-arm default): <code>mai25pro</code> (MAI-Image-2.5-Pro — the policy&#x27;s registered trial #5 and the only currently routable model offering a genuinely new attractor; moderation reliability and chirality tracked separately per its trial notes) and <code>flashlite31</code> (Gemini 3.1 Flash Lite Image, 1K — its second distinct admission context after Tiger r1, which is exactly what promotion requires). Trial outputs are admission evidence for the model policy and do NOT carry the hood/halo or support/base decision.</p>
+<p>Each direction deliberately bundles one hood/halo answer with one support/base answer so fifteen images cover the whole map (Dimitri asked for variety over a controlled single-variable test). The bundles stay readable because the two axes live in different parts of the frame: judge the hood question on the head and shoulders, and the mounting/base question on the legs, blade, and ground — mix-and-match verdicts (&quot;V2&#x27;s hood with V1&#x27;s base&quot;) are explicitly welcome.</p>
+<div class="tablewrap"><table><thead><tr><th>Choice</th><th>What it tests</th><th>Input(s)</th><th>Rolls</th></tr></thead><tbody><tr><td><a class="caselink" href="#case-v1-no-hood-crown-revealed" title="Jump to this case's inputs"><strong>V1 — No hood, crown revealed</strong></a></td><td>The bare-headed read: hair and a full death crown as the headpiece statement; lifted foot carried by a scenic support hidden behind wing and cloth; scenic rubble base; blade clear of the ground</td><td>text-only V1 prompt + spec</td><td>7 (5 decision + 2 trial)</td></tr><tr><td><a class="caselink" href="#case-v2-hood-up-halo-behind-it" title="Jump to this case's inputs"><strong>V2 — Hood up, halo behind it</strong></a></td><td>The deep Guild-Wars-style hood worn up, with the halo ring rising behind the hood so the two read as one crown — the hood-times-halo interaction Jake asked to see; relaxed foot lowered into a true second ground contact; clean plinth; blade clear</td><td>text-only V2 prompt + spec</td><td>7 (5 decision + 2 trial)</td></tr><tr><td><a class="caselink" href="#case-v3-hood-down-crown-revealed" title="Jump to this case's inputs"><strong>V3 — Hood down, crown revealed</strong></a></td><td>The have-both compromise: the same hood thrown back on its mantle showing the full crown, testing whether a stowed hood earns its place; lifted foot with the crescent deliberately tied into the base as a designed second structural contact</td><td>text-only V3 prompt + spec</td><td>7 (5 decision + 2 trial)</td></tr></tbody></table></div>
+<p>That is <strong>21 image calls total</strong>: 3 directions × 5 decision-carrying model attractors, plus 6 trial renders (one <code>mai25pro</code> and one <code>flashlite31</code> per direction).</p>
+</div>
+<section class="rb-inputs">
+<h2>Inputs — what this round runs on</h2>
+<p class="blurb">Everything that goes in, grouped by the choice it belongs to. Click any image to zoom; open a prompt to read the exact text this round spends against. Crop sets show both the cut overview and every exact output crop.</p>
+<section class="rb-case" id="case-v1-no-hood-crown-revealed">
+<h3 class="rb-case-h">V1 — No hood, crown revealed<span class="rb-case-count">1 prompt</span></h3>
+<p class="rb-case-note">Bare-headed read: hair and a full death crown as the headpiece statement; lifted foot on a scenic support hidden behind wing and cloth; scenic rubble base; blade clear of the ground</p>
+<p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
+<details class="rb-prompt"><summary>Prompt — r1-v1-no-hood.txt <span class="rb-size">6 kB</span></summary><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r1-v1-no-hood.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed as production concept art for a premium resin DISPLAY STATUE, roughly 12-15 cm tall, of an original character. Show ONE figure only, in a NEAR-FRONTAL THREE-QUARTER view, centered on a plain neutral dark-grey studio background with even, softly dramatic lighting. Frame the ENTIRE composition with clear space around every silhouette edge: the whole body, the base she stands on, the full spread of BOTH wings, and the complete scythe from counterweight to blade tip. This is character concept art, not a photograph of a toy: no presentation card, no watermark, and no text, labels, logos, or game marks anywhere in the image.
+
+HOOD AND HALO — V1: NO HOOD, CROWN FULLY REVEALED
+She wears NO hood and no mantle: her hair and face are fully revealed. Rising above and behind her head is her DARK DEATH CROWN — an ominous halo-like crown structure in the suit&#x27;s own design language: dark gunmetal with silver edge highlights, ceremonial and ominous, reading clearly from both front and side. It is mounted solidly to her head or the back of her armor through visible sculpted supports — a thick, printable structure, not a floating wire, and not any existing franchise halo design.
+
+HELD-CONSTANT CHARACTER PROGRAM
+She is an original ANGEL-OF-DEATH VALKYRIE — an elegant, ominous, ceremonial reaper, played absolutely straight. Slender adult feminine build with realistic display-statue proportions, not heroic-miniature exaggeration. Her face has mature East Asian features, a calm direct gaze, and a softly angular oval face — an original face, no real person&#x27;s likeness. Her long dark hair is elegant and sculptural; it may hang with a gentle echo of the wing arc, but it must NOT stream as if she were mid-attack.
+
+Her suit is a sleek, solid death-valkyrie armor in an original design language: dark gunmetal and black primary surfaces, silver structural framing and edge highlights, restrained deep-red accents. Panel lines are bold and sculptural, sized to survive at display scale. The styling motif is skull-and-death themed — ominous, elegant, ceremonial — expressed through the sculpted forms themselves, never through printed graphics. Her footwear reads as armored contacts, not stiletto points.
+
+Her WINGS are a dark MECHANICAL wing array: layered SOLID metal wing-blades with silver structural framing and red accents. Both wings attach through explicit, solid mechanical roots at her upper back — never detached, never floating. One wing mass is carried high and the other sweeps low; the pose paragraph pins the sides.
+
+Her ONLY prop is a GREAT SCYTHE in the same design language — an elegant valkyrie weapon, not a farm tool. The haft is a continuous ARMORED haft, thick and sculpted, never a slender pole, with a spear-like counterweight projecting beyond the upper grip. The blade is an oversized, broad, SOLID crescent joined to the haft by an ornate mechanical head — techno-gothic, with no thin spikes, no cut-outs, no fragile openwork. She holds it two-handed with the grips widely separated: BOTH hands are unmistakable five-fingered wraps around the clean haft, thumbs visible, with unbroken shoulder-to-hand anatomy. She carries nothing else — no firearm, no staff, no second prop.
+
+POSE AND COMPOSITION
+The pose is POISED, STATUESQUE, and OMINOUS — a controlled character portrait, never a mid-swing action frame. She stands in a tall near-frontal three-quarter contrapposto with a pronounced vertical S-curve: the pelvis sits under a lifted, backward-arched chest, and her head tilts back and to the side while her eyes turn toward the viewer. The VIEWER&#x27;S RIGHT leg is nearly straight and carries her weight; the VIEWER&#x27;S LEFT leg is relaxed and slightly bent. Her upper hand grips the haft around waist level on the VIEWER&#x27;S LEFT; her lower hand grips beside her upper thigh on the VIEWER&#x27;S RIGHT. The haft cuts steeply from upper VIEWER&#x27;S LEFT to lower VIEWER&#x27;S RIGHT, passing behind or immediately alongside her body — never through her torso. The ornate blade head sits low on the VIEWER&#x27;S RIGHT, and the oversized crescent sweeps close to ground level BEHIND her calves, reaching across toward the lower VIEWER&#x27;S LEFT with clearly visible clearance from her legs. One large wing mass rises toward the upper VIEWER&#x27;S RIGHT; the other sweeps down and out toward the lower VIEWER&#x27;S LEFT, opposing the haft diagonal and swirling the composition while the body itself stays still.
+
+SUPPORT AND BASE — V1: LIFTED FOOT, HIDDEN SCENIC SUPPORT, SCENIC BASE
+Her relaxed VIEWER&#x27;S-LEFT foot is visibly LIFTED off the ground, its armored toe pointed and free, while all her weight flows through the straight VIEWER&#x27;S-RIGHT leg. A SOLID sculpted support column rises from the base behind her lower body and carries the real load, but it is mostly CONCEALED behind the low-sweeping wing and a heavy fall of dark cloth, so at a glance she appears to barely touch the ground. The base is a SCENIC round display base: dark shattered ground and broken battlefield stone in the same dark palette. The crescent blade stays clearly CLEAR of the base — visible daylight between blade and ground.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a resin display statue roughly 12-15 cm tall: bold planes, thick connected forms, deep relief. Every material is OPAQUE and SOLID — no glass, no transparency, no translucent glowing parts; any glow is at most a painted surface effect on solid geometry. No hairline detail, no thin spike, no free-floating strap or ribbon. The scythe blade and every wing-blade are thick solid plates; hair masses are sculptural, thick, and connected to the figure. The halo/crown structure is thick enough to print and solidly mounted, never a floating wire.
+</pre></details>
+</section>
+<section class="rb-case" id="case-v2-hood-up-halo-behind-it">
+<h3 class="rb-case-h">V2 — Hood up, halo behind it<span class="rb-case-count">1 prompt</span></h3>
+<p class="rb-case-note">Deep hood worn up with the halo ring rising behind it so the two read as one crown — the hood-times-halo interaction Jake asked to see; relaxed foot lowered into a true second ground contact; clean plinth; blade clear</p>
+<p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
+<details class="rb-prompt"><summary>Prompt — r1-v2-hood-up.txt <span class="rb-size">6 kB</span></summary><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r1-v2-hood-up.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed as production concept art for a premium resin DISPLAY STATUE, roughly 12-15 cm tall, of an original character. Show ONE figure only, in a NEAR-FRONTAL THREE-QUARTER view, centered on a plain neutral dark-grey studio background with even, softly dramatic lighting. Frame the ENTIRE composition with clear space around every silhouette edge: the whole body, the base she stands on, the full spread of BOTH wings, and the complete scythe from counterweight to blade tip. This is character concept art, not a photograph of a toy: no presentation card, no watermark, and no text, labels, logos, or game marks anywhere in the image.
+
+HOOD AND HALO — V2: DEEP HOOD UP, HALO RISING BEHIND IT
+She wears a LONG, DEEP, face-framing HOOD with a short shoulder mantle, in the suit&#x27;s dark armor-cloth language with silver-edged trim. The hood is RAISED: it frames her face in soft shadow while her face stays clearly visible, and a fall of her long hair emerges from within it. Her DARK DEATH HALO — a bold dark-gunmetal ring with silver edge highlights, in the suit&#x27;s own design language — rises BEHIND AND ABOVE the raised hood, so the hood&#x27;s silhouette sits inside the halo ring and the two read together as one ceremonial crown from both front and side. The halo is mounted solidly through the mantle at her upper back — a thick, printable structure, not a floating wire, and not any existing franchise halo design.
+
+HELD-CONSTANT CHARACTER PROGRAM
+She is an original ANGEL-OF-DEATH VALKYRIE — an elegant, ominous, ceremonial reaper, played absolutely straight. Slender adult feminine build with realistic display-statue proportions, not heroic-miniature exaggeration. Her face has mature East Asian features, a calm direct gaze, and a softly angular oval face — an original face, no real person&#x27;s likeness. Her long dark hair is elegant and sculptural; it may hang with a gentle echo of the wing arc, but it must NOT stream as if she were mid-attack.
+
+Her suit is a sleek, solid death-valkyrie armor in an original design language: dark gunmetal and black primary surfaces, silver structural framing and edge highlights, restrained deep-red accents. Panel lines are bold and sculptural, sized to survive at display scale. The styling motif is skull-and-death themed — ominous, elegant, ceremonial — expressed through the sculpted forms themselves, never through printed graphics. Her footwear reads as armored contacts, not stiletto points.
+
+Her WINGS are a dark MECHANICAL wing array: layered SOLID metal wing-blades with silver structural framing and red accents. Both wings attach through explicit, solid mechanical roots at her upper back — never detached, never floating. One wing mass is carried high and the other sweeps low; the pose paragraph pins the sides.
+
+Her ONLY prop is a GREAT SCYTHE in the same design language — an elegant valkyrie weapon, not a farm tool. The haft is a continuous ARMORED haft, thick and sculpted, never a slender pole, with a spear-like counterweight projecting beyond the upper grip. The blade is an oversized, broad, SOLID crescent joined to the haft by an ornate mechanical head — techno-gothic, with no thin spikes, no cut-outs, no fragile openwork. She holds it two-handed with the grips widely separated: BOTH hands are unmistakable five-fingered wraps around the clean haft, thumbs visible, with unbroken shoulder-to-hand anatomy. She carries nothing else — no firearm, no staff, no second prop.
+
+POSE AND COMPOSITION
+The pose is POISED, STATUESQUE, and OMINOUS — a controlled character portrait, never a mid-swing action frame. She stands in a tall near-frontal three-quarter contrapposto with a pronounced vertical S-curve: the pelvis sits under a lifted, backward-arched chest, and her head tilts back and to the side while her eyes turn toward the viewer. The VIEWER&#x27;S RIGHT leg is nearly straight and carries her weight; the VIEWER&#x27;S LEFT leg is relaxed and slightly bent. Her upper hand grips the haft around waist level on the VIEWER&#x27;S LEFT; her lower hand grips beside her upper thigh on the VIEWER&#x27;S RIGHT. The haft cuts steeply from upper VIEWER&#x27;S LEFT to lower VIEWER&#x27;S RIGHT, passing behind or immediately alongside her body — never through her torso. The ornate blade head sits low on the VIEWER&#x27;S RIGHT, and the oversized crescent sweeps close to ground level BEHIND her calves, reaching across toward the lower VIEWER&#x27;S LEFT with clearly visible clearance from her legs. One large wing mass rises toward the upper VIEWER&#x27;S RIGHT; the other sweeps down and out toward the lower VIEWER&#x27;S LEFT, opposing the haft diagonal and swirling the composition while the body itself stays still.
+
+SUPPORT AND BASE — V2: TRUE SECOND FOOT CONTACT, CLEAN PLINTH
+Her relaxed VIEWER&#x27;S-LEFT foot comes DOWN into a real second ground contact — toe and forefoot firmly planted, heel just lifted — while the pose keeps exactly the same tall S-curve and one-leg-led balance; the straight VIEWER&#x27;S-RIGHT leg still carries most of the weight. Both feet reach the ground plane and the figure needs no other support. The base is a CLEAN, simple round plinth: a smooth dark disc with a fine silver rim, no scenery. The crescent blade stays clearly CLEAR of the plinth surface — visible daylight between blade and ground.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a resin display statue roughly 12-15 cm tall: bold planes, thick connected forms, deep relief. Every material is OPAQUE and SOLID — no glass, no transparency, no translucent glowing parts; any glow is at most a painted surface effect on solid geometry. No hairline detail, no thin spike, no free-floating strap or ribbon. The scythe blade and every wing-blade are thick solid plates; hair masses are sculptural, thick, and connected to the figure. The halo/crown structure is thick enough to print and solidly mounted, never a floating wire.
+</pre></details>
+</section>
+<section class="rb-case" id="case-v3-hood-down-crown-revealed">
+<h3 class="rb-case-h">V3 — Hood down, crown revealed<span class="rb-case-count">1 prompt</span></h3>
+<p class="rb-case-note">Have-both compromise: the same hood thrown back on its mantle showing the full crown; lifted foot with the crescent deliberately tied into the base as a designed second structural contact; low scenic base</p>
+<p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
+<details class="rb-prompt"><summary>Prompt — r1-v3-hood-down.txt <span class="rb-size">6 kB</span></summary><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r1-v3-hood-down.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed as production concept art for a premium resin DISPLAY STATUE, roughly 12-15 cm tall, of an original character. Show ONE figure only, in a NEAR-FRONTAL THREE-QUARTER view, centered on a plain neutral dark-grey studio background with even, softly dramatic lighting. Frame the ENTIRE composition with clear space around every silhouette edge: the whole body, the base she stands on, the full spread of BOTH wings, and the complete scythe from counterweight to blade tip. This is character concept art, not a photograph of a toy: no presentation card, no watermark, and no text, labels, logos, or game marks anywhere in the image.
+
+HOOD AND HALO — V3: HOOD THROWN BACK, CROWN FULLY REVEALED
+She wears a LONG, DEEP hood with a short shoulder mantle, in the suit&#x27;s dark armor-cloth language with silver-edged trim — but the hood is THROWN BACK, resting down on the mantle and her upper back in thick sculptural folds, so her hair and face are fully revealed. Rising above and behind her head is her DARK DEATH CROWN — an ominous halo-like crown structure in the suit&#x27;s own design language: dark gunmetal with silver edge highlights, ceremonial and ominous, reading clearly from both front and side. It is mounted solidly to her head or the back of her armor through visible sculpted supports — a thick, printable structure, not a floating wire, and not any existing franchise halo design.
+
+HELD-CONSTANT CHARACTER PROGRAM
+She is an original ANGEL-OF-DEATH VALKYRIE — an elegant, ominous, ceremonial reaper, played absolutely straight. Slender adult feminine build with realistic display-statue proportions, not heroic-miniature exaggeration. Her face has mature East Asian features, a calm direct gaze, and a softly angular oval face — an original face, no real person&#x27;s likeness. Her long dark hair is elegant and sculptural; it may hang with a gentle echo of the wing arc, but it must NOT stream as if she were mid-attack.
+
+Her suit is a sleek, solid death-valkyrie armor in an original design language: dark gunmetal and black primary surfaces, silver structural framing and edge highlights, restrained deep-red accents. Panel lines are bold and sculptural, sized to survive at display scale. The styling motif is skull-and-death themed — ominous, elegant, ceremonial — expressed through the sculpted forms themselves, never through printed graphics. Her footwear reads as armored contacts, not stiletto points.
+
+Her WINGS are a dark MECHANICAL wing array: layered SOLID metal wing-blades with silver structural framing and red accents. Both wings attach through explicit, solid mechanical roots at her upper back — never detached, never floating. One wing mass is carried high and the other sweeps low; the pose paragraph pins the sides.
+
+Her ONLY prop is a GREAT SCYTHE in the same design language — an elegant valkyrie weapon, not a farm tool. The haft is a continuous ARMORED haft, thick and sculpted, never a slender pole, with a spear-like counterweight projecting beyond the upper grip. The blade is an oversized, broad, SOLID crescent joined to the haft by an ornate mechanical head — techno-gothic, with no thin spikes, no cut-outs, no fragile openwork. She holds it two-handed with the grips widely separated: BOTH hands are unmistakable five-fingered wraps around the clean haft, thumbs visible, with unbroken shoulder-to-hand anatomy. She carries nothing else — no firearm, no staff, no second prop.
+
+POSE AND COMPOSITION
+The pose is POISED, STATUESQUE, and OMINOUS — a controlled character portrait, never a mid-swing action frame. She stands in a tall near-frontal three-quarter contrapposto with a pronounced vertical S-curve: the pelvis sits under a lifted, backward-arched chest, and her head tilts back and to the side while her eyes turn toward the viewer. The VIEWER&#x27;S RIGHT leg is nearly straight and carries her weight; the VIEWER&#x27;S LEFT leg is relaxed and slightly bent. Her upper hand grips the haft around waist level on the VIEWER&#x27;S LEFT; her lower hand grips beside her upper thigh on the VIEWER&#x27;S RIGHT. The haft cuts steeply from upper VIEWER&#x27;S LEFT to lower VIEWER&#x27;S RIGHT, passing behind or immediately alongside her body — never through her torso. The ornate blade head sits low on the VIEWER&#x27;S RIGHT, and the oversized crescent sweeps close to ground level BEHIND her calves, reaching across toward the lower VIEWER&#x27;S LEFT with clearly visible clearance from her legs. One large wing mass rises toward the upper VIEWER&#x27;S RIGHT; the other sweeps down and out toward the lower VIEWER&#x27;S LEFT, opposing the haft diagonal and swirling the composition while the body itself stays still.
+
+SUPPORT AND BASE — V3: LIFTED FOOT, CRESCENT TIED INTO THE BASE
+Her relaxed VIEWER&#x27;S-LEFT foot is visibly LIFTED off the ground, its armored toe pointed and free, while all her weight flows through the straight VIEWER&#x27;S-RIGHT leg. The pose&#x27;s second structural contact is the SCYTHE itself: the low-sweeping crescent blade is deliberately DESIGNED INTO THE BASE — its lower edge merges into a low sculpted rise of dark broken ground, a solid, intentional blade-to-base connection that visibly carries load down through the haft and blade. The base is a LOW SCENIC round display base: dark broken ground in the same dark palette, rising where it meets the blade. The blade-to-base contact reads as designed architecture, never as an accident.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a resin display statue roughly 12-15 cm tall: bold planes, thick connected forms, deep relief. Every material is OPAQUE and SOLID — no glass, no transparency, no translucent glowing parts; any glow is at most a painted surface effect on solid geometry. No hairline detail, no thin spike, no free-floating strap or ribbon. The scythe blade and every wing-blade are thick solid plates; hair masses are sculptural, thick, and connected to the figure. The halo/crown structure is thick enough to print and solidly mounted, never a floating wire.
+</pre></details>
+</section>
+</section>
+<div class="md">
+<h2>How the round is judged</h2>
+<p>Jake&#x27;s preferences steer, Dimitri decides (art gate). Three reading notes:</p>
+<ul>
+<li>Compare directions <strong>within each model</strong> first — the seven models draw faces, cloth, and metal very differently, and comparing V1-from-one-model against V2-from-another compares house styles, not directions.</li>
+<li>The hood axis (none / up / down) is judged on the upper third of each image; the support/base axis (hidden pillar / second foot contact / crescent-into-base, scenic / plinth) on the lower third. Split verdicts across axes are expected and useful.</li>
+<li>The halo/crown is an original-design part with deliberate freedom left in the prompt — variety in how models invent it is data for the v1 spec, not a defect (only a franchise-copied or unprintable halo is a failure).</li>
+</ul>
+<p>Machine checks run in two explicit lanes:</p>
+<ul>
+<li><strong>FAST:</strong> a fresh-context crop audit runs as each image lands, checking the held-constant program — both five-fingered grips with visible thumbs on a clean armored haft, solid crescent with no cut-outs or thin spikes, both wings rooted at the upper back, viewer-frame composition (haft upper-left to lower-right, high wing viewer-right, low wing viewer-left, crescent behind the calves with visible leg clearance), poised S-curve rather than a combat lunge, opaque solid materials with no translucent glow geometry, no text or logos, no franchise likeness (in particular nothing reading as Mercy or any named source character), and the direction&#x27;s own hood/halo and support/base paragraph. A mirrored composition is recorded as a warn, not a reject: at concept stage a deterministic flip restores chirality, and the design decision survives the mirror. Once all FAST verdicts are logged, a private review may be shared as <strong>PROVISIONAL — slow checks pending</strong> so eye-review can start.</li>
+<li><strong>SLOW:</strong> after all 21 images land, one <code>blind_detect_round.py</code> manifest submits every spec-blind description in a single Gemini Batch wave and every dependent comparison in a second Batch wave. Completed records append to <code>reviews.jsonl</code>; every blind-vs-crop disagreement gets a mandatory human look. Dimitri then appends one authoritative verdict per artifact, after both machine records, whose summary starts <code>RECONCILED — AGREE:</code> when the screens agree or <code>RECONCILED — RESOLVED:</code> with the human resolution when they do not. The panel is rebuilt as <strong>COMPLETE</strong> only after the canonical review log contains crop audits, successful records from that exact Batch run, and later reconciliation verdicts for all and only the 21 planned artifact ids. The provisional panel cannot close the round, promote a keeper, or authorize downstream work.</li>
+</ul>
+<p>The six trial renders get the identical screening but are judged separately on their own trial questions, and never count toward the direction pick: for <code>mai25pro</code>, does the new attractor deliver usable geometry/pose quality — with Azure output-moderation reliability and facing/chirality each recorded explicitly, per its trial notes; for <code>flashlite31</code>, does a 1K Flash Lite render hold silhouette, pose, and the held-constant program well enough for cheap selection bake-offs (its second admission context after Tiger r1)?</p>
+<p><strong>Basing-rule exception (restated as the spec requires):</strong> V1 and V3 keep the primary pose&#x27;s lifted foot, deviating from the pipeline&#x27;s both-feet-at-ground-level rule (Jason, 2026-07-10). <strong>Dimitri approved exploring aerial/ungrounded poses for this one-off display piece (2026-08-03)</strong> on the condition that the design includes a real mounting mechanism — V1&#x27;s hidden support column and V3&#x27;s designed blade-to-base contact are exactly that mechanism, and rendering them is part of what this round evaluates.</p>
+<h2>What we need from you</h2>
+<p>Dimitri: first a direction review of this draft (trim to two directions or keep three, adjust any treatment), then sign-off as the spend gate. On the results panel, Jake and Dimitri pick per axis: hood none/up/down (with its halo treatment), and the support/base approach — mix-and-match across directions and models is welcome — or reject all 15 decision renders (the 6 trial images never carry the decision) with a sharper target. The winning render becomes the lineage seed for r2, and the axis verdicts feed spec v1 pinning (hood, mounting, base; paint is already leaning painted). Sharing the results panel publicly for Jake needs Dimitri&#x27;s separate per-review OK as usual.</p>
+<h2>Cost</h2>
+<p>Planning estimate: image generation ≈ <strong>$2.34</strong> for 21 concepts (decision-carrying, per direction: flash31 ~$0.10, gptimage2 ~$0.17, seedream45 ~$0.04, grokq ~$0.08, riverflow25 ~$0.15 → $0.54 × 3 directions = $1.62; plus the trial arms: mai25pro ~$0.20 × 3 ≈ $0.60 — token-metered on Azure, order-of-gptimage2 — and flashlite31 ~$0.04 × 3 ≈ $0.12). FAST evaluation is unmetered. SLOW evaluation uses one two-wave, half-price Gemini Batch detector run across all 21 images and reserves <strong>$1.05</strong> (≥$0.05 per image, per the skill&#x27;s floor and the Gorgon v2 r1 overrun lesson). Planned total ≈ <strong>$3.39</strong>. Proposed round cap <strong>$4.25 USD</strong>, no Meshy credits — the ~25% headroom is allowance for conservative in-flight reservations on interrupted calls, not for extra work. Live provider metadata and the detector&#x27;s printed preflight ceiling remain authoritative at execution time.</p>
+<details>
+<summary>Technical plan — models, prompts, commands (pipeline detail)</summary>
+<h3>What changed going in (spec / prompt / process deltas)</h3>
+<ul>
+<li>First round of the project: new <code>runbooks/</code>, <code>prompts/</code>, and <code>rounds.md</code> under <code>projects/bluemneme/scythe-valkyrie/</code> (canonical layout).</li>
+<li>Lunch feedback intake <code>notes/jake-feedback-2026-08-04.md</code>; <code>spec.md</code>&#x27;s open-decisions section annotated with the same statuses (living draft: hood → tested in r1; paint → leaning painted; mounting+base → explored visually in r1).</li>
+<li>Three exact prompt files differ only in their two named variant paragraphs (<code>HOOD AND HALO — V&lt;n&gt;</code>, <code>SUPPORT AND BASE — V&lt;n&gt;</code>); the OUTPUT AND CAMERA, HELD-CONSTANT CHARACTER PROGRAM, POSE AND COMPOSITION, and PRINT-SAFE FINISH blocks are byte-identical (verified by diff of the section-stripped files). All three declare zero attached images — a clean text lineage.</li>
+<li><strong>Text-only, deliberately:</strong> Jake&#x27;s references are private, part-scoped, and carry non-transfer content; <code>design-direction.md</code> makes conditioning a per-case runbook decision and requires derived/edited bases for any deliberate divergence. r1 therefore generates from the spec&#x27;s text alone (the spec is written to stand alone); reference-conditioned arms, if ever needed, are a later round with prompt-ready derivative crops and new lineage entries.</li>
+<li>The decision-carrying panel is the ratified fresh-concept default <code>flash31,gptimage2,seedream45,grokq</code> plus <strong><code>riverflow25</code></strong> as a named Supported specialist (policy: use with a named reason — proven text-to-image concept keeper on Gorgon v1 r4; ~$0.15/image at 2K per the corrected 2026-08-03 policy note; this display piece raises the rendering bar). Aspect is pinned explicitly for riverflow (<code>--aspect 3:4</code> — the high/low wing spread plus the low crescent want a wider canvas than 2:3); live schema to be rechecked at execution with <code>openrouter_gen.py --params sourceful/riverflow-v2.5-pro</code>. <code>pro2k</code> stays excluded (no diagnosed Flash failure, cost without demonstrated benefit).</li>
+<li><strong>Two named trial arms</strong> (Dimitri, 2026-08-04 — an explicit widening of the policy&#x27;s one-arm default for fresh-concept rounds, after a live OpenRouter catalog check showed the slate&#x27;s three higher-priority trials — reve21, uni11, seedream50pro — still have no route or adapter):</li>
+<ul>
+<li><strong><code>mai25pro</code></strong> (MAI-Image-2.5-Pro, the policy&#x27;s registered trial #5, via OpenRouter <code>microsoft/mai-image-2.5-pro</code>): the only currently routable model offering a genuinely new attractor. Trial hypothesis: visual reasoning / object consistency helps a coherence-heavy composition (asymmetric wings, diagonal two-handed scythe, hood/halo stack). Per its registry notes, Azure output-moderation reliability and facing/chirality are recorded separately from quality — base <code>mai25</code> is suspended on moderation strikes, and a photoreal elegant female character is a realistic moderation test, so a moderation failure here is admission evidence, not a round blocker. Live schema checked 2026-08-04: <code>aspect_ratio</code> incl. <code>3:4</code> exposed, max 1 input reference, token-metered pricing (no resolution parameter).</li>
+<li><strong><code>flashlite31</code></strong> (Gemini 3.1 Flash Lite Image, the policy&#x27;s registered trial #4, 1K, direct <code>gemini_gen.py</code> Batch calls): its second distinct admission context after Tiger r1 — promotion needs useful results in two distinct contexts, and this round&#x27;s questions are silhouette-level (hood presence, halo ring, base treatment), matching its cheap-selection hypothesis. Constraints honored: 1K only; never used for final turnarounds or Meshy sheets while on trial. Exact model id verified at execution with <code>gemini_gen.py --list-models</code> (expected <code>gemini-3.1-flash-lite-image</code>).</li>
+<li>Trial outputs never carry the design decision, and no <code>compare_gen.py</code> aliases are added — tool support and policy promotion are separate changes (policy §&quot;Tooling relationship&quot;).</li>
+</ul>
+<li>Chirality: the composition is asymmetric (haft diagonal, high/low wings, per-side grips) and every side in the prompts is anchored in the VIEWER&#x27;S frame with distributed anchors, per the skill&#x27;s attractor rules. At concept stage a mirrored roll is flip-recoverable, so audits record mirroring as a warn; the full per-view L/R program lands at v1 pinning before any turnaround round.</li>
+<li>The halo/crown and armor language are original-design parts; prompts describe them directionally (solid, ceremonial, suit design language, no franchise copy) and leave the models inventive freedom on purpose — the spread of inventions is round data for v1.</li>
+<li>Paint leaning (open decision 3) is recorded; photoreal color concepts double as paint-plan direction, so no process change.</li>
+</ul>
+<h3>Experiment matrix</h3>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Variant axes</th><th>Prompt</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>1</td><td>text only; no images</td><td>V1 no-hood/crown + hidden-support/scenic × four standard models</td><td><code>prompts/r1-v1-no-hood.txt</code></td><td><code>scythe-valkyrie-r1-v1</code></td></tr><tr><td>2</td><td>text only; no images</td><td>V2 hood-up/halo-behind + second-contact/plinth × four standard models</td><td><code>prompts/r1-v2-hood-up.txt</code></td><td><code>scythe-valkyrie-r1-v2</code></td></tr><tr><td>3</td><td>text only; no images</td><td>V3 hood-down/crown + crescent-into-base × four standard models</td><td><code>prompts/r1-v3-hood-down.txt</code></td><td><code>scythe-valkyrie-r1-v3</code></td></tr><tr><td>4</td><td>text only; no images</td><td>V1 × riverflow25 (2K, <code>--aspect 3:4</code>)</td><td><code>prompts/r1-v1-no-hood.txt</code></td><td><code>scythe-valkyrie-r1-v1-riverflow25</code></td></tr><tr><td>5</td><td>text only; no images</td><td>V2 × riverflow25 (2K, <code>--aspect 3:4</code>)</td><td><code>prompts/r1-v2-hood-up.txt</code></td><td><code>scythe-valkyrie-r1-v2-riverflow25</code></td></tr><tr><td>6</td><td>text only; no images</td><td>V3 × riverflow25 (2K, <code>--aspect 3:4</code>)</td><td><code>prompts/r1-v3-hood-down.txt</code></td><td><code>scythe-valkyrie-r1-v3-riverflow25</code></td></tr><tr><td>7</td><td>text only; no images</td><td>V1 × mai25pro (trial, <code>--aspect 3:4</code>)</td><td><code>prompts/r1-v1-no-hood.txt</code></td><td><code>scythe-valkyrie-r1-v1-mai25pro</code></td></tr><tr><td>8</td><td>text only; no images</td><td>V2 × mai25pro (trial, <code>--aspect 3:4</code>)</td><td><code>prompts/r1-v2-hood-up.txt</code></td><td><code>scythe-valkyrie-r1-v2-mai25pro</code></td></tr><tr><td>9</td><td>text only; no images</td><td>V3 × mai25pro (trial, <code>--aspect 3:4</code>)</td><td><code>prompts/r1-v3-hood-down.txt</code></td><td><code>scythe-valkyrie-r1-v3-mai25pro</code></td></tr><tr><td>10</td><td>text only; no images</td><td>V1 × flashlite31 (trial, 1K)</td><td><code>prompts/r1-v1-no-hood.txt</code></td><td><code>scythe-valkyrie-r1-v1-flashlite31</code></td></tr><tr><td>11</td><td>text only; no images</td><td>V2 × flashlite31 (trial, 1K)</td><td><code>prompts/r1-v2-hood-up.txt</code></td><td><code>scythe-valkyrie-r1-v2-flashlite31</code></td></tr><tr><td>12</td><td>text only; no images</td><td>V3 × flashlite31 (trial, 1K)</td><td><code>prompts/r1-v3-hood-down.txt</code></td><td><code>scythe-valkyrie-r1-v3-flashlite31</code></td></tr></tbody></table></div>
+<p>Rows 1–3 each yield one model-suffixed artifact per standard model; rows 4–12 yield one artifact each. Repeated runs append and never overwrite.</p>
+<h3>Publish and announce the proposed round (before sign-off)</h3>
+<p>Order is deliberate: commit and push the exact plan, then render and publish the world-readable runbook, then announce that public URL in the operator-allowlisted <code>scythe-valkyrie</code> channel with a round header (<code>--post-header</code>; the announcement is the attached thread&#x27;s first reply). These steps run once Dimitri is happy with the draft&#x27;s directions; the runbook page must be public before sign-off is requested.</p>
+<pre class="code"><code>set -euo pipefail  # fail closed: no Discord post if render/publish fails
+python3 tools/render_runbook.py \
+  --runbook projects/bluemneme/scythe-valkyrie/runbooks/r1-runbook.md \
+  --cases projects/bluemneme/scythe-valkyrie/runbooks/r1-cases.json \
+  --review-pending --project &quot;BlueMneme&quot; --character &quot;Scythe Valkyrie&quot; \
+  --out /tmp/scythe-valkyrie-r1-runbook
+python3 tools/publish_review.py /tmp/scythe-valkyrie-r1-runbook \
+  --slug bluemneme/scythe-valkyrie/r1-runbook \
+  --title &quot;Scythe Valkyrie — Round 1 runbook&quot; \
+  --message &quot;Publish Scythe Valkyrie round 1 runbook&quot;
+python3 tools/discord_share.py --channel scythe-valkyrie \
+  --post-header --headline &quot;Round 1 — Scythe Valkyrie&quot; \
+  --status &quot;PROPOSED — awaiting sign-off; no image generation yet&quot; \
+  --decision &quot;Hood: none / up / down (and how it meets the death halo)? Support and base: hidden pillar + scenic / second foot contact + plinth / crescent tied into the base?&quot; \
+  --spend-state &quot;\$0.00 of the \$4.25 cap; 21 concepts planned (15 decision + 6 trial), no Meshy calls&quot; \
+  --artifact-link &quot;https://lackofcheese.github.io/ai-stl-review/reviews/bluemneme/scythe-valkyrie/r1-runbook/&quot; \
+  --once scythe-valkyrie-r1-header
+python3 tools/discord_share.py --channel scythe-valkyrie \
+  --thread &lt;header-message-id&gt; --thread-name &quot;Round 1 — Scythe Valkyrie updates&quot; \
+  --once scythe-valkyrie-r1-proposed-announcement \
+  --message &quot;&lt;round-open announcement&gt;&quot;</code></pre>
+<h3>Commands (run after sign-off and durable greenlight verification)</h3>
+<p>Order matters: the <code>Status:</code> flip is part of the runbook blob the gate manifest pins, so record the approval in the plan FIRST, then pin it. On Dimitri&#x27;s sign-off: flip <code>Status:</code> to <code>Approved — not started (Dimitri, &lt;date&gt;)</code>, commit and push that change, re-publish this page from that commit, and only then append the gate pinning that exact commit and its published render. Post the approval reply to the round&#x27;s Discord thread (and advance the header) once the status change is on <code>main</code>.</p>
+<pre class="code"><code>python3 tools/round_gate.py append \
+  --file projects/bluemneme/scythe-valkyrie/round-gates.jsonl \
+  --round r1 --gate greenlight --actor dimitri --source cli \
+  --note &quot;&lt;quote or faithful summary of Dimitri&#x27;s approval&gt;&quot; \
+  --runbook-sha &quot;$(git rev-parse HEAD)&quot; \
+  --published-html &quot;$AI_STL_REVIEW_DIR/reviews/bluemneme/scythe-valkyrie/r1-runbook/index.html&quot;
+# commit + push the gate line, then:
+python3 tools/round_gate.py verify \
+  --file projects/bluemneme/scythe-valkyrie/round-gates.jsonl --round r1 \
+  --published-html &quot;$AI_STL_REVIEW_DIR/reviews/bluemneme/scythe-valkyrie/r1-runbook/index.html&quot;</code></pre>
+<h4>Post-merge start gate</h4>
+<p>The start PR changes current state in <code>rounds.md</code>, not this frozen plan. After Dimitri approves and merges it, the round-specific commands must begin with this exact fail-closed shape:</p>
+<pre class="code"><code>set -euo pipefail
+git fetch origin main
+test &quot;$(git rev-parse HEAD)&quot; = &quot;$(git rev-parse origin/main)&quot;
+python3 tools/round_gate.py verify \
+  --file projects/bluemneme/scythe-valkyrie/round-gates.jsonl --round r1 \
+  --published-html &quot;${AI_STL_REVIEW_DIR:-../ai-stl-review}/reviews/bluemneme/scythe-valkyrie/r1-runbook/index.html&quot;
+test &quot;$(git rev-parse HEAD)&quot; = &quot;$(git rev-parse origin/main)&quot;
+
+# Append the Discord start reply with a destination-scoped --once id.
+# Advance its header using that completed reply&#x27;s --event-id.
+# Only then run the paid provider commands below.</code></pre>
+<p>Then the generation itself. The three <code>compare_gen.py</code> arms cover the four standard models (all through the shared spend-preflight ledger — <code>flash31</code> as a Gemini Batch cell, <code>gptimage2</code>/<code>seedream45</code>/<code>grokq</code> via OpenRouter); the riverflow25 and mai25pro arms run as direct <code>openrouter_gen.py</code> calls with the aspect pinned, and the flashlite31 arm as direct <code>gemini_gen.py</code> Batch calls. The direct tools have no <code>--drive-sync</code>, so each direct call&#x27;s subshell pushes its output to Drive immediately on success.</p>
+<pre class="code"><code>set -euo pipefail
+T=projects/bluemneme/scythe-valkyrie
+mkdir -p &quot;$T/generated&quot;
+
+# Mandatory before the first paid Gemini call on this host. Replace the token
+# with the provider&#x27;s currently displayed balance converted to USD.
+python3 tools/spend_preflight.py set-balance gemini AMOUNT_USD
+
+# Verify live schemas first: riverflow (aspect_ratio incl. 3:4, 2K pricing)
+# and mai25pro (aspect_ratio incl. 3:4; token-metered, no resolution param).
+python3 tools/openrouter_gen.py --params sourceful/riverflow-v2.5-pro
+python3 tools/openrouter_gen.py --params microsoft/mai-image-2.5-pro
+
+# Verify the flashlite trial model id before spending against it.
+python3 tools/gemini_gen.py --list-models | grep -i &#x27;flash-lite.*image&#x27;
+
+# Submit all independent arms up front; audit each roll as it lands.
+PIDS=()
+for v in v1-no-hood v2-hood-up v3-hood-down; do
+  python3 tools/compare_gen.py \
+    --prompt-file &quot;$T/prompts/r1-${v}.txt&quot; \
+    --out-dir &quot;$T/generated&quot; --out-stem &quot;scythe-valkyrie-r1-${v%%-*}&quot; \
+    --variants flash31,gptimage2,seedream45,grokq \
+    --jobs 4 --drive-sync &amp;
+  PIDS+=($!)
+  ( python3 tools/openrouter_gen.py \
+      --prompt-file &quot;$T/prompts/r1-${v}.txt&quot; \
+      --out-dir &quot;$T/generated&quot; \
+      --out-stem &quot;scythe-valkyrie-r1-${v%%-*}-riverflow25&quot; \
+      --model sourceful/riverflow-v2.5-pro --resolution 2K --aspect 3:4 \
+    &amp;&amp; bash tools/drive_sync.sh push &quot;$T/generated&quot; ) &amp;
+  PIDS+=($!)
+  ( python3 tools/openrouter_gen.py \
+      --prompt-file &quot;$T/prompts/r1-${v}.txt&quot; \
+      --out-dir &quot;$T/generated&quot; \
+      --out-stem &quot;scythe-valkyrie-r1-${v%%-*}-mai25pro&quot; \
+      --model microsoft/mai-image-2.5-pro --aspect 3:4 \
+    &amp;&amp; bash tools/drive_sync.sh push &quot;$T/generated&quot; ) &amp;
+  PIDS+=($!)
+  ( python3 tools/gemini_gen.py \
+      --prompt-file &quot;$T/prompts/r1-${v}.txt&quot; \
+      --out-dir &quot;$T/generated&quot; \
+      --out-stem &quot;scythe-valkyrie-r1-${v%%-*}-flashlite31&quot; \
+      --model gemini-3.1-flash-lite-image --image-size 1K \
+    &amp;&amp; bash tools/drive_sync.sh push &quot;$T/generated&quot; ) &amp;
+  PIDS+=($!)
+done
+FAIL=0
+for pid in &quot;${PIDS[@]}&quot;; do wait &quot;$pid&quot; || FAIL=1; done
+(( FAIL == 0 )) || { echo &quot;a generation arm failed&quot; &gt;&amp;2; exit 1; }
+
+# Build one exact 21-artifact detector manifest after generation has
+# finalized every lineage record. The approved ids are enumerated
+# independently of the directory scan; refuse missing, duplicate,
+# unsupported, or extra round files.
+mkdir -p &quot;$T/notes&quot;
+EXPECTED=&quot;$T/notes/r1-blind-expected.txt&quot;
+ACTUAL=&quot;$T/notes/r1-blind-actual.txt&quot;
+MANIFEST=&quot;$T/notes/r1-blind-manifest.json&quot;
+for v in v1 v2 v3; do
+  for model in flash31 gptimage2 seedream45 grokq riverflow25 mai25pro \
+               flashlite31; do
+    printf &#x27;scythe-valkyrie-r1-%s-%s-1\n&#x27; &quot;$v&quot; &quot;$model&quot;
+  done
+done | sort &gt; &quot;$EXPECTED&quot;
+
+find &quot;$T/generated&quot; -maxdepth 1 -type f \
+  \( -name &#x27;scythe-valkyrie-r1-v*.png&#x27; -o -name &#x27;scythe-valkyrie-r1-v*.jpg&#x27; \
+     -o -name &#x27;scythe-valkyrie-r1-v*.jpeg&#x27; -o \
+     -name &#x27;scythe-valkyrie-r1-v*.webp&#x27; \) \
+  -printf &#x27;%f\n&#x27; | sed -E &#x27;s/\.(png|jpe?g|webp)$//&#x27; | sort &gt; &quot;$ACTUAL&quot;
+diff -u &quot;$EXPECTED&quot; &quot;$ACTUAL&quot;
+
+ITEMS=()
+while IFS= read -r artifact; do
+  mapfile -t matches &lt; &lt;(find &quot;$T/generated&quot; -maxdepth 1 -type f \
+    \( -name &quot;$artifact.png&quot; -o -name &quot;$artifact.jpg&quot; -o \
+       -name &quot;$artifact.jpeg&quot; -o -name &quot;$artifact.webp&quot; \) -print)
+  (( ${#matches[@]} == 1 )) || {
+    echo &quot;expected exactly one supported image for $artifact&quot; &gt;&amp;2
+    exit 1
+  }
+  ITEMS+=(&quot;$(jq -cn --arg artifact &quot;$artifact&quot; --arg image &quot;${matches[0]}&quot; \
+    &#x27;{artifact: $artifact, image: $image}&#x27;)&quot;)
+done &lt; &quot;$EXPECTED&quot;
+printf &#x27;%s\n&#x27; &quot;${ITEMS[@]}&quot; | jq -s &#x27;{items: .}&#x27; &gt; &quot;$MANIFEST&quot;
+diff -u &quot;$EXPECTED&quot; &lt;(jq -r &#x27;.items[].artifact&#x27; &quot;$MANIFEST&quot; | sort)
+
+# SLOW lane: one round-level description Batch wave followed by one dependent
+# comparison Batch wave. Re-running this block resumes the recorded run; it
+# never creates a replacement run after an interruption or partial result.
+DETECT_LOG=&quot;$T/notes/r1-blind-detect.log&quot;
+if [[ -s &quot;$DETECT_LOG&quot; ]]; then
+  DETECT_RUN=&quot;$(sed -n &#x27;s/^batch run: //p&#x27; &quot;$DETECT_LOG&quot; | head -n 1)&quot;
+  test -n &quot;$DETECT_RUN&quot;
+  python3 tools/blind_detect_round.py --resume-run &quot;$DETECT_RUN&quot;
+else
+  python3 tools/blind_detect_round.py \
+    --manifest &quot;$MANIFEST&quot; --spec-file &quot;$T/spec.md&quot; \
+    --reviews &quot;$T/reviews.jsonl&quot; 2&gt; &gt;(tee &quot;$DETECT_LOG&quot; &gt;&amp;2)
+  DETECT_RUN=&quot;$(sed -n &#x27;s/^batch run: //p&#x27; &quot;$DETECT_LOG&quot; | head -n 1)&quot;
+  test -n &quot;$DETECT_RUN&quot;
+fi
+
+# Coordinator completion is not sufficient: PARTIAL is a durable terminal
+# state too. After the blind run lands, Dimitri appends one authoritative
+# reconciliation record per artifact through review_log.py (summary marker
+# `RECONCILED — AGREE:` when the crop and blind classes agree, `RECONCILED —
+# RESOLVED:` with his resolution when they differ). COMPLETE requires all and
+# only the expected 21 crop audits, same-run blind records, and later human
+# reconciliations, per the fail-closed jq postcondition pattern in the Tiger
+# r1 runbook (adapted to these 21 ids) — run it before any COMPLETE/public
+# handoff.</code></pre>
+<p>Run the fresh-context crop audit on each roll as it lands and append those FAST verdicts through <code>tools/review_log.py</code>. Once FAST is complete, build the r1 review panel with <code>tools/review_page.py --inline</code> and share it privately as <strong>PROVISIONAL — slow checks pending</strong>. After the SLOW lane and Dimitri&#x27;s 21 reconciliation verdicts land and the postcondition passes, the same config rebuilds as <strong>COMPLETE</strong>. Public Pages publication of the panel for Jake needs Dimitri&#x27;s separate per-review OK (<code>docs/agents/publication.md</code>); it is not pre-approved by this runbook. Results, detector run/job telemetry, and verdicts belong in <code>rounds.md</code> and <code>r1-panel.json</code>, never back in this runbook.</p>
+</details></div>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbRefRow=document.getElementById('lb-refrow'),lbRef=document.getElementById('lb-ref'),
+      lbCopyId=document.getElementById('lb-copy-id'),lbCopyLink=document.getElementById('lb-copy-link'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  const ref=z.dataset.ref||'',anchor=z.dataset.anchor||'';
+  lbRefRow.hidden=!(ref&&anchor);
+  if(ref&&anchor){
+    lbRef.textContent='#'+ref;
+    lbCopyId.dataset.copyId='#'+ref;
+    lbCopyLink.dataset.copy=anchor;
+  }
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy a card's short display id, or copy/share its deep link. The URL is this
+// page plus the card's #id anchor, so a recipient lands scrolled to (and
+// highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  const ci=e.target.closest('[data-copy-id]');
+  if(ci){copyText(ci.dataset.copyId,ci);e.preventDefault();return;}
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+</body></html>
