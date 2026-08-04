@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="68db93a4f14c7d1a40a00fca9db3ca8176535d684ef2161e82d3e29969be5c04">
+<meta name="ai-stl-plan-digest" content="00f8f9cca2add6a3fe5ae118df2d9233a6fb4d1445d3f6e9f7b4bd30acf6835e">
 <title>Scythe Valkyrie — Round 1 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -468,8 +468,13 @@ test &quot;$(git rev-parse HEAD)&quot; = &quot;$(git rev-parse origin/main)&quot
 # Append the Discord start reply with a destination-scoped --once id.
 # Advance its header using that completed reply&#x27;s --event-id.
 # Only then run the paid provider commands below.</code></pre>
-<p>Then the generation itself, as <strong>21 independently recoverable cells</strong> — one per (direction × model). Standard models run as single-variant <code>compare_gen.py</code> calls (<code>flash31</code> as a Gemini Batch cell, <code>gptimage2</code>/<code>seedream45</code>/<code>grokq</code> via OpenRouter, all through the shared spend-preflight ledger); riverflow25 and mai25pro as direct <code>openrouter_gen.py</code> calls with the aspect pinned; flashlite31 as direct <code>gemini_gen.py</code> Batch calls. Every cell goes through one <code>submit</code> guard that (a) <strong>skips the cell when its <code>-1</code> output already exists</strong>, so re-running the whole block after a partial failure completes only missing work and never duplicates a successful paid call, (b) tees the cell&#x27;s stderr to a durable per-cell log under <code>notes/</code> so a submitted Gemini Batch run id survives an interruption, and (c) pushes outputs to Drive immediately on success.</p>
-<p><strong>Recovery rule (Codex review, 2026-08-04):</strong> never resubmit a cell whose log records a submitted Gemini Batch run without a delivered output — finish it with <code>gemini_gen.py --resume-run RUN_ID</code>; after an ambiguous create, reconcile with <code>gemini_batch.py list --remote</code> + <code>attach</code> first, per the skill. OpenRouter cells are synchronous: a cell with no <code>-1</code> output has not been paid a completed call and simply re-runs through the same guard. A cell that somehow produced a <code>-2</code> roll (a resubmission that raced a slow success) is surplus: keep the <code>-1</code> artifact as the round&#x27;s planned output — the manifest below accepts exactly the <code>-1</code> ids — and record the surplus roll in <code>rounds.md</code>.</p>
+<p>Then the generation itself, as <strong>21 independently recoverable cells</strong> — one per (direction × model). Standard models run as single-variant <code>compare_gen.py</code> calls (<code>flash31</code> as a Gemini Batch cell, <code>gptimage2</code>/<code>seedream45</code>/<code>grokq</code> via OpenRouter, all through the shared spend-preflight ledger); riverflow25 and mai25pro as direct <code>openrouter_gen.py</code> calls with the aspect pinned; flashlite31 as direct <code>gemini_gen.py</code> Batch calls. Every cell goes through one <code>submit</code> guard that (a) <strong>skips the cell when its <code>-1</code> output already exists</strong>, so re-running the whole block after a partial failure completes only missing work and never duplicates a successful paid call, (b) tees the cell&#x27;s <strong>combined stdout and stderr</strong> to a durable per-cell log under <code>notes/</code> — <code>gemini_gen.py</code> prints its <code>batch run:</code> id on stdout, and <code>compare_gen.py</code> releases the child&#x27;s stdout when the child exits — so a submitted Gemini Batch run id survives an interruption, and (c) pushes outputs to Drive immediately on success, with a <strong>final unconditional Drive push after the wait loop</strong> so skip-path outputs whose earlier push failed, and outputs recovered outside the wrapper by <code>--resume-run</code>, still reach durability before anything downstream runs.</p>
+<p><strong>Recovery rules (Codex reviews, 2026-08-04):</strong></p>
+<ul>
+<li><strong>Gemini cells</strong> (<code>flash31</code>, <code>flashlite31</code>): never resubmit a cell whose log records a submitted Batch run without a delivered output — finish it with <code>gemini_gen.py --resume-run RUN_ID</code>. If the cell died before the id reached the log (<code>compare_gen.py</code> buffers the child&#x27;s stdout until exit), reconcile first with <code>gemini_batch.py list --remote</code> and <code>attach</code>, per the skill&#x27;s ambiguous-create procedure — the durable batch registry, not the log, is the source of truth in that case.</li>
+<li><strong>OpenRouter cells</strong> (<code>gptimage2</code>, <code>seedream45</code>, <code>grokq</code>, <code>riverflow25</code>, <code>mai25pro</code>): a missing <code>-1</code> output is NOT proof the call was unpaid. A clean pre-submission failure (an error before the request was accepted) re-runs through the guard. An AMBIGUOUS failure — timeout or lost response after the request was sent — is a MANUAL STOP: check the provider&#x27;s recorded activity and the live balance against the spend ledger, record the resolution in <code>rounds.md</code>, and only then either re-run the cell or account the lost call against the cap. Never blindly re-run an ambiguous OpenRouter cell.</li>
+<li><strong>Surplus rolls:</strong> a <code>-2</code> artifact (a resubmission that raced a slow success) does not block the round — the manifest scan below matches only <code>-1</code> filenames, so surplus rolls are excluded from the planned set while staying in place on disk and in lineage. Record any surplus roll and its cause in <code>rounds.md</code>.</li>
+</ul>
 <pre class="code"><code>set -euo pipefail
 T=projects/bluemneme/scythe-valkyrie
 mkdir -p &quot;$T/generated&quot;
@@ -498,7 +503,9 @@ submit() {  # submit &lt;artifact-id-glob&gt; &lt;log-name&gt; &lt;cmd...&gt;
     echo &quot;skip (already complete): $glob&quot;
     return 0
   fi
-  ( &quot;$@&quot; 2&gt; &gt;(tee -a &quot;$T/notes/$log&quot; &gt;&amp;2) \
+  # Tee BOTH streams: gemini_gen prints its &quot;batch run:&quot; id on stdout.
+  # pipefail (set above) makes the tee pipeline carry the command&#x27;s failure.
+  ( &quot;$@&quot; 2&gt;&amp;1 | tee -a &quot;$T/notes/$log&quot; \
     &amp;&amp; bash tools/drive_sync.sh push &quot;$T/generated&quot; ) &amp;
   PIDS+=($!)
 }
@@ -525,11 +532,15 @@ for v in v1-no-hood v2-hood-up v3-hood-down; do
       --model gemini-3.1-flash-lite-image --image-size 1K
 done
 FAIL=0
-for pid in &quot;${PIDS[@]}&quot;; do wait &quot;$pid&quot; || FAIL=1; done
+for pid in &quot;${PIDS[@]:-}&quot;; do [[ -n &quot;$pid&quot; ]] &amp;&amp; { wait &quot;$pid&quot; || FAIL=1; }; done
+# Final unconditional Drive push: covers skip-path outputs whose earlier
+# push failed and outputs recovered outside the wrapper by --resume-run.
+bash tools/drive_sync.sh push &quot;$T/generated&quot;
 (( FAIL == 0 )) || {
-  echo &quot;a generation cell failed — check $T/notes/r1-gen-*.log for a&quot; &gt;&amp;2
-  echo &quot;submitted Gemini batch run id; resume it, never resubmit; then&quot; &gt;&amp;2
-  echo &quot;re-run this block (completed cells are skipped)&quot; &gt;&amp;2
+  echo &quot;a generation cell failed — apply the per-provider recovery rules&quot; &gt;&amp;2
+  echo &quot;above (Gemini: resume, never resubmit; OpenRouter: ambiguous&quot; &gt;&amp;2
+  echo &quot;failures are a manual reconciliation stop), then re-run this&quot; &gt;&amp;2
+  echo &quot;block (completed cells are skipped)&quot; &gt;&amp;2
   exit 1
 }
 
@@ -548,10 +559,13 @@ for v in v1 v2 v3; do
   done
 done | sort &gt; &quot;$EXPECTED&quot;
 
+# Match only the planned -1 rolls: a recorded surplus -2 roll stays in
+# place for lineage without blocking this exact-set gate.
 find &quot;$T/generated&quot; -maxdepth 1 -type f \
-  \( -name &#x27;scythe-valkyrie-r1-v*.png&#x27; -o -name &#x27;scythe-valkyrie-r1-v*.jpg&#x27; \
-     -o -name &#x27;scythe-valkyrie-r1-v*.jpeg&#x27; -o \
-     -name &#x27;scythe-valkyrie-r1-v*.webp&#x27; \) \
+  \( -name &#x27;scythe-valkyrie-r1-v*-1.png&#x27; \
+     -o -name &#x27;scythe-valkyrie-r1-v*-1.jpg&#x27; \
+     -o -name &#x27;scythe-valkyrie-r1-v*-1.jpeg&#x27; \
+     -o -name &#x27;scythe-valkyrie-r1-v*-1.webp&#x27; \) \
   -printf &#x27;%f\n&#x27; | sed -E &#x27;s/\.(png|jpe?g|webp)$//&#x27; | sort &gt; &quot;$ACTUAL&quot;
 diff -u &quot;$EXPECTED&quot; &quot;$ACTUAL&quot;
 
