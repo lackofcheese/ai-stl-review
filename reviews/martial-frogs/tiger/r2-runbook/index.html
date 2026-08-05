@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="6c3abe10a7d378e5b47adead33d812fce5fd2ded70f915e7df3028afae273d93">
+<meta name="ai-stl-plan-digest" content="1114f4b217e91bae93dbd280bd3fa1eb3b2b34365c8c3005391cfe1ad4219448">
 <title>Tiger — Round 2 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -291,7 +291,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere;
 <nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Toadal Kombat</a><span class="sep">&rsaquo;</span><a href="../">Tiger</a></nav>
 <h1>Tiger — Round 2 runbook</h1>
 <span class="crosslink" style="opacity:.55;pointer-events:none" title="Published at round close">&#128203; Review panel &mdash; at round close</span>
-<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>concept sweep — resolved-design base concept selection + prompt-length experiment</dd><dt>Status</dt><dd>Proposed — awaiting sign-off</dd><dt>Owner</dt><dd>Claude (local) → Dimitri + Jawaknight review</dd><dt>Date opened</dt><dd>2026-08-04</dd><dt>Amended</dt><dd>2026-08-06, pre-sign-off (Dimitri, in-session), twice — (1) prompt-length experiment added: compressed and minimal prompt arms, 6 → 18 images; (2) riverflow25 trimmed to 2 rolls per tier on cost (~2× gptimage2 per call), 18 → 15 images; both logged as <code>plan-amendment</code> records in <code>round-feedback.jsonl</code></dd><dt>Inputs</dt><dd>text-only <code>tiger/spec.md</code> v2 (anthro body plan + tangzhuang wardrobe, from the 2026-08-04 r1 feedback); no reference images attached to any call</dd><dt>Produces</dt><dd>15 front-view concepts under <code>generated/</code>: per tier prefix (<code>tiger-r2</code>, <code>tiger-r2-comp</code>, <code>tiger-r2-min</code>), <code>-gptimage2-{1,2,3}</code> and <code>-riverflow25-{1,2}</code></dd><dt>Branch</dt><dd><code>claude/tiger-r2-runbook</code>; amendment branch <code>claude/tiger-r2-prompt-text-experiment-d16f99</code></dd><dt>Gemini mode</dt><dd>batch (blind detector only — no Gemini generation arms this round)</dd><dt>Evaluation lanes</dt><dd>FAST — fresh-context crop audit as each image lands; SLOW — one two-wave round-level Batch blind detector across all 15 images, then blind/crop reconciliation</dd><dt>Prior round</dt><dd>r1 body-plan sweep (18 concepts; provisional panel published). Carried feedback (<code>round-feedback.jsonl</code>, 2026-08-04, Jawaknight + Dimitri): anthro before heroic, bullfrog dropped outright; no headband (&quot;too Ninja Turtles&quot;); wardrobe is a short-sleeved tangzhuang per Jawa&#x27;s Hero Forge Lino 2 concept and his supplied Tang-suit reference, with shorts so the frog skin shows; the tiger-claw stance read best from gptimage2 and riverflow25 but several models drew literal claws (now an explicit frog-pads negative); feet-planted needs harder anchoring. Dimitri directed a fresh from-scratch round rather than an edit pass on an r1 render.</dd></dl>
+<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>concept sweep — resolved-design base concept selection + prompt-length experiment</dd><dt>Status</dt><dd>Proposed — awaiting sign-off</dd><dt>Owner</dt><dd>Claude (local) → Dimitri + Jawaknight review</dd><dt>Date opened</dt><dd>2026-08-04</dd><dt>Amended</dt><dd>2026-08-06, pre-sign-off (Dimitri, in-session), three times — (1) prompt-length experiment added: compressed and minimal prompt arms, 6 → 18 images; (2) riverflow25 trimmed to 2 rolls per tier on cost (~2× gptimage2 per call), 18 → 15 images; (3) exact text-only call inputs and same-stem OpenRouter interruption recovery made explicit, with the inapplicable <code>gen_round.py</code> rollout observation left to the next eligible round; all logged as <code>plan-amendment</code> records in <code>round-feedback.jsonl</code></dd><dt>Inputs</dt><dd>three text-only prompt files derived from <code>tiger/spec.md</code> v2; no images are attached to any generation call. The spec is the approved design source and SLOW-lane comparison input, not a separate model-visible generation input</dd><dt>Produces</dt><dd>15 front-view concepts under <code>generated/</code>: per tier prefix (<code>tiger-r2</code>, <code>tiger-r2-comp</code>, <code>tiger-r2-min</code>), <code>-gptimage2-{1,2,3}</code> and <code>-riverflow25-{1,2}</code></dd><dt>Branch</dt><dd><code>claude/tiger-r2-runbook</code>; amendment branches <code>claude/tiger-r2-prompt-text-experiment-d16f99</code>, <code>claude/tiger-r2-riverflow-two-rolls</code>, and <code>codex/tiger-r2-pre-signoff-corrections</code></dd><dt>Gemini mode</dt><dd>batch (blind detector only — no Gemini generation arms this round)</dd><dt>Evaluation lanes</dt><dd>FAST — fresh-context crop audit as each image lands; SLOW — one two-wave round-level Batch blind detector across all 15 images, then blind/crop reconciliation</dd><dt>Prior round</dt><dd>r1 body-plan sweep (18 concepts; provisional panel published). Carried feedback (<code>round-feedback.jsonl</code>, 2026-08-04, Jawaknight + Dimitri): anthro before heroic, bullfrog dropped outright; no headband (&quot;too Ninja Turtles&quot;); wardrobe is a short-sleeved tangzhuang per Jawa&#x27;s Hero Forge Lino 2 concept and his supplied Tang-suit reference, with shorts so the frog skin shows; the tiger-claw stance read best from gptimage2 and riverflow25 but several models drew literal claws (now an explicit frog-pads negative); feet-planted needs harder anchoring. Dimitri directed a fresh from-scratch round rather than an edit pass on an r1 render.</dd></dl>
 <h2>Goal</h2>
 <p>Round 1&#x27;s feedback set the body-plan direction — anthro frame, heavyweight mass, recorded PRELIMINARY with Jawaknight&#x27;s formal pick still open (this round&#x27;s results panel re-asks it with real renders) — and the wardrobe question answered itself in the Discord feedback: Tiger and the linos wear traditional Chinese tangzhuang, not gi-and-headband training wear. This round generates the first concepts of the working design contract (spec v2) and asks Jawaknight and Dimitri to pick ONE render as the lineage base that carries into pose/camera refinement and the turnaround. It is a fresh text-only round: no r1 artifact is consumed, so nothing here depends on the still-open r1 reconciliations.</p>
 <p>The 2026-08-06 amendment adds a piggybacked <strong>prompt-length experiment</strong> (Dimitri&#x27;s ask): our prompts only ever grow — every defect earns another constraint or negative — and we have never measured whether the added text still helps or has started to hurt. Two mechanisms make harm plausible: attention dilution (many simultaneous constraints each get less weight) and negation leakage (the full prompt names claws, talons, stripes, headbands and hats in order to forbid them, and image models sometimes render mentioned-but-negated concepts — r1 drew literal claws). All three prompt tiers target the SAME resolved design, so any roll from any arm can still win the base pick; the experiment rides along at zero extra decision cost.</p>
@@ -299,7 +299,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere;
 <p>Every arm targets the SAME resolved design; the primary choice being made is which model&#x27;s rendering becomes the lineage base. The model panel is narrowed to the two models whose r1 anthro renders led both audit lanes — gptimage2 (the only r1 artifact both machine lanes rated FIXABLE) and riverflow25 — a narrowing Jawaknight confirmed on Discord 2026-08-05 (&quot;sounds good&quot; to gptimage2 + riverflow only). Three gptimage2 rolls per tier, because feature defects are a stochastic lottery and its rolls are cheap; riverflow25 runs two per tier since its per-call price is roughly double (second amendment).</p>
 <p>The amendment adds a second, orthogonal axis: THREE prompt tiers of the same design at ~831 / ~460 / ~150 words. <strong>Full</strong> is the working prompt with every constraint and negative. <strong>Compressed</strong> keeps the ENTIRE constraint set at roughly half the words — it isolates pure verbosity. <strong>Minimal</strong> keeps only the essence (identity, kit summary, stance, tone; no counts, no negatives, no print-safe block) — it tests whether the model&#x27;s own priors beat our full specification.</p>
 <p>Models and shared input conventions: both models run all three tiers, text-only, no reference images; riverflow25 at 2K with <code>--aspect 2:3</code>.</p>
-<div class="tablewrap"><table><thead><tr><th>Choice</th><th>What it tests</th><th>Input(s)</th><th>Rolls</th></tr></thead><tbody><tr><td><strong>Full prompt — gptimage2</strong></td><td>Whether gptimage2&#x27;s house style (r1&#x27;s strongest anthro read) carries the tangzhuang design best</td><td>full r2 prompt + spec v2</td><td>3</td></tr><tr><td><strong>Full prompt — riverflow25</strong></td><td>Whether riverflow25 (2K, aspect-pinned; r1&#x27;s other strong anthro) carries it best</td><td>full r2 prompt + spec v2</td><td>2</td></tr><tr><td><a class="caselink" href="#case-compressed-prompt-both-models" title="Jump to this case's inputs"><strong>Compressed prompt (both models)</strong></a></td><td>Whether the same constraint set at ~half the words holds or improves per-constraint compliance (verbosity test)</td><td>compressed r2 prompt</td><td>3 + 2</td></tr><tr><td><a class="caselink" href="#case-minimal-prompt-both-models" title="Jump to this case's inputs"><strong>Minimal prompt (both models)</strong></a></td><td>Whether model priors beat full specification — scored on kept constraints and holistic quality, not on constraints it deliberately drops</td><td>minimal r2 prompt</td><td>3 + 2</td></tr></tbody></table></div>
+<div class="tablewrap"><table><thead><tr><th>Choice</th><th>What it tests</th><th>Input(s)</th><th>Rolls</th></tr></thead><tbody><tr><td><strong>Full prompt — gptimage2</strong></td><td>Whether gptimage2&#x27;s house style (r1&#x27;s strongest anthro read) carries the tangzhuang design best</td><td>full r2 prompt; text only, no images</td><td>3</td></tr><tr><td><strong>Full prompt — riverflow25</strong></td><td>Whether riverflow25 (2K, aspect-pinned; r1&#x27;s other strong anthro) carries it best</td><td>full r2 prompt; text only, no images</td><td>2</td></tr><tr><td><a class="caselink" href="#case-compressed-prompt-both-models" title="Jump to this case's inputs"><strong>Compressed prompt (both models)</strong></a></td><td>Whether the same constraint set at ~half the words holds or improves per-constraint compliance (verbosity test)</td><td>compressed r2 prompt; text only, no images</td><td>3 + 2</td></tr><tr><td><a class="caselink" href="#case-minimal-prompt-both-models" title="Jump to this case's inputs"><strong>Minimal prompt (both models)</strong></a></td><td>Whether model priors beat full specification — scored on kept constraints and holistic quality, not on constraints it deliberately drops</td><td>minimal r2 prompt; text only, no images</td><td>3 + 2</td></tr></tbody></table></div>
 <p>That is <strong>15 image calls total</strong>: 3 prompt tiers × (3 gptimage2 + 2 riverflow25 rolls) — riverflow25 runs 2 rolls per tier because its per-call price is ~2× gptimage2&#x27;s (Dimitri, 2026-08-06). seedream45, grokq, flash31, and the flashlite31 trial are dropped for Tiger concepts on r1 evidence (systematic off-brief output, weak anthro reads, or instruction-card layouts).</p>
 </div>
 <section class="rb-inputs">
@@ -396,7 +396,7 @@ He stands rooted in a deep tiger-style bow stance, both feet planted flat, prese
 <li><code>spec.md</code> v2 in this PR: body plan set as the r2 WORKING CONTRACT — anthro-frame + heavyweight-mass (F1 dropped, F2 superseded), recorded preliminary in <code>round-feedback.jsonl</code> pending Jawaknight&#x27;s formal pick; hachimaki removed with an explicit bare-head negative; gi/obi wardrobe replaced by the short-sleeved tangzhuang (mandarin collar, 4 oversized frog-button toggles, red-on-black trim per Jawa&#x27;s supplied reference), sash over jacket, knee shorts; &quot;tiger-claw is the hand SHAPE only&quot; with a no-claws/talons/nails negative (r1: several models drew literal claws); feet-planted hardened to &quot;each foot pressed flat along its full length, no tiptoe / ball-of-foot / raised heel / mid-step frame&quot;.</li>
 <li><strong>&quot;Digitigrade&quot; retired as a descriptor</strong> (Dimitri, 2026-08-05, on Codex&#x27;s r2 review finding): r1&#x27;s gptimage2 and riverflow renders showed tiptoe stances, and the word itself invites them — a digitigrade limb carries its heel off the ground, directly fighting the planted-feet contract. Prompts and audits drop the word entirely; the frog-leg read comes from proportions and webbing.</li>
 <li><code>team-brief.md</code> v1.6 in this PR: §4 lino-wardrobe note and Tiger&#x27;s §6 hooks updated to match; §10 decision record gains the 2026-08-04 wardrobe decision; Crane&#x27;s collar-distinctness flag recorded.</li>
-<li>Three prompt files, one per tier, all declaring zero attached images: <code>prompts/r2-anthro-tangzhuang.txt</code> (full, ~831 words), <code>prompts/r2-anthro-tangzhuang-compressed.txt</code> (~460 words — the ENTIRE constraint set, half the text), and <code>prompts/r2-anthro-tangzhuang-minimal.txt</code> (~150 words — essence only: identity, kit summary, stance, tone; deliberately drops all counts, negatives, proportion figures, and the print-safe block). The tiers are a DELIBERATE per-arm divergence from the single-source rule, named here and in the matrix rows: the divergence IS the experiment axis. Full and compressed must stay semantically aligned constraint-for-constraint (checked by eye at review; they are different words by design, so a byte diff cannot verify them). Frog buttons are prompted eye-sized (design-to-survive); if they still render thin they defer to paint stage rather than earning image rounds.</li>
+<li>Three frozen prompt files, one per tier, each containing the already-approved legacy sentence declaring zero attached images: <code>prompts/r2-anthro-tangzhuang.txt</code> (full, ~831 words), <code>prompts/r2-anthro-tangzhuang-compressed.txt</code> (~460 words — the ENTIRE constraint set, half the text), and <code>prompts/r2-anthro-tangzhuang-minimal.txt</code> (~150 words — essence only: identity, kit summary, stance, tone; deliberately drops all counts, negatives, proportion figures, and the print-safe block). The tiers are a DELIBERATE per-arm divergence from the single-source rule, named here and in the matrix rows: the divergence IS the experiment axis. Full and compressed must stay semantically aligned constraint-for-constraint (checked by eye at review; they are different words by design, so a byte diff cannot verify them). Per the post-freeze text-only rule from PR #353, keep those model-visible declaration sentences as-run; the metadata, choices table, cases sidecar, and experiment matrix now hold the exact call inputs. Frog buttons are prompted eye-sized (design-to-survive); if they still render thin they defer to paint stage rather than earning image rounds.</li>
 <li><strong>Codex consistency fixes folded into this amendment (Dimitri, 2026-08-06):</strong> (1) frog-button count standardized to <strong>exactly four</strong> across <code>spec.md</code>, the full and compressed prompts, and the FAST audit (the spec previously allowed 4–5 while the prompt said four); (2) forearm geometry de-contradicted — wraps cover the LOWER forearm and a visible band of moss-green skin separates wrap from sleeve cuff (the prompt previously called forearms &quot;bare&quot; and then wrapped them wrist-to-elbow), with the same visible-skin treatment applied at the knees; (3) the sash&#x27;s back knot is kept as a design/prompt requirement but removed from the front-view FAST audit, which now checks the observable condition only (no front/side knot, no hanging tails) — rear verification happens at turnaround time.</li>
 <li>Model panel narrowed on r1 evidence recorded in <code>reviews.jsonl</code>: <code>tiger-r1-f3-gptimage2-1</code> was the only artifact both lanes rated FIXABLE; <code>tiger-r1-f3-riverflow25-1</code> led the crop lane. seedream45 (systematic off-brief), grokq and flash31 (weak anthro), and the flashlite31 trial (instruction-card layouts, negative trial evidence) are dropped for Tiger.</li>
 <li>Both arms run via OpenRouter (no Gemini generation); the blind detector remains Gemini Batch, so the host still needs a seeded Gemini balance.</li>
@@ -458,6 +458,8 @@ python3 tools/discord_share.py --channel tiger \
   --event-id tiger-r2-amendment-prompt-length</code></pre>
 <h3>Second amendment republish + Discord update (2026-08-06, after the riverflow-rolls PR merges)</h3>
 <p>Same pattern as the first amendment (thread reply first, then the header, sharing one new once-id <code>tiger-r2-amendment-riverflow-rolls</code>): re-render and republish this page, append a short reply stating riverflow25 drops to 2 rolls per tier on cost (15 concepts, ≈ $4.31 planned under a $6.00 cap), then advance header <code>1534417093829726260</code> with the new figures and the Runbook link.</p>
+<h3>Third amendment republish + Discord update (2026-08-06, after the execution-safety PR merges)</h3>
+<p>Re-render and republish the same runbook slug, then append a short thread reply stating that the 15-call matrix and $6.00 cap are unchanged while exact text-only inputs, same-stem OpenRouter interruption recovery, and rollout eligibility are clarified. Advance header <code>1534417093829726260</code> from that reply using once-id <code>tiger-r2-amendment-execution-safety</code>; the visible status, decision, spend, estimate, and Runbook link stay unchanged.</p>
 <h3>Commands (run after sign-off, durable greenlight, and the merge-triggered start)</h3>
 <p>On Dimitri&#x27;s sign-off: flip <code>Status:</code> to <code>Approved — not started (Dimitri, &lt;date&gt;)</code>, commit + push, re-publish this page from that commit, then append the gate pinning that exact commit and its published render; post the approval reply and advance the header once the status change is on <code>main</code>. Execution then waits for the merge-triggered start PR per the skill&#x27;s lifecycle, with the exact-main + gate verification before the first paid call.</p>
 <pre class="code"><code>python3 tools/round_gate.py append \
@@ -470,10 +472,55 @@ python3 tools/discord_share.py --channel tiger \
 python3 tools/round_gate.py verify \
   --file projects/martial-frogs/tiger/round-gates.jsonl --round r2 \
   --published-html &quot;$AI_STL_REVIEW_DIR/reviews/martial-frogs/tiger/r2-runbook/index.html&quot;</code></pre>
-<p>Generation (both arms via OpenRouter; live balance is fetched by the preflight; the Gemini seed below is for the SLOW-lane detector):</p>
+<p>Generation (both arms via OpenRouter; live balance is fetched by the preflight; the Gemini seed below is for the SLOW-lane detector). This round&#x27;s deliberate same-stem rolls remain outside <code>gen_round.py</code> v1. It has no Gemini generation cell, so it does <strong>not</strong> own the coordinator rollout observation: the Batch detector is not a generation cell, no call may be added or substituted to manufacture eligibility, and the one-time observation remains with the next already-approved round that actually uses the coordinator with a Gemini generation cell.</p>
+<p>The following is a <strong>fresh-launch-only</strong> block. Its Drive pull, durable-log screen, and provider-side reconciliation must establish that no R2 launch has started before the first paid call. The provider check is mandatory on every host, including a replacement host with an empty worktree: inspect OpenRouter Activity/Usage and the live balance from the durable merge-triggered-start UTC through now, reconcile every accepted/charged request in that window against the generation log and spend-preflight ledger, and <strong>HOLD</strong> on any unmatched or inconclusive activity. This closes the interval in which a host could disappear after provider acceptance but before an output or local log becomes durable. Run the block once only after that check is clear; after any nonzero exit or interruption, use the recovery block below rather than running it again.</p>
 <pre class="code"><code>set -euo pipefail
 T=projects/martial-frogs/tiger
 mkdir -p &quot;$T/generated&quot; &quot;$T/notes&quot;
+
+# Set this exact acknowledgement only after completing the provider-side
+# reconciliation above. It is a fail-closed operator gate, not durable proof;
+# every replacement host must perform the provider check again.
+: &quot;${OPENROUTER_R2_FRESH_RECONCILED:?HOLD: reconcile OpenRouter activity first}&quot;
+if [ &quot;$OPENROUTER_R2_FRESH_RECONCILED&quot; != clear ]; then
+  echo &quot;OpenRouter reconciliation is not clear; HOLD&quot; &gt;&amp;2
+  exit 1
+fi
+
+# A blank local worktree is not evidence of a fresh round: hydrate the
+# canonical binary store first, then refuse any local/Drive or durable-log
+# evidence of an earlier R2 launch.
+bash tools/drive_sync.sh pull &quot;$T/generated&quot;
+python3 - &quot;$T/generated&quot; &quot;$T/lineage.json&quot; \
+  logs/image-gen-martial-frogs.jsonl &quot;$T/notes&quot; &lt;&lt;&#x27;PY&#x27;
+import pathlib
+import re
+import sys
+
+generated, lineage, genlog, notes = map(pathlib.Path, sys.argv[1:])
+artifact = re.compile(
+    r&quot;^tiger-r2(?:-(?:comp|min))?-(?:gptimage2|riverflow25)-[0-9]+$&quot;
+)
+evidence = [
+    str(path) for path in generated.iterdir()
+    if path.is_file() and artifact.fullmatch(path.stem)
+]
+for path in (lineage, genlog):
+    text = path.read_text(encoding=&quot;utf-8&quot;)
+    if &quot;tiger-r2&quot; in text:
+        evidence.append(f&quot;{path}: contains tiger-r2 history&quot;)
+evidence.extend(str(path) for path in notes.glob(&quot;r2-generation-pids*.tsv&quot;))
+if evidence:
+    print(&quot;R2 prior-launch evidence exists; HOLD and use recovery:&quot;, file=sys.stderr)
+    print(&quot;\n&quot;.join(sorted(evidence)), file=sys.stderr)
+    raise SystemExit(1)
+PY
+
+PID_LOG=&quot;$T/notes/r2-generation-pids.tsv&quot;
+if ! (set -C; : &gt; &quot;$PID_LOG&quot;) 2&gt;/dev/null; then
+  echo &quot;PID log already exists; HOLD and use recovery: $PID_LOG&quot; &gt;&amp;2
+  exit 1
+fi
 
 # Mandatory before the first paid Gemini call on this host (detector lane).
 python3 tools/spend_preflight.py set-balance gemini AMOUNT_USD
@@ -494,19 +541,33 @@ for tier_spec in \
       --out-dir &quot;$T/generated&quot; --out-stem &quot;$STEM_PREFIX&quot; \
       --variants gptimage2 --drive-sync &amp;
     PIDS+=($!)
+    printf &#x27;%s\t%s\t%s\n&#x27; &quot;$!&quot; &quot;$STEM_PREFIX&quot; gptimage2 &gt;&gt; &quot;$PID_LOG&quot;
   done
   for i in 1 2; do
-    ( python3 tools/openrouter_gen.py \
-        --prompt-file &quot;$T/prompts/$PROMPT_FILE&quot; \
-        --out-dir &quot;$T/generated&quot; --out-stem &quot;$STEM_PREFIX-riverflow25&quot; \
-        --model sourceful/riverflow-v2.5-pro --resolution 2K --aspect 2:3 \
-      &amp;&amp; bash tools/drive_sync.sh push &quot;$T/generated&quot; ) &amp;
+    python3 tools/openrouter_gen.py \
+      --prompt-file &quot;$T/prompts/$PROMPT_FILE&quot; \
+      --out-dir &quot;$T/generated&quot; --out-stem &quot;$STEM_PREFIX-riverflow25&quot; \
+      --model sourceful/riverflow-v2.5-pro --resolution 2K --aspect 2:3 \
+      --drive-sync &amp;
     PIDS+=($!)
+    printf &#x27;%s\t%s\t%s\n&#x27; \
+      &quot;$!&quot; &quot;$STEM_PREFIX-riverflow25&quot; riverflow25 &gt;&gt; &quot;$PID_LOG&quot;
   done
 done
 FAIL=0
 for pid in &quot;${PIDS[@]}&quot;; do wait &quot;$pid&quot; || FAIL=1; done
-(( FAIL == 0 )) || { echo &quot;a generation arm failed&quot; &gt;&amp;2; exit 1; }
+(( FAIL == 0 )) || { echo &quot;a generation arm failed&quot; &gt;&amp;2; exit 1; }</code></pre>
+<h4>Interrupted same-stem OpenRouter recovery</h4>
+<p>If the fresh launch exits nonzero, is interrupted, or loses its controlling shell, <strong>HOLD</strong> before the detector and do not rerun the launch block:</p>
+<ol>
+<li>Preserve the PID log and every local/Drive artifact. Confirm every recorded PID still identifies the expected cell process before acting on it, then confirm each child has exited; if an expected child still runs, let it finish and perform its Drive handoff before judging the cell. Never kill a surviving paid wrapper merely to make recovery simpler. If R2 evidence exists but the prior PID/launch state cannot be reconstructed, <strong>HOLD</strong> and ask Dimitri rather than treating the worktree as fresh.</li>
+<li>Hydrate canonical state with <code>bash tools/drive_sync.sh pull &quot;$T/generated&quot;</code>, perform one unconditional <code>bash tools/drive_sync.sh push &quot;$T/generated&quot;</code>, then pull once more before inventorying each of the six exact cells against its approved count: 3 gptimage2 or 2 riverflow25 outputs. Cross-check local files, Drive, lineage, <code>logs/image-gen-martial-frogs.jsonl</code>, OpenRouter provider activity/usage and live balance, and the host spend-preflight ledger. Do not delete, rename, or promote a surplus or non-contiguous output.</li>
+<li>A wrapper that started but has no durable output is an <strong>ambiguous manual stop</strong>. Append the reconciliation to <code>rounds.md</code>: UTC interval, PID and cell/out-stem, local and Drive inventories, provider activity/usage and balance evidence, ledger reservation/reconciliation, and the resulting decision. Inconclusive evidence or any evidence of provider acceptance or charge means no retry; ask Dimitri for a new logged plan amendment because a replacement would exceed the approved 15 calls. Only independently proven non-acceptance/non-charge may authorize launching exactly the missing count for that one cell with its original command.</li>
+<li>Never rerun completed cells or the whole 15-call block. Any output beyond the approved per-cell count is preserved and logged, and blocks the detector until Dimitri decides its disposition. Once recovery is reconciled, run the exact-set gate below; it must still find all and only the 15 approved ids.</li>
+</ol>
+<p>Exact-set gate and SLOW lane (run only after the fresh launch or a documented recovery has completed successfully):</p>
+<pre class="code"><code>set -euo pipefail
+T=projects/martial-frogs/tiger
 
 # Exact 15-artifact detector manifest, enumerated independently of the scan.
 EXPECTED=&quot;$T/notes/r2-blind-expected.txt&quot;
