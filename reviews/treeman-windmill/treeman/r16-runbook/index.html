@@ -22,6 +22,22 @@ h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
   font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
   border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
 .crosslink:hover { background:var(--accent); color:#fff }
+.reviewtools { display:flex; justify-content:flex-end; margin:.35rem 0 0 }
+.devmode { display:inline-flex; align-items:center; gap:.5rem; color:var(--dim);
+  font-size:.76rem; font-weight:650; cursor:pointer; user-select:none }
+.devmode input { appearance:none; position:relative; width:2.15rem; height:1.18rem;
+  margin:0; border:1px solid var(--dim); border-radius:99px;
+  background:var(--line); cursor:pointer; transition:background .15s,border-color .15s }
+.devmode input::after { content:""; position:absolute; width:.78rem; height:.78rem;
+  left:.14rem; top:.13rem; border-radius:50%; background:var(--ink);
+  transition:transform .15s }
+.devmode input:checked { background:var(--accent); border-color:var(--accent) }
+.devmode input:checked::after { transform:translateX(.95rem); background:#fff }
+.devmode input:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+.developer-only[hidden] { display:none !important }
+.developer-section { margin:2.4rem 0 0; padding:1rem;
+  border:1px dashed var(--line); border-radius:8px }
+.developer-section > h2:first-child { margin-top:0 }
 .breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
 .breadcrumb a { color:var(--dim); text-decoration:none }
 .breadcrumb a:hover { color:var(--accent) }
@@ -58,6 +74,11 @@ h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
 .call.reject { color:var(--bad) } .call.other { color:var(--dim) }
 .call.pick { color:var(--accent) }
 .call { cursor:help }
+.recommendation { color:var(--ink) !important; font-size:.88rem !important;
+  padding:.55rem .65rem; border-left:3px solid var(--accent);
+  background:color-mix(in srgb,var(--accent) 8%,transparent); border-radius:4px }
+.recommendation strong { color:var(--accent); font-size:.7rem;
+  letter-spacing:.06em; text-transform:uppercase; margin-right:.3rem }
 .cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
   margin:-.15rem 0 .05rem }
 .refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
@@ -91,6 +112,7 @@ footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
 .chip.bad { color:var(--bad); border-color:var(--bad) }
 .chip.warn { color:var(--warn); border-color:var(--warn) }
 .chip.unclear { color:var(--dim); border-color:var(--dim) }
+.detector-details { display:flex; flex-direction:column; gap:.45rem }
 .meta p { margin:0; color:var(--dim); font-size:.86rem }
 details.more { margin:0 }
 details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
@@ -266,8 +288,9 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere;
   padding:.7rem .85rem; font-size:.78rem; line-height:1.5; max-height:32rem;
   overflow:auto; margin:0 0 .85rem }
 </style></head><body><main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Treeman-windmill</a><span class="sep">&rsaquo;</span><a href="../">Treeman</a></nav>
 <h1>Treeman-windmill — Round 16 runbook</h1>
-<span class="crosslink" style="opacity:.55;pointer-events:none" title="Published at round close">&#128203; Review panel &mdash; at round close</span>
+<a class="crosslink" href="../r16-panel/">&#128203; Review panel &rarr;</a>
 <div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>photographic-reference preparation (tone) + Meshy run</dd><dt>Status</dt><dd>Approved — not started (Dimitri, 2026-08-03) · plan frozen; crop gate PASSED (gamma 0.55); no Meshy calls yet</dd><dt>Owner</dt><dd>Claude (local) → Dimitri review (Babs has the final POC say)</dd><dt>Date opened</dt><dd>2026-08-03</dd><dt>Inputs</dt><dd><code>treeman-r15-panel-{tl,tr,ml}</code> (the approved r15 crops, reused byte-identical) + <code>treeman-r16-panel-mr</code> (the same rear rectangle with one gamma-0.55 tone lift)</dd><dt>Produces</dt><dd>the raw meshes <code>models/round-16/treeman-r16-photo-m{1,2}-raw.stl</code></dd><dt>Branch</dt><dd><code>claude/treeman-r16-brightened-rear</code></dd><dt>Evaluation lanes</dt><dd>FAST only — Drive push on landing, unit-neutral trimesh validation, turnaround + base-plane renders, and a fresh-context per-feature comparative review against the source photographs and r15&#x27;s meshes. No image generation, so no blind-detect lane; every required check is fast.</dd><dt>Prior round</dt><dd>r15&#x27;s external review (Babs, 2026-08-03, final): the photo-direct STL is broadly good enough and the windmill sails are his only nitpick — the reconstruction bends the blades, and the dark rear view is the suspect. Babs&#x27;s own brightness-lifted edit of the rear photo read much clearer, and Dimitri directed that the pipeline reproduce that lift with standard tooling and re-roll with it as the single changed variable. Separation of the windmill into its own piece was diagnosis, not a requirement. The clay-turnaround sweep that previously held this slot is dropped (<code>r16-clay-sweep-dropped.md</code>).</dd></dl>
 <h2>Goal</h2>
 <p>Fix the one defect Babs flagged in r15: the windmill sails came back bent. The working theory — Babs&#x27;s own — is that the rear photograph is simply too dark for the reconstruction to read the rotor&#x27;s geometry cleanly. This round tests exactly that and nothing else: the same Meshy task as r15, with the same three approved view crops, and only the rear view swapped for a brightness-lifted version of the identical rectangle. If the sails come back straight, the cheapest possible fix worked; if they still bend, we know brightness was not the problem and the planned escalation is generating additional rear-angle views instead.</p>
@@ -284,16 +307,16 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere;
 <h3 class="rb-case-h">r15 task re-run with the brightened rear view<span class="rb-case-count">4 images · 1 prompt</span></h3>
 <p class="rb-case-note">The four Meshy views: front tl (0 deg) plus tr (-20), ml (+45) and the brightened mr (180). tl/tr/ml are the r15 panel files byte-for-byte — not re-cut, not re-saved — so &#x27;unchanged&#x27; holds by construction. mr is the same 430x560 base-anchored rectangle with a gamma-0.55 monotonic tone lift and nothing else: pixel-exactly the LUT of the approved r15 mr panel.</p>
 <div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">tl (0 deg, front) — r15 file reused</span><code class="rb-art-id">treeman-r15-panel-tl</code><button class="ibtn" data-inputs="in-0">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/2dddbd7033505278.jpg" data-cap="treeman-r15-panel-tl"><img src="../../../../assets/2dddbd7033505278.jpg" alt="treeman-r15-panel-tl" loading="lazy"></div></figure>
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/7dc1680d41ee97b9.png" data-cap="treeman-r15-panel-tl"><img src="../../../../assets/2dddbd7033505278.jpg" alt="treeman-r15-panel-tl" loading="lazy"></div></figure>
 </div></div>
 <div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">tr (-20 deg) — r15 file reused</span><code class="rb-art-id">treeman-r15-panel-tr</code><button class="ibtn" data-inputs="in-1">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/17fd47b04201d37d.jpg" data-cap="treeman-r15-panel-tr"><img src="../../../../assets/17fd47b04201d37d.jpg" alt="treeman-r15-panel-tr" loading="lazy"></div></figure>
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/1c014cbbb9fac9e3.png" data-cap="treeman-r15-panel-tr"><img src="../../../../assets/17fd47b04201d37d.jpg" alt="treeman-r15-panel-tr" loading="lazy"></div></figure>
 </div></div>
 <div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">ml (+45 deg) — r15 file reused</span><code class="rb-art-id">treeman-r15-panel-ml</code><button class="ibtn" data-inputs="in-2">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/28301d681ef228ce.jpg" data-cap="treeman-r15-panel-ml"><img src="../../../../assets/28301d681ef228ce.jpg" alt="treeman-r15-panel-ml" loading="lazy"></div></figure>
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/39debbd1c0607769.png" data-cap="treeman-r15-panel-ml"><img src="../../../../assets/28301d681ef228ce.jpg" alt="treeman-r15-panel-ml" loading="lazy"></div></figure>
 </div></div>
 <div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">mr (180 deg) — brightened, gamma 0.55</span><code class="rb-art-id">treeman-r16-panel-mr</code><button class="ibtn" data-inputs="in-3">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/3986081259a9d1e4.jpg" data-cap="treeman-r16-panel-mr"><img src="../../../../assets/3986081259a9d1e4.jpg" alt="treeman-r16-panel-mr" loading="lazy"></div></figure>
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b406500b6cf1c727.png" data-cap="treeman-r16-panel-mr"><img src="../../../../assets/3986081259a9d1e4.jpg" alt="treeman-r16-panel-mr" loading="lazy"></div></figure>
 </div></div>
 <details class="rb-prompt"><summary>Manifest — Meshy task manifest (both rolls, pinned settings) <span class="rb-size">1 kB</span></summary><p class="path">projects/treeman-windmill/notes/r16-meshy-manifest.json</p><pre>{
   &quot;tasks&quot;: [
@@ -331,7 +354,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere;
 <h3 class="rb-case-h">Tone evidence — what the crop gate approves<span class="rb-case-count">1 image · 2 prompts</span></h3>
 <p class="rb-case-note">The rear window at gamma 1.0 (original, as r15 ran it) beside the 0.75 / 0.65 / 0.55 / 0.50 candidates. Recommendation: gamma 0.55 — subject mean luminance 87 -&gt; 131, and the map drives no value to saturation (the 0.67% black / 0.0003% white saturated after mapping are pre-existing in the photograph) — as the closest match to the brightness-lifted reference edit Babs supplied on Discord. The committed crop report records the tone parameters, both saturation measures, and the hash checks tying every panel back to the approved r15 crops.</p>
 <div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Original + four tone candidates</span><code class="rb-art-id">treeman-r16-crop-evidence-mr</code><button class="ibtn" data-inputs="in-4">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/dcfec66632e5d533.jpg" data-cap="treeman-r16-crop-evidence-mr"><img src="../../../../assets/ed86a581c561c4df.jpg" alt="treeman-r16-crop-evidence-mr" loading="lazy"></div></figure>
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/067ab63495851696.png" data-cap="treeman-r16-crop-evidence-mr"><img src="../../../../assets/ed86a581c561c4df.jpg" alt="treeman-r16-crop-evidence-mr" loading="lazy"></div></figure>
 </div></div>
 <details class="rb-prompt"><summary>Manifest — Crop manifest (r15 geometry + mr tone) <span class="rb-size">4 kB</span></summary><p class="path">projects/treeman-windmill/runbooks/r16-reference-crops.json</p><pre>{
   &quot;purpose&quot;: &quot;photographic-reference&quot;,
@@ -733,12 +756,22 @@ const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
       lbRefRow=document.getElementById('lb-refrow'),lbRef=document.getElementById('lb-ref'),
       lbCopyId=document.getElementById('lb-copy-id'),lbCopyLink=document.getElementById('lb-copy-link'),
       lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
-      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body');
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body'),
+      developerMode=document.getElementById('developer-mode');
 let gal=[],idx=-1;
 const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
 let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
 const pts=new Map();                 // active pointers, for pan + pinch
 let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+function setDeveloperMode(enabled){
+  document.querySelectorAll('[data-developer]').forEach(function(node){node.hidden=!enabled;});
+  document.documentElement.dataset.developer=enabled?'true':'false';
+  if(developerMode)developerMode.setAttribute('aria-checked',enabled?'true':'false');
+}
+if(developerMode){
+  developerMode.addEventListener('change',function(){setDeveloperMode(developerMode.checked);});
+  setDeveloperMode(false);
+}
 // The gallery is scoped to where the opened image lives: reference thumbs
 // inside an inputs panel cycle among themselves; every other [data-full]
 // (the review's card images) forms the main gallery.
