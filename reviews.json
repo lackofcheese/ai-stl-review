@@ -8,6 +8,9 @@
   "gorgon-r5-panel": "cyber-amazons/gorgon/r5-panel",
   "team-brief": "cyber-amazons/team-brief"
  },
+ "_unlisted": [
+  "treeman-windmill"
+ ],
  "bluemneme/scythe-valkyrie/concept-brief": {
   "published": "2026-08-03T11:21:50.447803+00:00",
   "title": "Scythe Valkyrie \u2014 Design Direction",

@@ -254,7 +254,21 @@ def _validate_manifest(
     else:
         redirects = redirects_value
 
-    canonical = {key for key in manifest if key != "_redirects"}
+    unlisted_value = manifest.get("_unlisted", [])
+    if not isinstance(unlisted_value, list):
+        errors.append("reviews.json:_unlisted must be an array")
+        unlisted: set[str] = set()
+    else:
+        unlisted = set()
+        for prefix in unlisted_value:
+            if not isinstance(prefix, str) or not REDIRECT_SLUG.fullmatch(prefix):
+                errors.append(
+                    f"reviews.json:_unlisted: invalid listing prefix {prefix!r}"
+                )
+                continue
+            unlisted.add(prefix)
+
+    canonical = {key for key in manifest if not key.startswith("_")}
     redirect_slugs = set(redirects)
     landing_dirs: set[Path] = set()
     if not canonical:
@@ -317,13 +331,31 @@ def _validate_manifest(
     for missing in sorted(expected_pages - actual_pages):
         errors.append(f"{missing.as_posix()}: expected manifest or landing page is missing")
 
+    def under_prefix(slug: str, prefix: str) -> bool:
+        return slug == prefix or slug.startswith(prefix + "/")
+
+    def hidden_from(scope: str, slug: str) -> bool:
+        depth = len([part for part in scope.split("/") if part])
+        return any(
+            under_prefix(slug, prefix) and depth < len(prefix.split("/"))
+            for prefix in unlisted
+        )
+
     root_index = root / "index.html"
     if root_index in parsed_html:
         root_targets = _local_targets(root, root_index, parsed_html[root_index])
         for project in sorted({directory for directory in landing_dirs if len(directory.parts) == 2}):
             expected = project / "index.html"
-            if expected not in root_targets:
+            project_slug = project.parts[1]
+            visible = any(
+                slug == project_slug or slug.startswith(project_slug + "/")
+                for slug in canonical
+                if not hidden_from("", slug)
+            )
+            if visible and expected not in root_targets:
                 errors.append(f"index.html: missing project landing link to {project.as_posix()}/")
+            if not visible and expected in root_targets:
+                errors.append(f"index.html: unlisted project is exposed: {project.as_posix()}/")
 
     for slug in sorted(canonical):
         parts = slug.split("/")
@@ -334,8 +366,13 @@ def _validate_manifest(
         )
         landing_path = root / landing
         expected = Path("reviews") / slug / "index.html"
-        if landing_path in parsed_html and expected not in _local_targets(
+        scope = "/".join(parts[:2]) if len(parts) >= 3 else parts[0]
+        if (
+            not hidden_from(scope, slug)
+            and landing_path in parsed_html
+            and expected not in _local_targets(
             root, landing_path, parsed_html[landing_path]
+            )
         ):
             errors.append(f"{landing.as_posix()}: missing manifest page link to reviews/{slug}/")
 
@@ -344,8 +381,17 @@ def _validate_manifest(
             continue
         project_index = root / directory.parent / "index.html"
         expected = directory / "index.html"
-        if project_index in parsed_html and expected not in _local_targets(
-            root, project_index, parsed_html[project_index]
+        scope = directory.parts[1]
+        character_slug = "/".join(directory.parts[1:])
+        visible = any(
+            (slug == character_slug or slug.startswith(character_slug + "/"))
+            and not hidden_from(scope, slug)
+            for slug in canonical
+        )
+        if (
+            visible
+            and project_index in parsed_html
+            and expected not in _local_targets(root, project_index, parsed_html[project_index])
         ):
             errors.append(
                 f"{_display(project_index, root)}: missing character landing link to {directory.as_posix()}/"
@@ -457,22 +503,52 @@ def _validate_workflows(root: Path, errors: list[str]) -> None:
         if AI_WORKFLOW.search(text):
             errors.append(f"{label}: automatic AI/LLM invocation is forbidden in this public repository")
         if not re.search(r"(?m)^permissions:\s*\n\s{2}contents:\s*read\s*$", text):
-            errors.append(f"{label}: top-level permissions must be exactly least-privilege contents: read")
-        if len(re.findall(r"(?m)^\s*permissions:\s*$", text)) != 1:
-            errors.append(f"{label}: job-level or duplicate permissions blocks are forbidden")
-        for permission in ACTION_PERMISSION.finditer(text):
-            if permission.groups() != ("contents", "read"):
+            errors.append(f"{label}: top-level permissions must begin with least-privilege contents: read")
+
+        is_pages = path.name in {"pages.yml", "pages.yaml"}
+        permissions = [match.groups() for match in ACTION_PERMISSION.finditer(text)]
+        if is_pages:
+            if re.search(r"\bpull_request\b", text):
+                errors.append(f"{label}: Pages deployment must never run for pull requests")
+            if not re.search(r"(?m)^\s{2}cancel-in-progress:\s*false\s*$", text):
+                errors.append(f"{label}: Pages deployments must serialize without cancellation")
+            if not re.search(r"(?m)^\s{2}group:\s*pages\s*$", text):
+                errors.append(f"{label}: Pages deployment concurrency group must be 'pages'")
+            required = {("contents", "read"), ("pages", "write"), ("id-token", "write")}
+            allowed = required
+            if not required.issubset(set(permissions)):
+                errors.append(f"{label}: Pages deployment permissions are incomplete")
+            for permission in permissions:
+                if permission not in allowed:
+                    errors.append(
+                        f"{label}: unnecessary Actions permission: "
+                        f"{permission[0]}: {permission[1]}"
+                    )
+            validator = text.find("python -B scripts/validate_site.py .")
+            upload = text.find("actions/upload-pages-artifact@")
+            deploy = text.find("actions/deploy-pages@")
+            if min(validator, upload, deploy) < 0 or not validator < upload < deploy:
                 errors.append(
-                    f"{label}: unnecessary Actions permission: "
-                    f"{permission.group(1)}: {permission.group(2)}"
+                    f"{label}: validation, artifact upload, and deployment must appear in fail-closed order"
                 )
+            if not re.search(r"(?m)^\s{10}timeout:\s*900000\s*$", text):
+                errors.append(f"{label}: Pages client timeout must be 900000 ms")
+        else:
+            if len(re.findall(r"(?m)^\s*permissions:\s*$", text)) != 1:
+                errors.append(f"{label}: job-level or duplicate permissions blocks are forbidden")
+            for permission in permissions:
+                if permission != ("contents", "read"):
+                    errors.append(
+                        f"{label}: unnecessary Actions permission: "
+                        f"{permission[0]}: {permission[1]}"
+                    )
         for match in re.finditer(r"(?m)^\s*-?\s*uses:\s*([^\s#]+)", text):
             action = match.group(1)
             if action.startswith("./"):
                 continue
             if "@" not in action or not PINNED_ACTION.fullmatch(action.rsplit("@", 1)[1]):
                 errors.append(f"{label}: action is not pinned to an immutable commit SHA: {action}")
-        if re.search(r"\bpull_request\b", text):
+        if re.search(r"\bpull_request\b", text) and not is_pages:
             if not re.search(r"(?m)^concurrency:\s*$", text):
                 errors.append(f"{label}: pull-request workflow needs a concurrency group")
             if not re.search(r"(?m)^\s{2}cancel-in-progress:\s*true\s*$", text):
