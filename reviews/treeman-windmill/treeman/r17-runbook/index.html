@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="0141a09ef30ff098073f1d1b1406ea4eec8391571a97f2c5fb27063795fbdf34">
+<meta name="ai-stl-plan-digest" content="8bb06d01a19218ee7ccc132e001bfe73555ce96b777fd3cba2c614909bc09bd9">
 <title>Treeman-windmill — Round 17 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -1920,7 +1920,7 @@ labels anywhere.
 <div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">mr (180°)</span><code class="rb-art-id">treeman-r16-panel-mr</code><button class="ibtn" data-inputs="in-24">how it was made</button></div><div class="rb-strip">
 <figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/3986081259a9d1e4.jpg" data-cap="treeman-r16-panel-mr"><img src="../../../../assets/3986081259a9d1e4.jpg" alt="treeman-r16-panel-mr" loading="lazy"></div></figure>
 </div></div>
-<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Manifest — Wave-2 manifest committed at selection (see runbook wave-2 matrix)<span class="rb-size">25 kB · 3,477 words</span></summary><div class="phead"><p class="path">projects/treeman-windmill/runbooks/r17-runbook.md</p><button class="copy" data-copy>Copy manifest</button></div><pre># Treeman-windmill — Round 17 runbook
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Manifest — Wave-2 manifest committed at selection (see runbook wave-2 matrix)<span class="rb-size">25 kB · 3,480 words</span></summary><div class="phead"><p class="path">projects/treeman-windmill/runbooks/r17-runbook.md</p><button class="copy" data-copy>Copy manifest</button></div><pre># Treeman-windmill — Round 17 runbook
 
 **Round type:** turnaround sweep + clay conversion + Meshy run — the sail-recovery experiment grid: 8 image calls plus up to 50 Meshy rolls against expiring credits
 **Status:** Awaiting sign-off
@@ -2273,11 +2273,12 @@ python3 tools/blind_detect_round.py \
   --manifest projects/treeman-windmill/notes/r17-blind-manifest.json \
   --reviews projects/treeman-windmill/reviews.jsonl
 # Record its run id; recover only with --resume-run RUN_ID.
+mkdir -p projects/treeman-windmill/concept-art/round-17
 for SHEET in orig-grokq orig-flash31 bright-grokq bright-flash31; do
   python3 tools/gemini_review.py \
     --spec projects/treeman-windmill/review-spec.json \
     --sheet projects/treeman-windmill/generated/treeman-r17-clay-B-2x2-$SHEET-1.png \
-    --out projects/treeman-windmill/concept-art/round-17/
+    --out projects/treeman-windmill/concept-art/round-17/treeman-r17-clay-B-2x2-$SHEET-review.json
 done
 ```
 
@@ -2316,7 +2317,7 @@ review, not this runbook, are where outcomes and verdicts live.
 <div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">mr (180°)</span><code class="rb-art-id">treeman-r16-panel-mr</code><button class="ibtn" data-inputs="in-26">how it was made</button></div><div class="rb-strip">
 <figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/3986081259a9d1e4.jpg" data-cap="treeman-r16-panel-mr"><img src="../../../../assets/3986081259a9d1e4.jpg" alt="treeman-r16-panel-mr" loading="lazy"></div></figure>
 </div></div>
-<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Manifest — Wave-2 manifest committed at selection<span class="rb-size">25 kB · 3,477 words</span></summary><div class="phead"><p class="path">projects/treeman-windmill/runbooks/r17-runbook.md</p><button class="copy" data-copy>Copy manifest</button></div><pre># Treeman-windmill — Round 17 runbook
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Manifest — Wave-2 manifest committed at selection<span class="rb-size">25 kB · 3,480 words</span></summary><div class="phead"><p class="path">projects/treeman-windmill/runbooks/r17-runbook.md</p><button class="copy" data-copy>Copy manifest</button></div><pre># Treeman-windmill — Round 17 runbook
 
 **Round type:** turnaround sweep + clay conversion + Meshy run — the sail-recovery experiment grid: 8 image calls plus up to 50 Meshy rolls against expiring credits
 **Status:** Awaiting sign-off
@@ -2669,11 +2670,12 @@ python3 tools/blind_detect_round.py \
   --manifest projects/treeman-windmill/notes/r17-blind-manifest.json \
   --reviews projects/treeman-windmill/reviews.jsonl
 # Record its run id; recover only with --resume-run RUN_ID.
+mkdir -p projects/treeman-windmill/concept-art/round-17
 for SHEET in orig-grokq orig-flash31 bright-grokq bright-flash31; do
   python3 tools/gemini_review.py \
     --spec projects/treeman-windmill/review-spec.json \
     --sheet projects/treeman-windmill/generated/treeman-r17-clay-B-2x2-$SHEET-1.png \
-    --out projects/treeman-windmill/concept-art/round-17/
+    --out projects/treeman-windmill/concept-art/round-17/treeman-r17-clay-B-2x2-$SHEET-review.json
 done
 ```
 
@@ -2709,7 +2711,7 @@ review, not this runbook, are where outcomes and verdicts live.
 <div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Reference the sheet converts (sheet itself is a round output)</span><code class="rb-art-id">treeman-r17-source-4view-turntable-2x2-bright</code><button class="ibtn" data-inputs="in-27">how it was made</button></div><div class="rb-strip">
 <figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/9b780761ed54656c.jpg" data-cap="treeman-r17-source-4view-turntable-2x2-bright"><img src="../../../../assets/e1abdc5a1e0d80a9.jpg" alt="treeman-r17-source-4view-turntable-2x2-bright" loading="lazy"></div></figure>
 </div></div>
-<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Manifest — Wave-2 manifest committed at selection<span class="rb-size">25 kB · 3,477 words</span></summary><div class="phead"><p class="path">projects/treeman-windmill/runbooks/r17-runbook.md</p><button class="copy" data-copy>Copy manifest</button></div><pre># Treeman-windmill — Round 17 runbook
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Manifest — Wave-2 manifest committed at selection<span class="rb-size">25 kB · 3,480 words</span></summary><div class="phead"><p class="path">projects/treeman-windmill/runbooks/r17-runbook.md</p><button class="copy" data-copy>Copy manifest</button></div><pre># Treeman-windmill — Round 17 runbook
 
 **Round type:** turnaround sweep + clay conversion + Meshy run — the sail-recovery experiment grid: 8 image calls plus up to 50 Meshy rolls against expiring credits
 **Status:** Awaiting sign-off
@@ -3062,11 +3064,12 @@ python3 tools/blind_detect_round.py \
   --manifest projects/treeman-windmill/notes/r17-blind-manifest.json \
   --reviews projects/treeman-windmill/reviews.jsonl
 # Record its run id; recover only with --resume-run RUN_ID.
+mkdir -p projects/treeman-windmill/concept-art/round-17
 for SHEET in orig-grokq orig-flash31 bright-grokq bright-flash31; do
   python3 tools/gemini_review.py \
     --spec projects/treeman-windmill/review-spec.json \
     --sheet projects/treeman-windmill/generated/treeman-r17-clay-B-2x2-$SHEET-1.png \
-    --out projects/treeman-windmill/concept-art/round-17/
+    --out projects/treeman-windmill/concept-art/round-17/treeman-r17-clay-B-2x2-$SHEET-review.json
 done
 ```
 
@@ -3102,7 +3105,7 @@ review, not this runbook, are where outcomes and verdicts live.
 <div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Reference the sheet converts (sheet itself is a round output)</span><code class="rb-art-id">treeman-r15-source-4view-turntable-2x2</code><button class="ibtn" data-inputs="in-28">how it was made</button></div><div class="rb-strip">
 <figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b9532aea464e11b2.jpg" data-cap="treeman-r15-source-4view-turntable-2x2"><img src="../../../../assets/e56e91ef8741b548.jpg" alt="treeman-r15-source-4view-turntable-2x2" loading="lazy"></div></figure>
 </div></div>
-<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Manifest — Wave-2 manifest committed at selection<span class="rb-size">25 kB · 3,477 words</span></summary><div class="phead"><p class="path">projects/treeman-windmill/runbooks/r17-runbook.md</p><button class="copy" data-copy>Copy manifest</button></div><pre># Treeman-windmill — Round 17 runbook
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Manifest — Wave-2 manifest committed at selection<span class="rb-size">25 kB · 3,480 words</span></summary><div class="phead"><p class="path">projects/treeman-windmill/runbooks/r17-runbook.md</p><button class="copy" data-copy>Copy manifest</button></div><pre># Treeman-windmill — Round 17 runbook
 
 **Round type:** turnaround sweep + clay conversion + Meshy run — the sail-recovery experiment grid: 8 image calls plus up to 50 Meshy rolls against expiring credits
 **Status:** Awaiting sign-off
@@ -3455,11 +3458,12 @@ python3 tools/blind_detect_round.py \
   --manifest projects/treeman-windmill/notes/r17-blind-manifest.json \
   --reviews projects/treeman-windmill/reviews.jsonl
 # Record its run id; recover only with --resume-run RUN_ID.
+mkdir -p projects/treeman-windmill/concept-art/round-17
 for SHEET in orig-grokq orig-flash31 bright-grokq bright-flash31; do
   python3 tools/gemini_review.py \
     --spec projects/treeman-windmill/review-spec.json \
     --sheet projects/treeman-windmill/generated/treeman-r17-clay-B-2x2-$SHEET-1.png \
-    --out projects/treeman-windmill/concept-art/round-17/
+    --out projects/treeman-windmill/concept-art/round-17/treeman-r17-clay-B-2x2-$SHEET-review.json
 done
 ```
 
@@ -3869,11 +3873,12 @@ python3 tools/stl_render.py --stl &quot;$STL&quot; \
   --manifest projects/treeman-windmill/notes/r17-blind-manifest.json \
   --reviews projects/treeman-windmill/reviews.jsonl
 # Record its run id; recover only with --resume-run RUN_ID.
+mkdir -p projects/treeman-windmill/concept-art/round-17
 for SHEET in orig-grokq orig-flash31 bright-grokq bright-flash31; do
   python3 tools/gemini_review.py \
     --spec projects/treeman-windmill/review-spec.json \
     --sheet projects/treeman-windmill/generated/treeman-r17-clay-B-2x2-$SHEET-1.png \
-    --out projects/treeman-windmill/concept-art/round-17/
+    --out projects/treeman-windmill/concept-art/round-17/treeman-r17-clay-B-2x2-$SHEET-review.json
 done</code></pre>
 <h4>Wave-2 Meshy (after SLOW completes and the selection rule picks inputs)</h4>
 <p>Apply the selection rule, record the chosen ids in <code>rounds.md</code>, commit <code>notes/r17-meshy-wave2.json</code> naming those exact files (clay slot crops cut first with <code>meshy_crops.py --grid 2x2</code> + divider trim, crops audited against the source at 2x before spend), then:</p>
