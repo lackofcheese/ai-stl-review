@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>TIGER — resolved-design concept sweep</title>
+<style>
+:root{color-scheme:dark light;--accent:#d98d1f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.reviewtools { display:flex; justify-content:flex-end; margin:.35rem 0 0 }
+.devmode { display:inline-flex; align-items:center; gap:.5rem; color:var(--dim);
+  font-size:.76rem; font-weight:650; cursor:pointer; user-select:none }
+.devmode input { appearance:none; position:relative; width:2.15rem; height:1.18rem;
+  margin:0; border:1px solid var(--dim); border-radius:99px;
+  background:var(--line); cursor:pointer; transition:background .15s,border-color .15s }
+.devmode input::after { content:""; position:absolute; width:.78rem; height:.78rem;
+  left:.14rem; top:.13rem; border-radius:50%; background:var(--ink);
+  transition:transform .15s }
+.devmode input:checked { background:var(--accent); border-color:var(--accent) }
+.devmode input:checked::after { transform:translateX(.95rem); background:#fff }
+.devmode input:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+.developer-only[hidden] { display:none !important }
+.developer-section { margin:2.4rem 0 0; padding:1rem;
+  border:1px dashed var(--line); border-radius:8px }
+.developer-section > h2:first-child { margin-top:0 }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.coreinputs { margin:1.2rem 0 .4rem }
+.coreinputs h2 { margin:0 0 .5rem }
+.coreinputs .hint { color:var(--dim); font-weight:400; font-size:.85rem }
+.inputrow { display:flex; flex-wrap:wrap; gap:12px }
+.coreinput { margin:0; width:210px; max-width:100%;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.coreinput .imgwrap { border-bottom:1px solid var(--line) }
+.coreinput .imgwrap img { max-height:230px }
+.coreinput figcaption { color:var(--dim); font-size:.7rem; padding:.35rem .5rem;
+  word-break:break-all; font-family:ui-monospace,SFMono-Regular,Menlo,monospace }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.recommendation { color:var(--ink) !important; font-size:.88rem !important;
+  padding:.55rem .65rem; border-left:3px solid var(--accent);
+  background:color-mix(in srgb,var(--accent) 8%,transparent); border-radius:4px }
+.recommendation strong { color:var(--accent); font-size:.7rem;
+  letter-spacing:.06em; text-transform:uppercase; margin-right:.3rem }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.statrow { display:flex; flex-wrap:wrap; gap:.15rem .5rem; margin:0 0 .1rem;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.72rem;
+  color:var(--dim) }
+.statrow span { white-space:nowrap }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.chip.unclear { color:var(--dim); border-color:var(--dim) }
+.detector-details { display:flex; flex-direction:column; gap:.45rem }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:calc(100vh - 7rem); object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-meta { display:flex; flex-direction:column; align-items:center; gap:.35rem;
+  min-height:2.2rem; position:relative; z-index:20 }
+.lb-refrow { display:flex; align-items:center; justify-content:center; gap:.35rem;
+  flex-wrap:wrap }
+.lb-refrow[hidden] { display:none }
+.lb-refrow .refid { background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn { color:#bbb; border-color:#55515d;
+  background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+</style></head><body><main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Martial Frogs</a><span class="sep">&rsaquo;</span><a href="../">Tiger</a></nav>
+<div class="eyebrow">Toadal Kombat · Tiger · round 2 · PROVISIONAL — human reconciliation pending · 2026-08-06</div>
+<h1>TIGER — resolved-design concept sweep</h1>
+<a class="crosslink" href="../r2-runbook/">&#128214; Round runbook &rarr;</a>
+<div class="reviewtools"><label class="devmode" title="Show detector chips and full AI audit notes"><input id="developer-mode" type="checkbox" role="switch" aria-checked="false">Developer Mode</label></div>
+<p class="sub">Tiger round 2 held one resolved anthro tangzhuang design constant across full, compressed, and minimal text-only prompts. GPT Image 2 contributed three rolls per tier and Riverflow 2.5 Pro contributed two, yielding the exact approved 15-concept matrix.</p>
+<div class="callout"><strong>Machine pre-read: crop lane 11 FIXABLE / 4 REJECT; blind lane 1 FIXABLE / 14 REJECT; 5 agreements and 10 disagreements.</strong> No concept is keeper-ready in either lane. Visible side/front sash knots or hanging tails are the dominant recurring failure; Dimitri's eye-call resolves the stricter blind judgments.</div>
+<div class="callout asks"><p class="boxhead">Verdicts / info needed</p><p class="intro">Both machine lanes are complete. This panel remains provisional while Dimitri's 15 final reconciliations are open. The normal cards show the latest fresh-context crop recommendation; Developer Mode carries the detailed checks and lane comparison.</p><ol><li><span class="q">Which of the 15 concepts should become Tiger's lineage base?</span><span class="who">Jawaknight + Dimitri</span><p class="d">Pick one render, name it winner-with-edit and the required local repair, or reject all 15 with a sharper target. No downstream generation starts from this provisional panel.</p></li><li><span class="q">Do the forearm and shin wraps stay with the tangzhuang look?</span><span class="who">Jawaknight</span><p class="d">Default is keep: they add useful mass to thin frog limbs for printing.</p></li><li><span class="q">Keep the black jacket with red trim, or use another colourway?</span><span class="who">Jawaknight</span><p class="d">This affects concept presentation only; the sculpt and turnaround will be monochrome.</p></li><li><span class="q">Does the public provisional panel show the intended 15 concepts clearly?</span><span class="who">Dimitri</span><p class="d">Public Pages publication is approved. Please verify this visibly provisional page by eye; the 15 human reconciliations still gate completion and any base promotion.</p></li></ol></div>
+<section class="developer-only developer-section" data-developer hidden><h2>Developer diagnostics — audit comparison</h2><div class="tablewrap"><table><tr><th>Roll</th><th>Crop audit</th><th>Blind detector</th><th>Gate</th></tr><tr><td>Full · GPT Image 2 · 1</td><td>FIXABLE</td><td>REJECT</td><td>RESOLVE</td></tr><tr><td>Full · GPT Image 2 · 2</td><td>FIXABLE</td><td>FIXABLE</td><td>AGREE</td></tr><tr><td>Full · GPT Image 2 · 3</td><td>FIXABLE</td><td>REJECT</td><td>RESOLVE</td></tr><tr><td>Full · Riverflow 2.5 · 1</td><td>REJECT</td><td>REJECT</td><td>AGREE</td></tr><tr><td>Full · Riverflow 2.5 · 2</td><td>FIXABLE</td><td>REJECT</td><td>RESOLVE</td></tr><tr><td>Compressed · GPT Image 2 · 1</td><td>FIXABLE</td><td>REJECT</td><td>RESOLVE</td></tr><tr><td>Compressed · GPT Image 2 · 2</td><td>FIXABLE</td><td>REJECT</td><td>RESOLVE</td></tr><tr><td>Compressed · GPT Image 2 · 3</td><td>FIXABLE</td><td>REJECT</td><td>RESOLVE</td></tr><tr><td>Compressed · Riverflow 2.5 · 1</td><td>FIXABLE</td><td>REJECT</td><td>RESOLVE</td></tr><tr><td>Compressed · Riverflow 2.5 · 2</td><td>FIXABLE</td><td>REJECT</td><td>RESOLVE</td></tr><tr><td>Minimal · GPT Image 2 · 1</td><td>REJECT</td><td>REJECT</td><td>AGREE</td></tr><tr><td>Minimal · GPT Image 2 · 2</td><td>REJECT</td><td>REJECT</td><td>AGREE</td></tr><tr><td>Minimal · GPT Image 2 · 3</td><td>FIXABLE</td><td>REJECT</td><td>RESOLVE</td></tr><tr><td>Minimal · Riverflow 2.5 · 1</td><td>FIXABLE</td><td>REJECT</td><td>RESOLVE</td></tr><tr><td>Minimal · Riverflow 2.5 · 2</td><td>REJECT</td><td>REJECT</td><td>AGREE</td></tr></table></div></section>
+<h2>Full prompt</h2>
+<p class="blurb">The complete working prompt: every resolved design constraint, print-safety instruction, and negative.</p>
+<div class="grid">
+<div class="card" id="tiger-r2-gptimage2-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/230d84bb4b7958b0.jpg" data-cap="Full · GPT Image 2 · 1" data-ref="gptimage2-1" data-anchor="tiger-r2-gptimage2-1"><img src="../../../../assets/37badb368cb222f3.jpg" alt="Full · GPT Image 2 · 1" loading="lazy"></div><div class="meta"><header><h3>Full · GPT Image 2 · 1</h3><span class="cost">$0.17</span><span class="call fixable" title="FIXABLE — one local sash cleanup">FIXABLE</span></header><div class="cardref"><a class="refid" href="#tiger-r2-gptimage2-1" title="Deep link to this image">#gptimage2-1</a><button class="refbtn" data-copy-id="#gptimage2-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r2-gptimage2-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r2-gptimage2-1" data-title="Full · GPT Image 2 · 1" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> FIXABLE — one local sash cleanup</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="viewer-left waist · sash construction — A visible side knot/loop with hanging red tails violates the clean sash requirement.">sash construction</span><span class="chip bad" title="blind cross-check — REJECT — Multiple critical deviations from the brief, including incorrect jacket fastener count, incorrect sash knot placement and style, and a fundamental misinterpretation of the &quot;tiger-claw&quot; hand pose for one hand. Printability concerns for thin parts are also noted.">blind cross-check</span><span class="chip ok" title="head/whole figure · frog identity and tone — Bare smooth frog head, serious closed expression, and no tiger/feline, hair, or wart traits.">frog identity and…</span><span class="chip ok" title="torso/limbs · jacket and limb kit — Mandarin collar, one placket of exactly four large toggles, short sleeves with green bands, and forearm/shin wraps all read clearly.">jacket and limb k…</span></div><details class="more"><summary>4 more detectors (8 total)</summary><div class="chips"><span class="chip ok" title="lower body · shorts and knees — Knee shorts leave a moss-green knee band above both shin wraps.">shorts and knees</span><span class="chip ok" title="hands · both empty hands — Each hand clearly has four connected webbed rounded digits, no claws or nails, and no held object.">both empty hands</span><span class="chip ok" title="feet · both feet and ground — Bare four-digit webbed feet show full planted contact without a visibly raised heel.">both feet and gro…</span><span class="chip ok" title="whole image · forbidden content — No weapon, ball, mon, number, or text.">forbidden content</span></div></details></div><p>Single local sash edit: a viewer-left knot and tails remain; anatomy, four toggles, empty four-digit hands, and planted feet pass.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">The held-constant frog identity, kit, hands, and feet are coherent; removing the visible side sash knot and tails is an edit-safe local correction.</p></details><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="tiger-r2-gptimage2-2"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/89056a66b8ba370d.jpg" data-cap="Full · GPT Image 2 · 2" data-ref="gptimage2-2" data-anchor="tiger-r2-gptimage2-2"><img src="../../../../assets/83a082bd25c3ef30.jpg" alt="Full · GPT Image 2 · 2" loading="lazy"></div><div class="meta"><header><h3>Full · GPT Image 2 · 2</h3><span class="cost">$0.17</span><span class="call fixable" title="FIXABLE — one local sash cleanup">FIXABLE</span></header><div class="cardref"><a class="refid" href="#tiger-r2-gptimage2-2" title="Deep link to this image">#gptimage2-2</a><button class="refbtn" data-copy-id="#gptimage2-2" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r2-gptimage2-2" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r2-gptimage2-2" data-title="Full · GPT Image 2 · 2" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> FIXABLE — one local sash cleanup</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="viewer-left waist · sash construction — A side sash loop/tail projects behind the waist.">sash construction</span><span class="chip warn" title="blind cross-check — FIXABLE — Critical printability issues with delicate fasteners and thin trim, plus minor pose/webbing deviations.">blind cross-check</span><span class="chip ok" title="head/whole figure · frog identity and tone — Bare smooth frog head has a serious non-cartoon read with no feline traits, hair, or warts.">frog identity and…</span><span class="chip ok" title="torso/limbs · jacket and limb kit — Mandarin collar, exactly four large placket toggles, green sleeve bands, and both forearm/shin wraps are visible.">jacket and limb k…</span></div><details class="more"><summary>4 more detectors (8 total)</summary><div class="chips"><span class="chip ok" title="lower body · shorts and knees — Knee shorts expose moss-green knee bands above the shin wraps.">shorts and knees</span><span class="chip ok" title="hands · both empty hands — Both hands resolve to four connected, webbed rounded digits and hold nothing.">both empty hands</span><span class="chip ok" title="feet · both feet and ground — Bare webbed feet are fully planted with no visible tiptoe or raised heel.">both feet and gro…</span><span class="chip ok" title="whole image · forbidden content — No weapon, ball, mon, number, or text.">forbidden content</span></div></details></div><p>A viewer-left sash loop/tail is the sole local failure; frog anatomy, four-toggle kit, hands, and planted feet pass.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">This is otherwise a clean held-constant render; remove the visible side sash loop/tail without changing the figure.</p></details><button class="ibtn" data-inputs="in-1">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="tiger-r2-gptimage2-3"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/8e01342758f1ff30.jpg" data-cap="Full · GPT Image 2 · 3" data-ref="gptimage2-3" data-anchor="tiger-r2-gptimage2-3"><img src="../../../../assets/38590bd484327373.jpg" alt="Full · GPT Image 2 · 3" loading="lazy"></div><div class="meta"><header><h3>Full · GPT Image 2 · 3</h3><span class="cost">$0.17</span><span class="call fixable" title="FIXABLE — one local sash cleanup">FIXABLE</span></header><div class="cardref"><a class="refid" href="#tiger-r2-gptimage2-3" title="Deep link to this image">#gptimage2-3</a><button class="refbtn" data-copy-id="#gptimage2-3" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r2-gptimage2-3" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r2-gptimage2-3" data-title="Full · GPT Image 2 · 3" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> FIXABLE — one local sash cleanup</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="viewer-right waist · sash construction — A visible side sash knot/tail projects from the waist.">sash construction</span><span class="chip bad" title="blind cross-check — REJECT — Warty skin, incorrect button count/size, and wrong sash knot placement/style directly contradict key brief requirements.">blind cross-check</span><span class="chip ok" title="head/whole figure · frog identity and tone — Bare smooth frog head is serious and non-feline, with no hair, warts, stripes, fur, or whiskers.">frog identity and…</span><span class="chip ok" title="torso/limbs · jacket and limb kit — Mandarin collar, exactly four large toggles, short sleeves with green bands, and forearm/shin wraps are clear.">jacket and limb k…</span></div><details class="more"><summary>4 more detectors (8 total)</summary><div class="chips"><span class="chip ok" title="lower body · shorts and knees — Knee shorts and exposed moss-green knee bands above both shin wraps are present.">shorts and knees</span><span class="chip ok" title="hands · both empty hands — Both hands show four connected webbed rounded digits, with no claws, nails, or prop.">both empty hands</span><span class="chip ok" title="feet · both feet and ground — Bare webbed feet are broad and planted without a visible heel lift.">both feet and gro…</span><span class="chip ok" title="whole image · forbidden content — No weapon, ball, mon, number, or text.">forbidden content</span></div></details></div><p>Only the viewer-right side sash knot/tail fails; the identity, four-toggle kit, digits, wraps, and planted feet pass.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">The render clears the held-constant anatomy and wardrobe checks apart from the isolated visible side sash knot/tail.</p></details><button class="ibtn" data-inputs="in-2">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="tiger-r2-riverflow25-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/9091bd112d42b80f.jpg" data-cap="Full · Riverflow 2.5 · 1" data-ref="riverflow25-1" data-anchor="tiger-r2-riverflow25-1"><img src="../../../../assets/4ea75e9afd83f24a.jpg" alt="Full · Riverflow 2.5 · 1" loading="lazy"></div><div class="meta"><header><h3>Full · Riverflow 2.5 · 1</h3><span class="cost">$0.34</span><span class="call reject" title="REJECT — raised-heel pose plus side sash tails">REJECT</span></header><div class="cardref"><a class="refid" href="#tiger-r2-riverflow25-1" title="Deep link to this image">#riverflow25-1</a><button class="refbtn" data-copy-id="#riverflow25-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r2-riverflow25-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r2-riverflow25-1" data-title="Full · Riverflow 2.5 · 1" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> REJECT — raised-heel pose plus side sash tails</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="viewer-left waist · sash construction — A prominent side knot with hanging sash tails is visible.">sash construction</span><span class="chip bad" title="both feet · foot grounding — Both feet bear on the forefoot/toes while the posterior heel masses sit visibly above the ground plane.">foot grounding</span><span class="chip bad" title="blind cross-check — REJECT — Significant deviations in core frog anatomy (webbing, skin, foot digits) and key costume details (buttons, sash, arm wraps).">blind cross-check</span><span class="chip ok" title="head/whole figure · frog identity and tone — Bare smooth frog head is serious and non-feline, with no hair, warts, stripes, fur, or whiskers.">frog identity and…</span></div><details class="more"><summary>4 more detectors (8 total)</summary><div class="chips"><span class="chip ok" title="torso/limbs · jacket and limb kit — Mandarin collar, exactly four large toggles, green sleeve bands, and both forearm/shin wraps are visible.">jacket and limb k…</span><span class="chip ok" title="hands · both empty hands — Each hand has four connected webbed rounded digits and no weapon, ball, or other held object.">both empty hands</span><span class="chip ok" title="lower body · shorts and knees — Knee shorts leave moss-green knee bands above both shin wraps.">shorts and knees</span><span class="chip ok" title="whole image · forbidden content — No weapon, ball, mon, number, or text.">forbidden content</span></div></details></div><p>Raised heels plus a viewer-left sash knot/tails make this a pose-and-kit reroll despite strong frog anatomy and four-toggle kit.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">The face, clothing counts, wraps, and four-digit empty hands pass, but the required full-length planted-foot pose is structurally absent and the sash also has a visible side tie/tails.</p></details><button class="ibtn" data-inputs="in-3">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="tiger-r2-riverflow25-2"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/81ccec5b9db05188.jpg" data-cap="Full · Riverflow 2.5 · 2" data-ref="riverflow25-2" data-anchor="tiger-r2-riverflow25-2"><img src="../../../../assets/3ee156c7a0769e82.jpg" alt="Full · Riverflow 2.5 · 2" loading="lazy"></div><div class="meta"><header><h3>Full · Riverflow 2.5 · 2</h3><span class="cost">$0.34</span><span class="call fixable" title="FIXABLE — one local sash cleanup">FIXABLE</span></header><div class="cardref"><a class="refid" href="#tiger-r2-riverflow25-2" title="Deep link to this image">#riverflow25-2</a><button class="refbtn" data-copy-id="#riverflow25-2" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r2-riverflow25-2" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r2-riverflow25-2" data-title="Full · Riverflow 2.5 · 2" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> FIXABLE — one local sash cleanup</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="viewer-left waist · sash construction — A visible side loop/tail remains at the sash.">sash construction</span><span class="chip bad" title="blind cross-check — REJECT — Numerous contradictions on core identity features (warts, button count/size, sash placement, foot digit count) and printability.">blind cross-check</span><span class="chip ok" title="head/whole figure · frog identity and tone — Bare smooth frog head is serious and non-feline, with no hair, warts, stripes, fur, or whiskers.">frog identity and…</span><span class="chip ok" title="torso/limbs · jacket and limb kit — Mandarin collar, exactly four large toggles, green sleeve bands, and forearm/shin wraps all read clearly.">jacket and limb k…</span></div><details class="more"><summary>4 more detectors (8 total)</summary><div class="chips"><span class="chip ok" title="lower body · shorts and knees — Knee shorts expose moss-green knee bands above the shin wraps.">shorts and knees</span><span class="chip ok" title="hands · both empty hands — Both hands show four connected webbed rounded digits and no claws, nails, or held object.">both empty hands</span><span class="chip ok" title="feet · both feet and ground — Bare webbed feet show full planted contact with no visible tiptoe or raised heel.">both feet and gro…</span><span class="chip ok" title="whole image · forbidden content — No weapon, ball, mon, number, or text.">forbidden content</span></div></details></div><p>A viewer-left sash loop/tail is the only clear failure; the identity, kit, four-digit hands, and planted feet pass.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">This is an edit-safe candidate once the visible side sash loop/tail is removed; all other held-constant constraints are clear.</p></details><button class="ibtn" data-inputs="in-4">inputs — prompt &amp; refs</button></div></div>
+</div>
+<h2>Compressed prompt</h2>
+<p class="blurb">The same full constraint set at roughly half the words, isolating whether verbosity dilutes compliance.</p>
+<div class="grid">
+<div class="card" id="tiger-r2-comp-gptimage2-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/a15559e582ecf7a6.jpg" data-cap="Compressed · GPT Image 2 · 1" data-ref="comp-gptimage2-1" data-anchor="tiger-r2-comp-gptimage2-1"><img src="../../../../assets/24623c40d3760f42.jpg" alt="Compressed · GPT Image 2 · 1" loading="lazy"></div><div class="meta"><header><h3>Compressed · GPT Image 2 · 1</h3><span class="cost">$0.17</span><span class="call fixable" title="FIXABLE — visible viewer-left sash knot and hanging tails">FIXABLE</span></header><div class="cardref"><a class="refid" href="#tiger-r2-comp-gptimage2-1" title="Deep link to this image">#comp-gptimage2-1</a><button class="refbtn" data-copy-id="#comp-gptimage2-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r2-comp-gptimage2-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r2-comp-gptimage2-1" data-title="Compressed · GPT Image 2 · 1" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> FIXABLE — visible viewer-left sash knot and hanging tails</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="viewer-left waist · sash construction — A visible side knot and two hanging tails project from the sash.">sash construction</span><span class="chip bad" title="blind cross-check — REJECT — Multiple critical deviations: incorrect number of jacket toggles, sash knot on side with hanging tails, and one hand not in the required open tiger-claw guard.">blind cross-check</span><span class="chip ok" title="head and whole figure · frog identity and tone — Bare smooth frog head; serious expression; no hair, stripes, fur, whiskers, or feline face.">frog identity and…</span><span class="chip ok" title="torso and limbs · jacket and limb kit — Mandarin collar, one placket with exactly four large toggles, short sleeves with exposed green bands, knee bands, and forearm/shin wraps.">jacket and limb k…</span></div><details class="more"><summary>2 more detectors (6 total)</summary><div class="chips"><span class="chip ok" title="both hands and feet · hands and feet — Both hands are empty four-digit rounded claw guards; both bare webbed feet are fully planted.">hands and feet</span><span class="chip ok" title="whole frame · forbidden content — No weapon, ball, mon, number, or text.">forbidden content</span></div></details></div><p>Clean frog martial concept, but a viewer-left sash knot and tails violate the no-knot/no-tail sash rule.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">Full-frame and 2× crop audit finds a strong serious frog wuxia figure with clean four-toggle jacket, wraps, planted webbed feet, and empty rounded four-digit hands. The sole clear defect is the viewer-left side-tied sash with two hanging tails.</p></details><button class="ibtn" data-inputs="in-5">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="tiger-r2-comp-gptimage2-2"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b98905a1f346d08a.jpg" data-cap="Compressed · GPT Image 2 · 2" data-ref="comp-gptimage2-2" data-anchor="tiger-r2-comp-gptimage2-2"><img src="../../../../assets/e80b10687de7d612.jpg" alt="Compressed · GPT Image 2 · 2" loading="lazy"></div><div class="meta"><header><h3>Compressed · GPT Image 2 · 2</h3><span class="cost">$0.17</span><span class="call fixable" title="FIXABLE — side sash tails; lower-hand digit count is not fully provable">FIXABLE</span></header><div class="cardref"><a class="refid" href="#tiger-r2-comp-gptimage2-2" title="Deep link to this image">#comp-gptimage2-2</a><button class="refbtn" data-copy-id="#comp-gptimage2-2" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r2-comp-gptimage2-2" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r2-comp-gptimage2-2" data-title="Compressed · GPT Image 2 · 2" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> FIXABLE — side sash tails; lower-hand digit count is not fully provable</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="viewer-left waist · sash construction — A side knot and hanging sash tails are visible.">sash construction</span><span class="chip bad" title="blind cross-check — REJECT — Significant deviations in core frog anatomy (hand digit count), costume construction (sash knot placement), and printability (toggle size).">blind cross-check</span><span class="chip ok" title="head and whole figure · frog identity and tone — Bare smooth frog head and restrained martial read; no feline traits.">frog identity and…</span><span class="chip ok" title="torso and limbs · jacket and limb kit — Mandarin collar, exactly four large placket toggles, exposed green sleeve/knee bands, and all required wraps.">jacket and limb k…</span></div><details class="more"><summary>3 more detectors (7 total)</summary><div class="chips"><span class="chip ok" title="both feet · feet and grounding — Bare webbed feet are fully visible and planted.">feet and grounding</span><span class="chip ok" title="whole frame · forbidden content — Hands are empty; no weapon, ball, mon, number, or text.">forbidden content</span><span class="chip unclear" title="viewer-right hand · lower-hand digit count — Foreshortening and overlap prevent a confident count of four connected digits.">lower-hand digit…</span></div></details></div><p>Sash knot/tails fail the brief, and the foreshortened lower hand does not clearly prove all four connected digits.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">The figure otherwise holds the frog identity, serious wuxia tone, four-toggle mandarin jacket, wraps, exposed skin bands, and planted webbed feet. Repair the viewer-left sash knot/tails and make the lower hand&#x27;s four connected rounded digits unambiguous.</p></details><button class="ibtn" data-inputs="in-6">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="tiger-r2-comp-gptimage2-3"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b7fc64fde1450326.jpg" data-cap="Compressed · GPT Image 2 · 3" data-ref="comp-gptimage2-3" data-anchor="tiger-r2-comp-gptimage2-3"><img src="../../../../assets/e27e80549697db14.jpg" alt="Compressed · GPT Image 2 · 3" loading="lazy"></div><div class="meta"><header><h3>Compressed · GPT Image 2 · 3</h3><span class="cost">$0.17</span><span class="call fixable" title="FIXABLE — visible viewer-left sash knot and tail">FIXABLE</span></header><div class="cardref"><a class="refid" href="#tiger-r2-comp-gptimage2-3" title="Deep link to this image">#comp-gptimage2-3</a><button class="refbtn" data-copy-id="#comp-gptimage2-3" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r2-comp-gptimage2-3" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r2-comp-gptimage2-3" data-title="Compressed · GPT Image 2 · 3" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> FIXABLE — visible viewer-left sash knot and tail</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="viewer-left waist · sash construction — The sash has a visible side tie and projecting hanging tail.">sash construction</span><span class="chip bad" title="blind cross-check — REJECT — Significant deviations in clothing, hand pose, and printability.">blind cross-check</span><span class="chip ok" title="head and whole figure · frog identity and tone — Smooth bare frog head with no hair, warts, tiger markings, fur, whiskers, or feline face.">frog identity and…</span><span class="chip ok" title="torso and limbs · jacket and limb kit — Mandarin collar, exactly four large toggles, short sleeves with green bands, knee bands, and forearm/shin wraps.">jacket and limb k…</span></div><details class="more"><summary>2 more detectors (6 total)</summary><div class="chips"><span class="chip ok" title="both hands and feet · hands and feet — Empty four-digit rounded claw guards and bare webbed feet; both feet make full ground contact.">hands and feet</span><span class="chip ok" title="whole frame · forbidden content — No weapon, ball, mon, number, or text.">forbidden content</span></div></details></div><p>The core frog-wuxia design passes, but the viewer-left sash is visibly tied with a hanging tail.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">Full-frame and 2× crops confirm the bare frog head, serious tone, four-toggle mandarin jacket, required skin bands and wraps, empty rounded four-digit hands, and fully planted webbed feet. Only the visible viewer-left sash knot/tail conflicts with the brief.</p></details><button class="ibtn" data-inputs="in-7">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="tiger-r2-comp-riverflow25-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/d003900f9bf06fa9.jpg" data-cap="Compressed · Riverflow 2.5 · 1" data-ref="comp-riverflow25-1" data-anchor="tiger-r2-comp-riverflow25-1"><img src="../../../../assets/d3d4f9dd46e41bf7.jpg" alt="Compressed · Riverflow 2.5 · 1" loading="lazy"></div><div class="meta"><header><h3>Compressed · Riverflow 2.5 · 1</h3><span class="cost">$0.34</span><span class="call fixable" title="FIXABLE — prominent viewer-left sash knot and hanging tails">FIXABLE</span></header><div class="cardref"><a class="refid" href="#tiger-r2-comp-riverflow25-1" title="Deep link to this image">#comp-riverflow25-1</a><button class="refbtn" data-copy-id="#comp-riverflow25-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r2-comp-riverflow25-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r2-comp-riverflow25-1" data-title="Compressed · Riverflow 2.5 · 1" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> FIXABLE — prominent viewer-left sash knot and hanging tails</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="viewer-left waist · sash construction — A prominent side knot and hanging sash tails are visible.">sash construction</span><span class="chip bad" title="blind cross-check — REJECT — Multiple critical deviations in wardrobe construction and frog anatomy visibility.">blind cross-check</span><span class="chip ok" title="head and whole figure · frog identity and tone — Bare, smooth, non-feline frog identity with a serious martial presentation.">frog identity and…</span><span class="chip ok" title="torso and limbs · jacket and limb kit — Mandarin collar, exactly four large toggles, exposed green bands, and lower-forearm/shin wraps.">jacket and limb k…</span></div><details class="more"><summary>2 more detectors (6 total)</summary><div class="chips"><span class="chip ok" title="both hands and feet · hands and feet — Both hands are empty four-digit rounded claw guards; both bare webbed feet are flat and fully visible.">hands and feet</span><span class="chip ok" title="whole frame · forbidden content — No weapon, ball, mon, number, or text.">forbidden content</span></div></details></div><p>Good frog anatomy, kit, and planted stance, but a prominent side sash knot with tails remains.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">The 2× audit confirms a serious smooth-skinned frog, four-toggle jacket, exposed sleeve/knee skin bands, wraps, empty four-digit webbed hands, and fully planted bare webbed feet. The viewer-left sash knot and hanging tails are the only clear brief violation.</p></details><button class="ibtn" data-inputs="in-8">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="tiger-r2-comp-riverflow25-2"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/85205a03bdc91fe7.jpg" data-cap="Compressed · Riverflow 2.5 · 2" data-ref="comp-riverflow25-2" data-anchor="tiger-r2-comp-riverflow25-2"><img src="../../../../assets/21ca8114b51843c2.jpg" alt="Compressed · Riverflow 2.5 · 2" loading="lazy"></div><div class="meta"><header><h3>Compressed · Riverflow 2.5 · 2</h3><span class="cost">$0.34</span><span class="call fixable" title="FIXABLE — only three toggles and a viewer-left sash tail">FIXABLE</span></header><div class="cardref"><a class="refid" href="#tiger-r2-comp-riverflow25-2" title="Deep link to this image">#comp-riverflow25-2</a><button class="refbtn" data-copy-id="#comp-riverflow25-2" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r2-comp-riverflow25-2" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r2-comp-riverflow25-2" data-title="Compressed · Riverflow 2.5 · 2" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> FIXABLE — only three toggles and a viewer-left sash tail</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="placket · jacket toggle count — Only three large frog-button toggles are visible in the single placket column.">jacket toggle cou…</span><span class="chip bad" title="viewer-left waist · sash construction — A loose hanging sash tail projects from the side.">sash construction</span><span class="chip bad" title="blind cross-check — REJECT — Sash knot is incorrectly placed on the side with hanging ends, contradicting a key audit point for front views.">blind cross-check</span><span class="chip ok" title="head and whole figure · frog identity and tone — Bare smooth frog head, serious martial tone, and no feline traits.">frog identity and…</span></div><details class="more"><summary>3 more detectors (7 total)</summary><div class="chips"><span class="chip ok" title="arms and legs · limb kit — Short sleeves expose green skin bands; knee bands and lower-forearm/shin wraps are present.">limb kit</span><span class="chip ok" title="both hands and feet · hands and feet — Empty rounded four-digit claw guards and bare webbed feet; both feet are flat and fully grounded.">hands and feet</span><span class="chip ok" title="whole frame · forbidden content — No weapon, ball, mon, number, or text.">forbidden content</span></div></details></div><p>The anatomy and stance pass, but the jacket has three—not four—toggles and the sash has a hanging tail.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">Crops confirm the serious non-feline frog identity, required wraps and exposed green bands, empty four-digit rounded hands, and fully planted bare webbed feet. Two localized torso edits remain: add the missing fourth toggle and remove the viewer-left sash tail.</p></details><button class="ibtn" data-inputs="in-9">inputs — prompt &amp; refs</button></div></div>
+</div>
+<h2>Minimal prompt</h2>
+<p class="blurb">Identity, kit summary, stance, and tone only: a deliberate test of whether model priors beat the detailed specification.</p>
+<div class="grid">
+<div class="card" id="tiger-r2-min-gptimage2-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/246441faf4301adb.jpg" data-cap="Minimal · GPT Image 2 · 1" data-ref="min-gptimage2-1" data-anchor="tiger-r2-min-gptimage2-1"><img src="../../../../assets/c9b2a82e957f7fa1.jpg" alt="Minimal · GPT Image 2 · 1" loading="lazy"></div><div class="meta"><header><h3>Minimal · GPT Image 2 · 1</h3><span class="cost">$0.17</span><span class="call reject" title="REJECT — sash tails, forbidden tiger text/mon, and unclear hand/foot webbing">REJECT</span></header><div class="cardref"><a class="refid" href="#tiger-r2-min-gptimage2-1" title="Deep link to this image">#min-gptimage2-1</a><button class="refbtn" data-copy-id="#min-gptimage2-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r2-min-gptimage2-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r2-min-gptimage2-1" data-title="Minimal · GPT Image 2 · 1" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> REJECT — sash tails, forbidden tiger text/mon, and unclear hand/foot webbing</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="waist · sash has front and side hanging tails — The sash projects into a large front apron and viewer-right tied tails, not a clean back-tied sash.">sash has front an…</span><span class="chip bad" title="front sash apron · forbidden tiger mon and text — A prominent tiger roundel and a Chinese character are visibly printed on the hanging front panel.">forbidden tiger m…</span><span class="chip bad" title="blind cross-check — REJECT — Multiple critical failures including forbidden emblems, incorrect anatomy, and direct contradictions to explicit negatives.">blind cross-check</span><span class="chip warn" title="both hands · four rounded hand digits; webbing visibility — Each cropped hand appears to have four rounded terminals and is empty, but the required interdigital webbing is not convincingly visible.">four rounded hand…</span><span class="chip warn" title="both feet · bare webbed feet — Both feet are bare and planted, but the toe webbing is too shallow/unclear to verify as connected webbed feet.">bare webbed feet</span></div><details class="more"><summary>3 more detectors (8 total)</summary><div class="chips"><span class="chip ok" title="head and upper torso · bare frog head, collar, serious tone — Bare smooth frog head, standing mandarin collar, and stern non-cartoon presentation are clear; no feline traits appear.">bare frog head, c…</span><span class="chip ok" title="jacket and limbs · four-toggle tangzhuang and wrap skin bands — One placket column has four large toggles; short cuffs, lower-forearm wraps, shin wraps, and exposed green bands are visible.">four-toggle tangz…</span><span class="chip ok" title="whole figure · no weapon or feline identity — Hands are empty; no weapon, fur, stripes, whiskers, or feline face is present.">no weapon or feli…</span></div></details></div><p>Good frog kit, but sash tails, tiger text/mon, and unprovable webbing make this an uncorrected-base reject.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">Full-frame and mandatory 2× crops show a strong frog identity, four-toggle jacket, correct wraps, empty rounded hands, and broadly planted feet. The large front tiger-emblem/text apron plus visible side sash tails directly violate the clean-sash and no-text rules; webbing is also not provable in the hand and foot crops. Multiple unresolved FAST constraints make the base a reject.</p></details><button class="ibtn" data-inputs="in-10">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="tiger-r2-min-gptimage2-2"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/6b48cb3b754edcca.jpg" data-cap="Minimal · GPT Image 2 · 2" data-ref="min-gptimage2-2" data-anchor="tiger-r2-min-gptimage2-2"><img src="../../../../assets/77e258fb88effcd2.jpg" alt="Minimal · GPT Image 2 · 2" loading="lazy"></div><div class="meta"><header><h3>Minimal · GPT Image 2 · 2</h3><span class="cost">$0.17</span><span class="call reject" title="REJECT — forbidden tiger emblems/text, sash tails, and unverified webbing/foot contact">REJECT</span></header><div class="cardref"><a class="refid" href="#tiger-r2-min-gptimage2-2" title="Deep link to this image">#min-gptimage2-2</a><button class="refbtn" data-copy-id="#min-gptimage2-2" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r2-min-gptimage2-2" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r2-min-gptimage2-2" data-title="Minimal · GPT Image 2 · 2" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> REJECT — forbidden tiger emblems/text, sash tails, and unverified webbing/foot contact</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="viewer-right waist · visible sash tails — A tied sash tail projects from the side, contrary to the no visible front/side knot or hanging-tail requirement.">visible sash tails</span><span class="chip bad" title="chest and front apron · forbidden tiger mon and text — A chest roundel and a large tiger illustration on the hanging front apron are visible graphic/text-like forbidden content.">forbidden tiger m…</span><span class="chip bad" title="blind cross-check — REJECT — Explicit tiger motif with stripes/claws contradicts &#x27;style, not species&#x27;; jacket and sash details are incorrect.">blind cross-check</span><span class="chip warn" title="both hands · four connected webbed digits with no nails — The raised hand reads as four rounded terminals, but its human-like separated construction and pad/nail-like end markings do not clearly prove connected webbed digits.">four connected we…</span><span class="chip warn" title="both feet · flat full-length webbed feet — Feet are bare, but webbing is weak and the rear sole/heel of the viewer-left foot is not clear enough to verify full-length flat contact.">flat full-length…</span></div><details class="more"><summary>4 more detectors (9 total)</summary><div class="chips"><span class="chip ok" title="head and upper torso · bare frog head, collar, serious tone — The head is bare and clearly frog-like with a mandarin collar and serious wuxia presentation; no feline identity appears.">bare frog head, c…</span><span class="chip ok" title="center placket · exactly four large toggles — Four large toggles are visible in one placket column.">exactly four larg…</span><span class="chip ok" title="arms and legs · short sleeves and lower wraps — Short cuffs, lower-forearm wraps, shin wraps, and moss-green exposed bands are visible.">short sleeves and…</span><span class="chip ok" title="whole figure · no weapon or feline identity — Both hands are empty and the smooth frog face has no stripes, fur, whiskers, or feline features.">no weapon or feli…</span></div></details></div><p>Tiger graphics and sash tails fail FAST; hand webbing and one rear foot’s flat contact are also not clear.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">The full frame and 2× crops confirm a bare frog head, four-toggle collar jacket, exposed skin bands, wraps, and empty hands. However, the side sash tail and two tiger graphics violate core clothing/content constraints, while the close crops do not clearly establish webbed hands or both full soles flat. This exceeds a clean local keeper correction.</p></details><button class="ibtn" data-inputs="in-11">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="tiger-r2-min-gptimage2-3"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/98bb356458bf09a8.jpg" data-cap="Minimal · GPT Image 2 · 3" data-ref="min-gptimage2-3" data-anchor="tiger-r2-min-gptimage2-3"><img src="../../../../assets/3f30f6ed585da53a.jpg" alt="Minimal · GPT Image 2 · 3" loading="lazy"></div><div class="meta"><header><h3>Minimal · GPT Image 2 · 3</h3><span class="cost">$0.17</span><span class="call fixable" title="FIXABLE — five toggles and a front-tied sash with hanging tails">FIXABLE</span></header><div class="cardref"><a class="refid" href="#tiger-r2-min-gptimage2-3" title="Deep link to this image">#min-gptimage2-3</a><button class="refbtn" data-copy-id="#min-gptimage2-3" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r2-min-gptimage2-3" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r2-min-gptimage2-3" data-title="Minimal · GPT Image 2 · 3" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> FIXABLE — five toggles and a front-tied sash with hanging tails</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="center placket · five toggles instead of exactly four — The 2× torso crop shows five large frog-button toggles in the column.">five toggles inst…</span><span class="chip bad" title="front and viewer-right waist · front sash knot and hanging tails — A prominent front-center sash knot/tail is visible, with an additional viewer-right hanging tail.">front sash knot a…</span><span class="chip bad" title="blind cross-check — REJECT — Warty skin, front-knotted sash, and incorrect number of jacket toggles directly contradict core brief requirements for the team standard.">blind cross-check</span><span class="chip warn" title="both hands · four rounded hand digits; webbing visibility — Both hands appear empty with four rounded terminals, but the close crops do not make the connecting webbing fully clear.">four rounded hand…</span></div><details class="more"><summary>4 more detectors (8 total)</summary><div class="chips"><span class="chip ok" title="head and upper torso · bare frog head, collar, serious tone — Bare smooth frog head, mandarin collar, and a serious straight wuxia expression are clear; no feline identity appears.">bare frog head, c…</span><span class="chip ok" title="arms and legs · short sleeves, skin bands, and wraps — Cuffs and lower-forearm wraps are separated by exposed green skin; both knees show green bands above shin wraps.">short sleeves, sk…</span><span class="chip ok" title="both feet · bare feet flat full length — Both bare feet reach the ground with broad sole contact; no raised heel or tiptoe pose is visible.">bare feet flat fu…</span><span class="chip ok" title="whole figure · no forbidden prop/text or feline identity — No weapon, ball, mon, number, or text is visible; the frog remains smooth-skinned and non-feline.">no forbidden prop…</span></div></details></div><p>Otherwise strong, but five toggles and a front/side-tied sash with tails require two local corrections.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">This is otherwise a coherent serious frog martial artist with empty rounded four-terminal hands, planted bare feet, exposed skin bands, wraps, and no forbidden graphic content. The two clear local wardrobe failures are an extra fifth toggle and a front/side-tied sash with hanging tails. It is disqualified until corrected, but those two localized changes make it fixable.</p></details><button class="ibtn" data-inputs="in-12">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="tiger-r2-min-riverflow25-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/0d94efbde2121db6.jpg" data-cap="Minimal · Riverflow 2.5 · 1" data-ref="min-riverflow25-1" data-anchor="tiger-r2-min-riverflow25-1"><img src="../../../../assets/690361a7589fa24f.jpg" alt="Minimal · Riverflow 2.5 · 1" loading="lazy"></div><div class="meta"><header><h3>Minimal · Riverflow 2.5 · 1</h3><span class="cost">$0.33</span><span class="call fixable" title="FIXABLE — side sash tails and forbidden shorts mon/text">FIXABLE</span></header><div class="cardref"><a class="refid" href="#tiger-r2-min-riverflow25-1" title="Deep link to this image">#min-riverflow25-1</a><button class="refbtn" data-copy-id="#min-riverflow25-1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r2-min-riverflow25-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r2-min-riverflow25-1" data-title="Minimal · Riverflow 2.5 · 1" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> FIXABLE — side sash tails and forbidden shorts mon/text</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="viewer-right waist · visible side sash tails — Two sash tails protrude from the visible side rather than remaining back-tied and tucked.">visible side sash…</span><span class="chip bad" title="viewer-right shorts · forbidden shorts mon/text — A circular character emblem is visibly printed on the shorts.">forbidden shorts…</span><span class="chip bad" title="blind cross-check — REJECT — Critical deviations in wardrobe construction (sash placement, button count/size/intricacy) and skin texture.">blind cross-check</span><span class="chip warn" title="both feet · bare webbed feet — Both feet are bare and flat, but terminal count and continuous webbing are not fully clear in the viewer-left foot crop.">bare webbed feet</span></div><details class="more"><summary>5 more detectors (9 total)</summary><div class="chips"><span class="chip ok" title="head and upper torso · bare frog head, collar, serious tone — The bare, smooth frog head and mandarin collar read clearly and seriously, without feline features.">bare frog head, c…</span><span class="chip ok" title="center placket · exactly four large toggles — Four large toggles are visible in a single center column.">exactly four larg…</span><span class="chip ok" title="arms and legs · short sleeves, skin bands, and wraps — Both cuff-to-wrap and shorts-to-shin-wrap green skin bands are visibly retained.">short sleeves, sk…</span><span class="chip ok" title="both hands · four rounded digits and empty hands — Both guard hands show four rounded terminals and no carried object; no claws or talons are visible.">four rounded digi…</span><span class="chip ok" title="whole figure · no feline identity — No tiger stripes, fur, whiskers, hair, or feline face appears.">no feline identity</span></div></details></div><p>Side sash tails and a shorts emblem fail FAST; the remaining frog kit is strong, with foot webbing still unclear.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">The 2× audit confirms a serious bare-headed frog, correct four-toggle jacket, visible green bands, wraps, empty four-terminal hands, and broad planted feet. The only definite failures are two local graphic/tail additions: a visible side sash tail pair and a shorts emblem. Foot webbing is not fully provable, so this remains disqualified uncorrected but is a fixable candidate.</p></details><button class="ibtn" data-inputs="in-13">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="tiger-r2-min-riverflow25-2"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/cc83c5e3007bf3b2.jpg" data-cap="Minimal · Riverflow 2.5 · 2" data-ref="min-riverflow25-2" data-anchor="tiger-r2-min-riverflow25-2"><img src="../../../../assets/f051b27385fd07d9.jpg" alt="Minimal · Riverflow 2.5 · 2" loading="lazy"></div><div class="meta"><header><h3>Minimal · Riverflow 2.5 · 2</h3><span class="cost">$0.33</span><span class="call reject" title="REJECT — five-digit hand, five toggles, sash tails, and a raised rear heel">REJECT</span></header><div class="cardref"><a class="refid" href="#tiger-r2-min-riverflow25-2" title="Deep link to this image">#min-riverflow25-2</a><button class="refbtn" data-copy-id="#min-riverflow25-2" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r2-min-riverflow25-2" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r2-min-riverflow25-2" data-title="Minimal · Riverflow 2.5 · 2" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> REJECT — five-digit hand, five toggles, sash tails, and a raised rear heel</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="raised viewer-left hand · five digits with nail-like end plates — The 2× hand crop visibly shows five terminals, with distinct plate-like nail/pad markings rather than the required four connected webbed digits.">five digits with…</span><span class="chip bad" title="center placket · five toggles instead of exactly four — Five large frog-button toggles are visible in the jacket column.">five toggles inst…</span><span class="chip bad" title="viewer-right waist · visible side sash tails — A tied sash tail projects from the visible side.">visible side sash…</span><span class="chip bad" title="viewer-left foot · raised rear heel — The viewer-left foot contacts at the toes/forefoot while its rear sole is visibly lifted, not flat along its full length.">raised rear heel</span><span class="chip bad" title="blind cross-check — REJECT — Multiple explicit contradictions (button count, sash knot, shorts piping, skin texture) and printability concerns make this unsuitable for setting the team-wide standard.">blind cross-check</span></div><details class="more"><summary>4 more detectors (9 total)</summary><div class="chips"><span class="chip ok" title="head and upper torso · bare frog head, collar, serious tone — The head is bare, smooth, frog-like, and serious, with a mandarin collar and no feline features.">bare frog head, c…</span><span class="chip ok" title="arms and legs · short sleeves, skin bands, and wraps — Forearm and shin wraps are present with visible moss-green bands between each wrap and cuff/short hem.">short sleeves, sk…</span><span class="chip ok" title="whole figure · empty hands and no forbidden graphic content — No weapon, ball, mon, number, or text is visible; both hands are empty.">empty hands and n…</span><span class="chip ok" title="whole figure · no feline identity — No stripes, fur, whiskers, hair, or feline face appears.">no feline identity</span></div></details></div><p>Five-digit hand, five toggles, side sash tails, and a raised heel make this a multiple-failure reject.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">This image keeps the frog identity, serious tone, collar, wraps, exposed skin bands, and empty hands, but its FAST failures are numerous and core: the raised hand has five nail-like digits, the placket has five toggles, the sash has visible side tails, and the viewer-left rear heel is off the ground. These are multiple constraint failures, so it is a reject.</p></details><button class="ibtn" data-inputs="in-14">inputs — prompt &amp; refs</button></div></div>
+</div>
+<div class="callout steps"><p class="boxhead">Proposed next steps</p><p class="intro">The slow lane and human reconciliation close the experiment before any winner is promoted.</p><ol><li><span class="t">Record 15 authoritative reconciliations</span><span class="when">now</span><p class="d">Dimitri resolves every crop/blind agreement or disagreement and gives each concept a final KEEPER, FIXABLE, or REJECT call.</p></li><li><span class="t">Choose the lineage base or reject all</span><span class="when">after reconciliation</span><p class="d">Jawaknight and Dimitri may pick any prompt tier and either model. A winner-with-edit names its required repair before pose/camera refinement or turnaround.</p></li><li><span class="t">Close the prompt-length experiment</span><span class="when">with the complete panel</span><p class="d">Compare per-arm compliance and holistic quality, record the per-model finding in image-model policy, and refresh this panel as COMPLETE.</p></li></ol></div>
+<div class="callout"><strong>Your eye-call:</strong> reconcile every concept, name a preferred base and any required repair, or reject the entire sweep with fresh direction. Reject-all is fully valid. Final promotion waits for Dimitri's 15 authoritative records.</div>
+<footer>PROVISIONAL · $3.536919 image generation + $0.2002 blind Batch actual · 15 concepts · no Meshy</footer>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="lb-meta"><div class="cap" id="lb-cap"></div><div class="lb-refrow" id="lb-refrow" hidden><span class="refid" id="lb-ref"></span><button class="refbtn" id="lb-copy-id" title="Copy this image id">copy id</button><button class="refbtn" id="lb-copy-link" title="Copy a link to this image">copy link</button></div></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+
+<template id="in-0"><h2>Full · GPT Image 2 · 1</h2><p class="gmeta">gpt-image-2-2026-04-21 via openai · size=1024x1536 quality=high output_format=png · $0.17 · 2026-08-06T13:25:26</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed specifically as production concept art for a 32 mm-scale resin fantasy-football miniature, in the visual language of a premium collectible sports sculpt. Show one figure only, straight-on FRONT view, centered on a plain neutral gray studio background with even soft lighting. Use a near-orthographic, very-long-lens studio view with minimal foreshortening so head, torso, both arms, both hands, legs and feet can be compared as a proportion sheet. The entire body and both feet are visible with space around them. This is character concept art, not a photograph of a toy: no base, pedestal, scenic ground, labels or presentation card.
+
+FROG BODY PLAN — ANTHRO HEAVYWEIGHT
+Build him as an ANTHRO ATHLETE FROG, roughly FIVE to FIVE-AND-A-HALF heads tall — an upright humanoid read. His frame, stance and limb proportions are those of a HEAVYWEIGHT human martial artist: wide shoulders, deep chest, thick powerful limbs — the densest, most powerful member of his squad, never lean or wiry. His head is an unmistakable frog head with dome eyes and a wide mouth on a short thick neck, and his hands and feet are big webbed frog hands and feet on long powerful frog legs. He reads first as a powerful humanoid athlete and second as a frog.
+
+HELD-CONSTANT CHARACTER PROGRAM
+TIGER is a FROG — a martial-arts fantasy-football lineman from an ancient kung-fu temple, rendered as the hero of a serious WUXIA epic: the disciplined gravitas, coiled power and quiet menace of a wuxia film lead, an ancient-Chinese martial-world tone carried in every element. Played absolutely straight — never cartoon-cute, never comedic, never a Ninja Turtles homage. Smooth moss-green frog skin with a lighter throat and belly; no warts, no hair. His head is COMPLETELY BARE: NO headband, NO hachimaki, NO hat, hood or helmet — nothing worn on the head at all. His face is level and unsmiling, the wide frog mouth a firm closed line — never a grin, never googly eyes.
+
+He is a master of TIGER-STYLE KUNG FU, the hard ferocious power style: every technique drives forward through open TIGER-CLAW hands. &quot;Tiger-claw&quot; names the HAND SHAPE ONLY — his thick webbed digits are hooked like a striking claw but each digit ends in a smooth ROUNDED FROG TOE-PAD: absolutely NO claws, NO talons, NO nails, NO pointed fingertips anywhere. The tiger is his STYLE, not his species — he remains entirely a frog, with NO stripes, NO fur, NO whiskers and NO feline features anywhere.
+
+His kit is a traditional Chinese martial outfit tailored to his frog anatomy, cut to show off his frog skin. He wears a SHORT-SLEEVED TANGZHUANG (Tang suit) JACKET: black silk with bold red piping, a standing MANDARIN COLLAR, and a straight center-front placket closed by a vertical column of exactly FOUR LARGE KNOTTED FROG-BUTTON TOGGLES — each toggle chunky and clearly readable, the size of one of his eyes. The sleeves are SHORT, ending above the elbow with red-trimmed cuffs, showing his heavy moss-green upper arms; the jacket hem has short side slits and rests against his body. Over the jacket a broad plain cloth SASH wraps his waist, tied at the back. Below he wears loose KNEE-LENGTH training shorts. Simple cloth wraps cover each LOWER forearm from the wrist up and each shin from the ankle up, each wrap stopping short of the elbow or knee so a clear band of moss-green skin shows between wrap and sleeve cuff on each arm, and at each knee between shorts hem and shin wrap. His big four-digit hands and bare feet show natural connected webbing — no sandals, no boots. The kit is plain: NO emblem, number, logo or readable text, and he wears NO armor, pads or helmet of any kind. He carries NOTHING — no weapon, no ball, no prop; both hands are visibly empty.
+
+POSE AND BASING
+He stands in a deep, wide TIGER-STYLE BOW STANCE facing the camera with the poised stillness of a wuxia master a heartbeat before striking: weight sunk low through strongly bent knees, torso upright, chin level. BOTH bare webbed feet are fully PLANTED on the same flat ground plane: each foot pressed FLAT along its FULL LENGTH into the ground, stance wide and rooted like a statue&#x27;s — NO lifted foot, NO tiptoe, NO standing on the ball of the foot, NO raised heel, NO mid-step walking frame. Both arms present open tiger-claw hands toward the camera, one leading at shoulder height, one chambered lower near the sash, elbows bent, both arms wholly within the image plane. No limb crosses, merges into or hides behind the torso.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a roughly 35 mm-tall resin figure: bold planes, thick connected forms, deep relief, no hairline detail. The frog-button toggles are oversized and sculptural; the jacket hem, side slits, cuffs and sash knot are thickened and rest against the body; webbed digits stay connected; the throat and chin stay clear of clutter. No base, no text, no thin spike, no free-floating strap, no transparent material.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-1"><h2>Full · GPT Image 2 · 2</h2><p class="gmeta">gpt-image-2-2026-04-21 via openai · size=1024x1536 quality=high output_format=png · $0.17 · 2026-08-06T13:26:59</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed specifically as production concept art for a 32 mm-scale resin fantasy-football miniature, in the visual language of a premium collectible sports sculpt. Show one figure only, straight-on FRONT view, centered on a plain neutral gray studio background with even soft lighting. Use a near-orthographic, very-long-lens studio view with minimal foreshortening so head, torso, both arms, both hands, legs and feet can be compared as a proportion sheet. The entire body and both feet are visible with space around them. This is character concept art, not a photograph of a toy: no base, pedestal, scenic ground, labels or presentation card.
+
+FROG BODY PLAN — ANTHRO HEAVYWEIGHT
+Build him as an ANTHRO ATHLETE FROG, roughly FIVE to FIVE-AND-A-HALF heads tall — an upright humanoid read. His frame, stance and limb proportions are those of a HEAVYWEIGHT human martial artist: wide shoulders, deep chest, thick powerful limbs — the densest, most powerful member of his squad, never lean or wiry. His head is an unmistakable frog head with dome eyes and a wide mouth on a short thick neck, and his hands and feet are big webbed frog hands and feet on long powerful frog legs. He reads first as a powerful humanoid athlete and second as a frog.
+
+HELD-CONSTANT CHARACTER PROGRAM
+TIGER is a FROG — a martial-arts fantasy-football lineman from an ancient kung-fu temple, rendered as the hero of a serious WUXIA epic: the disciplined gravitas, coiled power and quiet menace of a wuxia film lead, an ancient-Chinese martial-world tone carried in every element. Played absolutely straight — never cartoon-cute, never comedic, never a Ninja Turtles homage. Smooth moss-green frog skin with a lighter throat and belly; no warts, no hair. His head is COMPLETELY BARE: NO headband, NO hachimaki, NO hat, hood or helmet — nothing worn on the head at all. His face is level and unsmiling, the wide frog mouth a firm closed line — never a grin, never googly eyes.
+
+He is a master of TIGER-STYLE KUNG FU, the hard ferocious power style: every technique drives forward through open TIGER-CLAW hands. &quot;Tiger-claw&quot; names the HAND SHAPE ONLY — his thick webbed digits are hooked like a striking claw but each digit ends in a smooth ROUNDED FROG TOE-PAD: absolutely NO claws, NO talons, NO nails, NO pointed fingertips anywhere. The tiger is his STYLE, not his species — he remains entirely a frog, with NO stripes, NO fur, NO whiskers and NO feline features anywhere.
+
+His kit is a traditional Chinese martial outfit tailored to his frog anatomy, cut to show off his frog skin. He wears a SHORT-SLEEVED TANGZHUANG (Tang suit) JACKET: black silk with bold red piping, a standing MANDARIN COLLAR, and a straight center-front placket closed by a vertical column of exactly FOUR LARGE KNOTTED FROG-BUTTON TOGGLES — each toggle chunky and clearly readable, the size of one of his eyes. The sleeves are SHORT, ending above the elbow with red-trimmed cuffs, showing his heavy moss-green upper arms; the jacket hem has short side slits and rests against his body. Over the jacket a broad plain cloth SASH wraps his waist, tied at the back. Below he wears loose KNEE-LENGTH training shorts. Simple cloth wraps cover each LOWER forearm from the wrist up and each shin from the ankle up, each wrap stopping short of the elbow or knee so a clear band of moss-green skin shows between wrap and sleeve cuff on each arm, and at each knee between shorts hem and shin wrap. His big four-digit hands and bare feet show natural connected webbing — no sandals, no boots. The kit is plain: NO emblem, number, logo or readable text, and he wears NO armor, pads or helmet of any kind. He carries NOTHING — no weapon, no ball, no prop; both hands are visibly empty.
+
+POSE AND BASING
+He stands in a deep, wide TIGER-STYLE BOW STANCE facing the camera with the poised stillness of a wuxia master a heartbeat before striking: weight sunk low through strongly bent knees, torso upright, chin level. BOTH bare webbed feet are fully PLANTED on the same flat ground plane: each foot pressed FLAT along its FULL LENGTH into the ground, stance wide and rooted like a statue&#x27;s — NO lifted foot, NO tiptoe, NO standing on the ball of the foot, NO raised heel, NO mid-step walking frame. Both arms present open tiger-claw hands toward the camera, one leading at shoulder height, one chambered lower near the sash, elbows bent, both arms wholly within the image plane. No limb crosses, merges into or hides behind the torso.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a roughly 35 mm-tall resin figure: bold planes, thick connected forms, deep relief, no hairline detail. The frog-button toggles are oversized and sculptural; the jacket hem, side slits, cuffs and sash knot are thickened and rest against the body; webbed digits stay connected; the throat and chin stay clear of clutter. No base, no text, no thin spike, no free-floating strap, no transparent material.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-2"><h2>Full · GPT Image 2 · 3</h2><p class="gmeta">gpt-image-2-2026-04-21 via openai · size=1024x1536 quality=high output_format=png · $0.17 · 2026-08-06T13:28:32</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed specifically as production concept art for a 32 mm-scale resin fantasy-football miniature, in the visual language of a premium collectible sports sculpt. Show one figure only, straight-on FRONT view, centered on a plain neutral gray studio background with even soft lighting. Use a near-orthographic, very-long-lens studio view with minimal foreshortening so head, torso, both arms, both hands, legs and feet can be compared as a proportion sheet. The entire body and both feet are visible with space around them. This is character concept art, not a photograph of a toy: no base, pedestal, scenic ground, labels or presentation card.
+
+FROG BODY PLAN — ANTHRO HEAVYWEIGHT
+Build him as an ANTHRO ATHLETE FROG, roughly FIVE to FIVE-AND-A-HALF heads tall — an upright humanoid read. His frame, stance and limb proportions are those of a HEAVYWEIGHT human martial artist: wide shoulders, deep chest, thick powerful limbs — the densest, most powerful member of his squad, never lean or wiry. His head is an unmistakable frog head with dome eyes and a wide mouth on a short thick neck, and his hands and feet are big webbed frog hands and feet on long powerful frog legs. He reads first as a powerful humanoid athlete and second as a frog.
+
+HELD-CONSTANT CHARACTER PROGRAM
+TIGER is a FROG — a martial-arts fantasy-football lineman from an ancient kung-fu temple, rendered as the hero of a serious WUXIA epic: the disciplined gravitas, coiled power and quiet menace of a wuxia film lead, an ancient-Chinese martial-world tone carried in every element. Played absolutely straight — never cartoon-cute, never comedic, never a Ninja Turtles homage. Smooth moss-green frog skin with a lighter throat and belly; no warts, no hair. His head is COMPLETELY BARE: NO headband, NO hachimaki, NO hat, hood or helmet — nothing worn on the head at all. His face is level and unsmiling, the wide frog mouth a firm closed line — never a grin, never googly eyes.
+
+He is a master of TIGER-STYLE KUNG FU, the hard ferocious power style: every technique drives forward through open TIGER-CLAW hands. &quot;Tiger-claw&quot; names the HAND SHAPE ONLY — his thick webbed digits are hooked like a striking claw but each digit ends in a smooth ROUNDED FROG TOE-PAD: absolutely NO claws, NO talons, NO nails, NO pointed fingertips anywhere. The tiger is his STYLE, not his species — he remains entirely a frog, with NO stripes, NO fur, NO whiskers and NO feline features anywhere.
+
+His kit is a traditional Chinese martial outfit tailored to his frog anatomy, cut to show off his frog skin. He wears a SHORT-SLEEVED TANGZHUANG (Tang suit) JACKET: black silk with bold red piping, a standing MANDARIN COLLAR, and a straight center-front placket closed by a vertical column of exactly FOUR LARGE KNOTTED FROG-BUTTON TOGGLES — each toggle chunky and clearly readable, the size of one of his eyes. The sleeves are SHORT, ending above the elbow with red-trimmed cuffs, showing his heavy moss-green upper arms; the jacket hem has short side slits and rests against his body. Over the jacket a broad plain cloth SASH wraps his waist, tied at the back. Below he wears loose KNEE-LENGTH training shorts. Simple cloth wraps cover each LOWER forearm from the wrist up and each shin from the ankle up, each wrap stopping short of the elbow or knee so a clear band of moss-green skin shows between wrap and sleeve cuff on each arm, and at each knee between shorts hem and shin wrap. His big four-digit hands and bare feet show natural connected webbing — no sandals, no boots. The kit is plain: NO emblem, number, logo or readable text, and he wears NO armor, pads or helmet of any kind. He carries NOTHING — no weapon, no ball, no prop; both hands are visibly empty.
+
+POSE AND BASING
+He stands in a deep, wide TIGER-STYLE BOW STANCE facing the camera with the poised stillness of a wuxia master a heartbeat before striking: weight sunk low through strongly bent knees, torso upright, chin level. BOTH bare webbed feet are fully PLANTED on the same flat ground plane: each foot pressed FLAT along its FULL LENGTH into the ground, stance wide and rooted like a statue&#x27;s — NO lifted foot, NO tiptoe, NO standing on the ball of the foot, NO raised heel, NO mid-step walking frame. Both arms present open tiger-claw hands toward the camera, one leading at shoulder height, one chambered lower near the sash, elbows bent, both arms wholly within the image plane. No limb crosses, merges into or hides behind the torso.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a roughly 35 mm-tall resin figure: bold planes, thick connected forms, deep relief, no hairline detail. The frog-button toggles are oversized and sculptural; the jacket hem, side slits, cuffs and sash knot are thickened and rest against the body; webbed digits stay connected; the throat and chin stay clear of clutter. No base, no text, no thin spike, no free-floating strap, no transparent material.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-3"><h2>Full · Riverflow 2.5 · 1</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K aspect_ratio=2:3 · $0.34 · 2026-08-06T04:22:17</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed specifically as production concept art for a 32 mm-scale resin fantasy-football miniature, in the visual language of a premium collectible sports sculpt. Show one figure only, straight-on FRONT view, centered on a plain neutral gray studio background with even soft lighting. Use a near-orthographic, very-long-lens studio view with minimal foreshortening so head, torso, both arms, both hands, legs and feet can be compared as a proportion sheet. The entire body and both feet are visible with space around them. This is character concept art, not a photograph of a toy: no base, pedestal, scenic ground, labels or presentation card.
+
+FROG BODY PLAN — ANTHRO HEAVYWEIGHT
+Build him as an ANTHRO ATHLETE FROG, roughly FIVE to FIVE-AND-A-HALF heads tall — an upright humanoid read. His frame, stance and limb proportions are those of a HEAVYWEIGHT human martial artist: wide shoulders, deep chest, thick powerful limbs — the densest, most powerful member of his squad, never lean or wiry. His head is an unmistakable frog head with dome eyes and a wide mouth on a short thick neck, and his hands and feet are big webbed frog hands and feet on long powerful frog legs. He reads first as a powerful humanoid athlete and second as a frog.
+
+HELD-CONSTANT CHARACTER PROGRAM
+TIGER is a FROG — a martial-arts fantasy-football lineman from an ancient kung-fu temple, rendered as the hero of a serious WUXIA epic: the disciplined gravitas, coiled power and quiet menace of a wuxia film lead, an ancient-Chinese martial-world tone carried in every element. Played absolutely straight — never cartoon-cute, never comedic, never a Ninja Turtles homage. Smooth moss-green frog skin with a lighter throat and belly; no warts, no hair. His head is COMPLETELY BARE: NO headband, NO hachimaki, NO hat, hood or helmet — nothing worn on the head at all. His face is level and unsmiling, the wide frog mouth a firm closed line — never a grin, never googly eyes.
+
+He is a master of TIGER-STYLE KUNG FU, the hard ferocious power style: every technique drives forward through open TIGER-CLAW hands. &quot;Tiger-claw&quot; names the HAND SHAPE ONLY — his thick webbed digits are hooked like a striking claw but each digit ends in a smooth ROUNDED FROG TOE-PAD: absolutely NO claws, NO talons, NO nails, NO pointed fingertips anywhere. The tiger is his STYLE, not his species — he remains entirely a frog, with NO stripes, NO fur, NO whiskers and NO feline features anywhere.
+
+His kit is a traditional Chinese martial outfit tailored to his frog anatomy, cut to show off his frog skin. He wears a SHORT-SLEEVED TANGZHUANG (Tang suit) JACKET: black silk with bold red piping, a standing MANDARIN COLLAR, and a straight center-front placket closed by a vertical column of exactly FOUR LARGE KNOTTED FROG-BUTTON TOGGLES — each toggle chunky and clearly readable, the size of one of his eyes. The sleeves are SHORT, ending above the elbow with red-trimmed cuffs, showing his heavy moss-green upper arms; the jacket hem has short side slits and rests against his body. Over the jacket a broad plain cloth SASH wraps his waist, tied at the back. Below he wears loose KNEE-LENGTH training shorts. Simple cloth wraps cover each LOWER forearm from the wrist up and each shin from the ankle up, each wrap stopping short of the elbow or knee so a clear band of moss-green skin shows between wrap and sleeve cuff on each arm, and at each knee between shorts hem and shin wrap. His big four-digit hands and bare feet show natural connected webbing — no sandals, no boots. The kit is plain: NO emblem, number, logo or readable text, and he wears NO armor, pads or helmet of any kind. He carries NOTHING — no weapon, no ball, no prop; both hands are visibly empty.
+
+POSE AND BASING
+He stands in a deep, wide TIGER-STYLE BOW STANCE facing the camera with the poised stillness of a wuxia master a heartbeat before striking: weight sunk low through strongly bent knees, torso upright, chin level. BOTH bare webbed feet are fully PLANTED on the same flat ground plane: each foot pressed FLAT along its FULL LENGTH into the ground, stance wide and rooted like a statue&#x27;s — NO lifted foot, NO tiptoe, NO standing on the ball of the foot, NO raised heel, NO mid-step walking frame. Both arms present open tiger-claw hands toward the camera, one leading at shoulder height, one chambered lower near the sash, elbows bent, both arms wholly within the image plane. No limb crosses, merges into or hides behind the torso.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a roughly 35 mm-tall resin figure: bold planes, thick connected forms, deep relief, no hairline detail. The frog-button toggles are oversized and sculptural; the jacket hem, side slits, cuffs and sash knot are thickened and rest against the body; webbed digits stay connected; the throat and chin stay clear of clutter. No base, no text, no thin spike, no free-floating strap, no transparent material.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-4"><h2>Full · Riverflow 2.5 · 2</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K aspect_ratio=2:3 · $0.34 · 2026-08-06T04:22:45</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed specifically as production concept art for a 32 mm-scale resin fantasy-football miniature, in the visual language of a premium collectible sports sculpt. Show one figure only, straight-on FRONT view, centered on a plain neutral gray studio background with even soft lighting. Use a near-orthographic, very-long-lens studio view with minimal foreshortening so head, torso, both arms, both hands, legs and feet can be compared as a proportion sheet. The entire body and both feet are visible with space around them. This is character concept art, not a photograph of a toy: no base, pedestal, scenic ground, labels or presentation card.
+
+FROG BODY PLAN — ANTHRO HEAVYWEIGHT
+Build him as an ANTHRO ATHLETE FROG, roughly FIVE to FIVE-AND-A-HALF heads tall — an upright humanoid read. His frame, stance and limb proportions are those of a HEAVYWEIGHT human martial artist: wide shoulders, deep chest, thick powerful limbs — the densest, most powerful member of his squad, never lean or wiry. His head is an unmistakable frog head with dome eyes and a wide mouth on a short thick neck, and his hands and feet are big webbed frog hands and feet on long powerful frog legs. He reads first as a powerful humanoid athlete and second as a frog.
+
+HELD-CONSTANT CHARACTER PROGRAM
+TIGER is a FROG — a martial-arts fantasy-football lineman from an ancient kung-fu temple, rendered as the hero of a serious WUXIA epic: the disciplined gravitas, coiled power and quiet menace of a wuxia film lead, an ancient-Chinese martial-world tone carried in every element. Played absolutely straight — never cartoon-cute, never comedic, never a Ninja Turtles homage. Smooth moss-green frog skin with a lighter throat and belly; no warts, no hair. His head is COMPLETELY BARE: NO headband, NO hachimaki, NO hat, hood or helmet — nothing worn on the head at all. His face is level and unsmiling, the wide frog mouth a firm closed line — never a grin, never googly eyes.
+
+He is a master of TIGER-STYLE KUNG FU, the hard ferocious power style: every technique drives forward through open TIGER-CLAW hands. &quot;Tiger-claw&quot; names the HAND SHAPE ONLY — his thick webbed digits are hooked like a striking claw but each digit ends in a smooth ROUNDED FROG TOE-PAD: absolutely NO claws, NO talons, NO nails, NO pointed fingertips anywhere. The tiger is his STYLE, not his species — he remains entirely a frog, with NO stripes, NO fur, NO whiskers and NO feline features anywhere.
+
+His kit is a traditional Chinese martial outfit tailored to his frog anatomy, cut to show off his frog skin. He wears a SHORT-SLEEVED TANGZHUANG (Tang suit) JACKET: black silk with bold red piping, a standing MANDARIN COLLAR, and a straight center-front placket closed by a vertical column of exactly FOUR LARGE KNOTTED FROG-BUTTON TOGGLES — each toggle chunky and clearly readable, the size of one of his eyes. The sleeves are SHORT, ending above the elbow with red-trimmed cuffs, showing his heavy moss-green upper arms; the jacket hem has short side slits and rests against his body. Over the jacket a broad plain cloth SASH wraps his waist, tied at the back. Below he wears loose KNEE-LENGTH training shorts. Simple cloth wraps cover each LOWER forearm from the wrist up and each shin from the ankle up, each wrap stopping short of the elbow or knee so a clear band of moss-green skin shows between wrap and sleeve cuff on each arm, and at each knee between shorts hem and shin wrap. His big four-digit hands and bare feet show natural connected webbing — no sandals, no boots. The kit is plain: NO emblem, number, logo or readable text, and he wears NO armor, pads or helmet of any kind. He carries NOTHING — no weapon, no ball, no prop; both hands are visibly empty.
+
+POSE AND BASING
+He stands in a deep, wide TIGER-STYLE BOW STANCE facing the camera with the poised stillness of a wuxia master a heartbeat before striking: weight sunk low through strongly bent knees, torso upright, chin level. BOTH bare webbed feet are fully PLANTED on the same flat ground plane: each foot pressed FLAT along its FULL LENGTH into the ground, stance wide and rooted like a statue&#x27;s — NO lifted foot, NO tiptoe, NO standing on the ball of the foot, NO raised heel, NO mid-step walking frame. Both arms present open tiger-claw hands toward the camera, one leading at shoulder height, one chambered lower near the sash, elbows bent, both arms wholly within the image plane. No limb crosses, merges into or hides behind the torso.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a roughly 35 mm-tall resin figure: bold planes, thick connected forms, deep relief, no hairline detail. The frog-button toggles are oversized and sculptural; the jacket hem, side slits, cuffs and sash knot are thickened and rest against the body; webbed digits stay connected; the throat and chin stay clear of clutter. No base, no text, no thin spike, no free-floating strap, no transparent material.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-5"><h2>Compressed · GPT Image 2 · 1</h2><p class="gmeta">gpt-image-2-2026-04-21 via openai · size=1024x1536 quality=high output_format=png · $0.17 · 2026-08-06T13:30:02</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang-compressed.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+A photorealistic full-body studio concept render for a 32 mm resin fantasy-football miniature: one figure, straight-on FRONT view, centered on a plain neutral gray background with even soft lighting, near-orthographic long-lens framing, the whole body and both feet visible with space around them. No base, pedestal, scenic ground, labels or presentation card.
+
+TIGER is an ANTHRO ATHLETE FROG, five to five-and-a-half heads tall, built like a HEAVYWEIGHT human martial artist — wide shoulders, deep chest, thick powerful limbs, never lean or wiry. Unmistakable frog head (dome eyes, wide unsmiling closed mouth) on a short thick neck; big webbed four-digit frog hands and feet on long powerful frog legs. Smooth moss-green skin with a lighter throat and belly; no warts, no hair. His head is COMPLETELY BARE — no headband, hat, hood or helmet. Serious wuxia-epic gravitas throughout; never cartoon-cute, comedic, or a Ninja Turtles homage. Tiger-style kung fu names his HAND SHAPE only: hooked open tiger-claw guard hands whose digits each end in a smooth ROUNDED FROG TOE-PAD — no claws, talons, nails or pointed fingertips; no stripes, fur, whiskers or feline features anywhere.
+
+His kit: a SHORT-SLEEVED black silk TANGZHUANG jacket with bold red piping, a standing MANDARIN COLLAR, and a straight front placket closed by exactly FOUR LARGE knotted FROG-BUTTON toggles, each the size of one of his eyes; short side slits at the jacket hem, which rests against his body; short red-trimmed sleeves ending above the elbow, showing his heavy moss-green upper arms; a broad plain cloth SASH over the jacket, tied at the back; loose KNEE-LENGTH shorts; cloth wraps on each lower forearm and each shin, stopping short of elbow and knee so a band of moss-green skin shows between wrap and cuff and at each knee; bare webbed feet, no footwear. No emblem, number, logo or readable text; no armor, pads or helmet; both hands visibly EMPTY — no weapon, ball or prop.
+
+Pose: a deep, wide TIGER-STYLE BOW STANCE facing the camera — weight sunk low through bent knees, torso upright, chin level, rooted like a statue. BOTH feet are pressed FLAT along their FULL LENGTH on one flat ground plane: no lifted foot, tiptoe, raised heel or mid-step frame. One open tiger-claw hand leads at shoulder height, the other is chambered low near the sash; elbows bent, both arms fully inside the frame, no limb crossing, merging into or hiding behind the torso.
+
+Sculpt-ready finish for a ~35 mm print: bold thick connected forms, deep relief, no hairline detail; oversized sculptural toggles; hems, side slits, cuffs and sash knot thickened and resting against the body; webbed digits connected; the throat and chin stay clear of clutter; no thin spikes, free-floating straps or transparent materials.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-6"><h2>Compressed · GPT Image 2 · 2</h2><p class="gmeta">gpt-image-2-2026-04-21 via openai · size=1024x1536 quality=high output_format=png · $0.17 · 2026-08-06T13:31:39</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang-compressed.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+A photorealistic full-body studio concept render for a 32 mm resin fantasy-football miniature: one figure, straight-on FRONT view, centered on a plain neutral gray background with even soft lighting, near-orthographic long-lens framing, the whole body and both feet visible with space around them. No base, pedestal, scenic ground, labels or presentation card.
+
+TIGER is an ANTHRO ATHLETE FROG, five to five-and-a-half heads tall, built like a HEAVYWEIGHT human martial artist — wide shoulders, deep chest, thick powerful limbs, never lean or wiry. Unmistakable frog head (dome eyes, wide unsmiling closed mouth) on a short thick neck; big webbed four-digit frog hands and feet on long powerful frog legs. Smooth moss-green skin with a lighter throat and belly; no warts, no hair. His head is COMPLETELY BARE — no headband, hat, hood or helmet. Serious wuxia-epic gravitas throughout; never cartoon-cute, comedic, or a Ninja Turtles homage. Tiger-style kung fu names his HAND SHAPE only: hooked open tiger-claw guard hands whose digits each end in a smooth ROUNDED FROG TOE-PAD — no claws, talons, nails or pointed fingertips; no stripes, fur, whiskers or feline features anywhere.
+
+His kit: a SHORT-SLEEVED black silk TANGZHUANG jacket with bold red piping, a standing MANDARIN COLLAR, and a straight front placket closed by exactly FOUR LARGE knotted FROG-BUTTON toggles, each the size of one of his eyes; short side slits at the jacket hem, which rests against his body; short red-trimmed sleeves ending above the elbow, showing his heavy moss-green upper arms; a broad plain cloth SASH over the jacket, tied at the back; loose KNEE-LENGTH shorts; cloth wraps on each lower forearm and each shin, stopping short of elbow and knee so a band of moss-green skin shows between wrap and cuff and at each knee; bare webbed feet, no footwear. No emblem, number, logo or readable text; no armor, pads or helmet; both hands visibly EMPTY — no weapon, ball or prop.
+
+Pose: a deep, wide TIGER-STYLE BOW STANCE facing the camera — weight sunk low through bent knees, torso upright, chin level, rooted like a statue. BOTH feet are pressed FLAT along their FULL LENGTH on one flat ground plane: no lifted foot, tiptoe, raised heel or mid-step frame. One open tiger-claw hand leads at shoulder height, the other is chambered low near the sash; elbows bent, both arms fully inside the frame, no limb crossing, merging into or hiding behind the torso.
+
+Sculpt-ready finish for a ~35 mm print: bold thick connected forms, deep relief, no hairline detail; oversized sculptural toggles; hems, side slits, cuffs and sash knot thickened and resting against the body; webbed digits connected; the throat and chin stay clear of clutter; no thin spikes, free-floating straps or transparent materials.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-7"><h2>Compressed · GPT Image 2 · 3</h2><p class="gmeta">gpt-image-2-2026-04-21 via openai · size=1024x1536 quality=high output_format=png · $0.17 · 2026-08-06T13:33:05</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang-compressed.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+A photorealistic full-body studio concept render for a 32 mm resin fantasy-football miniature: one figure, straight-on FRONT view, centered on a plain neutral gray background with even soft lighting, near-orthographic long-lens framing, the whole body and both feet visible with space around them. No base, pedestal, scenic ground, labels or presentation card.
+
+TIGER is an ANTHRO ATHLETE FROG, five to five-and-a-half heads tall, built like a HEAVYWEIGHT human martial artist — wide shoulders, deep chest, thick powerful limbs, never lean or wiry. Unmistakable frog head (dome eyes, wide unsmiling closed mouth) on a short thick neck; big webbed four-digit frog hands and feet on long powerful frog legs. Smooth moss-green skin with a lighter throat and belly; no warts, no hair. His head is COMPLETELY BARE — no headband, hat, hood or helmet. Serious wuxia-epic gravitas throughout; never cartoon-cute, comedic, or a Ninja Turtles homage. Tiger-style kung fu names his HAND SHAPE only: hooked open tiger-claw guard hands whose digits each end in a smooth ROUNDED FROG TOE-PAD — no claws, talons, nails or pointed fingertips; no stripes, fur, whiskers or feline features anywhere.
+
+His kit: a SHORT-SLEEVED black silk TANGZHUANG jacket with bold red piping, a standing MANDARIN COLLAR, and a straight front placket closed by exactly FOUR LARGE knotted FROG-BUTTON toggles, each the size of one of his eyes; short side slits at the jacket hem, which rests against his body; short red-trimmed sleeves ending above the elbow, showing his heavy moss-green upper arms; a broad plain cloth SASH over the jacket, tied at the back; loose KNEE-LENGTH shorts; cloth wraps on each lower forearm and each shin, stopping short of elbow and knee so a band of moss-green skin shows between wrap and cuff and at each knee; bare webbed feet, no footwear. No emblem, number, logo or readable text; no armor, pads or helmet; both hands visibly EMPTY — no weapon, ball or prop.
+
+Pose: a deep, wide TIGER-STYLE BOW STANCE facing the camera — weight sunk low through bent knees, torso upright, chin level, rooted like a statue. BOTH feet are pressed FLAT along their FULL LENGTH on one flat ground plane: no lifted foot, tiptoe, raised heel or mid-step frame. One open tiger-claw hand leads at shoulder height, the other is chambered low near the sash; elbows bent, both arms fully inside the frame, no limb crossing, merging into or hiding behind the torso.
+
+Sculpt-ready finish for a ~35 mm print: bold thick connected forms, deep relief, no hairline detail; oversized sculptural toggles; hems, side slits, cuffs and sash knot thickened and resting against the body; webbed digits connected; the throat and chin stay clear of clutter; no thin spikes, free-floating straps or transparent materials.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-8"><h2>Compressed · Riverflow 2.5 · 1</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K aspect_ratio=2:3 · $0.34 · 2026-08-06T04:22:16</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang-compressed.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+A photorealistic full-body studio concept render for a 32 mm resin fantasy-football miniature: one figure, straight-on FRONT view, centered on a plain neutral gray background with even soft lighting, near-orthographic long-lens framing, the whole body and both feet visible with space around them. No base, pedestal, scenic ground, labels or presentation card.
+
+TIGER is an ANTHRO ATHLETE FROG, five to five-and-a-half heads tall, built like a HEAVYWEIGHT human martial artist — wide shoulders, deep chest, thick powerful limbs, never lean or wiry. Unmistakable frog head (dome eyes, wide unsmiling closed mouth) on a short thick neck; big webbed four-digit frog hands and feet on long powerful frog legs. Smooth moss-green skin with a lighter throat and belly; no warts, no hair. His head is COMPLETELY BARE — no headband, hat, hood or helmet. Serious wuxia-epic gravitas throughout; never cartoon-cute, comedic, or a Ninja Turtles homage. Tiger-style kung fu names his HAND SHAPE only: hooked open tiger-claw guard hands whose digits each end in a smooth ROUNDED FROG TOE-PAD — no claws, talons, nails or pointed fingertips; no stripes, fur, whiskers or feline features anywhere.
+
+His kit: a SHORT-SLEEVED black silk TANGZHUANG jacket with bold red piping, a standing MANDARIN COLLAR, and a straight front placket closed by exactly FOUR LARGE knotted FROG-BUTTON toggles, each the size of one of his eyes; short side slits at the jacket hem, which rests against his body; short red-trimmed sleeves ending above the elbow, showing his heavy moss-green upper arms; a broad plain cloth SASH over the jacket, tied at the back; loose KNEE-LENGTH shorts; cloth wraps on each lower forearm and each shin, stopping short of elbow and knee so a band of moss-green skin shows between wrap and cuff and at each knee; bare webbed feet, no footwear. No emblem, number, logo or readable text; no armor, pads or helmet; both hands visibly EMPTY — no weapon, ball or prop.
+
+Pose: a deep, wide TIGER-STYLE BOW STANCE facing the camera — weight sunk low through bent knees, torso upright, chin level, rooted like a statue. BOTH feet are pressed FLAT along their FULL LENGTH on one flat ground plane: no lifted foot, tiptoe, raised heel or mid-step frame. One open tiger-claw hand leads at shoulder height, the other is chambered low near the sash; elbows bent, both arms fully inside the frame, no limb crossing, merging into or hiding behind the torso.
+
+Sculpt-ready finish for a ~35 mm print: bold thick connected forms, deep relief, no hairline detail; oversized sculptural toggles; hems, side slits, cuffs and sash knot thickened and resting against the body; webbed digits connected; the throat and chin stay clear of clutter; no thin spikes, free-floating straps or transparent materials.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-9"><h2>Compressed · Riverflow 2.5 · 2</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K aspect_ratio=2:3 · $0.34 · 2026-08-06T04:22:23</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang-compressed.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+A photorealistic full-body studio concept render for a 32 mm resin fantasy-football miniature: one figure, straight-on FRONT view, centered on a plain neutral gray background with even soft lighting, near-orthographic long-lens framing, the whole body and both feet visible with space around them. No base, pedestal, scenic ground, labels or presentation card.
+
+TIGER is an ANTHRO ATHLETE FROG, five to five-and-a-half heads tall, built like a HEAVYWEIGHT human martial artist — wide shoulders, deep chest, thick powerful limbs, never lean or wiry. Unmistakable frog head (dome eyes, wide unsmiling closed mouth) on a short thick neck; big webbed four-digit frog hands and feet on long powerful frog legs. Smooth moss-green skin with a lighter throat and belly; no warts, no hair. His head is COMPLETELY BARE — no headband, hat, hood or helmet. Serious wuxia-epic gravitas throughout; never cartoon-cute, comedic, or a Ninja Turtles homage. Tiger-style kung fu names his HAND SHAPE only: hooked open tiger-claw guard hands whose digits each end in a smooth ROUNDED FROG TOE-PAD — no claws, talons, nails or pointed fingertips; no stripes, fur, whiskers or feline features anywhere.
+
+His kit: a SHORT-SLEEVED black silk TANGZHUANG jacket with bold red piping, a standing MANDARIN COLLAR, and a straight front placket closed by exactly FOUR LARGE knotted FROG-BUTTON toggles, each the size of one of his eyes; short side slits at the jacket hem, which rests against his body; short red-trimmed sleeves ending above the elbow, showing his heavy moss-green upper arms; a broad plain cloth SASH over the jacket, tied at the back; loose KNEE-LENGTH shorts; cloth wraps on each lower forearm and each shin, stopping short of elbow and knee so a band of moss-green skin shows between wrap and cuff and at each knee; bare webbed feet, no footwear. No emblem, number, logo or readable text; no armor, pads or helmet; both hands visibly EMPTY — no weapon, ball or prop.
+
+Pose: a deep, wide TIGER-STYLE BOW STANCE facing the camera — weight sunk low through bent knees, torso upright, chin level, rooted like a statue. BOTH feet are pressed FLAT along their FULL LENGTH on one flat ground plane: no lifted foot, tiptoe, raised heel or mid-step frame. One open tiger-claw hand leads at shoulder height, the other is chambered low near the sash; elbows bent, both arms fully inside the frame, no limb crossing, merging into or hiding behind the torso.
+
+Sculpt-ready finish for a ~35 mm print: bold thick connected forms, deep relief, no hairline detail; oversized sculptural toggles; hems, side slits, cuffs and sash knot thickened and resting against the body; webbed digits connected; the throat and chin stay clear of clutter; no thin spikes, free-floating straps or transparent materials.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-10"><h2>Minimal · GPT Image 2 · 1</h2><p class="gmeta">gpt-image-2-2026-04-21 via openai · size=1024x1536 quality=high output_format=png · $0.17 · 2026-08-06T13:35:02</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang-minimal.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+A photorealistic full-body concept render of a fantasy-football miniature character: one figure, straight-on front view, centered on a plain gray studio background, whole body and both feet visible.
+
+TIGER is a heavyweight anthropomorphic frog — a kung-fu temple lineman with the serious gravitas of a wuxia film hero. Moss-green skin, a bare frog head with dome eyes, massive webbed hands and feet, and a thick, powerful build. He wears a short-sleeved black tangzhuang jacket with red trim, a mandarin collar and knotted frog-button toggles, a broad sash tied at the back, knee-length shorts, and cloth wraps on his forearms and shins; he is barefoot.
+
+He stands rooted in a deep tiger-style bow stance, both feet planted flat, presenting open tiger-claw hands — one high, one low — with the stillness of a master a heartbeat before striking.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-11"><h2>Minimal · GPT Image 2 · 2</h2><p class="gmeta">gpt-image-2-2026-04-21 via openai · size=1024x1536 quality=high output_format=png · $0.17 · 2026-08-06T13:36:35</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang-minimal.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+A photorealistic full-body concept render of a fantasy-football miniature character: one figure, straight-on front view, centered on a plain gray studio background, whole body and both feet visible.
+
+TIGER is a heavyweight anthropomorphic frog — a kung-fu temple lineman with the serious gravitas of a wuxia film hero. Moss-green skin, a bare frog head with dome eyes, massive webbed hands and feet, and a thick, powerful build. He wears a short-sleeved black tangzhuang jacket with red trim, a mandarin collar and knotted frog-button toggles, a broad sash tied at the back, knee-length shorts, and cloth wraps on his forearms and shins; he is barefoot.
+
+He stands rooted in a deep tiger-style bow stance, both feet planted flat, presenting open tiger-claw hands — one high, one low — with the stillness of a master a heartbeat before striking.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-12"><h2>Minimal · GPT Image 2 · 3</h2><p class="gmeta">gpt-image-2-2026-04-21 via openai · size=1024x1536 quality=high output_format=png · $0.17 · 2026-08-06T13:38:05</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang-minimal.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+A photorealistic full-body concept render of a fantasy-football miniature character: one figure, straight-on front view, centered on a plain gray studio background, whole body and both feet visible.
+
+TIGER is a heavyweight anthropomorphic frog — a kung-fu temple lineman with the serious gravitas of a wuxia film hero. Moss-green skin, a bare frog head with dome eyes, massive webbed hands and feet, and a thick, powerful build. He wears a short-sleeved black tangzhuang jacket with red trim, a mandarin collar and knotted frog-button toggles, a broad sash tied at the back, knee-length shorts, and cloth wraps on his forearms and shins; he is barefoot.
+
+He stands rooted in a deep tiger-style bow stance, both feet planted flat, presenting open tiger-claw hands — one high, one low — with the stillness of a master a heartbeat before striking.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-13"><h2>Minimal · Riverflow 2.5 · 1</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K aspect_ratio=2:3 · $0.33 · 2026-08-06T04:22:17</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang-minimal.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+A photorealistic full-body concept render of a fantasy-football miniature character: one figure, straight-on front view, centered on a plain gray studio background, whole body and both feet visible.
+
+TIGER is a heavyweight anthropomorphic frog — a kung-fu temple lineman with the serious gravitas of a wuxia film hero. Moss-green skin, a bare frog head with dome eyes, massive webbed hands and feet, and a thick, powerful build. He wears a short-sleeved black tangzhuang jacket with red trim, a mandarin collar and knotted frog-button toggles, a broad sash tied at the back, knee-length shorts, and cloth wraps on his forearms and shins; he is barefoot.
+
+He stands rooted in a deep tiger-style bow stance, both feet planted flat, presenting open tiger-claw hands — one high, one low — with the stillness of a master a heartbeat before striking.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-14"><h2>Minimal · Riverflow 2.5 · 2</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K aspect_ratio=2:3 · $0.33 · 2026-08-06T04:22:50</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang-minimal.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+A photorealistic full-body concept render of a fantasy-football miniature character: one figure, straight-on front view, centered on a plain gray studio background, whole body and both feet visible.
+
+TIGER is a heavyweight anthropomorphic frog — a kung-fu temple lineman with the serious gravitas of a wuxia film hero. Moss-green skin, a bare frog head with dome eyes, massive webbed hands and feet, and a thick, powerful build. He wears a short-sleeved black tangzhuang jacket with red trim, a mandarin collar and knotted frog-button toggles, a broad sash tied at the back, knee-length shorts, and cloth wraps on his forearms and shins; he is barefoot.
+
+He stands rooted in a deep tiger-style bow stance, both feet planted flat, presenting open tiger-claw hands — one high, one low — with the stillness of a master a heartbeat before striking.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbRefRow=document.getElementById('lb-refrow'),lbRef=document.getElementById('lb-ref'),
+      lbCopyId=document.getElementById('lb-copy-id'),lbCopyLink=document.getElementById('lb-copy-link'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body'),
+      developerMode=document.getElementById('developer-mode');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+function setDeveloperMode(enabled){
+  document.querySelectorAll('[data-developer]').forEach(function(node){node.hidden=!enabled;});
+  document.documentElement.dataset.developer=enabled?'true':'false';
+  if(developerMode)developerMode.setAttribute('aria-checked',enabled?'true':'false');
+}
+if(developerMode){
+  developerMode.addEventListener('change',function(){setDeveloperMode(developerMode.checked);});
+  setDeveloperMode(false);
+}
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  const ref=z.dataset.ref||'',anchor=z.dataset.anchor||'';
+  lbRefRow.hidden=!(ref&&anchor);
+  if(ref&&anchor){
+    lbRef.textContent='#'+ref;
+    lbCopyId.dataset.copyId='#'+ref;
+    lbCopyLink.dataset.copy=anchor;
+  }
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy a card's short display id, or copy/share its deep link. The URL is this
+// page plus the card's #id anchor, so a recipient lands scrolled to (and
+// highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  const ci=e.target.closest('[data-copy-id]');
+  if(ci){copyText(ci.dataset.copyId,ci);e.preventDefault();return;}
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+
+</body></html>
