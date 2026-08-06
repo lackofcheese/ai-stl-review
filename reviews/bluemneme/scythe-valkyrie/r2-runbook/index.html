@@ -1,0 +1,1084 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="ai-stl-plan-digest" content="55236e24a039a909b00ab3a86b06ec3e8ab6e0061bc6cb35151cc70783e1c920">
+<title>Scythe Valkyrie — Round 2 runbook</title>
+<style>
+:root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.reviewtools { display:flex; justify-content:flex-end; margin:.35rem 0 0 }
+.devmode { display:inline-flex; align-items:center; gap:.5rem; color:var(--dim);
+  font-size:.76rem; font-weight:650; cursor:pointer; user-select:none }
+.devmode input { appearance:none; position:relative; width:2.15rem; height:1.18rem;
+  margin:0; border:1px solid var(--dim); border-radius:99px;
+  background:var(--line); cursor:pointer; transition:background .15s,border-color .15s }
+.devmode input::after { content:""; position:absolute; width:.78rem; height:.78rem;
+  left:.14rem; top:.13rem; border-radius:50%; background:var(--ink);
+  transition:transform .15s }
+.devmode input:checked { background:var(--accent); border-color:var(--accent) }
+.devmode input:checked::after { transform:translateX(.95rem); background:#fff }
+.devmode input:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+.developer-only[hidden] { display:none !important }
+.developer-section { margin:2.4rem 0 0; padding:1rem;
+  border:1px dashed var(--line); border-radius:8px }
+.developer-section > h2:first-child { margin-top:0 }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.coreinputs { margin:1.2rem 0 .4rem }
+.coreinputs h2 { margin:0 0 .5rem }
+.coreinputs .hint { color:var(--dim); font-weight:400; font-size:.85rem }
+.inputrow { display:flex; flex-wrap:wrap; gap:12px }
+.coreinput { margin:0; width:210px; max-width:100%;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.coreinput .imgwrap { border-bottom:1px solid var(--line) }
+.coreinput .imgwrap img { max-height:230px }
+.coreinput figcaption { color:var(--dim); font-size:.7rem; padding:.35rem .5rem;
+  word-break:break-all; font-family:ui-monospace,SFMono-Regular,Menlo,monospace }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.recommendation { color:var(--ink) !important; font-size:.88rem !important;
+  padding:.55rem .65rem; border-left:3px solid var(--accent);
+  background:color-mix(in srgb,var(--accent) 8%,transparent); border-radius:4px }
+.recommendation strong { color:var(--accent); font-size:.7rem;
+  letter-spacing:.06em; text-transform:uppercase; margin-right:.3rem }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.statrow { display:flex; flex-wrap:wrap; gap:.15rem .5rem; margin:0 0 .1rem;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.72rem;
+  color:var(--dim) }
+.statrow span { white-space:nowrap }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.chip.unclear { color:var(--dim); border-color:var(--dim) }
+.detector-details { display:flex; flex-direction:column; gap:.45rem }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:calc(100vh - 7rem); object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-meta { display:flex; flex-direction:column; align-items:center; gap:.35rem;
+  min-height:2.2rem; position:relative; z-index:20 }
+.lb-refrow { display:flex; align-items:center; justify-content:center; gap:.35rem;
+  flex-wrap:wrap }
+.lb-refrow[hidden] { display:none }
+.lb-refrow .refid { background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn { color:#bbb; border-color:#55515d;
+  background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+
+/* Runbook chrome. The house tokens, lightbox and asset pipeline come from
+   review_page.py; everything here is the runbook page's own structure —
+   a decision-first header, the choices as cards, and the technical plan
+   behind per-subsection disclosures. */
+.md h2 { font-size:1.15rem; margin:2.2rem 0 .3rem }
+.md h3 { font-size:1rem; margin:1.6rem 0 .3rem }
+.md h4 { font-size:.9rem; margin:1.2rem 0 .3rem; color:var(--dim) }
+.md p { max-width:68ch; margin:.5rem 0 0 }
+.md ul, .md ol { max-width:68ch; padding-left:1.4rem }
+.md li { margin:.25rem 0 }
+.md a { color:var(--accent) }
+.md code, dl.facts code, .choice code { background:var(--pre);
+  border:1px solid var(--line); border-radius:4px; padding:.05rem .3rem;
+  font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
+.md pre.code { background:var(--pre); border:1px solid var(--line); border-radius:6px;
+  padding:.75rem 1rem; overflow-x:auto; font-size:.8rem; line-height:1.5 }
+.md pre.code code { background:none; border:0; padding:0 }
+.md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+.ico { width:1em; height:1em; flex:none; stroke:currentColor; fill:none;
+  stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; vertical-align:-.12em }
+
+/* --- header ------------------------------------------------------------- */
+h1 { font-size:1.55rem; margin:.25rem 0 0; letter-spacing:-.01em }
+.statusrow { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem .55rem;
+  margin:.7rem 0 0 }
+.statusrow.sub { margin:.4rem 0 0 }
+.statusnote { color:var(--dim); font-size:.82rem; margin:.5rem 0 0; max-width:70ch }
+.pill { display:inline-flex; align-items:center; gap:.35rem; font-size:.74rem;
+  font-weight:700; border:1px solid; border-radius:99px; padding:.16rem .6rem;
+  white-space:nowrap }
+.pill .dot { width:.45rem; height:.45rem; border-radius:50%; background:currentColor }
+.pill.s-await { color:var(--warn); border-color:var(--warn) }
+.pill.s-appr { color:var(--accent); border-color:var(--accent) }
+.pill.s-run { color:var(--ok); border-color:var(--ok) }
+.pill.s-done, .pill.s-hold { color:var(--dim); border-color:var(--line) }
+.fact { display:inline-flex; align-items:center; gap:.3rem; font-size:.75rem;
+  color:var(--dim); border:1px solid var(--line); border-radius:99px;
+  padding:.16rem .6rem; text-decoration:none }
+.fact b { color:var(--ink); font-weight:600 }
+a.fact.link { color:var(--accent); border-color:var(--accent) }
+.fact.inert { opacity:.55 }
+
+/* --- the ask, promoted -------------------------------------------------- */
+.ask { margin:1.1rem 0 0; border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); border-radius:8px; padding:.85rem 1rem }
+.ask .lbl { display:flex; align-items:center; gap:.4rem; font-size:.7rem; font-weight:700;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin:0 0 .3rem }
+.ask p { margin:0; max-width:70ch }
+a.jump { font-size:.8rem; font-weight:600; text-decoration:none; white-space:nowrap;
+  color:var(--accent) }
+
+/* --- at a glance + spend meter ------------------------------------------ */
+.glance { display:grid; gap:8px; margin:1rem 0 0;
+  grid-template-columns:repeat(auto-fit,minmax(132px,1fr)) }
+.tile { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.55rem .7rem; display:flex; flex-direction:column; gap:.12rem }
+.tile .k { display:flex; align-items:center; gap:.3rem; font-size:.66rem; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--dim) }
+.tile .v { font-size:1.05rem; font-weight:700; font-variant-numeric:tabular-nums }
+.tile .s { font-size:.72rem; color:var(--dim) }
+.meter { margin:.75rem 0 0; background:var(--card); border:1px solid var(--line);
+  border-radius:8px; padding:.7rem .85rem }
+.meter .top { display:flex; justify-content:space-between; align-items:baseline;
+  gap:.5rem; font-size:.74rem; color:var(--dim); margin:0 0 .4rem }
+.meter .top b { color:var(--ink); font-size:.9rem; font-variant-numeric:tabular-nums }
+.bar { height:9px; border-radius:99px; background:var(--well); border:1px solid var(--line);
+  overflow:hidden; display:flex }
+.bar i { display:block; height:100%; background:var(--accent) }
+.legend { display:flex; flex-wrap:wrap; gap:.2rem .9rem; margin:.45rem 0 0;
+  font-size:.7rem; color:var(--dim) }
+.legend span { display:inline-flex; align-items:center; gap:.32rem }
+.legend i { width:.6rem; height:.6rem; border-radius:2px; background:var(--accent); flex:none }
+.legend i.r { opacity:.45 }
+.legend i.o { background:var(--well); border:1px solid var(--line) }
+
+/* --- section nav + sections --------------------------------------------- */
+.snav { position:sticky; top:0; z-index:5; margin:1.4rem -16px 0; padding:.5rem 16px;
+  background:var(--bg); border-bottom:1px solid var(--line);
+  display:flex; gap:.35rem; overflow-x:auto; scrollbar-width:none }
+.snav::-webkit-scrollbar { display:none }
+.snav a { font-size:.72rem; font-weight:600; color:var(--dim); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .6rem; white-space:nowrap }
+.snav a:hover { color:var(--ink); border-color:var(--dim) }
+section.s { margin:2.1rem 0 0; scroll-margin-top:3.2rem }
+section.s > h2 { display:flex; align-items:center; gap:.5rem; font-size:1.02rem;
+  margin:0 0 .3rem }
+section.s > h2 .ico { color:var(--accent); width:1.05em; height:1.05em }
+section.s > h2::after { content:""; flex:1; height:1px; background:var(--line) }
+.md.cta { background:var(--card); border:1px solid var(--accent); border-radius:10px;
+  padding:.35rem 1.05rem .95rem; margin-top:.6rem }
+.md.cta ol li::marker, .md.cta ul li::marker { color:var(--accent); font-weight:700 }
+
+/* --- pipeline strip + round lineage ------------------------------------- */
+.strips { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.7rem .85rem; margin:.9rem 0 0 }
+.stage, .lineage { display:flex; flex-wrap:wrap; align-items:center; gap:.3rem }
+.lineage { margin-top:.55rem }
+.stage .lbl, .lineage .lbl { font-size:.64rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--dim); margin-right:.15rem }
+.stage .st { font-size:.71rem; font-weight:600; color:var(--dim);
+  border:1px solid var(--line); border-radius:99px; padding:.16rem .55rem; white-space:nowrap }
+.stage .st.now { color:var(--bg); background:var(--accent); border-color:var(--accent) }
+.stage .st.opt { border-style:dashed }
+.stage .arw, .lineage .arw { color:var(--line); font-size:.8rem }
+.lineage .rn { font-size:.72rem; color:var(--dim); border:1px solid var(--line);
+  border-radius:6px; padding:.16rem .5rem }
+.lineage .rn.this { color:var(--ink); border-color:var(--accent); font-weight:700 }
+.lineage .rn.next { border-style:dashed }
+
+/* --- choices as cards ---------------------------------------------------
+   The choices table is the round's comparison and the first thing a reviewer
+   reads. As a table its prose columns forced a 544px grid into a 343px phone
+   column, so the same cells render as one card per choice and simply stack. */
+.choices { display:grid; gap:12px; margin:.7rem 0 0;
+  grid-template-columns:repeat(auto-fit,minmax(255px,1fr)) }
+.choice { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.85rem .95rem; display:flex; flex-direction:column; gap:.5rem }
+.choice header { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap }
+.choice .key { font-size:.78rem; font-weight:800; color:var(--accent);
+  border:1px solid var(--accent); border-radius:6px; padding:.1rem .42rem }
+.choice h3 { margin:0; font-size:.97rem; font-weight:700 }
+.choice .rolls { margin-left:auto; font-size:.7rem; font-weight:700; color:var(--dim);
+  border:1px solid var(--line); border-radius:99px; padding:.1rem .5rem;
+  white-space:nowrap; font-variant-numeric:tabular-nums }
+.choice ul { margin:0; padding:0; list-style:none; display:flex; flex-direction:column;
+  gap:.32rem }
+.choice li { display:flex; gap:.45rem; font-size:.87rem; line-height:1.45 }
+.choice li .ico { color:var(--accent); margin-top:.28em; width:.5em; height:.5em }
+.choice .foot { display:flex; flex-direction:column; gap:.3rem; margin-top:auto;
+  padding-top:.15rem }
+.choice .cx { margin:0; font-size:.78rem; color:var(--dim) }
+.choice .ck { font-size:.62rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--dim); margin-right:.4rem }
+.choice a.jump { display:inline-flex; align-items:center; gap:.3rem; font-size:.71rem;
+  color:var(--dim); border:1px solid var(--line); border-radius:99px;
+  padding:.14rem .55rem; align-self:flex-start; margin-top:.15rem }
+.choice a.jump:hover { color:var(--accent); border-color:var(--accent) }
+
+/* --- roll matrix -------------------------------------------------------- */
+.shape { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.8rem .9rem; margin:12px 0 0; overflow-x:auto }
+.mx { display:grid; gap:6px; min-width:min(100%,320px) }
+.mx .hd { font-size:.63rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--dim); text-align:center; overflow-wrap:anywhere }
+.mx .rh { font-size:.74rem; font-weight:700; display:flex; align-items:center;
+  padding-right:.4rem; white-space:nowrap; max-width:9rem; overflow:hidden;
+  text-overflow:ellipsis }
+.mx .cell { background:var(--card); border:1px solid var(--line); border-radius:5px;
+  height:30px; display:flex; align-items:center; justify-content:center;
+  color:var(--accent) }
+.mx .cell.empty { opacity:.25; background:none }
+.shape .cap { font-size:.74rem; color:var(--dim); margin:.55rem 0 0 }
+.shape .cap b { color:var(--ink) }
+
+/* --- cost breakdown ----------------------------------------------------- */
+.costgrid { display:grid; gap:6px; margin:.7rem 0 0; max-width:34rem }
+.costrow { display:grid; grid-template-columns:8rem 1fr 5.5rem; align-items:center;
+  gap:.6rem; font-size:.8rem }
+.costrow .n { color:var(--dim); font-family:ui-monospace,Menlo,monospace; font-size:.76rem;
+  overflow-wrap:anywhere }
+.costrow .t { height:7px; border-radius:99px; background:var(--accent); opacity:.75 }
+.costrow .a { text-align:right; font-variant-numeric:tabular-nums; font-weight:600 }
+.costrow.total { border-top:1px solid var(--line); padding-top:.35rem; margin-top:.2rem }
+.costrow.total .n { color:var(--ink); font-weight:700 }
+
+/* --- round facts -------------------------------------------------------- */
+dl.facts { display:grid; grid-template-columns:auto 1fr; gap:.35rem 1.1rem; margin:.7rem 0 0;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.85rem 1rem; font-size:.86rem }
+dl.facts dt { color:var(--dim); font-weight:700; white-space:nowrap; font-size:.72rem;
+  letter-spacing:.06em; text-transform:uppercase; padding-top:.12rem }
+dl.facts dd { margin:0; max-width:66ch }
+@media (max-width:520px) {
+  dl.facts { grid-template-columns:1fr; gap:.1rem }
+  dl.facts dd { margin:0 0 .55rem }
+}
+
+/* --- technical plan ----------------------------------------------------- */
+details.tech { margin:.6rem 0 0; border:1px solid var(--line); border-radius:8px;
+  background:var(--card); padding:0 .95rem }
+details.tech > summary { cursor:pointer; padding:.7rem 0; font-weight:600; font-size:.88rem;
+  list-style:none; display:flex; align-items:center; gap:.45rem }
+details.tech > summary::-webkit-details-marker { display:none }
+details.tech > summary .ico { color:var(--accent) }
+details.tech > summary .chev { margin-left:auto; color:var(--dim); transition:transform .15s }
+details.tech[open] > summary .chev { transform:rotate(90deg) }
+details.tech .inner { padding:0 0 .8rem }
+details.tech .inner > :first-child { margin-top:0 }
+details.tech .md p, details.tech .md ul, details.tech .md ol { font-size:.87rem }
+
+/* --- tables (the experiment matrix and any prose table) -----------------
+   review_page.py pins cols 1-2 to nowrap+monospace for its short id columns;
+   a runbook table carries prose, so undo both and let auto layout balance. */
+.md .tablewrap { margin:.4rem 0 1.2rem }
+.md th, .md td { white-space:normal; overflow-wrap:break-word; font-family:inherit }
+.md td code { overflow-wrap:anywhere }
+.md table { min-width:30rem }
+
+/* --- inputs: one block per case, images grouped by artifact -------------- */
+.rb-inputs { margin:2.1rem 0 0; scroll-margin-top:3.2rem }
+.rb-inputs > h2 { display:flex; align-items:center; gap:.5rem; font-size:1.02rem;
+  margin:0 0 .3rem }
+.rb-inputs > h2 .ico { color:var(--accent); width:1.05em; height:1.05em }
+.rb-inputs > h2::after { content:""; flex:1; height:1px; background:var(--line) }
+.rb-case { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.8rem 1rem 1rem; margin:.9rem 0; scroll-margin-top:3.4rem }
+.rb-case:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.rb-case-h { display:flex; flex-wrap:wrap; align-items:baseline; gap:.2rem .6rem;
+  margin:0; font-size:1rem }
+.rb-case-count { color:var(--dim); font-size:.72rem; font-weight:400;
+  font-variant-numeric:tabular-nums }
+.rb-case-note { color:var(--dim); font-size:.88rem; margin:.3rem 0 0; max-width:70ch }
+.rb-art { margin:.85rem 0 0 }
+.rb-art-h { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; margin:0 0 .4rem }
+.rb-art-label { font-size:.7rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--accent) }
+.rb-art-id { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  color:var(--dim); overflow-wrap:anywhere }
+.rb-art .ibtn { padding:.08rem .5rem; font-size:.66rem }
+.rb-strip { display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)) }
+.rb-fig { margin:0; min-width:0; background:var(--well); border:1px solid var(--line);
+  border-radius:6px; overflow:hidden; display:flex; flex-direction:column }
+.rb-fig .imgwrap { border-bottom:1px solid var(--line) }
+.rb-fig .imgwrap img { max-height:300px }
+.rb-fig figcaption { color:var(--dim); font-size:.7rem; padding:.3rem .5rem }
+.rb-none { color:var(--dim); font-size:.86rem; margin:.6rem 0 0 }
+details.rb-prompt { margin:.85rem 0 0; background:var(--pre); border:1px solid var(--line);
+  border-radius:6px; padding:0 .9rem }
+details.rb-prompt > summary { cursor:pointer; padding:.55rem 0; font-size:.82rem;
+  font-weight:600; color:var(--accent); list-style:none; display:flex;
+  align-items:center; gap:.4rem }
+details.rb-prompt > summary::-webkit-details-marker { display:none }
+details.rb-prompt .chev { transition:transform .15s }
+details.rb-prompt[open] .chev { transform:rotate(90deg) }
+details.rb-prompt .rb-size { margin-left:auto; color:var(--dim); font-weight:400;
+  font-size:.72rem; font-variant-numeric:tabular-nums }
+details.rb-prompt .phead { display:flex; align-items:center; gap:.5rem; margin:0 0 .4rem }
+details.rb-prompt .path { color:var(--dim); font-size:.72rem; margin:0; flex:1; min-width:0;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+/* No inner max-height: the text is already behind a disclosure, and a nested
+   scroller inside a long page is miserable to use on a phone. */
+details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--bg);
+  border:1px solid var(--line); border-radius:6px; padding:.7rem .85rem; font-size:.78rem;
+  line-height:1.55; margin:0 0 .85rem }
+.copy { font:inherit; font-size:.68rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.12rem .55rem; cursor:pointer; white-space:nowrap }
+.copy:hover { color:var(--ink); border-color:var(--dim) }
+.copy.done { color:var(--ok); border-color:var(--ok) }
+:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+@media (prefers-reduced-motion:reduce) { * { transition:none !important } }
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/></symbol><symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 4v16M5 8h14M7.5 8l-2.5 5h5zM16.5 8l2.5 5h-5z"/></symbol><symbol id="i-in" viewBox="0 0 24 24"><path d="M12 3v11m0 0 4-4m-4 4-4-4M4 17v3h16v-3"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.6"/></symbol><symbol id="i-hand" viewBox="0 0 24 24"><path d="M9 11V5.6a1.6 1.6 0 0 1 3.2 0V11m0-1.2a1.6 1.6 0 0 1 3.2 0V12m0-1a1.6 1.6 0 0 1 3.2 0v4.4A5.6 5.6 0 0 1 12.8 21h-1.3a5 5 0 0 1-3.9-1.9L4.9 15a1.6 1.6 0 0 1 2.5-2L9 15"/></symbol><symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4v9.2M14.4 9.6a2.6 2.6 0 0 0-4.8 1.2c0 2.6 4.8 1 4.8 3.6a2.6 2.6 0 0 1-4.8 1.2"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M21.2 12h-2.4M5.2 12H2.8M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7M18.5 18.5l-1.7-1.7M7.2 7.2 5.5 5.5"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></symbol><symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/></symbol><symbol id="i-img" viewBox="0 0 24 24"><rect x="3.2" y="4.6" width="17.6" height="14.8" rx="2"/><circle cx="8.6" cy="9.8" r="1.5"/><path d="m3.9 17 5-4.6 4 3.4 3-2.4 4.2 3.6"/></symbol><symbol id="i-txt" viewBox="0 0 24 24"><path d="M6.5 3.6h7.2L18.5 8.4V20.4H6.5z"/><path d="M13.4 3.8v4.8h4.9M9.2 12.6h6M9.2 16h6"/></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="m9.5 5.5 7 6.5-7 6.5"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4V12l3 1.8"/></symbol><symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6.5" cy="5.5" r="2.2"/><circle cx="6.5" cy="18.5" r="2.2"/><circle cx="17.5" cy="8.5" r="2.2"/><path d="M6.5 7.7v8.6M17.5 10.7c0 3.4-2.6 4.6-5.4 5.1"/></symbol><symbol id="i-flask" viewBox="0 0 24 24"><path d="M10 3.5h4M10.8 3.5v6.2L5.6 18a2 2 0 0 0 1.7 3h9.4a2 2 0 0 0 1.7-3l-5.2-8.3V3.5"/><path d="M8 14.5h8"/></symbol><symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 3.2 20 7.6v8.8L12 20.8 4 16.4V7.6z"/><path d="M4 7.6l8 4.4 8-4.4M12 12v8.8"/></symbol></defs></svg>
+<main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">BlueMneme</a><span class="sep">&rsaquo;</span><a href="../">Scythe Valkyrie</a></nav>
+<div class="eyebrow">Round 2 · concept sweep</div>
+<h1>Scythe Valkyrie — Round 2 runbook</h1>
+<div class="statusrow"><span class="pill s-await"><span class="dot"></span>Awaiting sign-off</span><span class="fact">Opened <b>2026-08-06</b></span></div>
+<div class="statusrow sub"><span class="fact inert" title="Published at round close">&#128203; Review panel &mdash; at round close</span></div>
+<div class="ask"><p class="lbl"><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</p><p>Dimitri set the shape of this round in the 2026-08-06 planning session (round numbering, $10 cap, no-hood, GPT Image 2 native-9:20 exploration, proceed without Jake&#x27;s two example background images). <a class="jump" href="#ask">Read the full ask &darr;</a></p></div>
+<div class="glance"><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg>Rolls</span><span class="v">21</span><span class="s">across 3 cases</span></div><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Planned</span><span class="v">$6.90</span><span class="s">of a $10.00 cap</span></div><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg>Gemini mode</span><span class="v">Batch</span><span class="s">asynchronous, 50% price</span></div></div>
+<div class="meter"><p class="top"><span>Planned spend against the round cap</span><b>$6.90 / $10.00</b></p><div class="bar"><i class="spent" style="width:52.5%;"></i><i class="spent" style="width:10.5%;opacity:.45"></i><i class="spent" style="width:6%;opacity:.45"></i></div><div class="legend"><span><i></i>images $5.25</span><span><i class=r></i>screening $1.05</span><span><i class=r></i>finishing $0.60</span><span><i class="o"></i>Headroom $3.10</span></div></div>
+<nav class="snav"><a href="#goal">Goal</a><a href="#choices">Choices</a><a href="#inputs">Inputs</a><a href="#judged">Judging</a><a href="#ask">The ask</a><a href="#cost">Cost</a><a href="#facts">Round facts</a><a href="#tech">Technical plan</a></nav>
+<section class="s" id="goal"><h2><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg>Goal</h2><div class="md"><p>Jake and Dimitri are taking a deliberate detour: instead of the next mini round, produce a <strong>1080x2400 phone wallpaper</strong> of the Scythe Valkyrie for Jake. 3D-printability and STL conversion are explicitly out of scope — no plinth, no mounting structure, no thickness rules. The character program is rebuilt from Jake&#x27;s r1 feature bests (halo, wings, scythe, armour, levitation), rendered no-hood per Dimitri&#x27;s 2026-08-06 call, and placed over a quiet ruined-world background with subtle prop glow, per Jake&#x27;s direction.</p>
+<p>The round&#x27;s real question is <strong>background treatment and overall mood</strong>, so three treatments render across the model panel. GPT Image 2 and Riverflow carry the decision (best detail in r1 by a good margin); three cheaper models stay in for contrast and stray good ideas.</p></div><div class="strips"><div class="stage"><span class="lbl">Default path</span><span class="st now">Concept</span><span class="arw">&rsaquo;</span><span class="st">Turnaround</span><span class="arw">&rsaquo;</span><span class="st">Meshy</span><span class="arw">&rsaquo;</span><span class="st">Mesh check</span><span class="arw">&rsaquo;</span><span class="st">Test print</span></div><div class="lineage"><span class="lbl">This round</span><span class="rn">r1</span><span class="arw">&rsaquo;</span><span class="rn this">r2</span><span class="arw">&rsaquo;</span><span class="rn next">r3 — the mini pipeline resumes after the chosen wallpaper ships to Jake at exactly 1080x2400</span></div></div></section>
+<section class="s" id="choices"><h2><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg>The choices on the table</h2><div class="md"><p>All arms are text-only against the shared character program (byte-identical across the three prompt files); only the named <code>BACKGROUND AND GLOW — W&lt;n&gt;</code> paragraph differs. The two focus models roll twice per treatment — detail variance is the point of this round — and the three contrast models once.</p></div><div class="choices"><article class="choice"><header><span class="key">W1</span><h3>Ember aftermath</h3><span class="rolls">7 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Warm read: smouldering rubble, drifting smoke, sparse embers, dark sky</span></li><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>subtle ember-orange radiance on blade edge and halo spikes</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>text-only W1 prompt + spec</p><p class="cx"><span class="ck">Rolls</span>7 (2 gptimage2 + 2 riverflow25 + 1 each contrast)</p><a class="jump" href="#case-w1-ember-aftermath"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W2</span><h3>Cold fog</h3><span class="rolls">7 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Cool read: ruins dissolving into pale moonlit fog, rim backlight</span></li><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>subtle silver-white radiance on halo and wing edges, red accents as the only warm notes</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>text-only W2 prompt + spec</p><p class="cx"><span class="ck">Rolls</span>7 (same split)</p><a class="jump" href="#case-w2-cold-fog"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W3</span><h3>Ashfall minimal</h3><span class="rolls">7 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>The quietest read: near-monochrome ash field, falling ash, heavy negative space</span></li><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>the only strong colour is a subtle deep-red glow on halo, blade, and wing accents</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>text-only W3 prompt + spec</p><p class="cx"><span class="ck">Rolls</span>7 (same split)</p><a class="jump" href="#case-w3-ashfall-minimal"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article></div><div class="shape"><div class="mx" style="grid-template-columns:auto repeat(7,minmax(46px,1fr))"><span></span><span class="hd">roll 1</span><span class="hd">roll 2</span><span class="hd">roll 3</span><span class="hd">roll 4</span><span class="hd">roll 5</span><span class="hd">roll 6</span><span class="hd">roll 7</span><span class="rh">**W1</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">**W2</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">**W3</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span></div><p class="cap"><b>21 rolls total</b> — 3 choices, 7 + 7 + 7</p></div><div class="md"><p>That is <strong>21 image calls total</strong>: 3 treatments × (2 + 2 + 3). Mix-and-match verdicts are welcome — e.g. &quot;W3&#x27;s background with W1&#x27;s glow&quot; — and up to two priced finishing calls then take the chosen finalist(s) to exactly 1080x2400.</p>
+<p><strong>Aspect reality per model:</strong> GPT Image 2 renders <strong>native 9:20</strong> at 1152x2560 (downscales to exactly 1080x2400), pending the separate reviewed wrapper amendment this round depends on. Seedream and Grok render native 9:20 directly. Riverflow tops out at 9:16 portrait, so its candidates get a planned finishing extension (scenery added top/bottom) if selected — Jake accepted this for small aspect differences. The flash31 contrast arm trials a blank 9:20 template as its aspect mechanism (shape-inheritance is proven for turnaround templates, unproven for text-heavy wallpaper work; a failed shape is recorded, and the render still serves as idea contrast).</p></div></section>
+<section class="rb-inputs" id="inputs">
+<h2><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>Inputs — what this round runs on</h2>
+<p class="blurb">Everything that goes in, grouped by the choice it belongs to. Click any image to zoom; open a prompt to read the exact text this round spends against. Crop sets show both the cut overview and every exact output crop.</p>
+<section class="rb-case" id="case-w1-ember-aftermath">
+<h3 class="rb-case-h">W1 — Ember aftermath<span class="rb-case-count">1 prompt</span></h3>
+<p class="rb-case-note">Smouldering ruined city under a dark sky: drifting smoke, sparse embers, warm ember light kept low; subtle ember-orange radiance on the blade edge and halo spikes</p>
+<p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — r2-w1-ember.txt<span class="rb-size">4 kB · 574 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r2-w1-ember.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>OUTPUT AND CAMERA
+
+A single full-bleed photoreal character wallpaper in tall 9:20 portrait
+orientation, composed for a 1080x2400 phone screen. One character, full
+figure, filling most of the frame height, camera at chest height with a
+slight low angle so she reads as imposing. Cinematic lighting, crisp
+detail on the character, softer detail in the background. No text, no
+logos, no watermark, no user-interface elements, no frame or border.
+
+CHARACTER
+
+An original angel-of-death valkyrie: a slender adult woman with realistic
+proportions, mature East Asian features, a calm direct gaze, and a softly
+angular oval face. Long elegant dark hair; her head is BARE — no hood, no
+helmet.
+
+HALO: a dark ceremonial death-halo floating behind and above her head —
+spiky radiating blades forming a deliberately BROKEN, PARTIAL arc, not a
+full circle; grimdark, gothic, ceremonial.
+
+WINGS: exactly two wings, attached through solid roots at her upper back,
+one spreading on the viewer&#x27;s left and one on the viewer&#x27;s right — never
+both wings on one side. Each wing mixes biological and mechanical
+construction: dark crow-like feathering layered with articulated metal
+wing-blades, silver structural framing, and red accents. The wings curve
+inwards to suit the tall frame and may run off the edges of the frame;
+asymmetry between the two wings is welcome.
+
+ARMOUR: a sleek death-valkyrie suit in dark gunmetal and black with
+silver structural framing and red accents: a sectioned metal skirt that
+reads as a skirt/cloak hybrid, separate shaped armour on each leg, and
+armored boots. The chestplate leaves a slight gap of bare skin between
+its top edge and her neck — a modest decolletage. Ominous, elegant,
+ceremonial; no franchise costume.
+
+SCYTHE: she holds ONE great scythe in both hands with the blade on full
+display IN FRONT of her body. The haft is perfectly STRAIGHT with a
+smooth CYLINDRICAL cross-section — not curved, not hexagonal — armored in
+the suit&#x27;s design language, with a spear-like counterweight projecting
+beyond the upper grip. Exactly ONE long blade with smooth, consistent
+curvature along its whole length — never a second blade anywhere on the
+weapon — joined to the haft by an ornate mechanical head. Both hands are
+clearly visible five-fingered grips wrapped around the clean haft, widely
+separated.
+
+POSE AND COMPOSITION
+
+She LEVITATES: both feet float clearly above the ground, toes pointed
+downward, with nothing touching or supporting her. The pose is poised,
+statuesque, and ominous — a controlled character portrait, not a
+mid-swing action frame; her hair drifts gently. The haft runs diagonally
+across her body from upper viewer-left to lower viewer-right, in front
+of her, and the long blade sweeps across in front of her legs toward the
+lower viewer-left. One wing rises toward the upper viewer-right and the
+other sweeps lower on the viewer-left.
+
+PALETTE
+
+Silver, black, and red hierarchy: dark gunmetal and black primary
+surfaces, silver structural framing and edge highlights, red accents.
+
+BACKGROUND AND GLOW — W1 EMBER AFTERMATH
+
+Far below and behind her, a ruined city reduced to rubble: low broken
+silhouettes, drifting smoke, sparse rising embers, a deep warm ember
+light glowing low in the scene under a dark sky. The background stays
+soft, low-contrast, and uncluttered — all focus stays on the character,
+and the quiet destruction implies she is partly responsible for it. A
+SUBTLE ember-orange energy radiance traces the blade edge and the halo
+spikes — restrained and dim, with no lens flares, no bright beams, and
+no explosions of light.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w2-cold-fog">
+<h3 class="rb-case-h">W2 — Cold fog<span class="rb-case-count">1 prompt</span></h3>
+<p class="rb-case-note">Shattered ruins dissolving into pale moonlit fog, cool grey-blue palette, soft rim backlight; subtle silver-white radiance on halo and wing edges with the red accents as the only warm notes</p>
+<p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — r2-w2-fog.txt<span class="rb-size">4 kB · 571 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r2-w2-fog.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>OUTPUT AND CAMERA
+
+A single full-bleed photoreal character wallpaper in tall 9:20 portrait
+orientation, composed for a 1080x2400 phone screen. One character, full
+figure, filling most of the frame height, camera at chest height with a
+slight low angle so she reads as imposing. Cinematic lighting, crisp
+detail on the character, softer detail in the background. No text, no
+logos, no watermark, no user-interface elements, no frame or border.
+
+CHARACTER
+
+An original angel-of-death valkyrie: a slender adult woman with realistic
+proportions, mature East Asian features, a calm direct gaze, and a softly
+angular oval face. Long elegant dark hair; her head is BARE — no hood, no
+helmet.
+
+HALO: a dark ceremonial death-halo floating behind and above her head —
+spiky radiating blades forming a deliberately BROKEN, PARTIAL arc, not a
+full circle; grimdark, gothic, ceremonial.
+
+WINGS: exactly two wings, attached through solid roots at her upper back,
+one spreading on the viewer&#x27;s left and one on the viewer&#x27;s right — never
+both wings on one side. Each wing mixes biological and mechanical
+construction: dark crow-like feathering layered with articulated metal
+wing-blades, silver structural framing, and red accents. The wings curve
+inwards to suit the tall frame and may run off the edges of the frame;
+asymmetry between the two wings is welcome.
+
+ARMOUR: a sleek death-valkyrie suit in dark gunmetal and black with
+silver structural framing and red accents: a sectioned metal skirt that
+reads as a skirt/cloak hybrid, separate shaped armour on each leg, and
+armored boots. The chestplate leaves a slight gap of bare skin between
+its top edge and her neck — a modest decolletage. Ominous, elegant,
+ceremonial; no franchise costume.
+
+SCYTHE: she holds ONE great scythe in both hands with the blade on full
+display IN FRONT of her body. The haft is perfectly STRAIGHT with a
+smooth CYLINDRICAL cross-section — not curved, not hexagonal — armored in
+the suit&#x27;s design language, with a spear-like counterweight projecting
+beyond the upper grip. Exactly ONE long blade with smooth, consistent
+curvature along its whole length — never a second blade anywhere on the
+weapon — joined to the haft by an ornate mechanical head. Both hands are
+clearly visible five-fingered grips wrapped around the clean haft, widely
+separated.
+
+POSE AND COMPOSITION
+
+She LEVITATES: both feet float clearly above the ground, toes pointed
+downward, with nothing touching or supporting her. The pose is poised,
+statuesque, and ominous — a controlled character portrait, not a
+mid-swing action frame; her hair drifts gently. The haft runs diagonally
+across her body from upper viewer-left to lower viewer-right, in front
+of her, and the long blade sweeps across in front of her legs toward the
+lower viewer-left. One wing rises toward the upper viewer-right and the
+other sweeps lower on the viewer-left.
+
+PALETTE
+
+Silver, black, and red hierarchy: dark gunmetal and black primary
+surfaces, silver structural framing and edge highlights, red accents.
+
+BACKGROUND AND GLOW — W2 COLD FOG
+
+Shattered ruins dissolve into pale fog behind and below her: a cool
+grey-blue moonlit palette, with soft backlight rimming her silhouette.
+The background stays soft, low-contrast, and uncluttered — all focus
+stays on the character, and the fog-shrouded ruin implies she is partly
+responsible for it. A SUBTLE cold silver-white radiance traces the halo
+spikes and the wing edges, leaving her red accents as the only warm
+notes — restrained and dim, with no lens flares, no bright beams, and
+no explosions of light.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w3-ashfall-minimal">
+<h3 class="rb-case-h">W3 — Ashfall minimal<span class="rb-case-count">1 prompt</span></h3>
+<p class="rb-case-note">Near-monochrome ash field with sparse broken masonry and heavy negative space — the quietest treatment; the only strong colour is a subtle deep-red glow on halo, blade edge, and wing accents</p>
+<p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — r2-w3-ashfall.txt<span class="rb-size">4 kB · 570 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r2-w3-ashfall.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>OUTPUT AND CAMERA
+
+A single full-bleed photoreal character wallpaper in tall 9:20 portrait
+orientation, composed for a 1080x2400 phone screen. One character, full
+figure, filling most of the frame height, camera at chest height with a
+slight low angle so she reads as imposing. Cinematic lighting, crisp
+detail on the character, softer detail in the background. No text, no
+logos, no watermark, no user-interface elements, no frame or border.
+
+CHARACTER
+
+An original angel-of-death valkyrie: a slender adult woman with realistic
+proportions, mature East Asian features, a calm direct gaze, and a softly
+angular oval face. Long elegant dark hair; her head is BARE — no hood, no
+helmet.
+
+HALO: a dark ceremonial death-halo floating behind and above her head —
+spiky radiating blades forming a deliberately BROKEN, PARTIAL arc, not a
+full circle; grimdark, gothic, ceremonial.
+
+WINGS: exactly two wings, attached through solid roots at her upper back,
+one spreading on the viewer&#x27;s left and one on the viewer&#x27;s right — never
+both wings on one side. Each wing mixes biological and mechanical
+construction: dark crow-like feathering layered with articulated metal
+wing-blades, silver structural framing, and red accents. The wings curve
+inwards to suit the tall frame and may run off the edges of the frame;
+asymmetry between the two wings is welcome.
+
+ARMOUR: a sleek death-valkyrie suit in dark gunmetal and black with
+silver structural framing and red accents: a sectioned metal skirt that
+reads as a skirt/cloak hybrid, separate shaped armour on each leg, and
+armored boots. The chestplate leaves a slight gap of bare skin between
+its top edge and her neck — a modest decolletage. Ominous, elegant,
+ceremonial; no franchise costume.
+
+SCYTHE: she holds ONE great scythe in both hands with the blade on full
+display IN FRONT of her body. The haft is perfectly STRAIGHT with a
+smooth CYLINDRICAL cross-section — not curved, not hexagonal — armored in
+the suit&#x27;s design language, with a spear-like counterweight projecting
+beyond the upper grip. Exactly ONE long blade with smooth, consistent
+curvature along its whole length — never a second blade anywhere on the
+weapon — joined to the haft by an ornate mechanical head. Both hands are
+clearly visible five-fingered grips wrapped around the clean haft, widely
+separated.
+
+POSE AND COMPOSITION
+
+She LEVITATES: both feet float clearly above the ground, toes pointed
+downward, with nothing touching or supporting her. The pose is poised,
+statuesque, and ominous — a controlled character portrait, not a
+mid-swing action frame; her hair drifts gently. The haft runs diagonally
+across her body from upper viewer-left to lower viewer-right, in front
+of her, and the long blade sweeps across in front of her legs toward the
+lower viewer-left. One wing rises toward the upper viewer-right and the
+other sweeps lower on the viewer-left.
+
+PALETTE
+
+Silver, black, and red hierarchy: dark gunmetal and black primary
+surfaces, silver structural framing and edge highlights, red accents.
+
+BACKGROUND AND GLOW — W3 ASHFALL MINIMAL
+
+A near-monochrome field of ash and sparse broken masonry, with fine ash
+falling slowly through hazy air and heavy negative space — the quietest
+background of the three. All focus stays on the character; the buried
+rubble implies she is partly responsible for it. The only strong colour
+in the scene is a SUBTLE deep-red glow from the halo spikes, the blade
+edge, and the wing accents — restrained and dim, with no lens flares, no
+bright beams, and no explosions of light.
+</pre></details>
+</section>
+</section>
+<section class="s" id="judged"><h2><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>How the round is judged</h2><div class="md"><p>Jake&#x27;s wallpaper, Jake&#x27;s eye — his preference steers, Dimitri keeps the art gate. Reading notes:</p>
+<ul>
+<li>Judge treatments <strong>within each model</strong> first (house styles differ), then pick the best individual candidate(s) across models.</li>
+<li>The character program is held constant, so differences in halo, wings, scythe, armour, and levitation are model behaviour, not design choices — flag deviations rather than treating them as options.</li>
+<li>Background quietness is a hard criterion: a noisy, busy background fails the treatment even if it renders beautifully. Glow must stay subtle — &quot;no massive flashbangs&quot; (Jake).</li>
+</ul>
+<p>Machine checks run in two explicit lanes:</p>
+<ul>
+<li><strong>FAST:</strong> a fresh-context crop audit as each image lands, checking the held-constant program from spec v0.5&#x27;s wallpaper section: bare head (no hood); spiky, deliberately partial death halo (not a full circle); exactly two wings, one per side, mixed bio-mechanical construction; straight cylindrical haft; exactly ONE blade with consistent curvature (Riverflow&#x27;s doubling habit is a named check), blade in front of the body; both hands as provable five-fingered grips; sectioned skirt/cloak armour with the modest chestplate/neck gap; both feet floating with no support; quiet background, subtle glow, no text/logos/watermarks; no franchise likeness. Aspect and canvas are verified mechanically (exact pixel dimensions per model). A mirrored composition is a warn, not a reject — a deterministic flip restores it. Once all FAST verdicts land, the panel may be shared as <strong>PROVISIONAL — slow checks pending</strong>.</li>
+<li><strong>SLOW:</strong> after all 21 images land, one <code>blind_detect_round.py</code> manifest (two Batch waves, spec-blind descriptions then comparisons against <code>spec.md</code>). Completed records append to <code>reviews.jsonl</code>; every blind-vs-crop disagreement gets a mandatory human look. Consistent with the r1 closure precedent (Dimitri judged the detector calls advisory navigation), the SLOW lane completes the panel but Jake&#x27;s and Dimitri&#x27;s eye-verdicts decide the round; no per-artifact reconciliation records are required to close it.</li>
+</ul></div></section>
+<section class="s" id="ask"><h2><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</h2><div class="md cta"><p>Dimitri set the shape of this round in the 2026-08-06 planning session (round numbering, $10 cap, no-hood, GPT Image 2 native-9:20 exploration, proceed without Jake&#x27;s two example background images). Needed now: Jake&#x27;s comments on the three treatments (tweaks fold in as plan edits before sign-off), then Dimitri&#x27;s sign-off as the spend gate. On the results panel, Jake picks the winning candidate(s) and treatment — mix-and-match welcome — and the finishing lane delivers the exact 1080x2400 file. Sharing the results panel publicly for Jake needs Dimitri&#x27;s separate per-review OK as usual.</p>
+<p><strong>Execution dependency:</strong> the bounded direct-OpenAI wrapper amendment adding the pinned 1152x2560 size (separate PR) must merge before the round starts.</p></div></section>
+<section class="s" id="cost"><h2><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Cost</h2><div class="md"><p>Planning estimate: image generation ≈ <strong>$5.25</strong> (gptimage2: 6 × ~$0.31 token-billed at the new size ≈ $1.86, reserved conservatively at ~$0.52 per call; riverflow25: 6 × ~$0.45 ≈ $2.70 — r1 measured $0.372/image at 2K against a $0.15 catalog listing, so the live price is verified again at execution; seedream45: 3 × $0.04 = $0.12; grokq: 3 × $0.07 = $0.21; flash31: 3 × ~$0.12 = $0.36). FAST evaluation is unmetered. SLOW evaluation reserves <strong>$1.05</strong> (≥$0.05 × 21, the skill&#x27;s floor). The finishing lane reserves <strong>$0.60</strong> for up to two conditional extension/downscale calls on the chosen finalist(s) (a native-9:20 finalist needs only a free local downscale). Planned total ≈ <strong>$6.90</strong>. Proposed round cap <strong>$10.00 USD</strong>, no Meshy credits — the headroom covers conservative in-flight reservations (the gptimage2 token ceiling and Riverflow&#x27;s price uncertainty), not extra work. Live provider metadata and the detector&#x27;s printed preflight ceiling remain authoritative at execution time.</p></div><div class="costgrid"><div class="costrow"><span class="n">images</span><span class="t" style="width:100%"></span><span class="a">$5.25</span></div><div class="costrow"><span class="n">screening</span><span class="t" style="width:20%"></span><span class="a">$1.05</span></div><div class="costrow"><span class="n">finishing</span><span class="t" style="width:11.43%"></span><span class="a">$0.60</span></div><div class="costrow total"><span class="n">planned</span><span></span><span class="a">$6.90</span></div></div></section>
+<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>concept sweep — wallpaper detour (1080x2400 phone wallpaper for Jake)</dd><dt>Owner</dt><dd>Claude (mog-pharau) → Dimitri + Jake review</dd><dt>Date opened</dt><dd>2026-08-06</dd><dt>Inputs</dt><dd>text-only <code>spec.md</code> v0.5 (living draft, now carrying the r1 human verdicts and the wallpaper-detour composition program) — no reference images are conditioned; the flash31 arm additionally attaches a blank 9:20 aspect template (not a design input)</dd><dt>Produces</dt><dd>21 photoreal wallpaper candidates under <code>generated/</code>: <code>scythe-valkyrie-r2-w{1,2,3}-&lt;model&gt;</code> across five models, plus up to 2 finishing outputs for the chosen finalist(s)</dd><dt>Branch</dt><dd><code>claude/scythe-valkyrie-r2-wallpaper</code></dd><dt>Gemini mode</dt><dd>batch (asynchronous, 50% price; flash31 cells submitted up front with everything else)</dd><dt>Evaluation lanes</dt><dd>FAST — fresh-context crop audit as each image lands; SLOW — one two-wave round-level Batch blind detector across all 21 images</dd><dt>Models</dt><dd>gptimage2 · riverflow25 · seedream45 · grokq · flash31</dd><dt>Spend</dt><dd>images $5.25 · screening $1.05 · finishing $0.60 · cap $10.00</dd><dt>Prior round</dt><dd>r1 closed 2026-08-06 on Jake&#x27;s feature-level verdicts (with Dimitri&#x27;s reconciliation waiver): spiky partial-arc death halo, bio-mechanical crow/metal wings one per side, straight cylindrical haft, one long consistent-curvature blade shown in front, sectioned skirt/cloak armour with modest decolletage, levitating feet — all carried here via <code>round-feedback.jsonl</code>; GPT Image 2 and Riverflow had the best detail by a good margin, so they carry this round</dd><dt>Next</dt><dd>r3 — the mini pipeline resumes after the chosen wallpaper ships to Jake at exactly 1080x2400</dd></dl></section>
+<section class="s" id="tech"><h2><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>Technical plan</h2>
+<p class="intro">models, prompts, commands (pipeline detail)</p>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>What changed going in (spec / prompt / process deltas)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><ul>
+<li><code>spec.md</code> bumped to v0.5: r1 human verdicts folded into the wings, scythe, armour, and halo sections; a new <strong>&quot;Wallpaper detour (r2) — composition program&quot;</strong> section scopes the printability relaxations (levitation, no plinth, subtle glow, blade-in-front) to this round; the hood open decision records the no-hood wallpaper call. Blind-detect judges r2 against this spec text.</li>
+<li>R1 closure recorded: three per-artifact human KEEPER records (<code>reviews.jsonl</code>), nine round-level records (<code>round-feedback.jsonl</code>, carried to r2), Dimitri&#x27;s reconciliation waiver in <code>rounds.md</code>.</li>
+<li>Three new prompt files <code>prompts/r2-w{1,2,3}-*.txt</code>; everything above the <code>BACKGROUND AND GLOW</code> heading is byte-identical (verified by hash of the section-stripped files). Text-only cells; per the 2026-08-06 exact-inputs rule the prompts carry no &quot;no images attached&quot; sentence — the matrix and cases sidecar declare it. The flash31 cells attach exactly one image (the blank aspect template) as declared in their matrix rows; the template is a mechanism, not a design input, and the prompt text does not reference it.</li>
+<li><strong>Model panel departs from the four-model fresh-concept default with a named reason:</strong> this is a rendering-detail round, and r1&#x27;s human review found GPT Image 2 and Riverflow best on detail by a good margin, so they carry the decision with two rolls each per treatment. <code>seedream45</code> and <code>grokq</code> stay as cheap contrast arms with native 9:20 support; <code>flash31</code> stays as the Standard control at 2K. No trial arms this round (<code>mai25pro</code> and <code>flashlite31</code> finished their r1 admission cells; their verdicts are a separate policy step, and this detour round adds no admission evidence slots).</li>
+<li><strong>Aspect program:</strong> gptimage2 pinned 1152x2560 (exact 9:20; multiples of 16; 2.95M px — under OpenAI&#x27;s 3.69M &quot;experimental&quot; threshold; downscales to 1080x2400 at exactly 0.9375) via the separate wrapper-amendment PR. riverflow25 at <code>--resolution 4K --aspect 9:16</code> (its tallest portrait; finishing extension planned if selected). seedream45 at <code>--resolution 4K --aspect 9:20</code> (4K clears the provider&#x27;s ≥3.69M-pixel floor at extreme aspects; 2K 9:20 would 400). grokq at <code>--resolution 2K --aspect 9:20</code>. flash31 at 2K conditioned on a blank mid-grey 1152x2560 template PNG — explicitly a mechanism trial; record shape adherence in <code>rounds.md</code>. Live schemas re-verified at execution with <code>openrouter_gen.py --params</code>.</li>
+<li><strong>Chirality:</strong> the composition is asymmetric (haft diagonal, wing counter-sweep) with distributed viewer-frame anchors in the prompts; a mirrored roll is flip-recoverable at wallpaper stage, so audits record mirroring as a warn.</li>
+<li><strong>Same-stem rolls keep this round outside coordinator v1</strong> (per the skill&#x27;s carve-out): the focus models deliberately plan two same-stem rolls per treatment, so the round runs r1&#x27;s proven submit-guard shell with per-cell logs and the explicit recovery block below rather than a <code>gen_round.py</code> manifest. Do not rename rolls into separate stems to fit the coordinator.</li>
+</ul></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg><span>Experiment matrix</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Variant axes</th><th>Prompt</th><th>Out stem (output)</th><th>Rolls</th></tr></thead><tbody><tr><td>1</td><td>text only; no images</td><td>W1 × gptimage2 (1152x2560, high)</td><td><code>prompts/r2-w1-ember.txt</code></td><td><code>scythe-valkyrie-r2-w1-gptimage2</code></td><td>2</td></tr><tr><td>2</td><td>text only; no images</td><td>W2 × gptimage2 (1152x2560, high)</td><td><code>prompts/r2-w2-fog.txt</code></td><td><code>scythe-valkyrie-r2-w2-gptimage2</code></td><td>2</td></tr><tr><td>3</td><td>text only; no images</td><td>W3 × gptimage2 (1152x2560, high)</td><td><code>prompts/r2-w3-ashfall.txt</code></td><td><code>scythe-valkyrie-r2-w3-gptimage2</code></td><td>2</td></tr><tr><td>4</td><td>text only; no images</td><td>W1 × riverflow25 (4K, <code>--aspect 9:16</code>)</td><td><code>prompts/r2-w1-ember.txt</code></td><td><code>scythe-valkyrie-r2-w1-riverflow25</code></td><td>2</td></tr><tr><td>5</td><td>text only; no images</td><td>W2 × riverflow25 (4K, <code>--aspect 9:16</code>)</td><td><code>prompts/r2-w2-fog.txt</code></td><td><code>scythe-valkyrie-r2-w2-riverflow25</code></td><td>2</td></tr><tr><td>6</td><td>text only; no images</td><td>W3 × riverflow25 (4K, <code>--aspect 9:16</code>)</td><td><code>prompts/r2-w3-ashfall.txt</code></td><td><code>scythe-valkyrie-r2-w3-riverflow25</code></td><td>2</td></tr><tr><td>7</td><td>text only; no images</td><td>W1 × seedream45 (4K, <code>--aspect 9:20</code>)</td><td><code>prompts/r2-w1-ember.txt</code></td><td><code>scythe-valkyrie-r2-w1-seedream45</code></td><td>1</td></tr><tr><td>8</td><td>text only; no images</td><td>W2 × seedream45 (4K, <code>--aspect 9:20</code>)</td><td><code>prompts/r2-w2-fog.txt</code></td><td><code>scythe-valkyrie-r2-w2-seedream45</code></td><td>1</td></tr><tr><td>9</td><td>text only; no images</td><td>W3 × seedream45 (4K, <code>--aspect 9:20</code>)</td><td><code>prompts/r2-w3-ashfall.txt</code></td><td><code>scythe-valkyrie-r2-w3-seedream45</code></td><td>1</td></tr><tr><td>10</td><td>text only; no images</td><td>W1 × grokq (2K, <code>--aspect 9:20</code>)</td><td><code>prompts/r2-w1-ember.txt</code></td><td><code>scythe-valkyrie-r2-w1-grokq</code></td><td>1</td></tr><tr><td>11</td><td>text only; no images</td><td>W2 × grokq (2K, <code>--aspect 9:20</code>)</td><td><code>prompts/r2-w2-fog.txt</code></td><td><code>scythe-valkyrie-r2-w2-grokq</code></td><td>1</td></tr><tr><td>12</td><td>text only; no images</td><td>W3 × grokq (2K, <code>--aspect 9:20</code>)</td><td><code>prompts/r2-w3-ashfall.txt</code></td><td><code>scythe-valkyrie-r2-w3-grokq</code></td><td>1</td></tr><tr><td>13</td><td>blank 9:20 aspect template (1 image)</td><td>W1 × flash31 (2K, template-shaped)</td><td><code>prompts/r2-w1-ember.txt</code></td><td><code>scythe-valkyrie-r2-w1-flash31</code></td><td>1</td></tr><tr><td>14</td><td>blank 9:20 aspect template (1 image)</td><td>W2 × flash31 (2K, template-shaped)</td><td><code>prompts/r2-w2-fog.txt</code></td><td><code>scythe-valkyrie-r2-w2-flash31</code></td><td>1</td></tr><tr><td>15</td><td>blank 9:20 aspect template (1 image)</td><td>W3 × flash31 (2K, template-shaped)</td><td><code>prompts/r2-w3-ashfall.txt</code></td><td><code>scythe-valkyrie-r2-w3-flash31</code></td><td>1</td></tr><tr><td>16</td><td>the chosen finalist image (1 image, conditional)</td><td>finishing: extend scenery to 9:20 and/or downscale to 1080x2400</td><td>finishing instruction (written at selection, logged in <code>rounds.md</code>)</td><td><code>scythe-valkyrie-r2-final-&lt;source&gt;</code></td><td>≤2</td></tr></tbody></table></div>
+<p>Rows 1–6 plan two same-stem rolls (<code>-1</code> and <code>-2</code>); rolls append and never overwrite. Row 16 is the priced conditional finishing lane: it waits for the human pick, takes exactly one input image per call, uses a proven img2img model (default flash31; seedream45 as fallback), and a native-9:20 finalist skips the paid call entirely for a free local downscale.</p></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>Publish and announce the proposed round (before sign-off)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>Same order as r1: commit and push the exact plan, render and publish the world-readable runbook page, then post the round header and announcement to the operator-allowlisted <code>scythe-valkyrie</code> channel once Dimitri is happy with the draft&#x27;s directions.</p>
+<pre class="code"><code>set -euo pipefail
+python3 tools/render_runbook.py \
+  --runbook projects/bluemneme/scythe-valkyrie/runbooks/r2-runbook.md \
+  --cases projects/bluemneme/scythe-valkyrie/runbooks/r2-cases.json \
+  --review-pending --project &quot;BlueMneme&quot; --character &quot;Scythe Valkyrie&quot; \
+  --out /tmp/scythe-valkyrie-r2-runbook
+python3 tools/publish_review.py /tmp/scythe-valkyrie-r2-runbook \
+  --slug bluemneme/scythe-valkyrie/r2-runbook \
+  --title &quot;Scythe Valkyrie — Round 2 runbook&quot; \
+  --message &quot;Publish Scythe Valkyrie round 2 runbook&quot;
+python3 tools/discord_share.py --channel scythe-valkyrie \
+  --post-header --headline &quot;Round 2 — Scythe Valkyrie&quot; \
+  --status &quot;PROPOSED — wallpaper detour draft published for Jake&#x27;s comment; awaiting sign-off; no image generation yet&quot; \
+  --decision &quot;Background treatment: W1 ember aftermath / W2 cold fog / W3 ashfall minimal — and which model&#x27;s render? Mix-and-match welcome.&quot; \
+  --spend-state &quot;\$0.00 of the \$10.00 cap&quot; \
+  --spend-estimate &quot;≈\$6.90 planned: 21 wallpaper candidates + screening + finishing, no Meshy calls&quot; \
+  --artifact-link &quot;https://lackofcheese.github.io/ai-stl-review/reviews/bluemneme/scythe-valkyrie/r2-runbook/&quot; \
+  --artifact-label Runbook \
+  --once scythe-valkyrie-r2-header
+python3 tools/discord_share.py --channel scythe-valkyrie \
+  --thread &lt;header-message-id&gt; --thread-name &quot;Round 2 — Scythe Valkyrie updates&quot; \
+  --once scythe-valkyrie-r2-proposed-announcement \
+  --message &quot;&lt;round-open announcement&gt;&quot;</code></pre></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-branch"/></svg><span>Commands (run after sign-off and durable greenlight verification)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>On Dimitri&#x27;s sign-off: flip <code>Status:</code> to <code>Approved — not started (Dimitri, &lt;date&gt;)</code>, commit and push, re-publish this page from that commit, then append the gate pinning that exact commit and its published render. Post the approval reply and advance the header once the status change is on <code>main</code>.</p>
+<pre class="code"><code>python3 tools/round_gate.py append \
+  --file projects/bluemneme/scythe-valkyrie/round-gates.jsonl \
+  --round r2 --gate greenlight --actor dimitri --source cli \
+  --note &quot;&lt;quote or faithful summary of Dimitri&#x27;s approval&gt;&quot; \
+  --runbook-sha &quot;$(git rev-parse HEAD)&quot; \
+  --published-html &quot;$AI_STL_REVIEW_DIR/reviews/bluemneme/scythe-valkyrie/r2-runbook/index.html&quot;
+# commit + push the gate line, then:
+python3 tools/round_gate.py verify \
+  --file projects/bluemneme/scythe-valkyrie/round-gates.jsonl --round r2 \
+  --published-html &quot;$AI_STL_REVIEW_DIR/reviews/bluemneme/scythe-valkyrie/r2-runbook/index.html&quot;</code></pre>
+<h4>Post-merge start gate</h4>
+<p>The start PR changes current state in <code>rounds.md</code>, not this frozen plan. After Dimitri approves and merges it, execution begins with the exact fail-closed shape from the skill:</p>
+<pre class="code"><code>set -euo pipefail
+git fetch origin main
+test &quot;$(git rev-parse HEAD)&quot; = &quot;$(git rev-parse origin/main)&quot;
+python3 tools/round_gate.py verify \
+  --file projects/bluemneme/scythe-valkyrie/round-gates.jsonl --round r2 \
+  --published-html &quot;${AI_STL_REVIEW_DIR:-../ai-stl-review}/reviews/bluemneme/scythe-valkyrie/r2-runbook/index.html&quot;
+test &quot;$(git rev-parse HEAD)&quot; = &quot;$(git rev-parse origin/main)&quot;
+
+# Append the Discord start reply with a destination-scoped --once id.
+# Advance its header using that completed reply&#x27;s --event-id.
+# Only then run the paid provider commands below.</code></pre>
+<p>The wrapper-amendment PR (pinned 1152x2560) must already be merged; the start-gate&#x27;s exact-current-main proof carries it into the execution checkout.</p></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>Generation — 21 independently recoverable cells</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>Same submit-guard shape as r1 (per-cell logs under <code>notes/</code>, immediate Drive push, final unconditional sweep), extended with a count-based guard for the two-roll focus cells. Recovery rules are r1&#x27;s verbatim: Gemini cells resume (<code>--resume-run</code>, or <code>gemini_batch.py list --remote</code> + <code>attach</code> when the id never reached the log) and are never resubmitted; a missing OpenRouter/direct-OpenAI output after submission began is an AMBIGUOUS MANUAL STOP (check provider activity and the spend ledger, record the resolution in <code>rounds.md</code>, only then re-run or account the loss); surplus <code>-N&gt;2</code> rolls are recorded in <code>rounds.md</code> and excluded from the planned set.</p>
+<pre class="code"><code>set -euo pipefail
+T=projects/bluemneme/scythe-valkyrie
+mkdir -p &quot;$T/generated&quot; &quot;$T/notes&quot;
+
+# Seed balances on this host if not already current (amounts in USD):
+#   python3 tools/spend_preflight.py set-balance openai AMOUNT_USD
+#   python3 tools/spend_preflight.py set-balance gemini AMOUNT_USD
+
+# Verify live schemas and pricing first.
+python3 tools/openrouter_gen.py --params sourceful/riverflow-v2.5-pro
+python3 tools/openrouter_gen.py --params bytedance-seed/seedream-4.5
+python3 tools/openrouter_gen.py --params x-ai/grok-imagine-image-quality
+
+# Blank 9:20 aspect template for the flash31 mechanism trial (regenerated
+# deterministically; gitignored, pushed to Drive with the round outputs).
+python3 -c &quot;from PIL import Image; Image.new(&#x27;RGB&#x27;,(1152,2560),(128,128,128)).save(&#x27;$T/generated/scythe-valkyrie-r2-aspect-template.png&#x27;)&quot;
+
+PIDS=()
+submit() {  # submit &lt;artifact-glob&gt; &lt;want-count&gt; &lt;log-name&gt; &lt;cmd...&gt;
+  local glob=&quot;$1&quot; want=&quot;$2&quot; log=&quot;$3&quot;; shift 3
+  local have=0
+  have=$(compgen -G &quot;$T/generated/$glob&quot; | wc -l) || have=0
+  while (( have &lt; want )); do
+    ( &quot;$@&quot; 2&gt;&amp;1 | tee -a &quot;$T/notes/$log&quot; \
+      &amp;&amp; bash tools/drive_sync.sh push &quot;$T/generated&quot; ) &amp;
+    PIDS+=($!)
+    (( ++have ))
+  done
+}
+
+for w in w1-ember w2-fog w3-ashfall; do
+  s=&quot;scythe-valkyrie-r2-${w%%-*}&quot;
+  p=&quot;$T/prompts/r2-${w}.txt&quot;
+  submit &quot;${s}-gptimage2-*.*&quot; 2 &quot;r2-gen-${w%%-*}-gptimage2.log&quot; \
+    python3 tools/openai_image_gen.py --prompt-file &quot;$p&quot; \
+      --out-dir &quot;$T/generated&quot; --out-stem &quot;${s}-gptimage2&quot; \
+      --size 1152x2560
+  submit &quot;${s}-riverflow25-*.*&quot; 2 &quot;r2-gen-${w%%-*}-riverflow25.log&quot; \
+    python3 tools/openrouter_gen.py --prompt-file &quot;$p&quot; \
+      --out-dir &quot;$T/generated&quot; --out-stem &quot;${s}-riverflow25&quot; \
+      --model sourceful/riverflow-v2.5-pro --resolution 4K --aspect 9:16
+  submit &quot;${s}-seedream45-*.*&quot; 1 &quot;r2-gen-${w%%-*}-seedream45.log&quot; \
+    python3 tools/openrouter_gen.py --prompt-file &quot;$p&quot; \
+      --out-dir &quot;$T/generated&quot; --out-stem &quot;${s}-seedream45&quot; \
+      --model bytedance-seed/seedream-4.5 --resolution 4K --aspect 9:20
+  submit &quot;${s}-grokq-*.*&quot; 1 &quot;r2-gen-${w%%-*}-grokq.log&quot; \
+    python3 tools/openrouter_gen.py --prompt-file &quot;$p&quot; \
+      --out-dir &quot;$T/generated&quot; --out-stem &quot;${s}-grokq&quot; \
+      --model x-ai/grok-imagine-image-quality --resolution 2K --aspect 9:20
+  submit &quot;${s}-flash31-*.*&quot; 1 &quot;r2-gen-${w%%-*}-flash31.log&quot; \
+    python3 tools/gemini_gen.py --prompt-file &quot;$p&quot; \
+      --image &quot;$T/generated/scythe-valkyrie-r2-aspect-template.png&quot; \
+      --out-dir &quot;$T/generated&quot; --out-stem &quot;${s}-flash31&quot; \
+      --model gemini-3.1-flash-image --image-size 2K
+done
+FAIL=0
+for pid in &quot;${PIDS[@]:-}&quot;; do [[ -n &quot;$pid&quot; ]] &amp;&amp; { wait &quot;$pid&quot; || FAIL=1; }; done
+bash tools/drive_sync.sh push &quot;$T/generated&quot;
+(( FAIL == 0 )) || {
+  echo &quot;a generation cell failed — apply the per-provider recovery rules&quot; &gt;&amp;2
+  echo &quot;(Gemini: resume, never resubmit; OpenRouter/direct OpenAI:&quot; &gt;&amp;2
+  echo &quot;ambiguous failures are a manual reconciliation stop), then re-run&quot; &gt;&amp;2
+  echo &quot;this block (completed cells are skipped by the count guard)&quot; &gt;&amp;2
+  exit 1
+}</code></pre>
+<p><strong>Two-roll recovery caveat (the reviewed same-stem block):</strong> the count guard counts *landed* outputs, so after an interruption it launches only the missing rolls. Because a missing synchronous output is not proof of non-charge, apply the ambiguous-stop rule BEFORE re-running when any gptimage2/OpenRouter cell&#x27;s log shows submission began without a recorded <code>wrote</code> line: reconcile provider activity and the spend ledger, record the resolution in <code>rounds.md</code>, and only then let the guard relaunch. Never let two recovery reruns race the same stem from different sessions — the output-directory lock makes indexes safe, but each extra completion is a paid surplus roll.</p></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-flask"/></svg><span>SLOW lane — round-level blind detector</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>Build the exact 21-artifact manifest the same way as r1 (enumerate expected ids independently, refuse missing/duplicate/extra), then submit one two-wave Batch run against spec v0.5 and resume — never resubmit — after interruption:</p>
+<pre class="code"><code>for w in w1 w2 w3; do
+  for model in gptimage2 riverflow25 seedream45 grokq flash31; do
+    printf &#x27;scythe-valkyrie-r2-%s-%s-1\n&#x27; &quot;$w&quot; &quot;$model&quot;
+    if [[ $model == gptimage2 || $model == riverflow25 ]]; then
+      printf &#x27;scythe-valkyrie-r2-%s-%s-2\n&#x27; &quot;$w&quot; &quot;$model&quot;
+    fi
+  done
+done | sort &gt; &quot;$T/notes/r2-blind-expected.txt&quot;
+# manifest build + exact-set diff + blind_detect_round.py invocation:
+# identical shape to the r1 runbook block, spec-file $T/spec.md,
+# log $T/notes/r2-blind-detect.log, resume via its recorded &quot;batch run:&quot; id.</code></pre></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>FAST lane, panel, and finishing</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><ul>
+<li>Fresh-context crop audit per image as it lands (checklist from &quot;How the round is judged&quot;), verdicts appended via <code>tools/review_log.py</code>; verify each file&#x27;s exact pixel dimensions mechanically and record the flash31 template-shape outcome in <code>rounds.md</code>.</li>
+<li>Build <code>r2-panel.json</code> (asks + next_steps mandatory; <code>runbook</code> field set) and share the panel as <strong>PROVISIONAL — slow checks pending</strong> once FAST is complete; rebuild as <strong>COMPLETE</strong> when the blind run lands. Public Pages publication for Jake needs Dimitri&#x27;s separate per-review OK.</li>
+<li>On Jake&#x27;s pick: native-9:20 finalists get a free local downscale to 1080x2400; a riverflow finalist gets one priced extension call (row 16) then the downscale. Push the delivered file to Drive, record the exact finishing command and output in <code>rounds.md</code>, and hand Jake the file.</li>
+</ul></div></details>
+</section>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbRefRow=document.getElementById('lb-refrow'),lbRef=document.getElementById('lb-ref'),
+      lbCopyId=document.getElementById('lb-copy-id'),lbCopyLink=document.getElementById('lb-copy-link'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body'),
+      developerMode=document.getElementById('developer-mode');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+function setDeveloperMode(enabled){
+  document.querySelectorAll('[data-developer]').forEach(function(node){node.hidden=!enabled;});
+  document.documentElement.dataset.developer=enabled?'true':'false';
+  if(developerMode)developerMode.setAttribute('aria-checked',enabled?'true':'false');
+}
+if(developerMode){
+  developerMode.addEventListener('change',function(){setDeveloperMode(developerMode.checked);});
+  setDeveloperMode(false);
+}
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  const ref=z.dataset.ref||'',anchor=z.dataset.anchor||'';
+  lbRefRow.hidden=!(ref&&anchor);
+  if(ref&&anchor){
+    lbRef.textContent='#'+ref;
+    lbCopyId.dataset.copyId='#'+ref;
+    lbCopyLink.dataset.copy=anchor;
+  }
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy a card's short display id, or copy/share its deep link. The URL is this
+// page plus the card's #id anchor, so a recipient lands scrolled to (and
+// highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  const ci=e.target.closest('[data-copy-id]');
+  if(ci){copyText(ci.dataset.copyId,ci);e.preventDefault();return;}
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+
+document.addEventListener('click', function (e) {
+  var b = e.target.closest('[data-copy]');
+  if (!b) return;
+  var pre = b.closest('details').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(function () {
+    var was = b.textContent;
+    b.textContent = 'Copied'; b.classList.add('done');
+    setTimeout(function () { b.textContent = was; b.classList.remove('done'); }, 1600);
+  });
+});
+</script>
+</body></html>
