@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="d9533901aed7aed5943a3dec63a7e79c9e18138edc4768ba89a34b63f8c5a10a">
+<meta name="ai-stl-plan-digest" content="2899b0b953e21a1585800b7669d02a9cb48d8ac8af28236cff56e3a3e76ffcfc">
 <title>Treeman-windmill — Round 17 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -2233,8 +2233,10 @@ if sha(sheet) != expected:
     raise SystemExit(f&quot;bright turntable hash mismatch for {sheet}&quot;)
 if sha(project/&quot;generated&quot;/&quot;treeman-r15-template-2x2.png&quot;) != &quot;a19df9a25671dc5fd806b432816b7b192786162c38eb236eabf1edec9abc63eb&quot;:
     raise SystemExit(&quot;template hash mismatch&quot;)
-if not (project/&quot;generated&quot;/&quot;treeman-r15-source-4view-turntable-2x2.png&quot;).is_file():
-    raise SystemExit(&quot;missing not-brightened turntable&quot;)
+orig_sheet = project/&quot;generated&quot;/&quot;treeman-r15-source-4view-turntable-2x2.png&quot;
+(orig_expected,) = [o[&quot;sha256&quot;] for o in r15[&quot;outputs&quot;] if o[&quot;file&quot;] == orig_sheet.name]
+if sha(orig_sheet) != orig_expected:
+    raise SystemExit(f&quot;not-brightened turntable hash mismatch for {orig_sheet}&quot;)
 print(&quot;verified frozen inputs&quot;)
 PY</code></pre>
 <h4>Post-merge start gate</h4>
