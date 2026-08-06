@@ -189,6 +189,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   build:
+    if: github.ref == 'refs/heads/main'
     steps:
       - run: python -B scripts/validate_site.py .
       - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b
@@ -210,6 +211,14 @@ jobs:
             encoding="utf-8",
         )
         self.assertTrue(any("without cancellation" in error for error in validate(self.root)))
+
+        pages.write_text(
+            pages.read_text()
+            .replace("cancel-in-progress: true", "cancel-in-progress: false")
+            .replace("    if: github.ref == 'refs/heads/main'\n", ""),
+            encoding="utf-8",
+        )
+        self.assertTrue(any("gated to the main ref" in error for error in validate(self.root)))
 
 
 if __name__ == "__main__":

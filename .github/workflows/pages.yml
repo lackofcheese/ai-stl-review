@@ -16,6 +16,7 @@ concurrency:
 jobs:
   build:
     name: Validate and package site
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

@@ -514,6 +514,11 @@ def _validate_workflows(root: Path, errors: list[str]) -> None:
                 errors.append(f"{label}: Pages deployments must serialize without cancellation")
             if not re.search(r"(?m)^\s{2}group:\s*pages\s*$", text):
                 errors.append(f"{label}: Pages deployment concurrency group must be 'pages'")
+            if not re.search(
+                r"(?m)^\s{4}if:\s*github\.ref == 'refs/heads/main'\s*$",
+                text,
+            ):
+                errors.append(f"{label}: Pages packaging must be gated to the main ref")
             required = {("contents", "read"), ("pages", "write"), ("id-token", "write")}
             allowed = required
             if not required.issubset(set(permissions)):
