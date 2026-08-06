@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="684234359ff4ee8e20c0986e9d50d52693a9e2956ab26a06f857dfc950fb0f1d">
+<meta name="ai-stl-plan-digest" content="d9533901aed7aed5943a3dec63a7e79c9e18138edc4768ba89a34b63f8c5a10a">
 <title>Treeman-windmill — Round 17 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -2251,18 +2251,27 @@ test &quot;$(git rev-parse HEAD)&quot; = &quot;$(git rev-parse origin/main)&quot
 # destination-scoped --once id; advance the header from that completed
 # reply&#x27;s event id. Only then run the paid commands below.</code></pre>
 <h4>Wave-1 Meshy + image generation (submit together at start)</h4>
-<p>Both are queue-independent; launch the Meshy manifest first (it is the expiring resource), then the image coordinator:</p>
+<p>Both are queue-independent; SUBMIT the Meshy manifest first without polling (it is the expiring resource, and <code>run</code>&#x27;s default poll would block the image launch behind all 22 tasks), then start the image coordinator immediately, then poll/download the Meshy tasks concurrently with a per-landing Drive watcher — no completed paid mesh may sit runner-only behind a straggler:</p>
 <pre class="code"><code>python3 tools/meshy_manifest.py run \
-  --manifest projects/treeman-windmill/notes/r17-meshy-wave1.json
-# Record the emitted run id in rounds.md. After interruption:
-#   meshy_manifest.py resume --run RUN_ID  — never a new run.
-# Push each mesh to Drive the moment its `wrote ...-raw.stl` line prints:
-tools/drive_sync.sh push projects/treeman-windmill/models
+  --manifest projects/treeman-windmill/notes/r17-meshy-wave1.json --no-poll
+# Submits all 22 tasks and returns. Record the emitted run id in rounds.md.
 
+# Shell 1 — the image round (independent of the Meshy queue):
 python3 tools/gen_round.py \
   --manifest projects/treeman-windmill/runbooks/r17-generation.json
 # Record the printed generation run id in rounds.md immediately.
-# After interruption: gen_round.py --resume-run &lt;id&gt; — same run, never a new one.</code></pre>
+# After interruption: gen_round.py --resume-run &lt;id&gt; — same run, never a new one.
+
+# Shell 2 — poll + download the submitted Meshy tasks (never a new run):
+python3 tools/meshy_manifest.py resume --run &lt;meshy-run-id&gt;
+
+# Shell 3 — push each mesh THE MOMENT it lands, not after the manifest ends
+# (drive_sync is an idempotent sync; the loop ends with a final sweep):
+while pgrep -f &#x27;meshy_manifest.py resume&#x27; &gt;/dev/null; do
+  tools/drive_sync.sh push projects/treeman-windmill/models
+  sleep 60
+done
+tools/drive_sync.sh push projects/treeman-windmill/models</code></pre>
 <p>A missing OpenRouter output after its wrapper starts is the standard manual reconciliation stop (<code>--retry-ambiguous</code> after checking provider activity, balance, and the spend ledger, recorded in <code>rounds.md</code>); Gemini cells resume through the durable Batch registry — never resubmit a submitted Batch.</p>
 <p><strong>One-time rollout observation:</strong> if <code>rg -n &#x27;gen_round rollout observation: PASS&#x27; projects --glob &#x27;rounds.md&#x27;</code> still finds nothing at execution and this round runs the merged coordinator from canonical <code>main</code>, its flash31 Batch cells make it the observation owner — follow the skill&#x27;s interruption procedure once, at no extra spend, and append the PASS/FAIL marker with full evidence to <code>rounds.md</code>.</p>
 <h4>Per-roll evaluation</h4>
