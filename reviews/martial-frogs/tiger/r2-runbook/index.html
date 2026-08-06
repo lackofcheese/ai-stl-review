@@ -2,10 +2,10 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="c918119afa5ee5564d1010bebd8731ebe2404c4dd2ecef34dc0dc1fedce48035">
+<meta name="ai-stl-plan-digest" content="1517284fe80a9b1634fa90a6da30c802749d3d20ce3ca651369dda35398f1dca">
 <title>Tiger — Round 2 runbook</title>
 <style>
-:root{color-scheme:dark light;--accent:None;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+:root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
 @media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
 :root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
 :root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -199,74 +199,226 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
   border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
 .x:hover { color:var(--ink) }
 
+/* Runbook chrome. The house tokens, lightbox and asset pipeline come from
+   review_page.py; everything here is the runbook page's own structure —
+   a decision-first header, the choices as cards, and the technical plan
+   behind per-subsection disclosures. */
 .md h2 { font-size:1.15rem; margin:2.2rem 0 .3rem }
 .md h3 { font-size:1rem; margin:1.6rem 0 .3rem }
 .md h4 { font-size:.9rem; margin:1.2rem 0 .3rem; color:var(--dim) }
-.md p { max-width:78ch }
-.md ul, .md ol { max-width:78ch; padding-left:1.4rem }
+.md p { max-width:68ch; margin:.5rem 0 0 }
+.md ul, .md ol { max-width:68ch; padding-left:1.4rem }
 .md li { margin:.25rem 0 }
 .md a { color:var(--accent) }
-.md code { background:var(--pre); border:1px solid var(--line); border-radius:4px;
-  padding:.05rem .3rem; font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
+.md code, dl.facts code, .choice code { background:var(--pre);
+  border:1px solid var(--line); border-radius:4px; padding:.05rem .3rem;
+  font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
 .md pre.code { background:var(--pre); border:1px solid var(--line); border-radius:6px;
-  padding:.75rem 1rem; overflow-x:auto; font-size:.82rem; line-height:1.5 }
+  padding:.75rem 1rem; overflow-x:auto; font-size:.8rem; line-height:1.5 }
 .md pre.code code { background:none; border:0; padding:0 }
 .md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
-.md dl.rb-meta { display:grid; grid-template-columns:auto 1fr; gap:.3rem 1.1rem;
-  max-width:60ch; margin:.2rem 0 1.8rem; padding:.9rem 1.15rem; background:var(--pre);
-  border:1px solid var(--line); border-radius:8px; font-size:.9rem }
-.md dl.rb-meta dt { color:var(--dim); font-weight:600; white-space:nowrap }
-.md dl.rb-meta dd { margin:0 }
-.md details { max-width:78ch; margin:1.8rem 0; border:1px solid var(--line);
-  border-radius:8px; background:var(--pre); padding:0 1.15rem }
-.md details[open] { padding-bottom:.4rem }
-.md details > summary { cursor:pointer; padding:.85rem 0; font-weight:600;
-  color:var(--accent); list-style:none }
-.md details > summary::-webkit-details-marker { display:none }
-.md details > summary::before { content:'\25B8\A0' }
-.md details[open] > summary::before { content:'\25BE\A0' }
-.md details > summary + * { margin-top:.2rem }
-/* Runbook tables carry PROSE (the "choices on the table" comparison, the
-   build-step gates), not the review panel's short IDs. review_page.py's global
-   table CSS pins cols 1-2 to white-space:nowrap and col 2 to a monospace font —
-   right for id columns, but here it forces long option/recommendation cells
-   onto one unbreakable line: the table blows past the page width (the awkward
-   left-right scroll) and the other columns get starved into tall, ragged stacks
-   (the lopsided whitespace). Undo both inside .md so every cell wraps to its
-   column and auto table-layout balances the widths to the page. */
-.md .tablewrap { margin:.4rem 0 1.6rem }
-.md th, .md td { white-space:normal; overflow-wrap:break-word;
-  font-family:inherit }
-.md td code { overflow-wrap:anywhere }
-/* Keep some readable structure on narrow screens rather than crushing three
-   prose columns to nothing; .tablewrap scrolls only past this floor. */
-.md table { min-width:34rem }
-/* A choices-table row whose label names a case links to that case's inputs. */
-a.caselink { color:inherit; text-decoration:none;
-  border-bottom:1px dotted var(--accent) }
-a.caselink:hover { color:var(--accent) }
+.ico { width:1em; height:1em; flex:none; stroke:currentColor; fill:none;
+  stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; vertical-align:-.12em }
 
-/* --- Inputs section: one block per case, images grouped by artifact ------- */
-.rb-inputs { margin:2.2rem 0 1.4rem }
-.rb-inputs > h2 { font-size:1.15rem; margin:0 0 .3rem }
+/* --- header ------------------------------------------------------------- */
+h1 { font-size:1.55rem; margin:.25rem 0 0; letter-spacing:-.01em }
+.statusrow { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem .55rem;
+  margin:.7rem 0 0 }
+.statusrow.sub { margin:.4rem 0 0 }
+.statusnote { color:var(--dim); font-size:.82rem; margin:.5rem 0 0; max-width:70ch }
+.pill { display:inline-flex; align-items:center; gap:.35rem; font-size:.74rem;
+  font-weight:700; border:1px solid; border-radius:99px; padding:.16rem .6rem;
+  white-space:nowrap }
+.pill .dot { width:.45rem; height:.45rem; border-radius:50%; background:currentColor }
+.pill.s-await { color:var(--warn); border-color:var(--warn) }
+.pill.s-appr { color:var(--accent); border-color:var(--accent) }
+.pill.s-run { color:var(--ok); border-color:var(--ok) }
+.pill.s-done, .pill.s-hold { color:var(--dim); border-color:var(--line) }
+.fact { display:inline-flex; align-items:center; gap:.3rem; font-size:.75rem;
+  color:var(--dim); border:1px solid var(--line); border-radius:99px;
+  padding:.16rem .6rem; text-decoration:none }
+.fact b { color:var(--ink); font-weight:600 }
+a.fact.link { color:var(--accent); border-color:var(--accent) }
+.fact.inert { opacity:.55 }
+
+/* --- the ask, promoted -------------------------------------------------- */
+.ask { margin:1.1rem 0 0; border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); border-radius:8px; padding:.85rem 1rem }
+.ask .lbl { display:flex; align-items:center; gap:.4rem; font-size:.7rem; font-weight:700;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin:0 0 .3rem }
+.ask p { margin:0; max-width:70ch }
+a.jump { font-size:.8rem; font-weight:600; text-decoration:none; white-space:nowrap;
+  color:var(--accent) }
+
+/* --- at a glance + spend meter ------------------------------------------ */
+.glance { display:grid; gap:8px; margin:1rem 0 0;
+  grid-template-columns:repeat(auto-fit,minmax(132px,1fr)) }
+.tile { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.55rem .7rem; display:flex; flex-direction:column; gap:.12rem }
+.tile .k { display:flex; align-items:center; gap:.3rem; font-size:.66rem; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--dim) }
+.tile .v { font-size:1.05rem; font-weight:700; font-variant-numeric:tabular-nums }
+.tile .s { font-size:.72rem; color:var(--dim) }
+.meter { margin:.75rem 0 0; background:var(--card); border:1px solid var(--line);
+  border-radius:8px; padding:.7rem .85rem }
+.meter .top { display:flex; justify-content:space-between; align-items:baseline;
+  gap:.5rem; font-size:.74rem; color:var(--dim); margin:0 0 .4rem }
+.meter .top b { color:var(--ink); font-size:.9rem; font-variant-numeric:tabular-nums }
+.bar { height:9px; border-radius:99px; background:var(--well); border:1px solid var(--line);
+  overflow:hidden; display:flex }
+.bar i { display:block; height:100%; background:var(--accent) }
+.legend { display:flex; flex-wrap:wrap; gap:.2rem .9rem; margin:.45rem 0 0;
+  font-size:.7rem; color:var(--dim) }
+.legend span { display:inline-flex; align-items:center; gap:.32rem }
+.legend i { width:.6rem; height:.6rem; border-radius:2px; background:var(--accent); flex:none }
+.legend i.r { opacity:.45 }
+.legend i.o { background:var(--well); border:1px solid var(--line) }
+
+/* --- section nav + sections --------------------------------------------- */
+.snav { position:sticky; top:0; z-index:5; margin:1.4rem -16px 0; padding:.5rem 16px;
+  background:var(--bg); border-bottom:1px solid var(--line);
+  display:flex; gap:.35rem; overflow-x:auto; scrollbar-width:none }
+.snav::-webkit-scrollbar { display:none }
+.snav a { font-size:.72rem; font-weight:600; color:var(--dim); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .6rem; white-space:nowrap }
+.snav a:hover { color:var(--ink); border-color:var(--dim) }
+section.s { margin:2.1rem 0 0; scroll-margin-top:3.2rem }
+section.s > h2 { display:flex; align-items:center; gap:.5rem; font-size:1.02rem;
+  margin:0 0 .3rem }
+section.s > h2 .ico { color:var(--accent); width:1.05em; height:1.05em }
+section.s > h2::after { content:""; flex:1; height:1px; background:var(--line) }
+.md.cta { background:var(--card); border:1px solid var(--accent); border-radius:10px;
+  padding:.35rem 1.05rem .95rem; margin-top:.6rem }
+.md.cta ol li::marker, .md.cta ul li::marker { color:var(--accent); font-weight:700 }
+
+/* --- pipeline strip + round lineage ------------------------------------- */
+.strips { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.7rem .85rem; margin:.9rem 0 0 }
+.stage, .lineage { display:flex; flex-wrap:wrap; align-items:center; gap:.3rem }
+.lineage { margin-top:.55rem }
+.stage .lbl, .lineage .lbl { font-size:.64rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--dim); margin-right:.15rem }
+.stage .st { font-size:.71rem; font-weight:600; color:var(--dim);
+  border:1px solid var(--line); border-radius:99px; padding:.16rem .55rem; white-space:nowrap }
+.stage .st.now { color:var(--bg); background:var(--accent); border-color:var(--accent) }
+.stage .st.opt { border-style:dashed }
+.stage .arw, .lineage .arw { color:var(--line); font-size:.8rem }
+.lineage .rn { font-size:.72rem; color:var(--dim); border:1px solid var(--line);
+  border-radius:6px; padding:.16rem .5rem }
+.lineage .rn.this { color:var(--ink); border-color:var(--accent); font-weight:700 }
+.lineage .rn.next { border-style:dashed }
+
+/* --- choices as cards ---------------------------------------------------
+   The choices table is the round's comparison and the first thing a reviewer
+   reads. As a table its prose columns forced a 544px grid into a 343px phone
+   column, so the same cells render as one card per choice and simply stack. */
+.choices { display:grid; gap:12px; margin:.7rem 0 0;
+  grid-template-columns:repeat(auto-fit,minmax(255px,1fr)) }
+.choice { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.85rem .95rem; display:flex; flex-direction:column; gap:.5rem }
+.choice header { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap }
+.choice .key { font-size:.78rem; font-weight:800; color:var(--accent);
+  border:1px solid var(--accent); border-radius:6px; padding:.1rem .42rem }
+.choice h3 { margin:0; font-size:.97rem; font-weight:700 }
+.choice .rolls { margin-left:auto; font-size:.7rem; font-weight:700; color:var(--dim);
+  border:1px solid var(--line); border-radius:99px; padding:.1rem .5rem;
+  white-space:nowrap; font-variant-numeric:tabular-nums }
+.choice ul { margin:0; padding:0; list-style:none; display:flex; flex-direction:column;
+  gap:.32rem }
+.choice li { display:flex; gap:.45rem; font-size:.87rem; line-height:1.45 }
+.choice li .ico { color:var(--accent); margin-top:.28em; width:.5em; height:.5em }
+.choice .foot { display:flex; flex-direction:column; gap:.3rem; margin-top:auto;
+  padding-top:.15rem }
+.choice .cx { margin:0; font-size:.78rem; color:var(--dim) }
+.choice .ck { font-size:.62rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--dim); margin-right:.4rem }
+.choice a.jump { display:inline-flex; align-items:center; gap:.3rem; font-size:.71rem;
+  color:var(--dim); border:1px solid var(--line); border-radius:99px;
+  padding:.14rem .55rem; align-self:flex-start; margin-top:.15rem }
+.choice a.jump:hover { color:var(--accent); border-color:var(--accent) }
+
+/* --- roll matrix -------------------------------------------------------- */
+.shape { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.8rem .9rem; margin:12px 0 0; overflow-x:auto }
+.mx { display:grid; gap:6px; min-width:min(100%,320px) }
+.mx .hd { font-size:.63rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--dim); text-align:center; overflow-wrap:anywhere }
+.mx .rh { font-size:.74rem; font-weight:700; display:flex; align-items:center;
+  padding-right:.4rem; white-space:nowrap; max-width:9rem; overflow:hidden;
+  text-overflow:ellipsis }
+.mx .cell { background:var(--card); border:1px solid var(--line); border-radius:5px;
+  height:30px; display:flex; align-items:center; justify-content:center;
+  color:var(--accent) }
+.mx .cell.empty { opacity:.25; background:none }
+.shape .cap { font-size:.74rem; color:var(--dim); margin:.55rem 0 0 }
+.shape .cap b { color:var(--ink) }
+
+/* --- cost breakdown ----------------------------------------------------- */
+.costgrid { display:grid; gap:6px; margin:.7rem 0 0; max-width:34rem }
+.costrow { display:grid; grid-template-columns:8rem 1fr 5.5rem; align-items:center;
+  gap:.6rem; font-size:.8rem }
+.costrow .n { color:var(--dim); font-family:ui-monospace,Menlo,monospace; font-size:.76rem;
+  overflow-wrap:anywhere }
+.costrow .t { height:7px; border-radius:99px; background:var(--accent); opacity:.75 }
+.costrow .a { text-align:right; font-variant-numeric:tabular-nums; font-weight:600 }
+.costrow.total { border-top:1px solid var(--line); padding-top:.35rem; margin-top:.2rem }
+.costrow.total .n { color:var(--ink); font-weight:700 }
+
+/* --- round facts -------------------------------------------------------- */
+dl.facts { display:grid; grid-template-columns:auto 1fr; gap:.35rem 1.1rem; margin:.7rem 0 0;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.85rem 1rem; font-size:.86rem }
+dl.facts dt { color:var(--dim); font-weight:700; white-space:nowrap; font-size:.72rem;
+  letter-spacing:.06em; text-transform:uppercase; padding-top:.12rem }
+dl.facts dd { margin:0; max-width:66ch }
+@media (max-width:520px) {
+  dl.facts { grid-template-columns:1fr; gap:.1rem }
+  dl.facts dd { margin:0 0 .55rem }
+}
+
+/* --- technical plan ----------------------------------------------------- */
+details.tech { margin:.6rem 0 0; border:1px solid var(--line); border-radius:8px;
+  background:var(--card); padding:0 .95rem }
+details.tech > summary { cursor:pointer; padding:.7rem 0; font-weight:600; font-size:.88rem;
+  list-style:none; display:flex; align-items:center; gap:.45rem }
+details.tech > summary::-webkit-details-marker { display:none }
+details.tech > summary .ico { color:var(--accent) }
+details.tech > summary .chev { margin-left:auto; color:var(--dim); transition:transform .15s }
+details.tech[open] > summary .chev { transform:rotate(90deg) }
+details.tech .inner { padding:0 0 .8rem }
+details.tech .inner > :first-child { margin-top:0 }
+details.tech .md p, details.tech .md ul, details.tech .md ol { font-size:.87rem }
+
+/* --- tables (the experiment matrix and any prose table) -----------------
+   review_page.py pins cols 1-2 to nowrap+monospace for its short id columns;
+   a runbook table carries prose, so undo both and let auto layout balance. */
+.md .tablewrap { margin:.4rem 0 1.2rem }
+.md th, .md td { white-space:normal; overflow-wrap:break-word; font-family:inherit }
+.md td code { overflow-wrap:anywhere }
+.md table { min-width:30rem }
+
+/* --- inputs: one block per case, images grouped by artifact -------------- */
+.rb-inputs { margin:2.1rem 0 0; scroll-margin-top:3.2rem }
+.rb-inputs > h2 { display:flex; align-items:center; gap:.5rem; font-size:1.02rem;
+  margin:0 0 .3rem }
+.rb-inputs > h2 .ico { color:var(--accent); width:1.05em; height:1.05em }
+.rb-inputs > h2::after { content:""; flex:1; height:1px; background:var(--line) }
 .rb-case { background:var(--card); border:1px solid var(--line); border-radius:8px;
-  padding:.8rem 1rem 1rem; margin:.9rem 0; scroll-margin-top:1rem }
+  padding:.8rem 1rem 1rem; margin:.9rem 0; scroll-margin-top:3.4rem }
 .rb-case:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
 .rb-case-h { display:flex; flex-wrap:wrap; align-items:baseline; gap:.2rem .6rem;
   margin:0; font-size:1rem }
 .rb-case-count { color:var(--dim); font-size:.72rem; font-weight:400;
   font-variant-numeric:tabular-nums }
-.rb-case-note { color:var(--dim); font-size:.88rem; margin:.3rem 0 0; max-width:78ch }
+.rb-case-note { color:var(--dim); font-size:.88rem; margin:.3rem 0 0; max-width:70ch }
 .rb-art { margin:.85rem 0 0 }
-.rb-art-h { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem;
-  margin:0 0 .4rem }
+.rb-art-h { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; margin:0 0 .4rem }
 .rb-art-label { font-size:.7rem; font-weight:700; letter-spacing:.1em;
   text-transform:uppercase; color:var(--accent) }
 .rb-art-id { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
   color:var(--dim); overflow-wrap:anywhere }
 .rb-art .ibtn { padding:.08rem .5rem; font-size:.66rem }
-.rb-strip { display:grid; gap:10px;
-  grid-template-columns:repeat(auto-fit,minmax(190px,1fr)) }
+.rb-strip { display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)) }
 .rb-fig { margin:0; min-width:0; background:var(--well); border:1px solid var(--line);
   border-radius:6px; overflow:hidden; display:flex; flex-direction:column }
 .rb-fig .imgwrap { border-bottom:1px solid var(--line) }
@@ -276,39 +428,53 @@ a.caselink:hover { color:var(--accent) }
 details.rb-prompt { margin:.85rem 0 0; background:var(--pre); border:1px solid var(--line);
   border-radius:6px; padding:0 .9rem }
 details.rb-prompt > summary { cursor:pointer; padding:.55rem 0; font-size:.82rem;
-  font-weight:600; color:var(--accent); list-style:none }
+  font-weight:600; color:var(--accent); list-style:none; display:flex;
+  align-items:center; gap:.4rem }
 details.rb-prompt > summary::-webkit-details-marker { display:none }
-details.rb-prompt > summary::before { content:'\25B8\A0' }
-details.rb-prompt[open] > summary::before { content:'\25BE\A0' }
-details.rb-prompt .rb-size { color:var(--dim); font-weight:400; font-size:.72rem }
-details.rb-prompt .path { color:var(--dim); font-size:.72rem; margin:0 0 .4rem;
+details.rb-prompt .chev { transition:transform .15s }
+details.rb-prompt[open] .chev { transform:rotate(90deg) }
+details.rb-prompt .rb-size { margin-left:auto; color:var(--dim); font-weight:400;
+  font-size:.72rem; font-variant-numeric:tabular-nums }
+details.rb-prompt .phead { display:flex; align-items:center; gap:.5rem; margin:0 0 .4rem }
+details.rb-prompt .path { color:var(--dim); font-size:.72rem; margin:0; flex:1; min-width:0;
   font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
-details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere;
-  background:var(--bg); border:1px solid var(--line); border-radius:6px;
-  padding:.7rem .85rem; font-size:.78rem; line-height:1.5; max-height:32rem;
-  overflow:auto; margin:0 0 .85rem }
-</style></head><body><main>
+/* No inner max-height: the text is already behind a disclosure, and a nested
+   scroller inside a long page is miserable to use on a phone. */
+details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--bg);
+  border:1px solid var(--line); border-radius:6px; padding:.7rem .85rem; font-size:.78rem;
+  line-height:1.55; margin:0 0 .85rem }
+.copy { font:inherit; font-size:.68rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.12rem .55rem; cursor:pointer; white-space:nowrap }
+.copy:hover { color:var(--ink); border-color:var(--dim) }
+.copy.done { color:var(--ok); border-color:var(--ok) }
+:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+@media (prefers-reduced-motion:reduce) { * { transition:none !important } }
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/></symbol><symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 4v16M5 8h14M7.5 8l-2.5 5h5zM16.5 8l2.5 5h-5z"/></symbol><symbol id="i-in" viewBox="0 0 24 24"><path d="M12 3v11m0 0 4-4m-4 4-4-4M4 17v3h16v-3"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.6"/></symbol><symbol id="i-hand" viewBox="0 0 24 24"><path d="M9 11V5.6a1.6 1.6 0 0 1 3.2 0V11m0-1.2a1.6 1.6 0 0 1 3.2 0V12m0-1a1.6 1.6 0 0 1 3.2 0v4.4A5.6 5.6 0 0 1 12.8 21h-1.3a5 5 0 0 1-3.9-1.9L4.9 15a1.6 1.6 0 0 1 2.5-2L9 15"/></symbol><symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4v9.2M14.4 9.6a2.6 2.6 0 0 0-4.8 1.2c0 2.6 4.8 1 4.8 3.6a2.6 2.6 0 0 1-4.8 1.2"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M21.2 12h-2.4M5.2 12H2.8M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7M18.5 18.5l-1.7-1.7M7.2 7.2 5.5 5.5"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></symbol><symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/></symbol><symbol id="i-img" viewBox="0 0 24 24"><rect x="3.2" y="4.6" width="17.6" height="14.8" rx="2"/><circle cx="8.6" cy="9.8" r="1.5"/><path d="m3.9 17 5-4.6 4 3.4 3-2.4 4.2 3.6"/></symbol><symbol id="i-txt" viewBox="0 0 24 24"><path d="M6.5 3.6h7.2L18.5 8.4V20.4H6.5z"/><path d="M13.4 3.8v4.8h4.9M9.2 12.6h6M9.2 16h6"/></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="m9.5 5.5 7 6.5-7 6.5"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4V12l3 1.8"/></symbol><symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6.5" cy="5.5" r="2.2"/><circle cx="6.5" cy="18.5" r="2.2"/><circle cx="17.5" cy="8.5" r="2.2"/><path d="M6.5 7.7v8.6M17.5 10.7c0 3.4-2.6 4.6-5.4 5.1"/></symbol><symbol id="i-flask" viewBox="0 0 24 24"><path d="M10 3.5h4M10.8 3.5v6.2L5.6 18a2 2 0 0 0 1.7 3h9.4a2 2 0 0 0 1.7-3l-5.2-8.3V3.5"/><path d="M8 14.5h8"/></symbol><symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 3.2 20 7.6v8.8L12 20.8 4 16.4V7.6z"/><path d="M4 7.6l8 4.4 8-4.4M12 12v8.8"/></symbol></defs></svg>
+<main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Toadal Kombat</a><span class="sep">&rsaquo;</span><a href="../">Tiger</a></nav>
+<div class="eyebrow">Round 2 · concept sweep</div>
 <h1>Tiger — Round 2 runbook</h1>
-<span class="crosslink" style="opacity:.55;pointer-events:none" title="Published at round close">&#128203; Review panel &mdash; at round close</span>
-<div class="md"><dl class="rb-meta"><dt>Round type</dt><dd>concept sweep — resolved-design base concept selection + prompt-length experiment</dd><dt>Status</dt><dd>Approved — not started (Dimitri, 2026-08-06) · plan frozen; no images generated yet</dd><dt>Owner</dt><dd>Claude (local) → Dimitri + Jawaknight review</dd><dt>Date opened</dt><dd>2026-08-04</dd><dt>Amended</dt><dd>2026-08-06, pre-sign-off (Dimitri, in-session), three times — (1) prompt-length experiment added: compressed and minimal prompt arms, 6 → 18 images; (2) riverflow25 trimmed to 2 rolls per tier on cost (~2× gptimage2 per call), 18 → 15 images; (3) exact text-only call inputs and same-stem OpenRouter interruption recovery made explicit, with the inapplicable <code>gen_round.py</code> rollout observation left to the next eligible round; all logged as <code>plan-amendment</code> records in <code>round-feedback.jsonl</code></dd><dt>Inputs</dt><dd>three text-only prompt files derived from <code>tiger/spec.md</code> v2; no images are attached to any generation call. The spec is the approved design source and SLOW-lane comparison input, not a separate model-visible generation input</dd><dt>Produces</dt><dd>15 front-view concepts under <code>generated/</code>: per tier prefix (<code>tiger-r2</code>, <code>tiger-r2-comp</code>, <code>tiger-r2-min</code>), <code>-gptimage2-{1,2,3}</code> and <code>-riverflow25-{1,2}</code></dd><dt>Branch</dt><dd><code>claude/tiger-r2-runbook</code>; amendment branches <code>claude/tiger-r2-prompt-text-experiment-d16f99</code>, <code>claude/tiger-r2-riverflow-two-rolls</code>, and <code>codex/tiger-r2-pre-signoff-corrections</code></dd><dt>Gemini mode</dt><dd>batch (blind detector only — no Gemini generation arms this round)</dd><dt>Evaluation lanes</dt><dd>FAST — fresh-context crop audit as each image lands; SLOW — one two-wave round-level Batch blind detector across all 15 images, then blind/crop reconciliation</dd><dt>Prior round</dt><dd>r1 body-plan sweep (18 concepts; provisional panel published). Carried feedback (<code>round-feedback.jsonl</code>, 2026-08-04, Jawaknight + Dimitri): anthro before heroic, bullfrog dropped outright; no headband (&quot;too Ninja Turtles&quot;); wardrobe is a short-sleeved tangzhuang per Jawa&#x27;s Hero Forge Lino 2 concept and his supplied Tang-suit reference, with shorts so the frog skin shows; the tiger-claw stance read best from gptimage2 and riverflow25 but several models drew literal claws (now an explicit frog-pads negative); feet-planted needs harder anchoring. Dimitri directed a fresh from-scratch round rather than an edit pass on an r1 render.</dd></dl>
-<h2>Goal</h2>
-<p>Round 1&#x27;s feedback set the body-plan direction — anthro frame, heavyweight mass, recorded PRELIMINARY with Jawaknight&#x27;s formal pick still open (this round&#x27;s results panel re-asks it with real renders) — and the wardrobe question answered itself in the Discord feedback: Tiger and the linos wear traditional Chinese tangzhuang, not gi-and-headband training wear. This round generates the first concepts of the working design contract (spec v2) and asks Jawaknight and Dimitri to pick ONE render as the lineage base that carries into pose/camera refinement and the turnaround. It is a fresh text-only round: no r1 artifact is consumed, so nothing here depends on the still-open r1 reconciliations.</p>
-<p>The 2026-08-06 amendment adds a piggybacked <strong>prompt-length experiment</strong> (Dimitri&#x27;s ask): our prompts only ever grow — every defect earns another constraint or negative — and we have never measured whether the added text still helps or has started to hurt. Two mechanisms make harm plausible: attention dilution (many simultaneous constraints each get less weight) and negation leakage (the full prompt names claws, talons, stripes, headbands and hats in order to forbid them, and image models sometimes render mentioned-but-negated concepts — r1 drew literal claws). All three prompt tiers target the SAME resolved design, so any roll from any arm can still win the base pick; the experiment rides along at zero extra decision cost.</p>
-<h2>The choices on the table</h2>
-<p>Every arm targets the SAME resolved design; the primary choice being made is which model&#x27;s rendering becomes the lineage base. The model panel is narrowed to the two models whose r1 anthro renders led both audit lanes — gptimage2 (the only r1 artifact both machine lanes rated FIXABLE) and riverflow25 — a narrowing Jawaknight confirmed on Discord 2026-08-05 (&quot;sounds good&quot; to gptimage2 + riverflow only). Three gptimage2 rolls per tier, because feature defects are a stochastic lottery and its rolls are cheap; riverflow25 runs two per tier since its per-call price is roughly double (second amendment).</p>
+<div class="statusrow"><span class="pill s-appr"><span class="dot"></span>Approved</span><span class="fact">Opened <b>2026-08-04</b></span></div>
+<p class="statusnote">plan — direct-OpenAI recovery amendment approved by Dimitri (2026-08-06)</p>
+<div class="statusrow sub"><span class="fact inert" title="Published at round close">&#128203; Review panel &mdash; at round close</span></div>
+<div class="ask"><p class="lbl"><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</p><p><strong>Dimitri:</strong> sign off this plan (spend gate). <a class="jump" href="#ask">Read the full ask &darr;</a></p></div>
+<div class="glance"><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg>Rolls</span><span class="v">15</span><span class="s">across 4 cases</span></div><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg>Gemini mode</span><span class="v">Batch</span><span class="s">blind detector only — no Gemini generation arms this round</span></div></div>
+<nav class="snav"><a href="#goal">Goal</a><a href="#choices">Choices</a><a href="#inputs">Inputs</a><a href="#judged">Judging</a><a href="#ask">The ask</a><a href="#cost">Cost</a><a href="#facts">Round facts</a><a href="#tech">Technical plan</a></nav>
+<section class="s" id="goal"><h2><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg>Goal</h2><div class="md"><p>Round 1&#x27;s feedback set the body-plan direction — anthro frame, heavyweight mass, recorded PRELIMINARY with Jawaknight&#x27;s formal pick still open (this round&#x27;s results panel re-asks it with real renders) — and the wardrobe question answered itself in the Discord feedback: Tiger and the linos wear traditional Chinese tangzhuang, not gi-and-headband training wear. This round generates the first concepts of the working design contract (spec v2) and asks Jawaknight and Dimitri to pick ONE render as the lineage base that carries into pose/camera refinement and the turnaround. It is a fresh text-only round: no r1 artifact is consumed, so nothing here depends on the still-open r1 reconciliations.</p>
+<p>The 2026-08-06 amendment adds a piggybacked <strong>prompt-length experiment</strong> (Dimitri&#x27;s ask): our prompts only ever grow — every defect earns another constraint or negative — and we have never measured whether the added text still helps or has started to hurt. Two mechanisms make harm plausible: attention dilution (many simultaneous constraints each get less weight) and negation leakage (the full prompt names claws, talons, stripes, headbands and hats in order to forbid them, and image models sometimes render mentioned-but-negated concepts — r1 drew literal claws). All three prompt tiers target the SAME resolved design, so any roll from any arm can still win the base pick; the experiment rides along at zero extra decision cost.</p></div><div class="strips"><div class="stage"><span class="lbl">Default path</span><span class="st now">Concept</span><span class="arw">&rsaquo;</span><span class="st">Turnaround</span><span class="arw">&rsaquo;</span><span class="st">Meshy</span><span class="arw">&rsaquo;</span><span class="st">Mesh check</span><span class="arw">&rsaquo;</span><span class="st">Test print</span></div><div class="lineage"><span class="lbl">This round</span><span class="rn">r1</span><span class="arw">&rsaquo;</span><span class="rn this">r2</span></div></div></section>
+<section class="s" id="choices"><h2><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg>The choices on the table</h2><div class="md"><p>Every arm targets the SAME resolved design; the primary choice being made is which model&#x27;s rendering becomes the lineage base. The model panel is narrowed to the two models whose r1 anthro renders led both audit lanes — gptimage2 (the only r1 artifact both machine lanes rated FIXABLE) and riverflow25 — a narrowing Jawaknight confirmed on Discord 2026-08-05 (&quot;sounds good&quot; to gptimage2 + riverflow only). Three gptimage2 rolls per tier, because feature defects are a stochastic lottery and its rolls are cheap; riverflow25 runs two per tier since its per-call price is roughly double (second amendment).</p>
 <p>The amendment adds a second, orthogonal axis: THREE prompt tiers of the same design at ~831 / ~460 / ~150 words. <strong>Full</strong> is the working prompt with every constraint and negative. <strong>Compressed</strong> keeps the ENTIRE constraint set at roughly half the words — it isolates pure verbosity. <strong>Minimal</strong> keeps only the essence (identity, kit summary, stance, tone; no counts, no negatives, no print-safe block) — it tests whether the model&#x27;s own priors beat our full specification.</p>
-<p>Models and shared input conventions: both models run all three tiers, text-only, no reference images; riverflow25 at 2K with <code>--aspect 2:3</code>.</p>
-<div class="tablewrap"><table><thead><tr><th>Choice</th><th>What it tests</th><th>Input(s)</th><th>Rolls</th></tr></thead><tbody><tr><td><strong>Full prompt — gptimage2</strong></td><td>Whether gptimage2&#x27;s house style (r1&#x27;s strongest anthro read) carries the tangzhuang design best</td><td>full r2 prompt; text only, no images</td><td>3</td></tr><tr><td><strong>Full prompt — riverflow25</strong></td><td>Whether riverflow25 (2K, aspect-pinned; r1&#x27;s other strong anthro) carries it best</td><td>full r2 prompt; text only, no images</td><td>2</td></tr><tr><td><a class="caselink" href="#case-compressed-prompt-both-models" title="Jump to this case's inputs"><strong>Compressed prompt (both models)</strong></a></td><td>Whether the same constraint set at ~half the words holds or improves per-constraint compliance (verbosity test)</td><td>compressed r2 prompt; text only, no images</td><td>3 + 2</td></tr><tr><td><a class="caselink" href="#case-minimal-prompt-both-models" title="Jump to this case's inputs"><strong>Minimal prompt (both models)</strong></a></td><td>Whether model priors beat full specification — scored on kept constraints and holistic quality, not on constraints it deliberately drops</td><td>minimal r2 prompt; text only, no images</td><td>3 + 2</td></tr></tbody></table></div>
-<p>That is <strong>15 image calls total</strong>: 3 prompt tiers × (3 gptimage2 + 2 riverflow25 rolls) — riverflow25 runs 2 rolls per tier because its per-call price is ~2× gptimage2&#x27;s (Dimitri, 2026-08-06). seedream45, grokq, flash31, and the flashlite31 trial are dropped for Tiger concepts on r1 evidence (systematic off-brief output, weak anthro reads, or instruction-card layouts).</p>
-</div>
-<section class="rb-inputs">
-<h2>Inputs — what this round runs on</h2>
+<p>Models and shared input conventions: both models run all three tiers, text-only, no reference images; riverflow25 at 2K with <code>--aspect 2:3</code> through OpenRouter; gptimage2 directly through OpenAI using the pinned <code>gpt-image-2-2026-04-21</code> snapshot at exact <code>1024x1536</code>, high quality.</p></div><div class="choices"><article class="choice"><header><h3>Full prompt — gptimage2</h3><span class="rolls">3 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether gptimage2&#x27;s house style (r1&#x27;s strongest anthro read) carries the tangzhuang design best</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>full r2 prompt; text only, no images</p></div></article><article class="choice"><header><h3>Full prompt — riverflow25</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether riverflow25 (2K, aspect-pinned</span></li><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>r1&#x27;s other strong anthro) carries it best</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>full r2 prompt; text only, no images</p></div></article><article class="choice"><header><h3>Compressed prompt (both models)</h3><span class="rolls">5 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether the same constraint set at ~half the words holds or improves per-constraint compliance (verbosity test)</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>compressed r2 prompt; text only, no images</p><p class="cx"><span class="ck">Rolls</span>3 + 2</p><a class="jump" href="#case-compressed-prompt-both-models"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><h3>Minimal prompt (both models)</h3><span class="rolls">5 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether model priors beat full specification — scored on kept constraints and holistic quality, not on constraints it deliberately drops</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>minimal r2 prompt; text only, no images</p><p class="cx"><span class="ck">Rolls</span>3 + 2</p><a class="jump" href="#case-minimal-prompt-both-models"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article></div><div class="shape"><div class="mx" style="grid-template-columns:auto repeat(5,minmax(46px,1fr))"><span></span><span class="hd">roll 1</span><span class="hd">roll 2</span><span class="hd">roll 3</span><span class="hd">roll 4</span><span class="hd">roll 5</span><span class="rh">**Full prompt</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell empty"></span><span class="cell empty"></span><span class="rh">**Full prompt</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell empty"></span><span class="cell empty"></span><span class="cell empty"></span><span class="rh"><strong>Compressed prompt (both models)</strong></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh"><strong>Minimal prompt (both models)</strong></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span></div><p class="cap"><b>15 rolls total</b> — 4 choices, 3 + 2 + 5 + 5</p></div><div class="md"><p>That is <strong>15 image calls total</strong>: 3 prompt tiers × (3 gptimage2 + 2 riverflow25 rolls) — riverflow25 runs 2 rolls per tier because its per-call price is ~2× gptimage2&#x27;s (Dimitri, 2026-08-06). seedream45, grokq, flash31, and the flashlite31 trial are dropped for Tiger concepts on r1 evidence (systematic off-brief output, weak anthro reads, or instruction-card layouts).</p></div></section>
+<section class="rb-inputs" id="inputs">
+<h2><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>Inputs — what this round runs on</h2>
 <p class="blurb">Everything that goes in, grouped by the choice it belongs to. Click any image to zoom; open a prompt to read the exact text this round spends against. Crop sets show both the cut overview and every exact output crop.</p>
 <section class="rb-case" id="case-resolved-design-full-prompt-both-model-arms">
 <h3 class="rb-case-h">Resolved design, full prompt — both model arms<span class="rb-case-count">1 prompt</span></h3>
 <p class="rb-case-note">The working prompt with every constraint and negative (~831 words), shared by the two full-prompt model arms: anthro heavyweight frame (5-5.5 heads), bare head (no headband), short-sleeved black-and-red tangzhuang with exactly four oversized frog buttons, sash, knee shorts, lower-forearm/shin wraps with visible skin bands, tiger-claw guard with rounded frog pads (no talons), both feet fully planted</p>
 <p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
-<details class="rb-prompt"><summary>Prompt — r2-anthro-tangzhuang.txt (full, ~831 words) <span class="rb-size">5 kB</span></summary><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — r2-anthro-tangzhuang.txt (full, ~831 words)<span class="rb-size">5 kB · 858 words</span></summary><div class="phead"><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
 
 OUTPUT AND CAMERA
 A photorealistic full-body studio character render designed specifically as production concept art for a 32 mm-scale resin fantasy-football miniature, in the visual language of a premium collectible sports sculpt. Show one figure only, straight-on FRONT view, centered on a plain neutral gray studio background with even soft lighting. Use a near-orthographic, very-long-lens studio view with minimal foreshortening so head, torso, both arms, both hands, legs and feet can be compared as a proportion sheet. The entire body and both feet are visible with space around them. This is character concept art, not a photograph of a toy: no base, pedestal, scenic ground, labels or presentation card.
@@ -334,7 +500,7 @@ Treat every feature as geometry for a roughly 35 mm-tall resin figure: bold plan
 <h3 class="rb-case-h">Compressed prompt (both models)<span class="rb-case-count">1 prompt</span></h3>
 <p class="rb-case-note">Prompt-length experiment tier 2: the ENTIRE constraint set of the full prompt at roughly half the words (~460) — isolates pure verbosity. Same resolved design; any roll remains eligible as the lineage base</p>
 <p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
-<details class="rb-prompt"><summary>Prompt — r2-anthro-tangzhuang-compressed.txt (~460 words) <span class="rb-size">3 kB</span></summary><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang-compressed.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — r2-anthro-tangzhuang-compressed.txt (~460 words)<span class="rb-size">3 kB · 464 words</span></summary><div class="phead"><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang-compressed.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
 
 A photorealistic full-body studio concept render for a 32 mm resin fantasy-football miniature: one figure, straight-on FRONT view, centered on a plain neutral gray background with even soft lighting, near-orthographic long-lens framing, the whole body and both feet visible with space around them. No base, pedestal, scenic ground, labels or presentation card.
 
@@ -351,7 +517,7 @@ Sculpt-ready finish for a ~35 mm print: bold thick connected forms, deep relief,
 <h3 class="rb-case-h">Minimal prompt (both models)<span class="rb-case-count">1 prompt</span></h3>
 <p class="rb-case-note">Prompt-length experiment tier 3: essence only (~150 words) — identity, kit summary, stance, tone; deliberately drops all counts, negatives and the print-safe block. Tests whether model priors beat full specification; scored on kept constraints plus holistic eye-read</p>
 <p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
-<details class="rb-prompt"><summary>Prompt — r2-anthro-tangzhuang-minimal.txt (~150 words) <span class="rb-size">1 kB</span></summary><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang-minimal.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — r2-anthro-tangzhuang-minimal.txt (~150 words)<span class="rb-size">1 kB · 150 words</span></summary><div class="phead"><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang-minimal.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
 
 A photorealistic full-body concept render of a fantasy-football miniature character: one figure, straight-on front view, centered on a plain gray studio background, whole body and both feet visible.
 
@@ -361,9 +527,7 @@ He stands rooted in a deep tiger-style bow stance, both feet planted flat, prese
 </pre></details>
 </section>
 </section>
-<div class="md">
-<h2>How the round is judged</h2>
-<p>Jawaknight picks the base render, with Dimitri. Things worth weighing while looking:</p>
+<section class="s" id="judged"><h2><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>How the round is judged</h2><div class="md"><p>Jawaknight picks the base render, with Dimitri. Things worth weighing while looking:</p>
 <ul>
 <li><strong>Tangzhuang construction:</strong> mandarin collar, a readable column of chunky frog buttons, short sleeves, sash over the jacket, knee shorts — does it read as Jawa&#x27;s Tang suit, or drift back toward a karate gi?</li>
 <li><strong>Frog pads:</strong> fingertips must be rounded pads, no talons. A render that is otherwise the winner but has claws is still viable — Dimitri has already accepted a claws→pads edit pass as workable — so score it &quot;winner-with-edit&quot; rather than rejecting outright. Same for a lifted heel: an edit pass is the accepted fallback.</li>
@@ -375,9 +539,8 @@ He stands rooted in a deep tiger-style bow stance, both feet planted flat, prese
 <li><strong>SLOW:</strong> after all 15 images land, one <code>blind_detect_round.py</code> manifest submits every spec-blind description in a single Gemini Batch wave and every dependent comparison in a second Batch wave. Completed records append to <code>reviews.jsonl</code>; every blind-vs-crop disagreement gets a mandatory human look. Dimitri then appends one authoritative verdict per artifact, after both machine records, whose summary starts <code>RECONCILED — AGREE:</code> when the latest crop and blind judgment classes match or <code>RECONCILED — RESOLVED:</code> with the human resolution when they differ. The panel is rebuilt as <strong>COMPLETE</strong> only after the canonical review log contains crop audits, successful records from that exact Batch run, and later reconciliation verdicts for all and only the exact 15 planned artifact ids; a partial run, missing audit, or unresolved disagreement fails closed. The provisional panel cannot close the round, promote a keeper, or authorize downstream work.</li>
 </ul>
 <p>The machines screen for misses; they do not pick the winner.</p>
-<p><strong>Scoring the prompt-length experiment.</strong> The blind detector is the experiment&#x27;s instrument: it never sees the prompt, so its per-attribute ok/warn/bad counts are comparable across arms without bias toward any tier. At round close, tabulate per-arm compliance two ways — (a) all spec attributes, and (b) for the minimal arm, ONLY the constraints its prompt kept (identity, kit summary, stance, tone) — plus the human eye-read of holistic quality/coherence per arm. n=3 (gptimage2) / n=2 (riverflow25) per cell is a directional read, not proof: a clear effect either way is actionable, and a wash means verbosity is not the problem. The finding — including a null result — is recorded in <code>docs/image-model-policy.md</code> (per-model, since the effect may differ between gptimage2 and riverflow25) and summarized in <code>rounds.md</code>.</p>
-<h2>What we need from you</h2>
-<ul>
+<p><strong>Scoring the prompt-length experiment.</strong> The blind detector is the experiment&#x27;s instrument: it never sees the prompt, so its per-attribute ok/warn/bad counts are comparable across arms without bias toward any tier. At round close, tabulate per-arm compliance two ways — (a) all spec attributes, and (b) for the minimal arm, ONLY the constraints its prompt kept (identity, kit summary, stance, tone) — plus the human eye-read of holistic quality/coherence per arm. n=3 (gptimage2) / n=2 (riverflow25) per cell is a directional read, not proof: a clear effect either way is actionable, and a wash means verbosity is not the problem. The finding — including a null result — is recorded in <code>docs/image-model-policy.md</code> (per-model, since the effect may differ between gptimage2 and riverflow25) and summarized in <code>rounds.md</code>.</p></div></section>
+<section class="s" id="ask"><h2><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</h2><div class="md cta"><ul>
 <li><strong>Dimitri:</strong> sign off this plan (spend gate).</li>
 <li><strong>Jawaknight + Dimitri, on the results panel:</strong> pick the base render (or &quot;winner-with-edit&quot; naming the fix), or reject all 15 with a sharper target. Any arm&#x27;s roll is eligible — a minimal-arm winner just needs its dropped constraints confirmed by eye or restored via the accepted edit pass.</li>
 <li><strong>Jawaknight:</strong> do the forearm/shin wraps stay with the tangzhuang look, or drop? (Default: keep — they thicken thin limbs for printing.)</li>
@@ -385,28 +548,25 @@ He stands rooted in a deep tiger-style bow stance, both feet planted flat, prese
 <li><strong>Dimitri:</strong> per-review OK to publish the r2 panel publicly at round close so Jawa can pick directly, as done for r1?</li>
 <li>Noted for later, not blocking: with the linos in mandarin-collar tangzhuang, Crane&#x27;s &quot;tall mandarin collar&quot; distinctness hook (brief §6) needs re-sharpening at his concept time — flagged in brief v1.6.</li>
 </ul>
-<p>The winning base then greenlights a separate r3 (pose/camera refinement or straight to turnaround, plus any claws→pads / heel edit pass); no turnaround or Meshy spend is bundled into this round.</p>
-<h2>Cost</h2>
-<p>Planning estimate: image generation ≈ <strong>$3.56</strong> (gptimage2 ~$0.17 × 9 = $1.53 — the r1 provider-reported actual; riverflow25 2K ~$0.34 × 6 = $2.03 — the r1 provider-reported actual of $0.339/call at these exact 2K/2:3 settings, per <code>logs/image-gen-martial-frogs.jsonl</code>; r1&#x27;s ~$0.15 planning figure proved low and is not reused). FAST evaluation is unmetered. SLOW evaluation uses one two-wave, half-price Gemini Batch detector run across all 15 images and reserves <strong>$0.75</strong> (~$0.05 per image, the r1-proven sizing). Planned total ≈ <strong>$4.31</strong>. Round cap <strong>$6.00 USD</strong>, no Meshy credits — the ~35% headroom is for conservative in-flight reservations on interrupted calls (which on Gorgon v2 r1 transiently bounded well above known spend), not extra work. Live provider metadata and the detector&#x27;s printed preflight ceiling remain authoritative at execution time. (The pre-amendment plan was 6 images ≈ $1.83 under a $2.50 cap; the first amendment tripled the matrix for the prompt-length experiment, and the second trimmed riverflow25 to 2 rolls per tier on cost.)</p>
-<details>
-<summary>Technical plan — models, prompts, commands (pipeline detail)</summary>
-<h3>What changed going in (spec / prompt / process deltas)</h3>
-<ul>
+<p>The winning base then greenlights a separate r3 (pose/camera refinement or straight to turnaround, plus any claws→pads / heel edit pass); no turnaround or Meshy spend is bundled into this round.</p></div></section>
+<section class="s" id="cost"><h2><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Cost</h2><div class="md"><p>Planning estimate: image generation ≈ <strong>$3.51</strong> (direct OpenAI GPT Image 2 high portrait output is $0.165 × 9 = $1.485, plus small prompt-input charges; the wrapper&#x27;s deliberately conservative per-call reservations total <strong>$2.039004</strong> across the exact three prompt files; the six completed riverflow25 calls cost <strong>$2.020869</strong> actual). FAST evaluation is unmetered. SLOW evaluation uses one two-wave, half-price Gemini Batch detector run across all 15 images and reserves <strong>$0.75</strong> (~$0.05 per image, the r1-proven sizing). Expected billed total is ≈ <strong>$4.26</strong>; even the nine conservative GPT reservations plus completed Riverflow spend and the detector reserve total <strong>$4.809873</strong>. Round cap <strong>$6.00 USD</strong>, no Meshy credits — the headroom is for conservative in-flight reservations on interrupted calls (which on Gorgon v2 r1 transiently bounded well above known spend), not extra work. Live provider metadata and the detector&#x27;s printed preflight ceiling remain authoritative at execution time. (The pre-amendment plan was 6 images ≈ $1.83 under a $2.50 cap; the first amendment tripled the matrix for the prompt-length experiment, and the second trimmed riverflow25 to 2 rolls per tier on cost.)</p></div></section>
+<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>concept sweep — resolved-design base concept selection + prompt-length experiment</dd><dt>Owner</dt><dd>Claude (local) + Codex (local) → Dimitri + Jawaknight review</dd><dt>Date opened</dt><dd>2026-08-04</dd><dt>Amended</dt><dd>2026-08-06 four times — three pre-sign-off amendments: (1) prompt-length experiment added, 6 → 18 images; (2) riverflow25 trimmed to 2 rolls per tier on cost, 18 → 15 images; (3) exact text-only inputs and interruption recovery made explicit; then (4) after six Riverflow outputs completed and OpenRouter safely refused all nine unbounded GPT calls before submission, Dimitri approved moving only those nine missing cells to direct OpenAI using pinned <code>gpt-image-2-2026-04-21</code>, <code>1024x1536</code>, high quality, with the 15-image matrix and $6 cap unchanged. All four are logged as <code>plan-amendment</code> records in <code>round-feedback.jsonl</code></dd><dt>Inputs</dt><dd>three text-only prompt files derived from <code>tiger/spec.md</code> v2; no images are attached to any generation call. The spec is the approved design source and SLOW-lane comparison input, not a separate model-visible generation input</dd><dt>Produces</dt><dd>15 front-view concepts under <code>generated/</code>: per tier prefix (<code>tiger-r2</code>, <code>tiger-r2-comp</code>, <code>tiger-r2-min</code>), <code>-gptimage2-{1,2,3}</code> and <code>-riverflow25-{1,2}</code></dd><dt>Branch</dt><dd><code>claude/tiger-r2-runbook</code>; amendment branches <code>claude/tiger-r2-prompt-text-experiment-d16f99</code>, <code>claude/tiger-r2-riverflow-two-rolls</code>, <code>codex/tiger-r2-pre-signoff-corrections</code>, and <code>codex/tiger-r2-execution</code></dd><dt>Gemini mode</dt><dd>batch (blind detector only — no Gemini generation arms this round)</dd><dt>Evaluation lanes</dt><dd>FAST — fresh-context crop audit as each image lands; SLOW — one two-wave round-level Batch blind detector across all 15 images, then blind/crop reconciliation</dd><dt>Prior round</dt><dd>r1 body-plan sweep (18 concepts; provisional panel published). Carried feedback (<code>round-feedback.jsonl</code>, 2026-08-04, Jawaknight + Dimitri): anthro before heroic, bullfrog dropped outright; no headband (&quot;too Ninja Turtles&quot;); wardrobe is a short-sleeved tangzhuang per Jawa&#x27;s Hero Forge Lino 2 concept and his supplied Tang-suit reference, with shorts so the frog skin shows; the tiger-claw stance read best from gptimage2 and riverflow25 but several models drew literal claws (now an explicit frog-pads negative); feet-planted needs harder anchoring. Dimitri directed a fresh from-scratch round rather than an edit pass on an r1 render.</dd></dl></section>
+<section class="s" id="tech"><h2><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>Technical plan</h2>
+<p class="intro">models, prompts, commands (pipeline detail)</p>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>What changed going in (spec / prompt / process deltas)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><ul>
 <li><code>spec.md</code> v2 in this PR: body plan set as the r2 WORKING CONTRACT — anthro-frame + heavyweight-mass (F1 dropped, F2 superseded), recorded preliminary in <code>round-feedback.jsonl</code> pending Jawaknight&#x27;s formal pick; hachimaki removed with an explicit bare-head negative; gi/obi wardrobe replaced by the short-sleeved tangzhuang (mandarin collar, 4 oversized frog-button toggles, red-on-black trim per Jawa&#x27;s supplied reference), sash over jacket, knee shorts; &quot;tiger-claw is the hand SHAPE only&quot; with a no-claws/talons/nails negative (r1: several models drew literal claws); feet-planted hardened to &quot;each foot pressed flat along its full length, no tiptoe / ball-of-foot / raised heel / mid-step frame&quot;.</li>
 <li><strong>&quot;Digitigrade&quot; retired as a descriptor</strong> (Dimitri, 2026-08-05, on Codex&#x27;s r2 review finding): r1&#x27;s gptimage2 and riverflow renders showed tiptoe stances, and the word itself invites them — a digitigrade limb carries its heel off the ground, directly fighting the planted-feet contract. Prompts and audits drop the word entirely; the frog-leg read comes from proportions and webbing.</li>
 <li><code>team-brief.md</code> v1.6 in this PR: §4 lino-wardrobe note and Tiger&#x27;s §6 hooks updated to match; §10 decision record gains the 2026-08-04 wardrobe decision; Crane&#x27;s collar-distinctness flag recorded.</li>
 <li>Three frozen prompt files, one per tier, each containing the already-approved legacy sentence declaring zero attached images: <code>prompts/r2-anthro-tangzhuang.txt</code> (full, ~831 words), <code>prompts/r2-anthro-tangzhuang-compressed.txt</code> (~460 words — the ENTIRE constraint set, half the text), and <code>prompts/r2-anthro-tangzhuang-minimal.txt</code> (~150 words — essence only: identity, kit summary, stance, tone; deliberately drops all counts, negatives, proportion figures, and the print-safe block). The tiers are a DELIBERATE per-arm divergence from the single-source rule, named here and in the matrix rows: the divergence IS the experiment axis. Full and compressed must stay semantically aligned constraint-for-constraint (checked by eye at review; they are different words by design, so a byte diff cannot verify them). Per the post-freeze text-only rule from PR #353, keep those model-visible declaration sentences as-run; the metadata, choices table, cases sidecar, and experiment matrix now hold the exact call inputs. Frog buttons are prompted eye-sized (design-to-survive); if they still render thin they defer to paint stage rather than earning image rounds.</li>
 <li><strong>Codex consistency fixes folded into this amendment (Dimitri, 2026-08-06):</strong> (1) frog-button count standardized to <strong>exactly four</strong> across <code>spec.md</code>, the full and compressed prompts, and the FAST audit (the spec previously allowed 4–5 while the prompt said four); (2) forearm geometry de-contradicted — wraps cover the LOWER forearm and a visible band of moss-green skin separates wrap from sleeve cuff (the prompt previously called forearms &quot;bare&quot; and then wrapped them wrist-to-elbow), with the same visible-skin treatment applied at the knees; (3) the sash&#x27;s back knot is kept as a design/prompt requirement but removed from the front-view FAST audit, which now checks the observable condition only (no front/side knot, no hanging tails) — rear verification happens at turnaround time.</li>
 <li>Model panel narrowed on r1 evidence recorded in <code>reviews.jsonl</code>: <code>tiger-r1-f3-gptimage2-1</code> was the only artifact both lanes rated FIXABLE; <code>tiger-r1-f3-riverflow25-1</code> led the crop lane. seedream45 (systematic off-brief), grokq and flash31 (weak anthro), and the flashlite31 trial (instruction-card layouts, negative trial evidence) are dropped for Tiger.</li>
-<li>Both arms run via OpenRouter (no Gemini generation); the blind detector remains Gemini Batch, so the host still needs a seeded Gemini balance.</li>
+<li>Riverflow runs via OpenRouter; the nine gptimage2 cells run directly through OpenAI using the exact pinned snapshot/size/quality above (no Gemini generation). The blind detector remains Gemini Batch, so the host still needs a seeded Gemini balance.</li>
 <li>Tiger stays mirror-cheap (symmetric kit); no per-round chirality negatives needed for the front concept.</li>
 <li>Deferred assets unchanged: mon and player number omitted from generation; audits treat their absence as expected.</li>
-</ul>
-<h3>Experiment matrix</h3>
-<div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Variant axes</th><th>Prompt</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>1</td><td>text only; no images</td><td>full prompt × gptimage2, 3 rolls</td><td><code>prompts/r2-anthro-tangzhuang.txt</code></td><td><code>tiger-r2</code> (→ <code>tiger-r2-gptimage2-{1,2,3}</code>)</td></tr><tr><td>2</td><td>text only; no images</td><td>full prompt × riverflow25 (2K, <code>--aspect 2:3</code>), 2 rolls</td><td><code>prompts/r2-anthro-tangzhuang.txt</code></td><td><code>tiger-r2-riverflow25</code> (→ <code>-{1,2}</code>)</td></tr><tr><td>3</td><td>text only; no images</td><td>compressed prompt × gptimage2, 3 rolls</td><td><code>prompts/r2-anthro-tangzhuang-compressed.txt</code></td><td><code>tiger-r2-comp</code> (→ <code>tiger-r2-comp-gptimage2-{1,2,3}</code>)</td></tr><tr><td>4</td><td>text only; no images</td><td>compressed prompt × riverflow25 (2K, <code>--aspect 2:3</code>), 2 rolls</td><td><code>prompts/r2-anthro-tangzhuang-compressed.txt</code></td><td><code>tiger-r2-comp-riverflow25</code> (→ <code>-{1,2}</code>)</td></tr><tr><td>5</td><td>text only; no images</td><td>minimal prompt × gptimage2, 3 rolls</td><td><code>prompts/r2-anthro-tangzhuang-minimal.txt</code></td><td><code>tiger-r2-min</code> (→ <code>tiger-r2-min-gptimage2-{1,2,3}</code>)</td></tr><tr><td>6</td><td>text only; no images</td><td>minimal prompt × riverflow25 (2K, <code>--aspect 2:3</code>), 2 rolls</td><td><code>prompts/r2-anthro-tangzhuang-minimal.txt</code></td><td><code>tiger-r2-min-riverflow25</code> (→ <code>-{1,2}</code>)</td></tr></tbody></table></div>
-<p>Repeated runs append and never overwrite; each roll is a distinct lineage artifact addressable by its <code>-&lt;n&gt;</code> id.</p>
-<h3>Publish and announce the proposed round (before sign-off)</h3>
-<p>Commit and push the exact plan, then render and publish the world-readable runbook, then open the Round 2 header + thread in <code>#tiger</code> (alias allowlisted 2026-08-03).</p>
+</ul></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg><span>Experiment matrix</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Variant axes</th><th>Prompt</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>1</td><td>text only; no images</td><td>full prompt × gptimage2 direct OpenAI (<code>gpt-image-2-2026-04-21</code>, <code>1024x1536</code>, high), 3 rolls</td><td><code>prompts/r2-anthro-tangzhuang.txt</code></td><td><code>tiger-r2</code> (→ <code>tiger-r2-gptimage2-{1,2,3}</code>)</td></tr><tr><td>2</td><td>text only; no images</td><td>full prompt × riverflow25 (2K, <code>--aspect 2:3</code>), 2 rolls</td><td><code>prompts/r2-anthro-tangzhuang.txt</code></td><td><code>tiger-r2-riverflow25</code> (→ <code>-{1,2}</code>)</td></tr><tr><td>3</td><td>text only; no images</td><td>compressed prompt × gptimage2 direct OpenAI (same pinned call shape), 3 rolls</td><td><code>prompts/r2-anthro-tangzhuang-compressed.txt</code></td><td><code>tiger-r2-comp</code> (→ <code>tiger-r2-comp-gptimage2-{1,2,3}</code>)</td></tr><tr><td>4</td><td>text only; no images</td><td>compressed prompt × riverflow25 (2K, <code>--aspect 2:3</code>), 2 rolls</td><td><code>prompts/r2-anthro-tangzhuang-compressed.txt</code></td><td><code>tiger-r2-comp-riverflow25</code> (→ <code>-{1,2}</code>)</td></tr><tr><td>5</td><td>text only; no images</td><td>minimal prompt × gptimage2 direct OpenAI (same pinned call shape), 3 rolls</td><td><code>prompts/r2-anthro-tangzhuang-minimal.txt</code></td><td><code>tiger-r2-min</code> (→ <code>tiger-r2-min-gptimage2-{1,2,3}</code>)</td></tr><tr><td>6</td><td>text only; no images</td><td>minimal prompt × riverflow25 (2K, <code>--aspect 2:3</code>), 2 rolls</td><td><code>prompts/r2-anthro-tangzhuang-minimal.txt</code></td><td><code>tiger-r2-min-riverflow25</code> (→ <code>-{1,2}</code>)</td></tr></tbody></table></div>
+<p>Repeated runs append and never overwrite; each roll is a distinct lineage artifact addressable by its <code>-&lt;n&gt;</code> id.</p></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>Publish and announce the proposed round (before sign-off)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>Commit and push the exact plan, then render and publish the world-readable runbook, then open the Round 2 header + thread in <code>#tiger</code> (alias allowlisted 2026-08-03).</p>
 <pre class="code"><code>set -euo pipefail  # fail closed: no Discord post if render/publish fails
 python3 tools/render_runbook.py \
   --runbook projects/martial-frogs/tiger/runbooks/r2-runbook.md \
@@ -429,9 +589,8 @@ python3 tools/discord_share.py --channel tiger \
 python3 tools/discord_share.py --channel tiger \
   --thread &lt;header-message-id&gt; --thread-name &quot;Round 2 — Tiger updates&quot; \
   --once tiger-r2-proposed-announcement \
-  --message &quot;&lt;round-open announcement&gt;&quot;</code></pre>
-<h3>Amendment republish + Discord update (2026-08-06, after the amendment PR merges)</h3>
-<p>The original publish and round-open announcement above ran on 2026-08-05 (header <code>1534417093829726260</code>). The amendment re-renders and republishes the same slug, then appends a thread reply and advances the header with the new plan figures:</p>
+  --message &quot;&lt;round-open announcement&gt;&quot;</code></pre></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>Amendment republish + Discord update (2026-08-06, after the amendment PR merges)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>The original publish and round-open announcement above ran on 2026-08-05 (header <code>1534417093829726260</code>). The amendment re-renders and republishes the same slug, then appends a thread reply and advances the header with the new plan figures:</p>
 <pre class="code"><code>set -euo pipefail
 python3 tools/render_runbook.py \
   --runbook projects/martial-frogs/tiger/runbooks/r2-runbook.md \
@@ -454,13 +613,11 @@ python3 tools/discord_share.py --channel tiger \
   --spend-estimate &quot;\$5.48 planned&quot; \
   --artifact-label &quot;Runbook&quot; \
   --artifact-link &quot;https://lackofcheese.github.io/ai-stl-review/reviews/martial-frogs/tiger/r2-runbook/&quot; \
-  --event-id tiger-r2-amendment-prompt-length</code></pre>
-<h3>Second amendment republish + Discord update (2026-08-06, after the riverflow-rolls PR merges)</h3>
-<p>Same pattern as the first amendment (thread reply first, then the header, sharing one new once-id <code>tiger-r2-amendment-riverflow-rolls</code>): re-render and republish this page, append a short reply stating riverflow25 drops to 2 rolls per tier on cost (15 concepts, ≈ $4.31 planned under a $6.00 cap), then advance header <code>1534417093829726260</code> with the new figures and the Runbook link.</p>
-<h3>Third amendment republish + Discord update (2026-08-06, after the execution-safety PR merges)</h3>
-<p>Re-render and republish the same runbook slug, then append a short thread reply stating that the 15-call matrix and $6.00 cap are unchanged while exact text-only inputs, same-stem OpenRouter interruption recovery, and rollout eligibility are clarified. Advance header <code>1534417093829726260</code> from that reply using once-id <code>tiger-r2-amendment-execution-safety</code>; the visible status, decision, spend, estimate, and Runbook link stay unchanged.</p>
-<h3>Commands (run after sign-off, durable greenlight, and the merge-triggered start)</h3>
-<p>On Dimitri&#x27;s sign-off: flip <code>Status:</code> to <code>Approved — not started (Dimitri, &lt;date&gt;)</code>, commit + push, re-publish this page from that commit, then append the gate pinning that exact commit and its published render; post the approval reply and advance the header once the status change is on <code>main</code>. Execution then waits for the merge-triggered start PR per the skill&#x27;s lifecycle, with the exact-main + gate verification before the first paid call.</p>
+  --event-id tiger-r2-amendment-prompt-length</code></pre></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>Second amendment republish + Discord update (2026-08-06, after the riverflow-rolls PR merges)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>Same pattern as the first amendment (thread reply first, then the header, sharing one new once-id <code>tiger-r2-amendment-riverflow-rolls</code>): re-render and republish this page, append a short reply stating riverflow25 drops to 2 rolls per tier on cost (15 concepts, ≈ $4.31 planned under a $6.00 cap), then advance header <code>1534417093829726260</code> with the new figures and the Runbook link.</p></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>Third amendment republish + Discord update (2026-08-06, after the execution-safety PR merges)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>Re-render and republish the same runbook slug, then append a short thread reply stating that the 15-call matrix and $6.00 cap are unchanged while exact text-only inputs, same-stem OpenRouter interruption recovery, and rollout eligibility are clarified. Advance header <code>1534417093829726260</code> from that reply using once-id <code>tiger-r2-amendment-execution-safety</code>; the visible status, decision, spend, estimate, and Runbook link stay unchanged.</p></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>Fourth amendment closeout + Discord update (2026-08-06, after the direct-OpenAI PR merges)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>Re-render and republish the same runbook slug from the merged amendment, append a short thread reply stating that the six completed Riverflow images remain final and only the nine missing GPT cells move to direct OpenAI at pinned <code>gpt-image-2-2026-04-21</code> / <code>1024x1536</code> / high. Advance header <code>1534417093829726260</code> from that reply using once-id <code>tiger-r2-amendment-direct-openai</code>; show <strong>6/15 generated</strong>, expected billed total ≈ $4.26, conservative planned/reserved total $4.809873, and the unchanged $6 cap. No GPT provider call occurs until the merged superseding gate verifies.</p></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-branch"/></svg><span>Commands (run after sign-off, durable greenlight, and the merge-triggered start)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>On Dimitri&#x27;s sign-off: flip <code>Status:</code> to <code>Approved — not started (Dimitri, &lt;date&gt;)</code>, commit + push, re-publish this page from that commit, then append the gate pinning that exact commit and its published render; post the approval reply and advance the header once the status change is on <code>main</code>. Execution then waits for the merge-triggered start PR per the skill&#x27;s lifecycle, with the exact-main + gate verification before the first paid call.</p>
 <pre class="code"><code>python3 tools/round_gate.py append \
   --file projects/martial-frogs/tiger/round-gates.jsonl \
   --round r2 --gate greenlight --actor dimitri --source cli \
@@ -471,8 +628,8 @@ python3 tools/discord_share.py --channel tiger \
 python3 tools/round_gate.py verify \
   --file projects/martial-frogs/tiger/round-gates.jsonl --round r2 \
   --published-html &quot;$AI_STL_REVIEW_DIR/reviews/martial-frogs/tiger/r2-runbook/index.html&quot;</code></pre>
-<p>Generation (both arms via OpenRouter; live balance is fetched by the preflight; the Gemini seed below is for the SLOW-lane detector). This round&#x27;s deliberate same-stem rolls remain outside <code>gen_round.py</code> v1. It has no Gemini generation cell, so it does <strong>not</strong> own the coordinator rollout observation: the Batch detector is not a generation cell, no call may be added or substituted to manufacture eligibility, and the one-time observation remains with the next already-approved round that actually uses the coordinator with a Gemini generation cell.</p>
-<p>The following is a <strong>fresh-launch-only</strong> block. Its Drive pull, durable-log screen, and provider-side reconciliation must establish that no R2 launch has started before the first paid call. The provider check is mandatory on every host, including a replacement host with an empty worktree: inspect OpenRouter Activity/Usage and the live balance from the durable merge-triggered-start UTC through now, reconcile every accepted/charged request in that window against the generation log and spend-preflight ledger, and <strong>HOLD</strong> on any unmatched or inconclusive activity. This closes the interval in which a host could disappear after provider acceptance but before an output or local log becomes durable. Run the block once only after that check is clear; after any nonzero exit or interruption, use the recovery block below rather than running it again.</p>
+<p>Generation originally launched both arms via OpenRouter. That fresh launch has already occurred and the block below is retained only as the as-approved launch record: <strong>never run it again</strong>. Six Riverflow cells completed; all nine GPT cells failed before provider submission. The approved replacement block after the interruption procedure runs only those nine missing cells through direct OpenAI. The Gemini seed remains for the SLOW-lane detector. This round&#x27;s deliberate same-stem rolls remain outside <code>gen_round.py</code> v1. It has no Gemini generation cell, so it does <strong>not</strong> own the coordinator rollout observation: the Batch detector is not a generation cell, no call may be added or substituted to manufacture eligibility, and the one-time observation remains with the next already-approved round that actually uses the coordinator with a Gemini generation cell.</p>
+<p>The following is the <strong>fresh-launch-only historical block (already executed; never rerun)</strong>. Its Drive pull, durable-log screen, and provider-side reconciliation must establish that no R2 launch has started before the first paid call. The provider check is mandatory on every host, including a replacement host with an empty worktree: inspect OpenRouter Activity/Usage and the live balance from the durable merge-triggered-start UTC through now, reconcile every accepted/charged request in that window against the generation log and spend-preflight ledger, and <strong>HOLD</strong> on any unmatched or inconclusive activity. This closes the interval in which a host could disappear after provider acceptance but before an output or local log becomes durable. Run the block once only after that check is clear; after any nonzero exit or interruption, use the recovery block below rather than running it again.</p>
 <pre class="code"><code>set -euo pipefail
 T=projects/martial-frogs/tiger
 mkdir -p &quot;$T/generated&quot; &quot;$T/notes&quot;
@@ -564,6 +721,83 @@ for pid in &quot;${PIDS[@]}&quot;; do wait &quot;$pid&quot; || FAIL=1; done
 <li>A wrapper that started but has no durable output is an <strong>ambiguous manual stop</strong>. Append the reconciliation to <code>rounds.md</code>: UTC interval, PID and cell/out-stem, local and Drive inventories, provider activity/usage and balance evidence, ledger reservation/reconciliation, and the resulting decision. Inconclusive evidence or any evidence of provider acceptance or charge means no retry; ask Dimitri for a new logged plan amendment because a replacement would exceed the approved 15 calls. Only independently proven non-acceptance/non-charge may authorize launching exactly the missing count for that one cell with its original command.</li>
 <li>Never rerun completed cells or the whole 15-call block. Any output beyond the approved per-cell count is preserved and logged, and blocks the detector until Dimitri decides its disposition. Once recovery is reconciled, run the exact-set gate below; it must still find all and only the 15 approved ids.</li>
 </ol>
+<h4>Approved direct-OpenAI completion of the nine missing GPT cells</h4>
+<p>Run this only after the fourth amendment is merged, the exact merged <code>main</code> is checked out, its superseding r2 gate verifies against the republished runbook, and the Discord amendment reply/header update has completed. It is not a retry of the refused OpenRouter route: it is the approved provider/call-shape replacement, retaining the original prompts, artifact ids, rolls, matrix, and $6 cap.</p>
+<p>Before the first call, reconcile OpenAI project usage from the amendment&#x27;s merged UTC through launch and seed the provider-dashboard remaining allowance. The repository has no supported OpenAI live-balance API. Use one paid-spend host only. Any failure after request submission keeps the full conservative debit and is ambiguous: stop, reconcile provider usage, Drive, lineage, genlog, and the ledger, then amend the plan again if non-charge cannot be independently proved. Never rerun a completed same-stem roll.</p>
+<p>Each wrapper invocation first fetches OpenAI&#x27;s official pricing/model Markdown, requires the live rates and snapshot to match the reviewed boundary, rejects a prompt over 8192 UTF-8 bytes, and reserves the entire 8192-byte input ceiling. Changed or unparsable documentation stops before reservation/provider contact.</p>
+<pre class="code"><code>set -euo pipefail
+T=projects/martial-frogs/tiger
+
+: &quot;${OPENAI_R2_RECONCILED:?HOLD: reconcile OpenAI project usage first}&quot;
+if [ &quot;$OPENAI_R2_RECONCILED&quot; != clear ]; then
+  echo &quot;OpenAI reconciliation is not clear; HOLD&quot; &gt;&amp;2
+  exit 1
+fi
+
+# Safe presence check through the sanctioned resolver; no credential value is
+# printed. Provision OPENAI_API_KEY in the minis-pipeline secret path first.
+python3 - &lt;&lt;&#x27;PY&#x27;
+import sys
+sys.path.insert(0, &quot;tools&quot;)
+from _secrets import get_key_optional
+if not get_key_optional(&quot;openai&quot;, &quot;OPENAI_API_KEY&quot;):
+    raise SystemExit(&quot;OPENAI_API_KEY unavailable; HOLD&quot;)
+print(&quot;OpenAI credential: configured&quot;)
+PY
+
+bash tools/drive_sync.sh pull &quot;$T/generated&quot;
+python3 - &quot;$T/generated&quot; &quot;$T/lineage.json&quot; \
+  logs/image-gen-martial-frogs.jsonl &lt;&lt;&#x27;PY&#x27;
+import pathlib
+import re
+import sys
+
+generated, lineage, genlog = map(pathlib.Path, sys.argv[1:])
+riverflow = re.compile(
+    r&quot;^tiger-r2(?:-(?:comp|min))?-riverflow25-[12]$&quot;
+)
+gpt = re.compile(
+    r&quot;^tiger-r2(?:-(?:comp|min))?-gptimage2-[0-9]+$&quot;
+)
+stems = [
+    path.stem for path in generated.iterdir()
+    if path.is_file() and path.suffix.lower() in {&quot;.png&quot;, &quot;.jpg&quot;, &quot;.jpeg&quot;, &quot;.webp&quot;}
+]
+rf = sorted(stem for stem in stems if riverflow.fullmatch(stem))
+expected_rf = sorted(
+    f&quot;{stem}-riverflow25-{roll}&quot;
+    for stem in (&quot;tiger-r2&quot;, &quot;tiger-r2-comp&quot;, &quot;tiger-r2-min&quot;)
+    for roll in (1, 2)
+)
+if rf != expected_rf:
+    raise SystemExit(f&quot;Riverflow durable set changed; HOLD: {rf}&quot;)
+if any(gpt.fullmatch(stem) for stem in stems):
+    raise SystemExit(&quot;a GPT artifact already exists; HOLD and reconcile&quot;)
+for path in (lineage, genlog):
+    text = path.read_text(encoding=&quot;utf-8&quot;)
+    if re.search(r&#x27;tiger-r2(?:-(?:comp|min))?-gptimage2-[0-9]+&#x27;, text):
+        raise SystemExit(f&quot;{path} already records a GPT artifact; HOLD&quot;)
+PY
+
+python3 tools/spend_preflight.py set-balance openai AMOUNT_USD
+
+# Sequential calls keep each same-stem recovery decision isolated. The wrapper
+# pins the snapshot, size, and quality again and pushes each image to Drive
+# before returning.
+for tier_spec in \
+  &quot;r2-anthro-tangzhuang.txt:tiger-r2&quot; \
+  &quot;r2-anthro-tangzhuang-compressed.txt:tiger-r2-comp&quot; \
+  &quot;r2-anthro-tangzhuang-minimal.txt:tiger-r2-min&quot;; do
+  PROMPT_FILE=&quot;${tier_spec%%:*}&quot;
+  STEM_PREFIX=&quot;${tier_spec##*:}&quot;
+  for i in 1 2 3; do
+    python3 tools/openai_image_gen.py \
+      --prompt-file &quot;$T/prompts/$PROMPT_FILE&quot; \
+      --out-dir &quot;$T/generated&quot; --out-stem &quot;$STEM_PREFIX-gptimage2&quot; \
+      --model gpt-image-2-2026-04-21 \
+      --size 1024x1536 --quality high --drive-sync
+  done
+done</code></pre>
 <p>Exact-set gate and SLOW lane (run only after the fresh launch or a documented recovery has completed successfully):</p>
 <pre class="code"><code>set -euo pipefail
 T=projects/martial-frogs/tiger
@@ -656,8 +890,8 @@ else
   DETECT_RUN=&quot;$(sed -n &#x27;s/^batch run: //p&#x27; &quot;$DETECT_LOG&quot; | head -n 1)&quot;
   test -n &quot;$DETECT_RUN&quot;
 fi</code></pre>
-<p>After the blind run lands, Dimitri appends one authoritative reconciliation record per artifact through <code>review_log.py</code> (summary starting <code>RECONCILED — AGREE:</code> / <code>RECONCILED — RESOLVED:</code> exactly as in r1; AGREE is valid only when the latest crop and blind judgment classes match). The COMPLETE rebuild uses the same fail-closed 15-artifact coverage check as r1&#x27;s, with the r2 expected list and this run&#x27;s id. Results, telemetry, and verdicts belong in <code>rounds.md</code> and <code>r2-panel.json</code>, never back in this runbook.</p>
-</details></div>
+<p>After the blind run lands, Dimitri appends one authoritative reconciliation record per artifact through <code>review_log.py</code> (summary starting <code>RECONCILED — AGREE:</code> / <code>RECONCILED — RESOLVED:</code> exactly as in r1; AGREE is valid only when the latest crop and blind judgment classes match). The COMPLETE rebuild uses the same fail-closed 15-artifact coverage check as r1&#x27;s, with the r2 expected list and this run&#x27;s id. Results, telemetry, and verdicts belong in <code>rounds.md</code> and <code>r2-panel.json</code>, never back in this runbook.</p></div></details>
+</section>
 </main>
 <div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
 <div id="ilb" hidden><div class="panel">
@@ -865,5 +1099,16 @@ function pointerEnd(e){
 lbImg.addEventListener('pointerup',pointerEnd);
 lbImg.addEventListener('pointercancel',pointerEnd);
 lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+
+document.addEventListener('click', function (e) {
+  var b = e.target.closest('[data-copy]');
+  if (!b) return;
+  var pre = b.closest('details').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(function () {
+    var was = b.textContent;
+    b.textContent = 'Copied'; b.classList.add('done');
+    setTimeout(function () { b.textContent = was; b.classList.remove('done'); }, 1600);
+  });
+});
 </script>
 </body></html>
