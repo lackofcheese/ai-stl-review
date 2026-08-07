@@ -1,0 +1,1762 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="ai-stl-plan-digest" content="a23c3e36c34430f798b901a4de3721737aa6bd07e71cbbfeca9aec5eb09b58ce">
+<title>Tiger — Round 3x runbook</title>
+<style>
+:root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.reviewtools { display:flex; justify-content:flex-end; margin:.35rem 0 0 }
+.devmode { display:inline-flex; align-items:center; gap:.5rem; color:var(--dim);
+  font-size:.76rem; font-weight:650; cursor:pointer; user-select:none }
+.devmode input { appearance:none; position:relative; width:2.15rem; height:1.18rem;
+  margin:0; border:1px solid var(--dim); border-radius:99px;
+  background:var(--line); cursor:pointer; transition:background .15s,border-color .15s }
+.devmode input::after { content:""; position:absolute; width:.78rem; height:.78rem;
+  left:.14rem; top:.13rem; border-radius:50%; background:var(--ink);
+  transition:transform .15s }
+.devmode input:checked { background:var(--accent); border-color:var(--accent) }
+.devmode input:checked::after { transform:translateX(.95rem); background:#fff }
+.devmode input:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+.developer-only[hidden] { display:none !important }
+.developer-section { margin:2.4rem 0 0; padding:1rem;
+  border:1px dashed var(--line); border-radius:8px }
+.developer-section > h2:first-child { margin-top:0 }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.coreinputs { margin:1.2rem 0 .4rem }
+.coreinputs h2 { margin:0 0 .5rem }
+.coreinputs .hint { color:var(--dim); font-weight:400; font-size:.85rem }
+.inputrow { display:flex; flex-wrap:wrap; gap:12px }
+.coreinput { margin:0; width:210px; max-width:100%;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.coreinput .imgwrap { border-bottom:1px solid var(--line) }
+.coreinput .imgwrap img { max-height:230px }
+.coreinput figcaption { color:var(--dim); font-size:.7rem; padding:.35rem .5rem;
+  word-break:break-all; font-family:ui-monospace,SFMono-Regular,Menlo,monospace }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.recommendation { color:var(--ink) !important; font-size:.88rem !important;
+  padding:.55rem .65rem; border-left:3px solid var(--accent);
+  background:color-mix(in srgb,var(--accent) 8%,transparent); border-radius:4px }
+.recommendation strong { color:var(--accent); font-size:.7rem;
+  letter-spacing:.06em; text-transform:uppercase; margin-right:.3rem }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.statrow { display:flex; flex-wrap:wrap; gap:.15rem .5rem; margin:0 0 .1rem;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.72rem;
+  color:var(--dim) }
+.statrow span { white-space:nowrap }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.chip.unclear { color:var(--dim); border-color:var(--dim) }
+.detector-details { display:flex; flex-direction:column; gap:.45rem }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:calc(100vh - 7rem); object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-meta { display:flex; flex-direction:column; align-items:center; gap:.35rem;
+  min-height:2.2rem; position:relative; z-index:20 }
+.lb-refrow { display:flex; align-items:center; justify-content:center; gap:.35rem;
+  flex-wrap:wrap }
+.lb-refrow[hidden] { display:none }
+.lb-refrow .refid { background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn { color:#bbb; border-color:#55515d;
+  background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+
+/* Runbook chrome. The house tokens, lightbox and asset pipeline come from
+   review_page.py; everything here is the runbook page's own structure —
+   a decision-first header, the choices as cards, and the technical plan
+   behind per-subsection disclosures. */
+.md h2 { font-size:1.15rem; margin:2.2rem 0 .3rem }
+.md h3 { font-size:1rem; margin:1.6rem 0 .3rem }
+.md h4 { font-size:.9rem; margin:1.2rem 0 .3rem; color:var(--dim) }
+.md p { max-width:68ch; margin:.5rem 0 0 }
+.md ul, .md ol { max-width:68ch; padding-left:1.4rem }
+.md li { margin:.25rem 0 }
+.md a { color:var(--accent) }
+.md code, dl.facts code, .choice code { background:var(--pre);
+  border:1px solid var(--line); border-radius:4px; padding:.05rem .3rem;
+  font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
+.md pre.code { background:var(--pre); border:1px solid var(--line); border-radius:6px;
+  padding:.75rem 1rem; overflow-x:auto; font-size:.8rem; line-height:1.5 }
+.md pre.code code { background:none; border:0; padding:0 }
+.md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+.ico { width:1em; height:1em; flex:none; stroke:currentColor; fill:none;
+  stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; vertical-align:-.12em }
+
+/* --- header ------------------------------------------------------------- */
+h1 { font-size:1.55rem; margin:.25rem 0 0; letter-spacing:-.01em }
+.statusrow { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem .55rem;
+  margin:.7rem 0 0 }
+.statusrow.sub { margin:.4rem 0 0 }
+.statusnote { color:var(--dim); font-size:.82rem; margin:.5rem 0 0; max-width:70ch }
+.pill { display:inline-flex; align-items:center; gap:.35rem; font-size:.74rem;
+  font-weight:700; border:1px solid; border-radius:99px; padding:.16rem .6rem;
+  white-space:nowrap }
+.pill .dot { width:.45rem; height:.45rem; border-radius:50%; background:currentColor }
+.pill.s-await { color:var(--warn); border-color:var(--warn) }
+.pill.s-appr { color:var(--accent); border-color:var(--accent) }
+.pill.s-run { color:var(--ok); border-color:var(--ok) }
+.pill.s-done, .pill.s-hold { color:var(--dim); border-color:var(--line) }
+.fact { display:inline-flex; align-items:center; gap:.3rem; font-size:.75rem;
+  color:var(--dim); border:1px solid var(--line); border-radius:99px;
+  padding:.16rem .6rem; text-decoration:none }
+.fact b { color:var(--ink); font-weight:600 }
+a.fact.link { color:var(--accent); border-color:var(--accent) }
+.fact.inert { opacity:.55 }
+
+/* --- the ask, promoted -------------------------------------------------- */
+.ask { margin:1.1rem 0 0; border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); border-radius:8px; padding:.85rem 1rem }
+.ask .lbl { display:flex; align-items:center; gap:.4rem; font-size:.7rem; font-weight:700;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin:0 0 .3rem }
+.ask p { margin:0; max-width:70ch }
+a.jump { font-size:.8rem; font-weight:600; text-decoration:none; white-space:nowrap;
+  color:var(--accent) }
+
+/* --- at a glance + spend meter ------------------------------------------ */
+.glance { display:grid; gap:8px; margin:1rem 0 0;
+  grid-template-columns:repeat(auto-fit,minmax(132px,1fr)) }
+.tile { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.55rem .7rem; display:flex; flex-direction:column; gap:.12rem }
+.tile .k { display:flex; align-items:center; gap:.3rem; font-size:.66rem; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--dim) }
+.tile .v { font-size:1.05rem; font-weight:700; font-variant-numeric:tabular-nums }
+.tile .s { font-size:.72rem; color:var(--dim) }
+.meter { margin:.75rem 0 0; background:var(--card); border:1px solid var(--line);
+  border-radius:8px; padding:.7rem .85rem }
+.meter .top { display:flex; justify-content:space-between; align-items:baseline;
+  gap:.5rem; font-size:.74rem; color:var(--dim); margin:0 0 .4rem }
+.meter .top b { color:var(--ink); font-size:.9rem; font-variant-numeric:tabular-nums }
+.bar { height:9px; border-radius:99px; background:var(--well); border:1px solid var(--line);
+  overflow:hidden; display:flex }
+.bar i { display:block; height:100%; background:var(--accent) }
+.legend { display:flex; flex-wrap:wrap; gap:.2rem .9rem; margin:.45rem 0 0;
+  font-size:.7rem; color:var(--dim) }
+.legend span { display:inline-flex; align-items:center; gap:.32rem }
+.legend i { width:.6rem; height:.6rem; border-radius:2px; background:var(--accent); flex:none }
+.legend i.r { opacity:.45 }
+.legend i.o { background:var(--well); border:1px solid var(--line) }
+
+/* --- section nav + sections --------------------------------------------- */
+.snav { position:sticky; top:0; z-index:5; margin:1.4rem -16px 0; padding:.5rem 16px;
+  background:var(--bg); border-bottom:1px solid var(--line);
+  display:flex; gap:.35rem; overflow-x:auto; scrollbar-width:none }
+.snav::-webkit-scrollbar { display:none }
+.snav a { font-size:.72rem; font-weight:600; color:var(--dim); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .6rem; white-space:nowrap }
+.snav a:hover { color:var(--ink); border-color:var(--dim) }
+section.s { margin:2.1rem 0 0; scroll-margin-top:3.2rem }
+section.s > h2 { display:flex; align-items:center; gap:.5rem; font-size:1.02rem;
+  margin:0 0 .3rem }
+section.s > h2 .ico { color:var(--accent); width:1.05em; height:1.05em }
+section.s > h2::after { content:""; flex:1; height:1px; background:var(--line) }
+.md.cta { background:var(--card); border:1px solid var(--accent); border-radius:10px;
+  padding:.35rem 1.05rem .95rem; margin-top:.6rem }
+.md.cta ol li::marker, .md.cta ul li::marker { color:var(--accent); font-weight:700 }
+
+/* --- pipeline strip + round lineage ------------------------------------- */
+.strips { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.7rem .85rem; margin:.9rem 0 0 }
+.stage, .lineage { display:flex; flex-wrap:wrap; align-items:center; gap:.3rem }
+.lineage { margin-top:.55rem }
+.stage .lbl, .lineage .lbl { font-size:.64rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--dim); margin-right:.15rem }
+.stage .st { font-size:.71rem; font-weight:600; color:var(--dim);
+  border:1px solid var(--line); border-radius:99px; padding:.16rem .55rem; white-space:nowrap }
+.stage .st.now { color:var(--bg); background:var(--accent); border-color:var(--accent) }
+.stage .st.opt { border-style:dashed }
+.stage .arw, .lineage .arw { color:var(--line); font-size:.8rem }
+.lineage .rn { font-size:.72rem; color:var(--dim); border:1px solid var(--line);
+  border-radius:6px; padding:.16rem .5rem }
+.lineage .rn.this { color:var(--ink); border-color:var(--accent); font-weight:700 }
+.lineage .rn.next { border-style:dashed }
+
+/* --- choices as cards ---------------------------------------------------
+   The choices table is the round's comparison and the first thing a reviewer
+   reads. As a table its prose columns forced a 544px grid into a 343px phone
+   column, so the same cells render as one card per choice and simply stack. */
+.choices { display:grid; gap:12px; margin:.7rem 0 0;
+  grid-template-columns:repeat(auto-fit,minmax(255px,1fr)) }
+.choice { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.85rem .95rem; display:flex; flex-direction:column; gap:.5rem }
+.choice header { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap }
+.choice .key { font-size:.78rem; font-weight:800; color:var(--accent);
+  border:1px solid var(--accent); border-radius:6px; padding:.1rem .42rem }
+.choice h3 { margin:0; font-size:.97rem; font-weight:700 }
+.choice .rolls { margin-left:auto; font-size:.7rem; font-weight:700; color:var(--dim);
+  border:1px solid var(--line); border-radius:99px; padding:.1rem .5rem;
+  white-space:nowrap; font-variant-numeric:tabular-nums }
+.choice ul { margin:0; padding:0; list-style:none; display:flex; flex-direction:column;
+  gap:.32rem }
+.choice li { display:flex; gap:.45rem; font-size:.87rem; line-height:1.45 }
+.choice li .ico { color:var(--accent); margin-top:.28em; width:.5em; height:.5em }
+.choice .foot { display:flex; flex-direction:column; gap:.3rem; margin-top:auto;
+  padding-top:.15rem }
+.choice .cx { margin:0; font-size:.78rem; color:var(--dim) }
+.choice .ck { font-size:.62rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--dim); margin-right:.4rem }
+.choice a.jump { display:inline-flex; align-items:center; gap:.3rem; font-size:.71rem;
+  color:var(--dim); border:1px solid var(--line); border-radius:99px;
+  padding:.14rem .55rem; align-self:flex-start; margin-top:.15rem }
+.choice a.jump:hover { color:var(--accent); border-color:var(--accent) }
+
+/* --- roll matrix -------------------------------------------------------- */
+.shape { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.8rem .9rem; margin:12px 0 0; overflow-x:auto }
+.mx { display:grid; gap:6px; min-width:min(100%,320px) }
+.mx .hd { font-size:.63rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--dim); text-align:center; overflow-wrap:anywhere }
+.mx .rh { font-size:.74rem; font-weight:700; display:flex; align-items:center;
+  padding-right:.4rem; white-space:nowrap; max-width:9rem; overflow:hidden;
+  text-overflow:ellipsis }
+.mx .cell { background:var(--card); border:1px solid var(--line); border-radius:5px;
+  height:30px; display:flex; align-items:center; justify-content:center;
+  color:var(--accent) }
+.mx .cell.empty { opacity:.25; background:none }
+.shape .cap { font-size:.74rem; color:var(--dim); margin:.55rem 0 0 }
+.shape .cap b { color:var(--ink) }
+
+/* --- cost breakdown ----------------------------------------------------- */
+.costgrid { display:grid; gap:6px; margin:.7rem 0 0; max-width:34rem }
+.costrow { display:grid; grid-template-columns:8rem 1fr 5.5rem; align-items:center;
+  gap:.6rem; font-size:.8rem }
+.costrow .n { color:var(--dim); font-family:ui-monospace,Menlo,monospace; font-size:.76rem;
+  overflow-wrap:anywhere }
+.costrow .t { height:7px; border-radius:99px; background:var(--accent); opacity:.75 }
+.costrow .a { text-align:right; font-variant-numeric:tabular-nums; font-weight:600 }
+.costrow.total { border-top:1px solid var(--line); padding-top:.35rem; margin-top:.2rem }
+.costrow.total .n { color:var(--ink); font-weight:700 }
+
+/* --- round facts -------------------------------------------------------- */
+dl.facts { display:grid; grid-template-columns:auto 1fr; gap:.35rem 1.1rem; margin:.7rem 0 0;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.85rem 1rem; font-size:.86rem }
+dl.facts dt { color:var(--dim); font-weight:700; white-space:nowrap; font-size:.72rem;
+  letter-spacing:.06em; text-transform:uppercase; padding-top:.12rem }
+dl.facts dd { margin:0; max-width:66ch }
+@media (max-width:520px) {
+  dl.facts { grid-template-columns:1fr; gap:.1rem }
+  dl.facts dd { margin:0 0 .55rem }
+}
+
+/* --- technical plan ----------------------------------------------------- */
+details.tech { margin:.6rem 0 0; border:1px solid var(--line); border-radius:8px;
+  background:var(--card); padding:0 .95rem }
+details.tech > summary { cursor:pointer; padding:.7rem 0; font-weight:600; font-size:.88rem;
+  list-style:none; display:flex; align-items:center; gap:.45rem }
+details.tech > summary::-webkit-details-marker { display:none }
+details.tech > summary .ico { color:var(--accent) }
+details.tech > summary .chev { margin-left:auto; color:var(--dim); transition:transform .15s }
+details.tech[open] > summary .chev { transform:rotate(90deg) }
+details.tech .inner { padding:0 0 .8rem }
+details.tech .inner > :first-child { margin-top:0 }
+details.tech .md p, details.tech .md ul, details.tech .md ol { font-size:.87rem }
+
+/* --- tables (the experiment matrix and any prose table) -----------------
+   review_page.py pins cols 1-2 to nowrap+monospace for its short id columns;
+   a runbook table carries prose, so undo both and let auto layout balance. */
+.md .tablewrap { margin:.4rem 0 1.2rem }
+.md th, .md td { white-space:normal; overflow-wrap:break-word; font-family:inherit }
+.md td code { overflow-wrap:anywhere }
+.md table { min-width:30rem }
+
+/* --- inputs: one block per case, images grouped by artifact -------------- */
+.rb-inputs { margin:2.1rem 0 0; scroll-margin-top:3.2rem }
+.rb-inputs > h2 { display:flex; align-items:center; gap:.5rem; font-size:1.02rem;
+  margin:0 0 .3rem }
+.rb-inputs > h2 .ico { color:var(--accent); width:1.05em; height:1.05em }
+.rb-inputs > h2::after { content:""; flex:1; height:1px; background:var(--line) }
+.rb-case { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.8rem 1rem 1rem; margin:.9rem 0; scroll-margin-top:3.4rem }
+.rb-case:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.rb-case-h { display:flex; flex-wrap:wrap; align-items:baseline; gap:.2rem .6rem;
+  margin:0; font-size:1rem }
+.rb-case-count { color:var(--dim); font-size:.72rem; font-weight:400;
+  font-variant-numeric:tabular-nums }
+.rb-case-note { color:var(--dim); font-size:.88rem; margin:.3rem 0 0; max-width:70ch }
+.rb-art { margin:.85rem 0 0 }
+.rb-art-h { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; margin:0 0 .4rem }
+.rb-art-label { font-size:.7rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--accent) }
+.rb-art-id { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  color:var(--dim); overflow-wrap:anywhere }
+.rb-art .ibtn { padding:.08rem .5rem; font-size:.66rem }
+.rb-strip { display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)) }
+.rb-fig { margin:0; min-width:0; background:var(--well); border:1px solid var(--line);
+  border-radius:6px; overflow:hidden; display:flex; flex-direction:column }
+.rb-fig .imgwrap { border-bottom:1px solid var(--line) }
+.rb-fig .imgwrap img { max-height:300px }
+.rb-fig figcaption { color:var(--dim); font-size:.7rem; padding:.3rem .5rem }
+.rb-none { color:var(--dim); font-size:.86rem; margin:.6rem 0 0 }
+details.rb-prompt { margin:.85rem 0 0; background:var(--pre); border:1px solid var(--line);
+  border-radius:6px; padding:0 .9rem }
+details.rb-prompt > summary { cursor:pointer; padding:.55rem 0; font-size:.82rem;
+  font-weight:600; color:var(--accent); list-style:none; display:flex;
+  align-items:center; gap:.4rem }
+details.rb-prompt > summary::-webkit-details-marker { display:none }
+details.rb-prompt .chev { transition:transform .15s }
+details.rb-prompt[open] .chev { transform:rotate(90deg) }
+details.rb-prompt .rb-size { margin-left:auto; color:var(--dim); font-weight:400;
+  font-size:.72rem; font-variant-numeric:tabular-nums }
+details.rb-prompt .phead { display:flex; align-items:center; gap:.5rem; margin:0 0 .4rem }
+details.rb-prompt .path { color:var(--dim); font-size:.72rem; margin:0; flex:1; min-width:0;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+/* No inner max-height: the text is already behind a disclosure, and a nested
+   scroller inside a long page is miserable to use on a phone. */
+details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--bg);
+  border:1px solid var(--line); border-radius:6px; padding:.7rem .85rem; font-size:.78rem;
+  line-height:1.55; margin:0 0 .85rem }
+.copy { font:inherit; font-size:.68rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.12rem .55rem; cursor:pointer; white-space:nowrap }
+.copy:hover { color:var(--ink); border-color:var(--dim) }
+.copy.done { color:var(--ok); border-color:var(--ok) }
+:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+@media (prefers-reduced-motion:reduce) { * { transition:none !important } }
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/></symbol><symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 4v16M5 8h14M7.5 8l-2.5 5h5zM16.5 8l2.5 5h-5z"/></symbol><symbol id="i-in" viewBox="0 0 24 24"><path d="M12 3v11m0 0 4-4m-4 4-4-4M4 17v3h16v-3"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.6"/></symbol><symbol id="i-hand" viewBox="0 0 24 24"><path d="M9 11V5.6a1.6 1.6 0 0 1 3.2 0V11m0-1.2a1.6 1.6 0 0 1 3.2 0V12m0-1a1.6 1.6 0 0 1 3.2 0v4.4A5.6 5.6 0 0 1 12.8 21h-1.3a5 5 0 0 1-3.9-1.9L4.9 15a1.6 1.6 0 0 1 2.5-2L9 15"/></symbol><symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4v9.2M14.4 9.6a2.6 2.6 0 0 0-4.8 1.2c0 2.6 4.8 1 4.8 3.6a2.6 2.6 0 0 1-4.8 1.2"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M21.2 12h-2.4M5.2 12H2.8M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7M18.5 18.5l-1.7-1.7M7.2 7.2 5.5 5.5"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></symbol><symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/></symbol><symbol id="i-img" viewBox="0 0 24 24"><rect x="3.2" y="4.6" width="17.6" height="14.8" rx="2"/><circle cx="8.6" cy="9.8" r="1.5"/><path d="m3.9 17 5-4.6 4 3.4 3-2.4 4.2 3.6"/></symbol><symbol id="i-txt" viewBox="0 0 24 24"><path d="M6.5 3.6h7.2L18.5 8.4V20.4H6.5z"/><path d="M13.4 3.8v4.8h4.9M9.2 12.6h6M9.2 16h6"/></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="m9.5 5.5 7 6.5-7 6.5"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4V12l3 1.8"/></symbol><symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6.5" cy="5.5" r="2.2"/><circle cx="6.5" cy="18.5" r="2.2"/><circle cx="17.5" cy="8.5" r="2.2"/><path d="M6.5 7.7v8.6M17.5 10.7c0 3.4-2.6 4.6-5.4 5.1"/></symbol><symbol id="i-flask" viewBox="0 0 24 24"><path d="M10 3.5h4M10.8 3.5v6.2L5.6 18a2 2 0 0 0 1.7 3h9.4a2 2 0 0 0 1.7-3l-5.2-8.3V3.5"/><path d="M8 14.5h8"/></symbol><symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 3.2 20 7.6v8.8L12 20.8 4 16.4V7.6z"/><path d="M4 7.6l8 4.4 8-4.4M12 12v8.8"/></symbol></defs></svg>
+<main>
+<div class="eyebrow">Round 3x · Meshy run</div>
+<h1>Tiger — Round 3x runbook</h1>
+<div class="statusrow"><span class="pill s-appr"><span class="dot"></span>Approved — not started</span><span class="fact">Dimitri · 2026-08-07</span><span class="fact">Opened <b>2026-08-07</b></span></div>
+<p class="statusnote">no paid calls authorized until the separate start transition merges</p>
+<div class="statusrow sub"><span class="fact inert" title="Published at round close">&#128203; Review panel &mdash; at round close</span></div>
+<div class="ask"><p class="lbl"><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</p><p><strong>Dimitri:</strong> sign off the exact 18-task manifest and <strong>360-credit cap</strong>; the committed runbook then needs the normal durable greenlight. <a class="jump" href="#ask">Read the full ask &darr;</a></p></div>
+<div class="glance"><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg>Rolls</span><span class="v">18</span><span class="s">across 6 cases</span></div><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Planned</span><span class="v">360 credits</span><span class="s">of a 360 credits cap</span></div></div>
+<div class="meter"><p class="top"><span>Planned spend against the round cap</span><b>360 / 360 credits</b></p><div class="bar"><i class="spent" style="width:100%;"></i></div><div class="legend"><span><i></i>meshy 360 credits</span><span><i class="o"></i>Headroom 0 credits</span></div></div>
+<nav class="snav"><a href="#goal">Goal</a><a href="#choices">Choices</a><a href="#inputs">Inputs</a><a href="#judged">Judging</a><a href="#ask">The ask</a><a href="#cost">Cost</a><a href="#facts">Round facts</a><a href="#tech">Technical plan</a></nav>
+<section class="s" id="goal"><h2><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg>Goal</h2><div class="md"><p>Use the expiring Meshy balance to measure how six already-generated Tiger concepts reconstruct from a <strong>single front image</strong>, with three stochastic rolls per concept. The survey should reveal whether model family or prompt length produces consistently better front-derived geometry, and whether any individual roll is useful as a prototype.</p>
+<p>Single-image reconstruction leaves the back and most side geometry invented. Accordingly, a handsome r3x mesh is evidence about this shortcut, not proof of turnaround consistency and not an automatic production keeper. The normal path remains r3 turnaround → later multi-view Meshy.</p></div><div class="strips"><div class="stage"><span class="lbl">Default path</span><span class="st">Concept</span><span class="arw">&rsaquo;</span><span class="st">Turnaround</span><span class="arw">&rsaquo;</span><span class="st now">Meshy</span><span class="arw">&rsaquo;</span><span class="st">Mesh check</span><span class="arw">&rsaquo;</span><span class="st">Test print</span></div><div class="lineage"><span class="lbl">This round</span><span class="rn this">r3x</span><span class="arw">&rsaquo;</span><span class="rn next">r4 — unchanged production path through a passing r3 multi-view sheet</span></div></div></section>
+<section class="s" id="choices"><h2><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg>The choices on the table</h2><div class="md"><p>Every task uses Meshy 6, triangle topology, <code>remesh: false</code>, with only <code>front</code> set. The source images are byte-identical to their r2 artifacts.</p></div><div class="choices"><article class="choice"><header><h3>Full prompt — gptimage2 roll 2</h3><span class="rolls">3 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Single-image reconstruction from the selected full-tier GPT concept</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span><code>tiger-r2-gptimage2-2</code></p><a class="jump" href="#case-full-prompt-gptimage2-roll-2"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><h3>Full prompt — riverflow25 roll 2</h3><span class="rolls">3 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Single-image reconstruction from the selected full-tier Riverflow concept</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span><code>tiger-r2-riverflow25-2</code></p><a class="jump" href="#case-full-prompt-riverflow25-roll-2"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><h3>Compressed prompt — gptimage2 roll 2</h3><span class="rolls">3 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Single-image reconstruction from the selected compressed GPT concept</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span><code>tiger-r2-comp-gptimage2-2</code></p><a class="jump" href="#case-compressed-prompt-gptimage2-roll-2"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><h3>Compressed prompt — riverflow25 roll 2</h3><span class="rolls">3 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Single-image reconstruction from Jawa&#x27;s winner</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span><code>tiger-r2-comp-riverflow25-2</code></p><a class="jump" href="#case-compressed-prompt-riverflow25-roll-2"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><h3>Minimal prompt — gptimage2 roll 1</h3><span class="rolls">3 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Single-image reconstruction from the selected minimal GPT concept</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span><code>tiger-r2-min-gptimage2-1</code></p><a class="jump" href="#case-minimal-prompt-gptimage2-roll-1"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><h3>Minimal prompt — riverflow25 roll 2</h3><span class="rolls">3 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Single-image reconstruction from the selected minimal Riverflow concept</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span><code>tiger-r2-min-riverflow25-2</code></p><a class="jump" href="#case-minimal-prompt-riverflow25-roll-2"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article></div><div class="shape"><div class="mx" style="grid-template-columns:auto repeat(3,minmax(46px,1fr))"><span></span><span class="hd">roll 1</span><span class="hd">roll 2</span><span class="hd">roll 3</span><span class="rh">Full prompt</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">Full prompt</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">Compressed prompt</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">Compressed prompt</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">Minimal prompt</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">Minimal prompt</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span></div><p class="cap"><b>18 rolls total</b> — 6 choices, 3 + 3 + 3 + 3 + 3 + 3</p></div><div class="md"><p>That is exactly <strong>6 source images × 3 rolls = 18 Meshy tasks</strong>. No extra roll, automatic retry as a new task, or source substitution is authorized.</p></div></section>
+<section class="rb-inputs" id="inputs">
+<h2><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>Inputs — what this round runs on</h2>
+<p class="blurb">Everything that goes in, grouped by the choice it belongs to. Click any image to zoom; open a prompt to read the exact text this round spends against. Crop sets show both the cut overview and every exact output crop.</p>
+<section class="rb-case" id="case-full-prompt-gptimage2-roll-2">
+<h3 class="rb-case-h">Full prompt — gptimage2 roll 2<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Three single-front-image Meshy rolls from the selected full-tier GPT concept.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Exact r2 source</span><code class="rb-art-id">tiger-r2-gptimage2-2</code><button class="ibtn" data-inputs="in-0">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/8dab1865418b67f1.png" data-cap="tiger-r2-gptimage2-2"><img src="../../../../assets/83a082bd25c3ef30.jpg" alt="tiger-r2-gptimage2-2" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Manifest — 18-task Meshy manifest<span class="rb-size">5 kB · 257 words</span></summary><div class="phead"><p class="path">projects/martial-frogs/tiger/runbooks/r3x-meshy.json</p><button class="copy" data-copy>Copy manifest</button></div><pre>{
+  &quot;tasks&quot;: [
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-gptimage2-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-gptimage2-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-gptimage2-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-riverflow25-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-riverflow25-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-riverflow25-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-gptimage2-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-gptimage2-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-gptimage2-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-riverflow25-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-riverflow25-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-riverflow25-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-gptimage2-1.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-gptimage2-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-gptimage2-1.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-gptimage2-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-gptimage2-1.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-gptimage2-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-riverflow25-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-riverflow25-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-riverflow25-m3-raw.stl&quot;
+    }
+  ]
+}
+</pre></details>
+</section>
+<section class="rb-case" id="case-full-prompt-riverflow25-roll-2">
+<h3 class="rb-case-h">Full prompt — riverflow25 roll 2<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Three single-front-image Meshy rolls from the selected full-tier Riverflow concept.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Exact r2 source</span><code class="rb-art-id">tiger-r2-riverflow25-2</code><button class="ibtn" data-inputs="in-1">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/c8e703f3bf3f2376.webp" data-cap="tiger-r2-riverflow25-2"><img src="../../../../assets/3ee156c7a0769e82.jpg" alt="tiger-r2-riverflow25-2" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Manifest — 18-task Meshy manifest<span class="rb-size">5 kB · 257 words</span></summary><div class="phead"><p class="path">projects/martial-frogs/tiger/runbooks/r3x-meshy.json</p><button class="copy" data-copy>Copy manifest</button></div><pre>{
+  &quot;tasks&quot;: [
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-gptimage2-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-gptimage2-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-gptimage2-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-riverflow25-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-riverflow25-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-riverflow25-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-gptimage2-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-gptimage2-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-gptimage2-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-riverflow25-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-riverflow25-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-riverflow25-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-gptimage2-1.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-gptimage2-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-gptimage2-1.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-gptimage2-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-gptimage2-1.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-gptimage2-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-riverflow25-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-riverflow25-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-riverflow25-m3-raw.stl&quot;
+    }
+  ]
+}
+</pre></details>
+</section>
+<section class="rb-case" id="case-compressed-prompt-gptimage2-roll-2">
+<h3 class="rb-case-h">Compressed prompt — gptimage2 roll 2<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Three single-front-image Meshy rolls from the selected compressed-tier GPT concept.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Exact r2 source</span><code class="rb-art-id">tiger-r2-comp-gptimage2-2</code><button class="ibtn" data-inputs="in-2">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/43affc0de0f26f3c.png" data-cap="tiger-r2-comp-gptimage2-2"><img src="../../../../assets/e80b10687de7d612.jpg" alt="tiger-r2-comp-gptimage2-2" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Manifest — 18-task Meshy manifest<span class="rb-size">5 kB · 257 words</span></summary><div class="phead"><p class="path">projects/martial-frogs/tiger/runbooks/r3x-meshy.json</p><button class="copy" data-copy>Copy manifest</button></div><pre>{
+  &quot;tasks&quot;: [
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-gptimage2-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-gptimage2-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-gptimage2-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-riverflow25-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-riverflow25-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-riverflow25-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-gptimage2-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-gptimage2-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-gptimage2-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-riverflow25-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-riverflow25-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-riverflow25-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-gptimage2-1.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-gptimage2-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-gptimage2-1.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-gptimage2-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-gptimage2-1.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-gptimage2-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-riverflow25-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-riverflow25-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-riverflow25-m3-raw.stl&quot;
+    }
+  ]
+}
+</pre></details>
+</section>
+<section class="rb-case" id="case-compressed-prompt-riverflow25-roll-2">
+<h3 class="rb-case-h">Compressed prompt — riverflow25 roll 2<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Three single-front-image Meshy rolls from Jawaknight&#x27;s selected winner.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Exact r2 source and r3 winner</span><code class="rb-art-id">tiger-r2-comp-riverflow25-2</code><button class="ibtn" data-inputs="in-3">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/03366b392039b3e9.webp" data-cap="tiger-r2-comp-riverflow25-2"><img src="../../../../assets/21ca8114b51843c2.jpg" alt="tiger-r2-comp-riverflow25-2" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Manifest — 18-task Meshy manifest<span class="rb-size">5 kB · 257 words</span></summary><div class="phead"><p class="path">projects/martial-frogs/tiger/runbooks/r3x-meshy.json</p><button class="copy" data-copy>Copy manifest</button></div><pre>{
+  &quot;tasks&quot;: [
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-gptimage2-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-gptimage2-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-gptimage2-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-riverflow25-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-riverflow25-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-riverflow25-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-gptimage2-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-gptimage2-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-gptimage2-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-riverflow25-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-riverflow25-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-riverflow25-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-gptimage2-1.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-gptimage2-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-gptimage2-1.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-gptimage2-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-gptimage2-1.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-gptimage2-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-riverflow25-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-riverflow25-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-riverflow25-m3-raw.stl&quot;
+    }
+  ]
+}
+</pre></details>
+</section>
+<section class="rb-case" id="case-minimal-prompt-gptimage2-roll-1">
+<h3 class="rb-case-h">Minimal prompt — gptimage2 roll 1<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Three single-front-image Meshy rolls from the selected minimal-tier GPT concept.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Exact r2 source</span><code class="rb-art-id">tiger-r2-min-gptimage2-1</code><button class="ibtn" data-inputs="in-4">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b03d3ecdc31166e7.png" data-cap="tiger-r2-min-gptimage2-1"><img src="../../../../assets/c9b2a82e957f7fa1.jpg" alt="tiger-r2-min-gptimage2-1" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Manifest — 18-task Meshy manifest<span class="rb-size">5 kB · 257 words</span></summary><div class="phead"><p class="path">projects/martial-frogs/tiger/runbooks/r3x-meshy.json</p><button class="copy" data-copy>Copy manifest</button></div><pre>{
+  &quot;tasks&quot;: [
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-gptimage2-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-gptimage2-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-gptimage2-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-riverflow25-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-riverflow25-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-riverflow25-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-gptimage2-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-gptimage2-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-gptimage2-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-riverflow25-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-riverflow25-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-riverflow25-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-gptimage2-1.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-gptimage2-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-gptimage2-1.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-gptimage2-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-gptimage2-1.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-gptimage2-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-riverflow25-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-riverflow25-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-riverflow25-m3-raw.stl&quot;
+    }
+  ]
+}
+</pre></details>
+</section>
+<section class="rb-case" id="case-minimal-prompt-riverflow25-roll-2">
+<h3 class="rb-case-h">Minimal prompt — riverflow25 roll 2<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Three single-front-image Meshy rolls from the selected minimal-tier Riverflow concept.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Exact r2 source</span><code class="rb-art-id">tiger-r2-min-riverflow25-2</code><button class="ibtn" data-inputs="in-5">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5000dfc942c4875a.webp" data-cap="tiger-r2-min-riverflow25-2"><img src="../../../../assets/f051b27385fd07d9.jpg" alt="tiger-r2-min-riverflow25-2" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Manifest — 18-task Meshy manifest<span class="rb-size">5 kB · 257 words</span></summary><div class="phead"><p class="path">projects/martial-frogs/tiger/runbooks/r3x-meshy.json</p><button class="copy" data-copy>Copy manifest</button></div><pre>{
+  &quot;tasks&quot;: [
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-gptimage2-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-gptimage2-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-gptimage2-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-riverflow25-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-riverflow25-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-full-riverflow25-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-gptimage2-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-gptimage2-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-gptimage2-2.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-gptimage2-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-riverflow25-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-riverflow25-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-comp-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-comp-riverflow25-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-gptimage2-1.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-gptimage2-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-gptimage2-1.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-gptimage2-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-gptimage2-1.png&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-gptimage2-m3-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-riverflow25-m1-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-riverflow25-m2-raw.stl&quot;
+    },
+    {
+      &quot;kind&quot;: &quot;image&quot;,
+      &quot;ai_model&quot;: &quot;meshy-6&quot;,
+      &quot;topology&quot;: &quot;triangle&quot;,
+      &quot;remesh&quot;: false,
+      &quot;front&quot;: &quot;../generated/tiger-r2-min-riverflow25-2.webp&quot;,
+      &quot;out&quot;: &quot;../models/round-3x/tiger-r3x-min-riverflow25-m3-raw.stl&quot;
+    }
+  ]
+}
+</pre></details>
+</section>
+</section>
+<section class="s" id="judged"><h2><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>How the round is judged</h2><div class="md"><p>Each returned STL is pushed to Drive immediately, before inspection. Raw meshes remain unit-neutral: validate components, bounds, watertightness, and obvious degeneracy without pretending their units are millimetres. Render a consistent turntable plus close views of hands, feet, toggles, and sash.</p>
+<p>A fresh-context comparative review scores, source by source and across the six arms:</p>
+<ul>
+<li>frog head/body identity and silhouette;</li>
+<li>planted feet and usable base contact;</li>
+<li>four-digit webbed hands, with no talons or fused mitts;</li>
+<li>pose separation and whether both arms remain readable;</li>
+<li>tangzhuang, three/four source toggle construction, sash, shorts, and wraps;</li>
+<li>tail/knot geometry where the source contains it;</li>
+<li>invented back and side anatomy, called out explicitly rather than inferred from the front match;</li>
+<li>mesh integrity and fragile or floating parts.</li>
+</ul>
+<p>The review page may show all 18 static render sets. Interactive viewers are reserved for survivors if embedding all 18 would exceed the artifact budget; the exact raw STLs remain on Drive. Jawaknight and Dimitri make the final call by rotating shortlisted meshes live. No result here silently supersedes the r3 turnaround winner.</p></div></section>
+<section class="s" id="ask"><h2><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</h2><div class="md cta"><ol>
+<li><strong>Dimitri:</strong> sign off the exact 18-task manifest and <strong>360-credit cap</strong>; the committed runbook then needs the normal durable greenlight.</li>
+<li><strong>At results:</strong> identify any useful prototypes and say whether the survey changes confidence in the single-image shortcut. Production promotion, if any, is an explicit separate decision.</li>
+<li>Publication of a results review remains private by default; this plan does not authorize public STL or review-page publication.</li>
+</ol></div></section>
+<section class="s" id="cost"><h2><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Cost</h2><div class="md"><p>18 Meshy 6 image-to-3D tasks × <strong>20 credits</strong> = <strong>360 Meshy credits</strong>. Local validation and rendering are free. There is no image-generation or detector dollar spend, no fallback provider, and no headroom for unplanned tasks.</p></div><div class="costgrid"><div class="costrow"><span class="n">meshy</span><span class="t" style="width:100%"></span><span class="a">360 credits</span></div></div></section>
+<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>Meshy run — single-image reconstruction survey</dd><dt>Owner</dt><dd>Codex (local) → Dimitri + Jawaknight review</dd><dt>Date opened</dt><dd>2026-08-07</dd><dt>Inputs</dt><dd>six exact r2 front concepts selected by Dimitri; no turnaround sheets</dd><dt>Produces</dt><dd>18 raw meshes under <code>models/round-3x/</code>, three per source</dd><dt>Branch</dt><dd><code>codex/tiger-r3-turnaround</code></dd><dt>Evaluation lanes</dt><dd>FAST only — immediate Drive upload, unit-neutral validation, static renders, fresh-context per-feature comparison, then live-3D human review. No new image generation, so no blind-detect lane.</dd><dt>Parallel track</dt><dd>r3 makes the approved winner&#x27;s turnaround. This r3x survey is diagnostic and does not select or replace the production multi-view input.</dd><dt>Next</dt><dd>r4 — unchanged production path through a passing r3 multi-view sheet</dd><dt>Spend</dt><dd>meshy 360 credits · cap 360 credits</dd></dl></section>
+<section class="s" id="tech"><h2><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>Technical plan</h2>
+<p class="intro">exact manifest and commands</p>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>What changed going in</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><ul>
+<li><code>runbooks/r3x-meshy.json</code> freezes all 18 independent tasks. Each uses one <code>front</code> image and deliberately omits <code>views</code>.</li>
+<li>Three rolls per source are encoded as three distinct output paths, so task identity survives interruption and concurrent polling.</li>
+<li><code>runbooks/r3x-cases.json</code> binds each choice-table row to its exact lineage id and the committed Meshy manifest.</li>
+<li>This is a diagnostic exception to the normal multi-view production input, not a change to that pipeline rule.</li>
+</ul></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg><span>Experiment matrix</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><div class="tablewrap"><table><thead><tr><th>Source alias</th><th>Exact front artifact</th><th>Outputs</th></tr></thead><tbody><tr><td><code>full-gptimage2</code></td><td><code>tiger-r2-gptimage2-2</code></td><td><code>tiger-r3x-full-gptimage2-m{1,2,3}-raw.stl</code></td></tr><tr><td><code>full-riverflow25</code></td><td><code>tiger-r2-riverflow25-2</code></td><td><code>tiger-r3x-full-riverflow25-m{1,2,3}-raw.stl</code></td></tr><tr><td><code>comp-gptimage2</code></td><td><code>tiger-r2-comp-gptimage2-2</code></td><td><code>tiger-r3x-comp-gptimage2-m{1,2,3}-raw.stl</code></td></tr><tr><td><code>comp-riverflow25</code></td><td><code>tiger-r2-comp-riverflow25-2</code></td><td><code>tiger-r3x-comp-riverflow25-m{1,2,3}-raw.stl</code></td></tr><tr><td><code>min-gptimage2</code></td><td><code>tiger-r2-min-gptimage2-1</code></td><td><code>tiger-r3x-min-gptimage2-m{1,2,3}-raw.stl</code></td></tr><tr><td><code>min-riverflow25</code></td><td><code>tiger-r2-min-riverflow25-2</code></td><td><code>tiger-r3x-min-riverflow25-m{1,2,3}-raw.stl</code></td></tr></tbody></table></div></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-branch"/></svg><span>Commands after sign-off and durable greenlight</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><pre class="code"><code>tools/drive_sync.sh pull projects/martial-frogs/tiger/generated
+python3 tools/round_gate.py verify \
+  --file projects/martial-frogs/tiger/round-gates.jsonl \
+  --round r3x \
+  --published-html ../ai-stl-review/reviews/martial-frogs/tiger/r3x-runbook/index.html
+
+# meshy_manifest.py polls all tasks in one blocking process. Its durability
+# mode pushes each downloaded mesh to Drive before marking that task complete.
+P=projects/martial-frogs/tiger
+python3 tools/meshy_manifest.py run \
+  --manifest &quot;$P/runbooks/r3x-meshy.json&quot; \
+  --drive-sync</code></pre>
+<p>The coordinator performs the atomic 360-credit balance preflight before its first provider POST. Record the emitted run id. Durability mode validates every declared output path before spend, pushes each downloaded mesh&#x27;s bounded repository-relative directory immediately, and records a task as <code>SUCCEEDED</code> only after that push succeeds. A failed push leaves the local output durably <code>LANDED</code> for recovery rather than repeating provider work.</p>
+<p>After an interruption or Drive-sync failure, fix storage and resume the same run in durability mode; never submit a new manifest run to replace in-flight or completed task ids:</p>
+<pre class="code"><code>python3 tools/meshy_manifest.py resume --run RUN_ID --drive-sync</code></pre>
+<p>For a <code>LANDED</code> task, resume retries only the Drive push — no new Meshy create, status poll, or download. Durability mode is persisted on the run, but the explicit resume flag keeps the operator command self-documenting.</p>
+<p>In another shell, use <code>status --run RUN_ID</code> to identify newly <code>SUCCEEDED</code> outputs. Only after that durable state, validate and render each new file:</p>
+<pre class="code"><code>python3 tools/meshy_manifest.py status --run RUN_ID
+python3 tools/mesh_validate.py --stl PATH_TO_RAW_STL --units raw \
+  --label ARTIFACT_ID --out PATH_TO_VALIDATION_JSON
+python3 tools/stl_render.py --stl PATH_TO_RAW_STL \
+  --out-dir PATH_TO_RENDER_DIR --stem ARTIFACT_ID --mode turnaround \
+  --azimuths 270,0,90,180 --elevation 12</code></pre>
+<p>Apply those commands independently as each mesh lands; do not wait for all 18. After inspecting unit-neutral bounds, add <code>--mode zoom</code> renders with explicit z-bands for hands, feet, toggles, and sash; never guess a fixed millimetre band on an unscaled return. Do not debase, scale, repair, or run fixed-millimetre thin-part thresholds in this raw survey. Shortlist from comparable static evidence, then use live 3D for the human gate.</p></div></details>
+</section>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+<template id="in-0"><h2>tiger-r2-gptimage2-2</h2><p class="gmeta">gpt-image-2-2026-04-21 via openai · size=1024x1536 quality=high output_format=png · $0.17 · 2026-08-06T13:26:59</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed specifically as production concept art for a 32 mm-scale resin fantasy-football miniature, in the visual language of a premium collectible sports sculpt. Show one figure only, straight-on FRONT view, centered on a plain neutral gray studio background with even soft lighting. Use a near-orthographic, very-long-lens studio view with minimal foreshortening so head, torso, both arms, both hands, legs and feet can be compared as a proportion sheet. The entire body and both feet are visible with space around them. This is character concept art, not a photograph of a toy: no base, pedestal, scenic ground, labels or presentation card.
+
+FROG BODY PLAN — ANTHRO HEAVYWEIGHT
+Build him as an ANTHRO ATHLETE FROG, roughly FIVE to FIVE-AND-A-HALF heads tall — an upright humanoid read. His frame, stance and limb proportions are those of a HEAVYWEIGHT human martial artist: wide shoulders, deep chest, thick powerful limbs — the densest, most powerful member of his squad, never lean or wiry. His head is an unmistakable frog head with dome eyes and a wide mouth on a short thick neck, and his hands and feet are big webbed frog hands and feet on long powerful frog legs. He reads first as a powerful humanoid athlete and second as a frog.
+
+HELD-CONSTANT CHARACTER PROGRAM
+TIGER is a FROG — a martial-arts fantasy-football lineman from an ancient kung-fu temple, rendered as the hero of a serious WUXIA epic: the disciplined gravitas, coiled power and quiet menace of a wuxia film lead, an ancient-Chinese martial-world tone carried in every element. Played absolutely straight — never cartoon-cute, never comedic, never a Ninja Turtles homage. Smooth moss-green frog skin with a lighter throat and belly; no warts, no hair. His head is COMPLETELY BARE: NO headband, NO hachimaki, NO hat, hood or helmet — nothing worn on the head at all. His face is level and unsmiling, the wide frog mouth a firm closed line — never a grin, never googly eyes.
+
+He is a master of TIGER-STYLE KUNG FU, the hard ferocious power style: every technique drives forward through open TIGER-CLAW hands. &quot;Tiger-claw&quot; names the HAND SHAPE ONLY — his thick webbed digits are hooked like a striking claw but each digit ends in a smooth ROUNDED FROG TOE-PAD: absolutely NO claws, NO talons, NO nails, NO pointed fingertips anywhere. The tiger is his STYLE, not his species — he remains entirely a frog, with NO stripes, NO fur, NO whiskers and NO feline features anywhere.
+
+His kit is a traditional Chinese martial outfit tailored to his frog anatomy, cut to show off his frog skin. He wears a SHORT-SLEEVED TANGZHUANG (Tang suit) JACKET: black silk with bold red piping, a standing MANDARIN COLLAR, and a straight center-front placket closed by a vertical column of exactly FOUR LARGE KNOTTED FROG-BUTTON TOGGLES — each toggle chunky and clearly readable, the size of one of his eyes. The sleeves are SHORT, ending above the elbow with red-trimmed cuffs, showing his heavy moss-green upper arms; the jacket hem has short side slits and rests against his body. Over the jacket a broad plain cloth SASH wraps his waist, tied at the back. Below he wears loose KNEE-LENGTH training shorts. Simple cloth wraps cover each LOWER forearm from the wrist up and each shin from the ankle up, each wrap stopping short of the elbow or knee so a clear band of moss-green skin shows between wrap and sleeve cuff on each arm, and at each knee between shorts hem and shin wrap. His big four-digit hands and bare feet show natural connected webbing — no sandals, no boots. The kit is plain: NO emblem, number, logo or readable text, and he wears NO armor, pads or helmet of any kind. He carries NOTHING — no weapon, no ball, no prop; both hands are visibly empty.
+
+POSE AND BASING
+He stands in a deep, wide TIGER-STYLE BOW STANCE facing the camera with the poised stillness of a wuxia master a heartbeat before striking: weight sunk low through strongly bent knees, torso upright, chin level. BOTH bare webbed feet are fully PLANTED on the same flat ground plane: each foot pressed FLAT along its FULL LENGTH into the ground, stance wide and rooted like a statue&#x27;s — NO lifted foot, NO tiptoe, NO standing on the ball of the foot, NO raised heel, NO mid-step walking frame. Both arms present open tiger-claw hands toward the camera, one leading at shoulder height, one chambered lower near the sash, elbows bent, both arms wholly within the image plane. No limb crosses, merges into or hides behind the torso.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a roughly 35 mm-tall resin figure: bold planes, thick connected forms, deep relief, no hairline detail. The frog-button toggles are oversized and sculptural; the jacket hem, side slits, cuffs and sash knot are thickened and rest against the body; webbed digits stay connected; the throat and chin stay clear of clutter. No base, no text, no thin spike, no free-floating strap, no transparent material.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-1"><h2>tiger-r2-riverflow25-2</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K aspect_ratio=2:3 · $0.34 · 2026-08-06T04:22:45</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+OUTPUT AND CAMERA
+A photorealistic full-body studio character render designed specifically as production concept art for a 32 mm-scale resin fantasy-football miniature, in the visual language of a premium collectible sports sculpt. Show one figure only, straight-on FRONT view, centered on a plain neutral gray studio background with even soft lighting. Use a near-orthographic, very-long-lens studio view with minimal foreshortening so head, torso, both arms, both hands, legs and feet can be compared as a proportion sheet. The entire body and both feet are visible with space around them. This is character concept art, not a photograph of a toy: no base, pedestal, scenic ground, labels or presentation card.
+
+FROG BODY PLAN — ANTHRO HEAVYWEIGHT
+Build him as an ANTHRO ATHLETE FROG, roughly FIVE to FIVE-AND-A-HALF heads tall — an upright humanoid read. His frame, stance and limb proportions are those of a HEAVYWEIGHT human martial artist: wide shoulders, deep chest, thick powerful limbs — the densest, most powerful member of his squad, never lean or wiry. His head is an unmistakable frog head with dome eyes and a wide mouth on a short thick neck, and his hands and feet are big webbed frog hands and feet on long powerful frog legs. He reads first as a powerful humanoid athlete and second as a frog.
+
+HELD-CONSTANT CHARACTER PROGRAM
+TIGER is a FROG — a martial-arts fantasy-football lineman from an ancient kung-fu temple, rendered as the hero of a serious WUXIA epic: the disciplined gravitas, coiled power and quiet menace of a wuxia film lead, an ancient-Chinese martial-world tone carried in every element. Played absolutely straight — never cartoon-cute, never comedic, never a Ninja Turtles homage. Smooth moss-green frog skin with a lighter throat and belly; no warts, no hair. His head is COMPLETELY BARE: NO headband, NO hachimaki, NO hat, hood or helmet — nothing worn on the head at all. His face is level and unsmiling, the wide frog mouth a firm closed line — never a grin, never googly eyes.
+
+He is a master of TIGER-STYLE KUNG FU, the hard ferocious power style: every technique drives forward through open TIGER-CLAW hands. &quot;Tiger-claw&quot; names the HAND SHAPE ONLY — his thick webbed digits are hooked like a striking claw but each digit ends in a smooth ROUNDED FROG TOE-PAD: absolutely NO claws, NO talons, NO nails, NO pointed fingertips anywhere. The tiger is his STYLE, not his species — he remains entirely a frog, with NO stripes, NO fur, NO whiskers and NO feline features anywhere.
+
+His kit is a traditional Chinese martial outfit tailored to his frog anatomy, cut to show off his frog skin. He wears a SHORT-SLEEVED TANGZHUANG (Tang suit) JACKET: black silk with bold red piping, a standing MANDARIN COLLAR, and a straight center-front placket closed by a vertical column of exactly FOUR LARGE KNOTTED FROG-BUTTON TOGGLES — each toggle chunky and clearly readable, the size of one of his eyes. The sleeves are SHORT, ending above the elbow with red-trimmed cuffs, showing his heavy moss-green upper arms; the jacket hem has short side slits and rests against his body. Over the jacket a broad plain cloth SASH wraps his waist, tied at the back. Below he wears loose KNEE-LENGTH training shorts. Simple cloth wraps cover each LOWER forearm from the wrist up and each shin from the ankle up, each wrap stopping short of the elbow or knee so a clear band of moss-green skin shows between wrap and sleeve cuff on each arm, and at each knee between shorts hem and shin wrap. His big four-digit hands and bare feet show natural connected webbing — no sandals, no boots. The kit is plain: NO emblem, number, logo or readable text, and he wears NO armor, pads or helmet of any kind. He carries NOTHING — no weapon, no ball, no prop; both hands are visibly empty.
+
+POSE AND BASING
+He stands in a deep, wide TIGER-STYLE BOW STANCE facing the camera with the poised stillness of a wuxia master a heartbeat before striking: weight sunk low through strongly bent knees, torso upright, chin level. BOTH bare webbed feet are fully PLANTED on the same flat ground plane: each foot pressed FLAT along its FULL LENGTH into the ground, stance wide and rooted like a statue&#x27;s — NO lifted foot, NO tiptoe, NO standing on the ball of the foot, NO raised heel, NO mid-step walking frame. Both arms present open tiger-claw hands toward the camera, one leading at shoulder height, one chambered lower near the sash, elbows bent, both arms wholly within the image plane. No limb crosses, merges into or hides behind the torso.
+
+PRINT-SAFE FINISH
+Treat every feature as geometry for a roughly 35 mm-tall resin figure: bold planes, thick connected forms, deep relief, no hairline detail. The frog-button toggles are oversized and sculptural; the jacket hem, side slits, cuffs and sash knot are thickened and rest against the body; webbed digits stay connected; the throat and chin stay clear of clutter. No base, no text, no thin spike, no free-floating strap, no transparent material.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-2"><h2>tiger-r2-comp-gptimage2-2</h2><p class="gmeta">gpt-image-2-2026-04-21 via openai · size=1024x1536 quality=high output_format=png · $0.17 · 2026-08-06T13:31:39</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang-compressed.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+A photorealistic full-body studio concept render for a 32 mm resin fantasy-football miniature: one figure, straight-on FRONT view, centered on a plain neutral gray background with even soft lighting, near-orthographic long-lens framing, the whole body and both feet visible with space around them. No base, pedestal, scenic ground, labels or presentation card.
+
+TIGER is an ANTHRO ATHLETE FROG, five to five-and-a-half heads tall, built like a HEAVYWEIGHT human martial artist — wide shoulders, deep chest, thick powerful limbs, never lean or wiry. Unmistakable frog head (dome eyes, wide unsmiling closed mouth) on a short thick neck; big webbed four-digit frog hands and feet on long powerful frog legs. Smooth moss-green skin with a lighter throat and belly; no warts, no hair. His head is COMPLETELY BARE — no headband, hat, hood or helmet. Serious wuxia-epic gravitas throughout; never cartoon-cute, comedic, or a Ninja Turtles homage. Tiger-style kung fu names his HAND SHAPE only: hooked open tiger-claw guard hands whose digits each end in a smooth ROUNDED FROG TOE-PAD — no claws, talons, nails or pointed fingertips; no stripes, fur, whiskers or feline features anywhere.
+
+His kit: a SHORT-SLEEVED black silk TANGZHUANG jacket with bold red piping, a standing MANDARIN COLLAR, and a straight front placket closed by exactly FOUR LARGE knotted FROG-BUTTON toggles, each the size of one of his eyes; short side slits at the jacket hem, which rests against his body; short red-trimmed sleeves ending above the elbow, showing his heavy moss-green upper arms; a broad plain cloth SASH over the jacket, tied at the back; loose KNEE-LENGTH shorts; cloth wraps on each lower forearm and each shin, stopping short of elbow and knee so a band of moss-green skin shows between wrap and cuff and at each knee; bare webbed feet, no footwear. No emblem, number, logo or readable text; no armor, pads or helmet; both hands visibly EMPTY — no weapon, ball or prop.
+
+Pose: a deep, wide TIGER-STYLE BOW STANCE facing the camera — weight sunk low through bent knees, torso upright, chin level, rooted like a statue. BOTH feet are pressed FLAT along their FULL LENGTH on one flat ground plane: no lifted foot, tiptoe, raised heel or mid-step frame. One open tiger-claw hand leads at shoulder height, the other is chambered low near the sash; elbows bent, both arms fully inside the frame, no limb crossing, merging into or hiding behind the torso.
+
+Sculpt-ready finish for a ~35 mm print: bold thick connected forms, deep relief, no hairline detail; oversized sculptural toggles; hems, side slits, cuffs and sash knot thickened and resting against the body; webbed digits connected; the throat and chin stay clear of clutter; no thin spikes, free-floating straps or transparent materials.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-3"><h2>tiger-r2-comp-riverflow25-2</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K aspect_ratio=2:3 · $0.34 · 2026-08-06T04:22:23</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang-compressed.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+A photorealistic full-body studio concept render for a 32 mm resin fantasy-football miniature: one figure, straight-on FRONT view, centered on a plain neutral gray background with even soft lighting, near-orthographic long-lens framing, the whole body and both feet visible with space around them. No base, pedestal, scenic ground, labels or presentation card.
+
+TIGER is an ANTHRO ATHLETE FROG, five to five-and-a-half heads tall, built like a HEAVYWEIGHT human martial artist — wide shoulders, deep chest, thick powerful limbs, never lean or wiry. Unmistakable frog head (dome eyes, wide unsmiling closed mouth) on a short thick neck; big webbed four-digit frog hands and feet on long powerful frog legs. Smooth moss-green skin with a lighter throat and belly; no warts, no hair. His head is COMPLETELY BARE — no headband, hat, hood or helmet. Serious wuxia-epic gravitas throughout; never cartoon-cute, comedic, or a Ninja Turtles homage. Tiger-style kung fu names his HAND SHAPE only: hooked open tiger-claw guard hands whose digits each end in a smooth ROUNDED FROG TOE-PAD — no claws, talons, nails or pointed fingertips; no stripes, fur, whiskers or feline features anywhere.
+
+His kit: a SHORT-SLEEVED black silk TANGZHUANG jacket with bold red piping, a standing MANDARIN COLLAR, and a straight front placket closed by exactly FOUR LARGE knotted FROG-BUTTON toggles, each the size of one of his eyes; short side slits at the jacket hem, which rests against his body; short red-trimmed sleeves ending above the elbow, showing his heavy moss-green upper arms; a broad plain cloth SASH over the jacket, tied at the back; loose KNEE-LENGTH shorts; cloth wraps on each lower forearm and each shin, stopping short of elbow and knee so a band of moss-green skin shows between wrap and cuff and at each knee; bare webbed feet, no footwear. No emblem, number, logo or readable text; no armor, pads or helmet; both hands visibly EMPTY — no weapon, ball or prop.
+
+Pose: a deep, wide TIGER-STYLE BOW STANCE facing the camera — weight sunk low through bent knees, torso upright, chin level, rooted like a statue. BOTH feet are pressed FLAT along their FULL LENGTH on one flat ground plane: no lifted foot, tiptoe, raised heel or mid-step frame. One open tiger-claw hand leads at shoulder height, the other is chambered low near the sash; elbows bent, both arms fully inside the frame, no limb crossing, merging into or hiding behind the torso.
+
+Sculpt-ready finish for a ~35 mm print: bold thick connected forms, deep relief, no hairline detail; oversized sculptural toggles; hems, side slits, cuffs and sash knot thickened and resting against the body; webbed digits connected; the throat and chin stay clear of clutter; no thin spikes, free-floating straps or transparent materials.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-4"><h2>tiger-r2-min-gptimage2-1</h2><p class="gmeta">gpt-image-2-2026-04-21 via openai · size=1024x1536 quality=high output_format=png · $0.17 · 2026-08-06T13:35:02</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang-minimal.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+A photorealistic full-body concept render of a fantasy-football miniature character: one figure, straight-on front view, centered on a plain gray studio background, whole body and both feet visible.
+
+TIGER is a heavyweight anthropomorphic frog — a kung-fu temple lineman with the serious gravitas of a wuxia film hero. Moss-green skin, a bare frog head with dome eyes, massive webbed hands and feet, and a thick, powerful build. He wears a short-sleeved black tangzhuang jacket with red trim, a mandarin collar and knotted frog-button toggles, a broad sash tied at the back, knee-length shorts, and cloth wraps on his forearms and shins; he is barefoot.
+
+He stands rooted in a deep tiger-style bow stance, both feet planted flat, presenting open tiger-claw hands — one high, one low — with the stillness of a master a heartbeat before striking.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-5"><h2>tiger-r2-min-riverflow25-2</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=2K aspect_ratio=2:3 · $0.33 · 2026-08-06T04:22:50</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r2-anthro-tangzhuang-minimal.txt</p><pre>No images are attached. Create a brand-new text-to-image concept from this description alone.
+
+A photorealistic full-body concept render of a fantasy-football miniature character: one figure, straight-on front view, centered on a plain gray studio background, whole body and both feet visible.
+
+TIGER is a heavyweight anthropomorphic frog — a kung-fu temple lineman with the serious gravitas of a wuxia film hero. Moss-green skin, a bare frog head with dome eyes, massive webbed hands and feet, and a thick, powerful build. He wears a short-sleeved black tangzhuang jacket with red trim, a mandarin collar and knotted frog-button toggles, a broad sash tied at the back, knee-length shorts, and cloth wraps on his forearms and shins; he is barefoot.
+
+He stands rooted in a deep tiger-style bow stance, both feet planted flat, presenting open tiger-claw hands — one high, one low — with the stillness of a master a heartbeat before striking.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbRefRow=document.getElementById('lb-refrow'),lbRef=document.getElementById('lb-ref'),
+      lbCopyId=document.getElementById('lb-copy-id'),lbCopyLink=document.getElementById('lb-copy-link'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body'),
+      developerMode=document.getElementById('developer-mode');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+function setDeveloperMode(enabled){
+  document.querySelectorAll('[data-developer]').forEach(function(node){node.hidden=!enabled;});
+  document.documentElement.dataset.developer=enabled?'true':'false';
+  if(developerMode)developerMode.setAttribute('aria-checked',enabled?'true':'false');
+}
+if(developerMode){
+  developerMode.addEventListener('change',function(){setDeveloperMode(developerMode.checked);});
+  setDeveloperMode(false);
+}
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  const ref=z.dataset.ref||'',anchor=z.dataset.anchor||'';
+  lbRefRow.hidden=!(ref&&anchor);
+  if(ref&&anchor){
+    lbRef.textContent='#'+ref;
+    lbCopyId.dataset.copyId='#'+ref;
+    lbCopyLink.dataset.copy=anchor;
+  }
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy a card's short display id, or copy/share its deep link. The URL is this
+// page plus the card's #id anchor, so a recipient lands scrolled to (and
+// highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  const ci=e.target.closest('[data-copy-id]');
+  if(ci){copyText(ci.dataset.copyId,ci);e.preventDefault();return;}
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+
+document.addEventListener('click', function (e) {
+  var b = e.target.closest('[data-copy]');
+  if (!b) return;
+  var pre = b.closest('details').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(function () {
+    var was = b.textContent;
+    b.textContent = 'Copied'; b.classList.add('done');
+    setTimeout(function () { b.textContent = was; b.classList.remove('done'); }, 1600);
+  });
+});
+</script>
+</body></html>
