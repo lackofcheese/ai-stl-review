@@ -1,0 +1,1284 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="ai-stl-plan-digest" content="a0478588f77a71e713478d5e295cbae0375919cc3ce07fce5f32e918bb319c2e">
+<title>Scythe Valkyrie — Round 3 runbook</title>
+<style>
+:root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.reviewtools { display:flex; justify-content:flex-end; margin:.35rem 0 0 }
+.devmode { display:inline-flex; align-items:center; gap:.5rem; color:var(--dim);
+  font-size:.76rem; font-weight:650; cursor:pointer; user-select:none }
+.devmode input { appearance:none; position:relative; width:2.15rem; height:1.18rem;
+  margin:0; border:1px solid var(--dim); border-radius:99px;
+  background:var(--line); cursor:pointer; transition:background .15s,border-color .15s }
+.devmode input::after { content:""; position:absolute; width:.78rem; height:.78rem;
+  left:.14rem; top:.13rem; border-radius:50%; background:var(--ink);
+  transition:transform .15s }
+.devmode input:checked { background:var(--accent); border-color:var(--accent) }
+.devmode input:checked::after { transform:translateX(.95rem); background:#fff }
+.devmode input:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+.developer-only[hidden] { display:none !important }
+.developer-section { margin:2.4rem 0 0; padding:1rem;
+  border:1px dashed var(--line); border-radius:8px }
+.developer-section > h2:first-child { margin-top:0 }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.coreinputs { margin:1.2rem 0 .4rem }
+.coreinputs h2 { margin:0 0 .5rem }
+.coreinputs .hint { color:var(--dim); font-weight:400; font-size:.85rem }
+.inputrow { display:flex; flex-wrap:wrap; gap:12px }
+.coreinput { margin:0; width:210px; max-width:100%;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.coreinput .imgwrap { border-bottom:1px solid var(--line) }
+.coreinput .imgwrap img { max-height:230px }
+.coreinput figcaption { color:var(--dim); font-size:.7rem; padding:.35rem .5rem;
+  word-break:break-all; font-family:ui-monospace,SFMono-Regular,Menlo,monospace }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.recommendation { color:var(--ink) !important; font-size:.88rem !important;
+  padding:.55rem .65rem; border-left:3px solid var(--accent);
+  background:color-mix(in srgb,var(--accent) 8%,transparent); border-radius:4px }
+.recommendation strong { color:var(--accent); font-size:.7rem;
+  letter-spacing:.06em; text-transform:uppercase; margin-right:.3rem }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.statrow { display:flex; flex-wrap:wrap; gap:.15rem .5rem; margin:0 0 .1rem;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.72rem;
+  color:var(--dim) }
+.statrow span { white-space:nowrap }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.chip.unclear { color:var(--dim); border-color:var(--dim) }
+.detector-details { display:flex; flex-direction:column; gap:.45rem }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:calc(100vh - 7rem); object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-meta { display:flex; flex-direction:column; align-items:center; gap:.35rem;
+  min-height:2.2rem; position:relative; z-index:20 }
+.lb-refrow { display:flex; align-items:center; justify-content:center; gap:.35rem;
+  flex-wrap:wrap }
+.lb-refrow[hidden] { display:none }
+.lb-refrow .refid { background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn { color:#bbb; border-color:#55515d;
+  background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+
+/* Runbook chrome. The house tokens, lightbox and asset pipeline come from
+   review_page.py; everything here is the runbook page's own structure —
+   a decision-first header, the choices as cards, and the technical plan
+   behind per-subsection disclosures. */
+.md h2 { font-size:1.15rem; margin:2.2rem 0 .3rem }
+.md h3 { font-size:1rem; margin:1.6rem 0 .3rem }
+.md h4 { font-size:.9rem; margin:1.2rem 0 .3rem; color:var(--dim) }
+.md p { max-width:68ch; margin:.5rem 0 0 }
+.md ul, .md ol { max-width:68ch; padding-left:1.4rem }
+.md li { margin:.25rem 0 }
+.md a { color:var(--accent) }
+.md code, dl.facts code, .choice code { background:var(--pre);
+  border:1px solid var(--line); border-radius:4px; padding:.05rem .3rem;
+  font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
+.md pre.code { background:var(--pre); border:1px solid var(--line); border-radius:6px;
+  padding:.75rem 1rem; overflow-x:auto; font-size:.8rem; line-height:1.5 }
+.md pre.code code { background:none; border:0; padding:0 }
+.md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+.ico { width:1em; height:1em; flex:none; stroke:currentColor; fill:none;
+  stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; vertical-align:-.12em }
+
+/* --- header ------------------------------------------------------------- */
+h1 { font-size:1.55rem; margin:.25rem 0 0; letter-spacing:-.01em }
+.statusrow { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem .55rem;
+  margin:.7rem 0 0 }
+.statusrow.sub { margin:.4rem 0 0 }
+.statusnote { color:var(--dim); font-size:.82rem; margin:.5rem 0 0; max-width:70ch }
+.pill { display:inline-flex; align-items:center; gap:.35rem; font-size:.74rem;
+  font-weight:700; border:1px solid; border-radius:99px; padding:.16rem .6rem;
+  white-space:nowrap }
+.pill .dot { width:.45rem; height:.45rem; border-radius:50%; background:currentColor }
+.pill.s-await { color:var(--warn); border-color:var(--warn) }
+.pill.s-appr { color:var(--accent); border-color:var(--accent) }
+.pill.s-run { color:var(--ok); border-color:var(--ok) }
+.pill.s-done, .pill.s-hold { color:var(--dim); border-color:var(--line) }
+.fact { display:inline-flex; align-items:center; gap:.3rem; font-size:.75rem;
+  color:var(--dim); border:1px solid var(--line); border-radius:99px;
+  padding:.16rem .6rem; text-decoration:none }
+.fact b { color:var(--ink); font-weight:600 }
+a.fact.link { color:var(--accent); border-color:var(--accent) }
+.fact.inert { opacity:.55 }
+
+/* --- the ask, promoted -------------------------------------------------- */
+.ask { margin:1.1rem 0 0; border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); border-radius:8px; padding:.85rem 1rem }
+.ask .lbl { display:flex; align-items:center; gap:.4rem; font-size:.7rem; font-weight:700;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin:0 0 .3rem }
+.ask p { margin:0; max-width:70ch }
+a.jump { font-size:.8rem; font-weight:600; text-decoration:none; white-space:nowrap;
+  color:var(--accent) }
+
+/* --- at a glance + spend meter ------------------------------------------ */
+.glance { display:grid; gap:8px; margin:1rem 0 0;
+  grid-template-columns:repeat(auto-fit,minmax(132px,1fr)) }
+.tile { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.55rem .7rem; display:flex; flex-direction:column; gap:.12rem }
+.tile .k { display:flex; align-items:center; gap:.3rem; font-size:.66rem; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--dim) }
+.tile .v { font-size:1.05rem; font-weight:700; font-variant-numeric:tabular-nums }
+.tile .s { font-size:.72rem; color:var(--dim) }
+.meter { margin:.75rem 0 0; background:var(--card); border:1px solid var(--line);
+  border-radius:8px; padding:.7rem .85rem }
+.meter .top { display:flex; justify-content:space-between; align-items:baseline;
+  gap:.5rem; font-size:.74rem; color:var(--dim); margin:0 0 .4rem }
+.meter .top b { color:var(--ink); font-size:.9rem; font-variant-numeric:tabular-nums }
+.bar { height:9px; border-radius:99px; background:var(--well); border:1px solid var(--line);
+  overflow:hidden; display:flex }
+.bar i { display:block; height:100%; background:var(--accent) }
+.legend { display:flex; flex-wrap:wrap; gap:.2rem .9rem; margin:.45rem 0 0;
+  font-size:.7rem; color:var(--dim) }
+.legend span { display:inline-flex; align-items:center; gap:.32rem }
+.legend i { width:.6rem; height:.6rem; border-radius:2px; background:var(--accent); flex:none }
+.legend i.r { opacity:.45 }
+.legend i.o { background:var(--well); border:1px solid var(--line) }
+
+/* --- section nav + sections --------------------------------------------- */
+.snav { position:sticky; top:0; z-index:5; margin:1.4rem -16px 0; padding:.5rem 16px;
+  background:var(--bg); border-bottom:1px solid var(--line);
+  display:flex; gap:.35rem; overflow-x:auto; scrollbar-width:none }
+.snav::-webkit-scrollbar { display:none }
+.snav a { font-size:.72rem; font-weight:600; color:var(--dim); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .6rem; white-space:nowrap }
+.snav a:hover { color:var(--ink); border-color:var(--dim) }
+section.s { margin:2.1rem 0 0; scroll-margin-top:3.2rem }
+section.s > h2 { display:flex; align-items:center; gap:.5rem; font-size:1.02rem;
+  margin:0 0 .3rem }
+section.s > h2 .ico { color:var(--accent); width:1.05em; height:1.05em }
+section.s > h2::after { content:""; flex:1; height:1px; background:var(--line) }
+.md.cta { background:var(--card); border:1px solid var(--accent); border-radius:10px;
+  padding:.35rem 1.05rem .95rem; margin-top:.6rem }
+.md.cta ol li::marker, .md.cta ul li::marker { color:var(--accent); font-weight:700 }
+
+/* --- pipeline strip + round lineage ------------------------------------- */
+.strips { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.7rem .85rem; margin:.9rem 0 0 }
+.stage, .lineage { display:flex; flex-wrap:wrap; align-items:center; gap:.3rem }
+.lineage { margin-top:.55rem }
+.stage .lbl, .lineage .lbl { font-size:.64rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--dim); margin-right:.15rem }
+.stage .st { font-size:.71rem; font-weight:600; color:var(--dim);
+  border:1px solid var(--line); border-radius:99px; padding:.16rem .55rem; white-space:nowrap }
+.stage .st.now { color:var(--bg); background:var(--accent); border-color:var(--accent) }
+.stage .st.opt { border-style:dashed }
+.stage .arw, .lineage .arw { color:var(--line); font-size:.8rem }
+.lineage .rn { font-size:.72rem; color:var(--dim); border:1px solid var(--line);
+  border-radius:6px; padding:.16rem .5rem }
+.lineage .rn.this { color:var(--ink); border-color:var(--accent); font-weight:700 }
+.lineage .rn.next { border-style:dashed }
+
+/* --- choices as cards ---------------------------------------------------
+   The choices table is the round's comparison and the first thing a reviewer
+   reads. As a table its prose columns forced a 544px grid into a 343px phone
+   column, so the same cells render as one card per choice and simply stack. */
+.choices { display:grid; gap:12px; margin:.7rem 0 0;
+  grid-template-columns:repeat(auto-fit,minmax(255px,1fr)) }
+.choice { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.85rem .95rem; display:flex; flex-direction:column; gap:.5rem }
+.choice header { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap }
+.choice .key { font-size:.78rem; font-weight:800; color:var(--accent);
+  border:1px solid var(--accent); border-radius:6px; padding:.1rem .42rem }
+.choice h3 { margin:0; font-size:.97rem; font-weight:700 }
+.choice .rolls { margin-left:auto; font-size:.7rem; font-weight:700; color:var(--dim);
+  border:1px solid var(--line); border-radius:99px; padding:.1rem .5rem;
+  white-space:nowrap; font-variant-numeric:tabular-nums }
+.choice ul { margin:0; padding:0; list-style:none; display:flex; flex-direction:column;
+  gap:.32rem }
+.choice li { display:flex; gap:.45rem; font-size:.87rem; line-height:1.45 }
+.choice li .ico { color:var(--accent); margin-top:.28em; width:.5em; height:.5em }
+.choice .foot { display:flex; flex-direction:column; gap:.3rem; margin-top:auto;
+  padding-top:.15rem }
+.choice .cx { margin:0; font-size:.78rem; color:var(--dim) }
+.choice .ck { font-size:.62rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--dim); margin-right:.4rem }
+.choice a.jump { display:inline-flex; align-items:center; gap:.3rem; font-size:.71rem;
+  color:var(--dim); border:1px solid var(--line); border-radius:99px;
+  padding:.14rem .55rem; align-self:flex-start; margin-top:.15rem }
+.choice a.jump:hover { color:var(--accent); border-color:var(--accent) }
+
+/* --- roll matrix -------------------------------------------------------- */
+.shape { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.8rem .9rem; margin:12px 0 0; overflow-x:auto }
+.mx { display:grid; gap:6px; min-width:min(100%,320px) }
+.mx .hd { font-size:.63rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--dim); text-align:center; overflow-wrap:anywhere }
+.mx .rh { font-size:.74rem; font-weight:700; display:flex; align-items:center;
+  padding-right:.4rem; white-space:nowrap; max-width:9rem; overflow:hidden;
+  text-overflow:ellipsis }
+.mx .cell { background:var(--card); border:1px solid var(--line); border-radius:5px;
+  height:30px; display:flex; align-items:center; justify-content:center;
+  color:var(--accent) }
+.mx .cell.empty { opacity:.25; background:none }
+.shape .cap { font-size:.74rem; color:var(--dim); margin:.55rem 0 0 }
+.shape .cap b { color:var(--ink) }
+
+/* --- cost breakdown ----------------------------------------------------- */
+.costgrid { display:grid; gap:6px; margin:.7rem 0 0; max-width:34rem }
+.costrow { display:grid; grid-template-columns:8rem 1fr 5.5rem; align-items:center;
+  gap:.6rem; font-size:.8rem }
+.costrow .n { color:var(--dim); font-family:ui-monospace,Menlo,monospace; font-size:.76rem;
+  overflow-wrap:anywhere }
+.costrow .t { height:7px; border-radius:99px; background:var(--accent); opacity:.75 }
+.costrow .a { text-align:right; font-variant-numeric:tabular-nums; font-weight:600 }
+.costrow.total { border-top:1px solid var(--line); padding-top:.35rem; margin-top:.2rem }
+.costrow.total .n { color:var(--ink); font-weight:700 }
+
+/* --- round facts -------------------------------------------------------- */
+dl.facts { display:grid; grid-template-columns:auto 1fr; gap:.35rem 1.1rem; margin:.7rem 0 0;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.85rem 1rem; font-size:.86rem }
+dl.facts dt { color:var(--dim); font-weight:700; white-space:nowrap; font-size:.72rem;
+  letter-spacing:.06em; text-transform:uppercase; padding-top:.12rem }
+dl.facts dd { margin:0; max-width:66ch }
+@media (max-width:520px) {
+  dl.facts { grid-template-columns:1fr; gap:.1rem }
+  dl.facts dd { margin:0 0 .55rem }
+}
+
+/* --- technical plan ----------------------------------------------------- */
+details.tech { margin:.6rem 0 0; border:1px solid var(--line); border-radius:8px;
+  background:var(--card); padding:0 .95rem }
+details.tech > summary { cursor:pointer; padding:.7rem 0; font-weight:600; font-size:.88rem;
+  list-style:none; display:flex; align-items:center; gap:.45rem }
+details.tech > summary::-webkit-details-marker { display:none }
+details.tech > summary .ico { color:var(--accent) }
+details.tech > summary .chev { margin-left:auto; color:var(--dim); transition:transform .15s }
+details.tech[open] > summary .chev { transform:rotate(90deg) }
+details.tech .inner { padding:0 0 .8rem }
+details.tech .inner > :first-child { margin-top:0 }
+details.tech .md p, details.tech .md ul, details.tech .md ol { font-size:.87rem }
+
+/* --- tables (the experiment matrix and any prose table) -----------------
+   review_page.py pins cols 1-2 to nowrap+monospace for its short id columns;
+   a runbook table carries prose, so undo both and let auto layout balance. */
+.md .tablewrap { margin:.4rem 0 1.2rem }
+.md th, .md td { white-space:normal; overflow-wrap:break-word; font-family:inherit }
+.md td code { overflow-wrap:anywhere }
+.md table { min-width:30rem }
+
+/* --- inputs: one block per case, images grouped by artifact -------------- */
+.rb-inputs { margin:2.1rem 0 0; scroll-margin-top:3.2rem }
+.rb-inputs > h2 { display:flex; align-items:center; gap:.5rem; font-size:1.02rem;
+  margin:0 0 .3rem }
+.rb-inputs > h2 .ico { color:var(--accent); width:1.05em; height:1.05em }
+.rb-inputs > h2::after { content:""; flex:1; height:1px; background:var(--line) }
+.rb-case { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.8rem 1rem 1rem; margin:.9rem 0; scroll-margin-top:3.4rem }
+.rb-case:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.rb-case-h { display:flex; flex-wrap:wrap; align-items:baseline; gap:.2rem .6rem;
+  margin:0; font-size:1rem }
+.rb-case-count { color:var(--dim); font-size:.72rem; font-weight:400;
+  font-variant-numeric:tabular-nums }
+.rb-case-note { color:var(--dim); font-size:.88rem; margin:.3rem 0 0; max-width:70ch }
+.rb-art { margin:.85rem 0 0 }
+.rb-art-h { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; margin:0 0 .4rem }
+.rb-art-label { font-size:.7rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--accent) }
+.rb-art-id { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  color:var(--dim); overflow-wrap:anywhere }
+.rb-art .ibtn { padding:.08rem .5rem; font-size:.66rem }
+.rb-strip { display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)) }
+.rb-fig { margin:0; min-width:0; background:var(--well); border:1px solid var(--line);
+  border-radius:6px; overflow:hidden; display:flex; flex-direction:column }
+.rb-fig .imgwrap { border-bottom:1px solid var(--line) }
+.rb-fig .imgwrap img { max-height:300px }
+.rb-fig figcaption { color:var(--dim); font-size:.7rem; padding:.3rem .5rem }
+.rb-none { color:var(--dim); font-size:.86rem; margin:.6rem 0 0 }
+details.rb-prompt { margin:.85rem 0 0; background:var(--pre); border:1px solid var(--line);
+  border-radius:6px; padding:0 .9rem }
+details.rb-prompt > summary { cursor:pointer; padding:.55rem 0; font-size:.82rem;
+  font-weight:600; color:var(--accent); list-style:none; display:flex;
+  align-items:center; gap:.4rem }
+details.rb-prompt > summary::-webkit-details-marker { display:none }
+details.rb-prompt .chev { transition:transform .15s }
+details.rb-prompt[open] .chev { transform:rotate(90deg) }
+details.rb-prompt .rb-size { margin-left:auto; color:var(--dim); font-weight:400;
+  font-size:.72rem; font-variant-numeric:tabular-nums }
+details.rb-prompt .phead { display:flex; align-items:center; gap:.5rem; margin:0 0 .4rem }
+details.rb-prompt .path { color:var(--dim); font-size:.72rem; margin:0; flex:1; min-width:0;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+/* No inner max-height: the text is already behind a disclosure, and a nested
+   scroller inside a long page is miserable to use on a phone. */
+details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--bg);
+  border:1px solid var(--line); border-radius:6px; padding:.7rem .85rem; font-size:.78rem;
+  line-height:1.55; margin:0 0 .85rem }
+.copy { font:inherit; font-size:.68rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.12rem .55rem; cursor:pointer; white-space:nowrap }
+.copy:hover { color:var(--ink); border-color:var(--dim) }
+.copy.done { color:var(--ok); border-color:var(--ok) }
+:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+@media (prefers-reduced-motion:reduce) { * { transition:none !important } }
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/></symbol><symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 4v16M5 8h14M7.5 8l-2.5 5h5zM16.5 8l2.5 5h-5z"/></symbol><symbol id="i-in" viewBox="0 0 24 24"><path d="M12 3v11m0 0 4-4m-4 4-4-4M4 17v3h16v-3"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.6"/></symbol><symbol id="i-hand" viewBox="0 0 24 24"><path d="M9 11V5.6a1.6 1.6 0 0 1 3.2 0V11m0-1.2a1.6 1.6 0 0 1 3.2 0V12m0-1a1.6 1.6 0 0 1 3.2 0v4.4A5.6 5.6 0 0 1 12.8 21h-1.3a5 5 0 0 1-3.9-1.9L4.9 15a1.6 1.6 0 0 1 2.5-2L9 15"/></symbol><symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4v9.2M14.4 9.6a2.6 2.6 0 0 0-4.8 1.2c0 2.6 4.8 1 4.8 3.6a2.6 2.6 0 0 1-4.8 1.2"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M21.2 12h-2.4M5.2 12H2.8M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7M18.5 18.5l-1.7-1.7M7.2 7.2 5.5 5.5"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></symbol><symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/></symbol><symbol id="i-img" viewBox="0 0 24 24"><rect x="3.2" y="4.6" width="17.6" height="14.8" rx="2"/><circle cx="8.6" cy="9.8" r="1.5"/><path d="m3.9 17 5-4.6 4 3.4 3-2.4 4.2 3.6"/></symbol><symbol id="i-txt" viewBox="0 0 24 24"><path d="M6.5 3.6h7.2L18.5 8.4V20.4H6.5z"/><path d="M13.4 3.8v4.8h4.9M9.2 12.6h6M9.2 16h6"/></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="m9.5 5.5 7 6.5-7 6.5"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4V12l3 1.8"/></symbol><symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6.5" cy="5.5" r="2.2"/><circle cx="6.5" cy="18.5" r="2.2"/><circle cx="17.5" cy="8.5" r="2.2"/><path d="M6.5 7.7v8.6M17.5 10.7c0 3.4-2.6 4.6-5.4 5.1"/></symbol><symbol id="i-flask" viewBox="0 0 24 24"><path d="M10 3.5h4M10.8 3.5v6.2L5.6 18a2 2 0 0 0 1.7 3h9.4a2 2 0 0 0 1.7-3l-5.2-8.3V3.5"/><path d="M8 14.5h8"/></symbol><symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 3.2 20 7.6v8.8L12 20.8 4 16.4V7.6z"/><path d="M4 7.6l8 4.4 8-4.4M12 12v8.8"/></symbol></defs></svg>
+<main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">BlueMneme</a><span class="sep">&rsaquo;</span><a href="../">Scythe Valkyrie</a></nav>
+<div class="eyebrow">Round 3 · concept refinement</div>
+<h1>Scythe Valkyrie — Round 3 runbook</h1>
+<div class="statusrow"><span class="pill s-await"><span class="dot"></span>Awaiting sign-off</span><span class="fact">Opened <b>2026-08-07</b></span></div>
+<div class="statusrow sub"><span class="fact inert" title="Published at round close">&#128203; Review panel &mdash; at round close</span></div>
+<div class="ask"><p class="lbl"><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</p><p>Two interpretation calls are folded into the prompts and should be checked before sign-off: 1. <a class="jump" href="#ask">Read the full ask &darr;</a></p></div>
+<div class="glance"><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg>Rolls</span><span class="v">19</span><span class="s">across 11 cases</span></div><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Planned</span><span class="v">$2.20</span><span class="s">of a $4.00 cap</span></div><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg>Gemini mode</span><span class="v">Batch</span><span class="s">asynchronous, 50% price</span></div></div>
+<div class="meter"><p class="top"><span>Planned spend against the round cap</span><b>$2.20 / $4.00</b></p><div class="bar"><i class="spent" style="width:31.25%;"></i><i class="spent" style="width:23.75%;opacity:.45"></i></div><div class="legend"><span><i></i>images $1.25</span><span><i class=r></i>screening $0.95</span><span><i class="o"></i>Headroom $1.80</span></div></div>
+<nav class="snav"><a href="#goal">Goal</a><a href="#choices">Choices</a><a href="#inputs">Inputs</a><a href="#judged">Judging</a><a href="#ask">The ask</a><a href="#cost">Cost</a><a href="#facts">Round facts</a><a href="#tech">Technical plan</a></nav>
+<section class="s" id="goal"><h2><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg>Goal</h2><div class="md"><p>Jake liked both wallpaper finalists but wants targeted fixes, not re-rolls: the scythe blade reshaped into a proper single reaper crescent that stays clear of the wings, the stray blade/feather elements above the wing joints removed, W2&#x27;s free hand emptied of its unattached &quot;ghost dagger&quot;, and — lower priority — W1&#x27;s bowed haft straightened and a proper two-handed grip. An independent AI-tell crop audit of both picks (2026-08-07, recorded in <code>reviews.jsonl</code>) confirmed the doubled W1 blade and W2 ghost dagger cold, added two W2 targets (a waist skull with three eye sockets, a floating metal shard), and rated both images strong bases with no re-roll needed — while rating W1&#x27;s haft bow structural, so the haft ask is priced as a cheap datapoint we do not chase.</p>
+<p>Dimitri fixed the editor: <strong>flash31 only</strong> (the policy&#x27;s surgical-edit default; the live Gemini catalog holds no newer Flash image model, and pro2k stays the named escalation for a twice-failed edit). The round&#x27;s real question is <strong>edit strategy</strong>: how many asks a single flash31 pass will take on photoreal wallpaper work, whether a blade-shape exemplar beats words, and whether a sequential second pass or a crop-and-paste-back beats bigger single passes.</p></div><div class="strips"><div class="stage"><span class="lbl">Default path</span><span class="st now">Concept</span><span class="arw">&rsaquo;</span><span class="st">Turnaround</span><span class="arw">&rsaquo;</span><span class="st">Meshy</span><span class="arw">&rsaquo;</span><span class="st">Mesh check</span><span class="arw">&rsaquo;</span><span class="st">Test print</span></div><div class="lineage"><span class="lbl">This round</span><span class="rn">r2</span><span class="arw">&rsaquo;</span><span class="rn this">r3</span><span class="arw">&rsaquo;</span><span class="rn next">r4 — deliver Jake&#x27;s pick (a W1 winner ships via the free local downscale to exactly 1080x2400; a W2 winner needs its separately planned 9:16→9:20 scenery extension round), after which the mini/STL pipeline resumes</span></div></div></section>
+<section class="s" id="choices"><h2><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg>The choices on the table</h2><div class="md"><p>All cells run flash31 at 2K in Batch mode. Every full-frame arm edits the untouched r2 original (never another arm&#x27;s output, except the two declared sequential cells), with the shared edit paragraphs byte-identical across each image&#x27;s prompt files. Two rolls per independent full-frame arm — feature edits are a per-roll lottery — and one roll for the dependent and mechanism cells.</p></div><div class="choices"><article class="choice"><header><span class="key">W1-A</span><h3>removals only</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>The minimal-ask rung: unify the doubled blade, clear the wing-top feather tufts</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W1 base + <code>r3-w1-rem</code> prompt</p><a class="jump" href="#case-w1-a-removals-only"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W1-B</span><h3>critical bundle</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Adds the blade reshape (single consistent crescent, separated from the wings)</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W1 base + <code>r3-w1-crit</code> prompt</p><a class="jump" href="#case-w1-b-critical-bundle"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W1-C</span><h3>critical + exemplar</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>W1-B with the r1 best-blade crop attached as a shape reference</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W1 base + blade exemplar + <code>r3-w1-critex</code> prompt</p><a class="jump" href="#case-w1-c-critical-exemplar"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W1-D</span><h3>everything</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Adds the lower-priority asks: straight haft (expected-structural datapoint) + two-handed grip</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W1 base + <code>r3-w1-all</code> prompt</p><a class="jump" href="#case-w1-d-everything"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W1-E</span><h3>sequential pass</h3><span class="rolls">1 roll</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Haft + grip as a second pass on W1-B roll 1</span></li><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>prices drift-per-pass vs W1-D</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W1-B roll 1 output + <code>r3-w1-seq</code> prompt</p><a class="jump" href="#case-w1-e-sequential-pass"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W2-A</span><h3>removals only</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Ghost dagger out (fingertips restored), skull back to two eye sockets, floating shard filled</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W2 base + <code>r3-w2-rem</code> prompt</p><a class="jump" href="#case-w2-a-removals-only"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W2-B</span><h3>critical bundle</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Adds the blade reshape (tip separated from the left wing feathers) + wing-top cleanup</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W2 base + <code>r3-w2-crit</code> prompt</p><a class="jump" href="#case-w2-b-critical-bundle"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W2-C</span><h3>critical + exemplar</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>W2-B with the blade exemplar attached</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W2 base + blade exemplar + <code>r3-w2-critex</code> prompt</p><a class="jump" href="#case-w2-c-critical-exemplar"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W2-D</span><h3>everything</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>The free-hand edit upgraded from &quot;empty hand&quot; to &quot;two-handed grip on the haft&quot;</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W2 base + <code>r3-w2-all</code> prompt</p><a class="jump" href="#case-w2-d-everything"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W2-E</span><h3>sequential pass</h3><span class="rolls">1 roll</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Grip-only second pass on W2-B roll 1</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W2-B roll 1 output + <code>r3-w2-seq</code> prompt</p><a class="jump" href="#case-w2-e-sequential-pass"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W2-F</span><h3>dagger crop trial</h3><span class="rolls">1 roll</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Crop-edit + deterministic paste-back: locality outside the crop guaranteed by construction</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W2 dagger-region crop + <code>r3-w2-dagger</code> prompt</p><a class="jump" href="#case-w2-f-dagger-crop-trial"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article></div><div class="shape"><div class="mx" style="grid-template-columns:auto repeat(2,minmax(46px,1fr))"><span></span><span class="hd">roll 1</span><span class="hd">roll 2</span><span class="rh">**W1-A</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">**W1-B</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">**W1-C</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">**W1-D</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">**W1-E</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell empty"></span><span class="rh">**W2-A</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">**W2-B</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">**W2-C</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">**W2-D</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">**W2-E</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell empty"></span><span class="rh">**W2-F</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell empty"></span></div><p class="cap"><b>19 rolls total</b> — 11 choices, 2 + 2 + 2 + 2 + 1 + 2 + 2 + 2 + 2 + 1 + 1</p></div><div class="md"><p>That is <strong>19 paid image calls</strong>: 8 full-frame arms × 2 rolls + 2 sequential cells + 1 crop cell. The W2-F edit is deterministically feather-composited back into the untouched 4K original as a free local step (<code>r3-w2-daggercomp-1</code>). Mix-and-match verdicts are welcome — the panel will show every arm beside its base with a before/after diff.</p>
+<p><strong>Resolution reality:</strong> flash31 returns ~2K canvases, so any full-frame W2 edit downscales the 4K Riverflow original — irrelevant for the 1080x2400 deliverable, and the untouched originals stay canonical on Drive. A W2 winner still needs its separately planned 9:16→9:20 extension round before delivery; W1 outputs remain native-9:20 shape and ship via a free local downscale. The W2-F composite is the exception: it keeps the full 4K canvas because only the crop region is regenerated.</p></div></section>
+<section class="rb-inputs" id="inputs">
+<h2><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>Inputs — what this round runs on</h2>
+<p class="blurb">Everything that goes in, grouped by the choice it belongs to. Click any image to zoom; open a prompt to read the exact text this round spends against. Crop sets show both the cut overview and every exact output crop.</p>
+<section class="rb-case" id="case-w1-a-removals-only">
+<h3 class="rb-case-h">W1-A — removals only<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Pure deletions on the W1 ember pick: unify the doubled blade arc and remove the feather tufts above the mechanical wing joints. The minimal-ask end of the bundle-size ladder.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">W1 base — r2-w1-gptimage2-2 (ember)</span><code class="rb-art-id">scythe-valkyrie-r2-w1-gptimage2-2</code><button class="ibtn" data-inputs="in-0">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/4ea110f64108531a.jpg" data-cap="scythe-valkyrie-r2-w1-gptimage2-2"><img src="../../../../assets/2f59290dc0a4c3d3.jpg" alt="scythe-valkyrie-r2-w1-gptimage2-2" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — r3-w1-rem.txt (attaches IMAGE 1 = W1 base)<span class="rb-size">1 kB · 227 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w1-rem.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — BLADE COUNT
+The scythe must have exactly ONE blade. In IMAGE 1 a second, parallel blade arc splits off below the main blade as it rises toward the ornate skull head on the lower VIEWER&#x27;S RIGHT. Remove the extra arc and close the gap so the weapon carries ONE single continuous blade, with the surrounding background restored where the extra arc was.
+
+EDIT — WING TOPS
+Feather tufts stick UP above the mechanical wing joints at the top of the wings. Remove every feather ABOVE the mechanical joints on both wings, restoring clean background sky above each joint. Feathers belong only BELOW and BEHIND the mechanical joint line; the joints themselves and the wings below them stay exactly as they are.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w1-b-critical-bundle">
+<h3 class="rb-case-h">W1-B — critical bundle<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Removals plus the blade reshape: one consistent-curvature crescent, kept separate from the wings. The middle rung of the ladder.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">W1 base — r2-w1-gptimage2-2 (ember)</span><code class="rb-art-id">scythe-valkyrie-r2-w1-gptimage2-2</code><button class="ibtn" data-inputs="in-1">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/4ea110f64108531a.jpg" data-cap="scythe-valkyrie-r2-w1-gptimage2-2"><img src="../../../../assets/2f59290dc0a4c3d3.jpg" alt="scythe-valkyrie-r2-w1-gptimage2-2" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — r3-w1-crit.txt (attaches IMAGE 1 = W1 base)<span class="rb-size">2 kB · 310 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w1-crit.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — BLADE COUNT
+The scythe must have exactly ONE blade. In IMAGE 1 a second, parallel blade arc splits off below the main blade as it rises toward the ornate skull head on the lower VIEWER&#x27;S RIGHT. Remove the extra arc and close the gap so the weapon carries ONE single continuous blade, with the surrounding background restored where the extra arc was.
+
+EDIT — BLADE SHAPE
+Reshape that single blade into a proper reaper-scythe blade: one long crescent with smooth, CONSISTENT curvature from the ornate skull head to a single sharp tip, thick at the head and tapering evenly along its whole length. Keep the blade IN FRONT of the character, and keep it clearly SEPARATE from the wings: visible background must remain between the blade and the wing masses at every point — the blade must never touch, join, or continue into a wing.
+
+EDIT — WING TOPS
+Feather tufts stick UP above the mechanical wing joints at the top of the wings. Remove every feather ABOVE the mechanical joints on both wings, restoring clean background sky above each joint. Feathers belong only BELOW and BEHIND the mechanical joint line; the joints themselves and the wings below them stay exactly as they are.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w1-c-critical-exemplar">
+<h3 class="rb-case-h">W1-C — critical + exemplar<span class="rb-case-count">2 images · 1 prompt</span></h3>
+<p class="rb-case-note">Same edits as W1-B, with the r1 best-blade crop attached as IMAGE 2 — tests whether a shape reference beats words for the blade reshape.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">W1 base — r2-w1-gptimage2-2 (ember)</span><code class="rb-art-id">scythe-valkyrie-r2-w1-gptimage2-2</code><button class="ibtn" data-inputs="in-2">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/4ea110f64108531a.jpg" data-cap="scythe-valkyrie-r2-w1-gptimage2-2"><img src="../../../../assets/2f59290dc0a4c3d3.jpg" alt="scythe-valkyrie-r2-w1-gptimage2-2" loading="lazy"></div></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Blade shape exemplar — crop of r1-v3-riverflow25-1 (Jake&#x27;s r1 best-blade pick)</span><code class="rb-art-id">scythe-valkyrie-r3-blade-exemplar</code><button class="ibtn" data-inputs="in-3">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/3793bb1ecd7c1a56.jpg" data-cap="scythe-valkyrie-r3-blade-exemplar"><img src="../../../../assets/c129be3136ecd26c.jpg" alt="scythe-valkyrie-r3-blade-exemplar" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — r3-w1-critex.txt (attaches IMAGE 1 = W1 base, IMAGE 2 = blade exemplar)<span class="rb-size">2 kB · 375 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w1-critex.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGES
+Two images are attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie — the image to edit. IMAGE 2 is a SHAPE REFERENCE ONLY: it shows the correct scythe-blade silhouette on a different render of the same character. Use IMAGE 2 only for the blade&#x27;s shape, and copy nothing else from it — not its background, base, pose, colours, lighting, or framing. Your task is a SURGICAL EDIT of IMAGE 1: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — BLADE COUNT
+The scythe must have exactly ONE blade. In IMAGE 1 a second, parallel blade arc splits off below the main blade as it rises toward the ornate skull head on the lower VIEWER&#x27;S RIGHT. Remove the extra arc and close the gap so the weapon carries ONE single continuous blade, with the surrounding background restored where the extra arc was.
+
+EDIT — BLADE SHAPE
+Reshape that single blade into a proper reaper-scythe blade: one long crescent with smooth, CONSISTENT curvature from the ornate skull head to a single sharp tip, thick at the head and tapering evenly along its whole length — match the blade silhouette, curvature, and taper shown in IMAGE 2. Keep the blade IN FRONT of the character, and keep it clearly SEPARATE from the wings: visible background must remain between the blade and the wing masses at every point — the blade must never touch, join, or continue into a wing.
+
+EDIT — WING TOPS
+Feather tufts stick UP above the mechanical wing joints at the top of the wings. Remove every feather ABOVE the mechanical joints on both wings, restoring clean background sky above each joint. Feathers belong only BELOW and BEHIND the mechanical joint line; the joints themselves and the wings below them stay exactly as they are.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w1-d-everything">
+<h3 class="rb-case-h">W1-D — everything<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Critical bundle plus the lower-priority asks: straighten the haft (independent audit rates the bow structural — a cheap datapoint, not chased) and move the free hand to a two-handed grip. The maximal-ask rung.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">W1 base — r2-w1-gptimage2-2 (ember)</span><code class="rb-art-id">scythe-valkyrie-r2-w1-gptimage2-2</code><button class="ibtn" data-inputs="in-4">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/4ea110f64108531a.jpg" data-cap="scythe-valkyrie-r2-w1-gptimage2-2"><img src="../../../../assets/2f59290dc0a4c3d3.jpg" alt="scythe-valkyrie-r2-w1-gptimage2-2" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — r3-w1-all.txt (attaches IMAGE 1 = W1 base)<span class="rb-size">3 kB · 436 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w1-all.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — BLADE COUNT
+The scythe must have exactly ONE blade. In IMAGE 1 a second, parallel blade arc splits off below the main blade as it rises toward the ornate skull head on the lower VIEWER&#x27;S RIGHT. Remove the extra arc and close the gap so the weapon carries ONE single continuous blade, with the surrounding background restored where the extra arc was.
+
+EDIT — BLADE SHAPE
+Reshape that single blade into a proper reaper-scythe blade: one long crescent with smooth, CONSISTENT curvature from the ornate skull head to a single sharp tip, thick at the head and tapering evenly along its whole length. Keep the blade IN FRONT of the character, and keep it clearly SEPARATE from the wings: visible background must remain between the blade and the wing masses at every point — the blade must never touch, join, or continue into a wing.
+
+EDIT — WING TOPS
+Feather tufts stick UP above the mechanical wing joints at the top of the wings. Remove every feather ABOVE the mechanical joints on both wings, restoring clean background sky above each joint. Feathers belong only BELOW and BEHIND the mechanical joint line; the joints themselves and the wings below them stay exactly as they are.
+
+EDIT — HAFT
+Straighten the scythe haft into a perfectly STRAIGHT, rigid pole with a smooth cylindrical cross-section, running dead straight from the spear-like counterweight at the upper VIEWER&#x27;S LEFT to the ornate skull head at the lower VIEWER&#x27;S RIGHT. In IMAGE 1 the haft bows in a gentle curve — remove the bow completely while keeping the haft&#x27;s position, angle, thickness, and armored detailing.
+
+EDIT — LOWER HAND
+Her lower armoured gauntlet hand currently hangs free beside her hip on the VIEWER&#x27;S RIGHT. Move it onto the haft where the haft passes beside her upper thigh: a natural, unmistakable five-fingered wrap around the haft, thumb visible, so she holds the scythe TWO-HANDED with the grips widely separated. Keep the arm&#x27;s shoulder-to-hand anatomy unbroken and natural.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w1-e-sequential-pass">
+<h3 class="rb-case-h">W1-E — sequential pass<span class="rb-case-count">1 prompt</span></h3>
+<p class="rb-case-note">Haft + grip applied as a second pass over the W1-B roll 1 output (fixed input, declared at plan time). Prices drift-per-pass against the W1-D single pass. Skipped, recorded, and unsubstituted if the W1-B roll 1 output fails its fast base-integrity screen. Its input artifact exists only after wave 1, so no input image can render here at plan time; the experiment matrix declares the exact fixed input id.</p>
+<p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — r3-w1-seq.txt (attaches IMAGE 1 = W1-B roll 1 output)<span class="rb-size">1 kB · 230 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w1-seq.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — HAFT
+Straighten the scythe haft into a perfectly STRAIGHT, rigid pole with a smooth cylindrical cross-section, running dead straight from the spear-like counterweight at the upper VIEWER&#x27;S LEFT to the ornate skull head at the lower VIEWER&#x27;S RIGHT. In IMAGE 1 the haft bows in a gentle curve — remove the bow completely while keeping the haft&#x27;s position, angle, thickness, and armored detailing.
+
+EDIT — LOWER HAND
+Her lower armoured gauntlet hand currently hangs free beside her hip on the VIEWER&#x27;S RIGHT. Move it onto the haft where the haft passes beside her upper thigh: a natural, unmistakable five-fingered wrap around the haft, thumb visible, so she holds the scythe TWO-HANDED with the grips widely separated. Keep the arm&#x27;s shoulder-to-hand anatomy unbroken and natural.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w2-a-removals-only">
+<h3 class="rb-case-h">W2-A — removals only<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Pure deletions on the W2 fog pick: ghost dagger out of the free hand (fingertips restored), the waist skull back to two eye sockets, and the floating metal shard filled with fog.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">W2 base — r2-w2-riverflow25-1 (cold fog)</span><code class="rb-art-id">scythe-valkyrie-r2-w2-riverflow25-1</code><button class="ibtn" data-inputs="in-5">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ccd0aebc408f7c7a.jpg" data-cap="scythe-valkyrie-r2-w2-riverflow25-1"><img src="../../../../assets/169efb2d6396de87.jpg" alt="scythe-valkyrie-r2-w2-riverflow25-1" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — r3-w2-rem.txt (attaches IMAGE 1 = W2 base)<span class="rb-size">1 kB · 247 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w2-rem.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — FREE HAND
+Her free hand on the VIEWER&#x27;S RIGHT, beside her hip, has a small extra dagger-like blade threaded between the fingers — it has no handle and attaches to nothing. Remove that blade completely and redraw the hand as a natural, relaxed EMPTY hand with five fingers, the palm and fingertips fully restored. She carries nothing except the great scythe.
+
+EDIT — WAIST SKULL
+The small sculpted skull ornament on her armour near the waist shows THREE eye sockets in a row. Redraw it as a normal skull with exactly TWO eye sockets, keeping its size, position, and material.
+
+EDIT — FLOATING SHARD
+A small, sharp, shiny metal fragment floats alone in the foggy gap on the VIEWER&#x27;S LEFT between the lower wing and her skirt, connected to nothing. Remove it completely and fill the area with the surrounding fog.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w2-b-critical-bundle">
+<h3 class="rb-case-h">W2-B — critical bundle<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Removals plus the blade reshape (separate the blade tip from the left wing feathers) and the wing-top cleanup (no stray blade elements above the mechanical joints).</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">W2 base — r2-w2-riverflow25-1 (cold fog)</span><code class="rb-art-id">scythe-valkyrie-r2-w2-riverflow25-1</code><button class="ibtn" data-inputs="in-6">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ccd0aebc408f7c7a.jpg" data-cap="scythe-valkyrie-r2-w2-riverflow25-1"><img src="../../../../assets/169efb2d6396de87.jpg" alt="scythe-valkyrie-r2-w2-riverflow25-1" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — r3-w2-crit.txt (attaches IMAGE 1 = W2 base)<span class="rb-size">2 kB · 414 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w2-crit.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — FREE HAND
+Her free hand on the VIEWER&#x27;S RIGHT, beside her hip, has a small extra dagger-like blade threaded between the fingers — it has no handle and attaches to nothing. Remove that blade completely and redraw the hand as a natural, relaxed EMPTY hand with five fingers, the palm and fingertips fully restored. She carries nothing except the great scythe.
+
+EDIT — WAIST SKULL
+The small sculpted skull ornament on her armour near the waist shows THREE eye sockets in a row. Redraw it as a normal skull with exactly TWO eye sockets, keeping its size, position, and material.
+
+EDIT — FLOATING SHARD
+A small, sharp, shiny metal fragment floats alone in the foggy gap on the VIEWER&#x27;S LEFT between the lower wing and her skirt, connected to nothing. Remove it completely and fill the area with the surrounding fog.
+
+EDIT — BLADE SHAPE
+Reshape the scythe blade into a proper reaper-scythe blade: exactly ONE long crescent with smooth, CONSISTENT curvature from the ornate skull head on the lower VIEWER&#x27;S RIGHT to a single sharp tip toward the lower VIEWER&#x27;S LEFT, thick at the head and tapering evenly along its whole length. Keep the blade IN FRONT of the character, and keep it clearly SEPARATE from the wings: visible background must remain between the blade tip and the long wing feathers on the VIEWER&#x27;S LEFT — the blade must never touch, join, or continue into a wing.
+
+EDIT — WING TOPS
+Stray blade elements stick UP above the mechanical wing joints at the top of the wings, most visibly on the VIEWER&#x27;S RIGHT wing. Remove the stray blade elements ABOVE the mechanical joints, restoring clean sky and fog above each joint. Wing-blades and feathers belong only BELOW and BEHIND the mechanical joint line; the joints themselves and the wing structure below them stay exactly as they are.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w2-c-critical-exemplar">
+<h3 class="rb-case-h">W2-C — critical + exemplar<span class="rb-case-count">2 images · 1 prompt</span></h3>
+<p class="rb-case-note">Same edits as W2-B, with the r1 best-blade crop attached as IMAGE 2.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">W2 base — r2-w2-riverflow25-1 (cold fog)</span><code class="rb-art-id">scythe-valkyrie-r2-w2-riverflow25-1</code><button class="ibtn" data-inputs="in-7">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ccd0aebc408f7c7a.jpg" data-cap="scythe-valkyrie-r2-w2-riverflow25-1"><img src="../../../../assets/169efb2d6396de87.jpg" alt="scythe-valkyrie-r2-w2-riverflow25-1" loading="lazy"></div></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Blade shape exemplar — crop of r1-v3-riverflow25-1 (Jake&#x27;s r1 best-blade pick)</span><code class="rb-art-id">scythe-valkyrie-r3-blade-exemplar</code><button class="ibtn" data-inputs="in-8">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/3793bb1ecd7c1a56.jpg" data-cap="scythe-valkyrie-r3-blade-exemplar"><img src="../../../../assets/c129be3136ecd26c.jpg" alt="scythe-valkyrie-r3-blade-exemplar" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — r3-w2-critex.txt (attaches IMAGE 1 = W2 base, IMAGE 2 = blade exemplar)<span class="rb-size">3 kB · 479 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w2-critex.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGES
+Two images are attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie — the image to edit. IMAGE 2 is a SHAPE REFERENCE ONLY: it shows the correct scythe-blade silhouette on a different render of the same character. Use IMAGE 2 only for the blade&#x27;s shape, and copy nothing else from it — not its background, base, pose, colours, lighting, or framing. Your task is a SURGICAL EDIT of IMAGE 1: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — FREE HAND
+Her free hand on the VIEWER&#x27;S RIGHT, beside her hip, has a small extra dagger-like blade threaded between the fingers — it has no handle and attaches to nothing. Remove that blade completely and redraw the hand as a natural, relaxed EMPTY hand with five fingers, the palm and fingertips fully restored. She carries nothing except the great scythe.
+
+EDIT — WAIST SKULL
+The small sculpted skull ornament on her armour near the waist shows THREE eye sockets in a row. Redraw it as a normal skull with exactly TWO eye sockets, keeping its size, position, and material.
+
+EDIT — FLOATING SHARD
+A small, sharp, shiny metal fragment floats alone in the foggy gap on the VIEWER&#x27;S LEFT between the lower wing and her skirt, connected to nothing. Remove it completely and fill the area with the surrounding fog.
+
+EDIT — BLADE SHAPE
+Reshape the scythe blade into a proper reaper-scythe blade: exactly ONE long crescent with smooth, CONSISTENT curvature from the ornate skull head on the lower VIEWER&#x27;S RIGHT to a single sharp tip toward the lower VIEWER&#x27;S LEFT, thick at the head and tapering evenly along its whole length — match the blade silhouette, curvature, and taper shown in IMAGE 2. Keep the blade IN FRONT of the character, and keep it clearly SEPARATE from the wings: visible background must remain between the blade tip and the long wing feathers on the VIEWER&#x27;S LEFT — the blade must never touch, join, or continue into a wing.
+
+EDIT — WING TOPS
+Stray blade elements stick UP above the mechanical wing joints at the top of the wings, most visibly on the VIEWER&#x27;S RIGHT wing. Remove the stray blade elements ABOVE the mechanical joints, restoring clean sky and fog above each joint. Wing-blades and feathers belong only BELOW and BEHIND the mechanical joint line; the joints themselves and the wing structure below them stay exactly as they are.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w2-d-everything">
+<h3 class="rb-case-h">W2-D — everything<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Critical bundle with the free-hand edit upgraded from &quot;empty hand&quot; to &quot;gripping the haft two-handed&quot; (the dagger removal is folded into that grip edit).</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">W2 base — r2-w2-riverflow25-1 (cold fog)</span><code class="rb-art-id">scythe-valkyrie-r2-w2-riverflow25-1</code><button class="ibtn" data-inputs="in-9">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ccd0aebc408f7c7a.jpg" data-cap="scythe-valkyrie-r2-w2-riverflow25-1"><img src="../../../../assets/169efb2d6396de87.jpg" alt="scythe-valkyrie-r2-w2-riverflow25-1" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — r3-w2-all.txt (attaches IMAGE 1 = W2 base)<span class="rb-size">3 kB · 437 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w2-all.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — FREE HAND
+Her free hand on the VIEWER&#x27;S RIGHT, beside her hip, has a small extra dagger-like blade threaded between the fingers — it has no handle and attaches to nothing. Remove that blade completely, and move the hand onto the scythe haft where the haft passes beside her upper thigh on the VIEWER&#x27;S RIGHT: a natural, unmistakable five-fingered wrap around the haft, thumb visible, so she holds the scythe TWO-HANDED with the grips widely separated. Keep the arm&#x27;s shoulder-to-hand anatomy unbroken and natural.
+
+EDIT — WAIST SKULL
+The small sculpted skull ornament on her armour near the waist shows THREE eye sockets in a row. Redraw it as a normal skull with exactly TWO eye sockets, keeping its size, position, and material.
+
+EDIT — FLOATING SHARD
+A small, sharp, shiny metal fragment floats alone in the foggy gap on the VIEWER&#x27;S LEFT between the lower wing and her skirt, connected to nothing. Remove it completely and fill the area with the surrounding fog.
+
+EDIT — BLADE SHAPE
+Reshape the scythe blade into a proper reaper-scythe blade: exactly ONE long crescent with smooth, CONSISTENT curvature from the ornate skull head on the lower VIEWER&#x27;S RIGHT to a single sharp tip toward the lower VIEWER&#x27;S LEFT, thick at the head and tapering evenly along its whole length. Keep the blade IN FRONT of the character, and keep it clearly SEPARATE from the wings: visible background must remain between the blade tip and the long wing feathers on the VIEWER&#x27;S LEFT — the blade must never touch, join, or continue into a wing.
+
+EDIT — WING TOPS
+Stray blade elements stick UP above the mechanical wing joints at the top of the wings, most visibly on the VIEWER&#x27;S RIGHT wing. Remove the stray blade elements ABOVE the mechanical joints, restoring clean sky and fog above each joint. Wing-blades and feathers belong only BELOW and BEHIND the mechanical joint line; the joints themselves and the wing structure below them stay exactly as they are.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w2-e-sequential-pass">
+<h3 class="rb-case-h">W2-E — sequential pass<span class="rb-case-count">1 prompt</span></h3>
+<p class="rb-case-note">Grip-only second pass over the W2-B roll 1 output (fixed input, declared at plan time). Same skip rule as W1-E. Its input artifact exists only after wave 1, so no input image can render here at plan time; the experiment matrix declares the exact fixed input id.</p>
+<p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — r3-w2-seq.txt (attaches IMAGE 1 = W2-B roll 1 output)<span class="rb-size">1 kB · 167 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w2-seq.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — FREE HAND
+Her free hand on the VIEWER&#x27;S RIGHT, beside her hip, is empty. Move it onto the scythe haft where the haft passes beside her upper thigh on the VIEWER&#x27;S RIGHT: a natural, unmistakable five-fingered wrap around the haft, thumb visible, so she holds the scythe TWO-HANDED with the grips widely separated. Keep the arm&#x27;s shoulder-to-hand anatomy unbroken and natural.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w2-f-dagger-crop-trial">
+<h3 class="rb-case-h">W2-F — dagger crop trial<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">The ghost-dagger removal run on a deterministic crop of the region, then deterministically feather-composited back into the untouched 4K original — locality outside the crop is guaranteed by construction. Tests the crop-and-paste-back mechanism for photoreal wallpaper repairs.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">W2 dagger-region crop (deterministic, for the crop-edit trial)</span><code class="rb-art-id">scythe-valkyrie-r3-w2-dagger-base</code><button class="ibtn" data-inputs="in-10">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/4d91aeb407658cfe.jpg" data-cap="scythe-valkyrie-r3-w2-dagger-base"><img src="../../../../assets/04648f4ae50bfaa2.jpg" alt="scythe-valkyrie-r3-w2-dagger-base" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — r3-w2-dagger.txt (attaches IMAGE 1 = dagger-region crop)<span class="rb-size">1 kB · 175 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w2-dagger.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a CROP from a larger finished photorealistic artwork: a woman&#x27;s bare hand emerging from an armoured vambrace beside dark layered drapery, with pale fog and a ruined tower behind. Your task is a SURGICAL EDIT: apply ONLY the correction listed below and leave everything else untouched.
+
+EDIT — REMOVE THE BLADE
+A dagger-like blade is threaded between the fingers of the hand — it has no handle and attaches to nothing. Remove that blade completely and redraw the hand as a natural, relaxed EMPTY hand with five fingers, the palm and fingertips fully restored where the blade covered them.
+
+PRESERVATION
+Apart from that edit, reproduce IMAGE 1 EXACTLY: the same hand pose and skin, the same vambrace and drapery, the same fog and ruins, the same lighting and colour grading, at the same framing on the same canvas shape as IMAGE 1 — do not zoom, crop further, or extend the scene. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+</section>
+<section class="s" id="judged"><h2><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>How the round is judged</h2><div class="md"><p>Jake&#x27;s wallpaper, Jake&#x27;s eye — his pick decides, Dimitri keeps the art gate. Reading notes:</p>
+<ul>
+<li>Judge each arm <strong>against its base first</strong> (did the asked edits land, did anything else drift?), then pick the best candidate per image.</li>
+<li>The independent audit found W2&#x27;s blade and pole mechanically coherent — the blade/wing asks there are <strong>aesthetic reshaping</strong>, so &quot;did it improve&quot; is Jake&#x27;s call, not a defect checklist.</li>
+<li>Pre-commitment: if the two-handed grip fails or mutates the hand in both rolls of both arms that ask for it, we drop the grip rather than chase it — an idle hand beats a six-knuckled one. Same for W1&#x27;s haft bow, already rated structural: a failed straighten is recorded, not re-rolled.</li>
+</ul>
+<p>Machine checks run in two explicit lanes:</p>
+<ul>
+<li><strong>FAST (free):</strong> a fresh-context crop audit as each image lands — did each asked edit land (per-edit ok/warn/bad chips), did the face/pose/background hold, any new tells introduced — plus a deterministic <strong>edit-locality screen</strong>: pixel-diff against the base, reporting changed-pixel fractions inside vs outside the arm&#x27;s declared edit regions (navigation only, no gate; region table in the technical block). Canvas shapes verified mechanically. Once all wave-1 FAST verdicts land, the two wave-2 cells submit and the panel may be shared as <strong>PROVISIONAL — slow checks pending</strong>.</li>
+<li><strong>SLOW (paid):</strong> after all 19 reviewable outputs exist (16 wave-1 full-frame + 2 sequential + the W2-F composite; the raw W2-F crop output is excluded as a non-full-frame intermediate), one <code>blind_detect_round.py</code> manifest judges them against spec v0.5&#x27;s wallpaper section. Completed records append to <code>reviews.jsonl</code>; every blind-vs-crop disagreement gets a mandatory human look. Per the r1/r2 precedent the detector calls are advisory navigation; Jake&#x27;s and Dimitri&#x27;s eye-verdicts decide, and no per-artifact reconciliation records are required to close the round.</li>
+</ul></div></section>
+<section class="s" id="ask"><h2><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</h2><div class="md cta"><p>Two interpretation calls are folded into the prompts and should be checked before sign-off:</p>
+<ol>
+<li><strong>&quot;Above the wing joints&quot; (both images):</strong> the prompts remove feathers/blade elements sticking up ABOVE the mechanical joint hubs at the wing tops, keeping the main wing structure below. If Jake meant something broader (e.g. restructuring W2&#x27;s whole upward blade fan), say so — that would be re-composition, not a surgical edit, and changes the plan.</li>
+<li><strong>W2&#x27;s detached halo spike (top-centre):</strong> the independent audit flagged a halo spike floating with a truncated base between the two arcs — plausibly intended broken-halo styling. It is NOT in the edit list; add it as a removal if Jake reads it as a glitch.</li>
+</ol>
+<p>Then: Jake&#x27;s comments on the arms (tweaks fold in as plan edits before sign-off), and Dimitri&#x27;s sign-off as the spend gate. On the results panel, Jake picks per image; delivery is the free downscale (W1) or the separately planned extension round (W2).</p></div></section>
+<section class="s" id="cost"><h2><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Cost</h2><div class="md"><p>Planning estimate: image generation ≈ <strong>$1.25</strong> (19 flash31 Batch calls at 2K; r2 measured ~$0.052/image single-input — the four exemplar cells carry a second input image, so the estimate uses ~$0.065 average). FAST evaluation is unmetered. SLOW evaluation reserves <strong>$0.95</strong> (≥$0.05 × 19, the skill&#x27;s floor). The W2-F composite, locality screens, and any W1 delivery downscale are free local operations. Planned total ≈ <strong>$2.20</strong>. Proposed round cap <strong>$4.00 USD</strong>, no Meshy credits — headroom covers conservative in-flight reservations, not extra work. Live provider metadata and the detector&#x27;s printed preflight ceiling remain authoritative at execution time.</p></div><div class="costgrid"><div class="costrow"><span class="n">images</span><span class="t" style="width:100%"></span><span class="a">$1.25</span></div><div class="costrow"><span class="n">screening</span><span class="t" style="width:76%"></span><span class="a">$0.95</span></div><div class="costrow total"><span class="n">planned</span><span></span><span class="a">$2.20</span></div></div></section>
+<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>concept refinement — wallpaper targeted edits (flash31 surgical passes on the two r2 picks)</dd><dt>Owner</dt><dd>Claude (mog-pharau) → Dimitri + Jake review</dd><dt>Date opened</dt><dd>2026-08-07</dd><dt>Inputs</dt><dd>the two r2 picks <code>scythe-valkyrie-r2-w1-gptimage2-2</code> (ember, native 9:20) and <code>scythe-valkyrie-r2-w2-riverflow25-1</code> (cold fog, 9:16); the r1 best-blade exemplar crop <code>scythe-valkyrie-r3-blade-exemplar</code> (deterministic crop of <code>r1-v3-riverflow25-1</code>); the deterministic W2 dagger-region crop <code>scythe-valkyrie-r3-w2-dagger-base</code>; eleven committed <code>prompts/r3-*.txt</code> edit prompts</dd><dt>Produces</dt><dd>19 flash31 edit candidates plus one free deterministic composite under <code>generated/</code>: <code>scythe-valkyrie-r3-w{1,2}-{rem,crit,critex,all,seq}-N</code>, <code>scythe-valkyrie-r3-w2-dagger-1</code>, and <code>scythe-valkyrie-r3-w2-daggercomp-1</code></dd><dt>Branch</dt><dd><code>claude/scythe-valkyrie-r3-wallpaper-edits</code></dd><dt>Gemini mode</dt><dd>batch (asynchronous, 50% price; all nine wave-1 cells submitted up front, the two dependent wave-2 cells after their declared inputs land)</dd><dt>Evaluation lanes</dt><dd>FAST — fresh-context crop audit plus a deterministic edit-locality pixel-diff as each image lands; SLOW — one two-wave round-level Batch blind detector across the 19 reviewable outputs</dd><dt>Models</dt><dd>flash31</dd><dt>Spend</dt><dd>images $1.25 · screening $0.95 · cap $4.00</dd><dt>Prior round</dt><dd>r2 closed 2026-08-07 on Jake&#x27;s and Dimitri&#x27;s joint review: no candidate promoted directly, two picked as FIXABLE — W1 GPT Image 2 roll 2 and W2 Riverflow roll 1 — with a shared critical defect list (blade shape merging into the wings, spurious blade/feather elements above the wing joints, W1&#x27;s doubled blade, W2&#x27;s off-hand ghost blade) and two lower-priority asks (W1 straight haft, two-handed grip on both) to be trialled with-and-without; carried here via <code>round-feedback.jsonl</code> and per-artifact <code>reviews.jsonl</code> records, alongside an independent same-day AI-tell crop audit of both picks</dd><dt>Next</dt><dd>r4 — deliver Jake&#x27;s pick (a W1 winner ships via the free local downscale to exactly 1080x2400; a W2 winner needs its separately planned 9:16→9:20 scenery extension round), after which the mini/STL pipeline resumes</dd></dl></section>
+<section class="s" id="tech"><h2><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>Technical plan</h2>
+<p class="intro">prompts, matrix, commands (pipeline detail)</p>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>What changed going in (spec / prompt / process deltas)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><ul>
+<li>No spec change: the edits enforce spec v0.5&#x27;s existing wallpaper program (one consistent-curvature blade in front, exactly two wings with clean joints, two-handed grip, straight cylindrical haft). Blind-detect judges r3 against the same spec text as r2.</li>
+<li>R2 closure recorded: two per-artifact human FIXABLE records and one round-level <code>round-feedback.jsonl</code> record (reviewer <code>jake</code>, joint Jake+Dimitri list relayed by Dimitri 2026-08-07, carried to r3), plus two independent <code>claude-crop-audit</code> AI-tell records for the picks (all 2026-08-07).</li>
+<li>Eleven new prompt files <code>prompts/r3-*.txt</code>, composed from named shared blocks. Within each image&#x27;s family the shared edit paragraphs are byte-identical (verified mechanically at authoring); the deliberate divergences are named per arm: <code>critex</code> swaps the blade-shape paragraph for an IMAGE 2-referencing variant and uses the two-image header; <code>all</code> (W2) swaps the empty-hand paragraph for the grip variant; <code>seq</code> (W2) uses the already-empty-hand grip variant. Every prompt opens with an ATTACHED IMAGE(S) paragraph declaring the count and role of each input, matching its matrix row, and closes with the shared PRESERVATION block.</li>
+<li>Two deterministic plan-input assets, created and pushed to Drive at plan time, registered in <code>lineage.json</code> as <code>derived-crop</code> records:</li>
+<ul>
+<li><code>scythe-valkyrie-r3-blade-exemplar.png</code> = PIL crop <code>(170,1250,1660,2080)</code> of <code>r1-v3-riverflow25-1</code> (Jake&#x27;s r1 best-blade pick);</li>
+<li><code>scythe-valkyrie-r3-w2-dagger-base.png</code> = PIL crop <code>(1180,1450,1860,2300)</code> of <code>r2-w2-riverflow25-1</code>.</li>
+</ul>
+<li><strong>Same-stem rolls keep this round outside coordinator v1</strong> (the skill&#x27;s carve-out, as in r2): the eight full-frame arms plan two same-stem rolls each via one <code>gemini_gen.py --rolls 2</code> invocation per stem (grouped Batch call, native <code>--resume-run</code> recovery); the three single-roll cells use <code>--rolls 1</code>. All cells are Gemini, so there is no synchronous-provider ambiguity lane this round; recovery is always resume-never-resubmit.</li>
+<li><strong>Wave structure:</strong> wave 1 = the eight independent full-frame stems plus the W2-F crop cell, all submitted up front in parallel. Wave 2 = the two sequential cells, submitted only after their declared fixed inputs (<code>r3-w1-crit-1</code>, <code>r3-w2-crit-1</code>) land and pass a fast base-integrity screen (image decodes, canvas shape sane, figure present). A failed screen skips that sequential cell — recorded in <code>rounds.md</code>, no substitute input; this is the planned stop-early gate.</li>
+</ul></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg><span>Experiment matrix</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Prompt</th><th>Out stem (output)</th><th>Rolls</th><th>Wave</th></tr></thead><tbody><tr><td>1</td><td><code>r2-w1-gptimage2-2</code> (1 image, declared)</td><td><code>prompts/r3-w1-rem.txt</code></td><td><code>scythe-valkyrie-r3-w1-rem</code></td><td>2</td><td>1</td></tr><tr><td>2</td><td><code>r2-w1-gptimage2-2</code> (1 image, declared)</td><td><code>prompts/r3-w1-crit.txt</code></td><td><code>scythe-valkyrie-r3-w1-crit</code></td><td>2</td><td>1</td></tr><tr><td>3</td><td><code>r2-w1-gptimage2-2</code> + <code>r3-blade-exemplar</code> (2 images, declared)</td><td><code>prompts/r3-w1-critex.txt</code></td><td><code>scythe-valkyrie-r3-w1-critex</code></td><td>2</td><td>1</td></tr><tr><td>4</td><td><code>r2-w1-gptimage2-2</code> (1 image, declared)</td><td><code>prompts/r3-w1-all.txt</code></td><td><code>scythe-valkyrie-r3-w1-all</code></td><td>2</td><td>1</td></tr><tr><td>5</td><td><code>r3-w1-crit-1</code> (1 image, declared; fixed at plan time)</td><td><code>prompts/r3-w1-seq.txt</code></td><td><code>scythe-valkyrie-r3-w1-seq</code></td><td>1</td><td>2</td></tr><tr><td>6</td><td><code>r2-w2-riverflow25-1</code> (1 image, declared)</td><td><code>prompts/r3-w2-rem.txt</code></td><td><code>scythe-valkyrie-r3-w2-rem</code></td><td>2</td><td>1</td></tr><tr><td>7</td><td><code>r2-w2-riverflow25-1</code> (1 image, declared)</td><td><code>prompts/r3-w2-crit.txt</code></td><td><code>scythe-valkyrie-r3-w2-crit</code></td><td>2</td><td>1</td></tr><tr><td>8</td><td><code>r2-w2-riverflow25-1</code> + <code>r3-blade-exemplar</code> (2 images, declared)</td><td><code>prompts/r3-w2-critex.txt</code></td><td><code>scythe-valkyrie-r3-w2-critex</code></td><td>2</td><td>1</td></tr><tr><td>9</td><td><code>r2-w2-riverflow25-1</code> (1 image, declared)</td><td><code>prompts/r3-w2-all.txt</code></td><td><code>scythe-valkyrie-r3-w2-all</code></td><td>2</td><td>1</td></tr><tr><td>10</td><td><code>r3-w2-crit-1</code> (1 image, declared; fixed at plan time)</td><td><code>prompts/r3-w2-seq.txt</code></td><td><code>scythe-valkyrie-r3-w2-seq</code></td><td>1</td><td>2</td></tr><tr><td>11</td><td><code>r3-w2-dagger-base</code> (1 image, declared)</td><td><code>prompts/r3-w2-dagger.txt</code></td><td><code>scythe-valkyrie-r3-w2-dagger</code></td><td>1</td><td>1</td></tr></tbody></table></div>
+<p>Rows 1–4 and 6–9 plan two same-stem rolls (<code>-1</code> and <code>-2</code>); rolls append and never overwrite. Row 11&#x27;s output is deterministically composited into <code>scythe-valkyrie-r3-w2-daggercomp-1</code> (free local step below). 19 paid calls total, reconciling with the choices table.</p></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>Publish and announce the proposed round (before sign-off)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><pre class="code"><code>set -euo pipefail
+python3 tools/render_runbook.py \
+  --runbook projects/bluemneme/scythe-valkyrie/runbooks/r3-runbook.md \
+  --cases projects/bluemneme/scythe-valkyrie/runbooks/r3-cases.json \
+  --review-pending --project &quot;BlueMneme&quot; --character &quot;Scythe Valkyrie&quot; \
+  --out /tmp/scythe-valkyrie-r3-runbook
+python3 tools/publish_review.py /tmp/scythe-valkyrie-r3-runbook \
+  --slug bluemneme/scythe-valkyrie/r3-runbook \
+  --title &quot;Scythe Valkyrie — Round 3 runbook&quot; \
+  --message &quot;Publish Scythe Valkyrie round 3 runbook&quot;
+python3 tools/discord_share.py --channel scythe-valkyrie \
+  --post-header --headline &quot;Round 3 — Scythe Valkyrie&quot; \
+  --status &quot;PROPOSED — wallpaper edit round published for Jake&#x27;s comment; awaiting sign-off; no generation yet&quot; \
+  --decision &quot;Edit strategy on the two picks: which arm&#x27;s fixes read best? Two prompt-interpretation checks in the runbook need Jake&#x27;s eyes.&quot; \
+  --spend-state &quot;\$0.00 of the \$4.00 cap&quot; \
+  --spend-estimate &quot;≈\$2.20 planned: 19 flash31 edit candidates + screening, no Meshy calls&quot; \
+  --artifact-link &quot;https://lackofcheese.github.io/ai-stl-review/reviews/bluemneme/scythe-valkyrie/r3-runbook/&quot; \
+  --artifact-label Runbook \
+  --once scythe-valkyrie-r3-header
+python3 tools/discord_share.py --channel scythe-valkyrie \
+  --thread &lt;header-message-id&gt; --thread-name &quot;Round 3 — Scythe Valkyrie updates&quot; \
+  --once scythe-valkyrie-r3-proposed-announcement \
+  --message &quot;&lt;round-open announcement&gt;&quot;</code></pre></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-branch"/></svg><span>Commands (run after sign-off and durable greenlight verification)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>On Dimitri&#x27;s sign-off: flip <code>Status:</code> to <code>Approved — not started (Dimitri, &lt;date&gt;)</code>, commit and push, re-publish this page from that commit, then append the gate pinning that exact commit and its published render. Post the approval reply and advance the header once the status change is on <code>main</code>.</p>
+<pre class="code"><code>python3 tools/round_gate.py append \
+  --file projects/bluemneme/scythe-valkyrie/round-gates.jsonl \
+  --round r3 --gate greenlight --actor dimitri --source cli \
+  --note &quot;&lt;quote or faithful summary of Dimitri&#x27;s approval&gt;&quot; \
+  --runbook-sha &quot;$(git rev-parse HEAD)&quot; \
+  --published-html &quot;$AI_STL_REVIEW_DIR/reviews/bluemneme/scythe-valkyrie/r3-runbook/index.html&quot;
+# commit + push the gate line, then:
+python3 tools/round_gate.py verify \
+  --file projects/bluemneme/scythe-valkyrie/round-gates.jsonl --round r3 \
+  --published-html &quot;$AI_STL_REVIEW_DIR/reviews/bluemneme/scythe-valkyrie/r3-runbook/index.html&quot;</code></pre>
+<h4>Post-merge start gate</h4>
+<p>The start PR changes current state in <code>rounds.md</code>, not this frozen plan. After Dimitri approves and merges it, execution begins with the exact fail-closed shape from the skill:</p>
+<pre class="code"><code>set -euo pipefail
+git fetch origin main
+test &quot;$(git rev-parse HEAD)&quot; = &quot;$(git rev-parse origin/main)&quot;
+python3 tools/round_gate.py verify \
+  --file projects/bluemneme/scythe-valkyrie/round-gates.jsonl --round r3 \
+  --published-html &quot;${AI_STL_REVIEW_DIR:-../ai-stl-review}/reviews/bluemneme/scythe-valkyrie/r3-runbook/index.html&quot;
+test &quot;$(git rev-parse HEAD)&quot; = &quot;$(git rev-parse origin/main)&quot;
+
+# Append the Discord start reply with a destination-scoped --once id.
+# Advance its header using that completed reply&#x27;s --event-id.
+# Only then run the paid provider commands below.</code></pre></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>Generation — wave 1 (9 cells, submitted up front in parallel)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>Per-cell logs under <code>notes/</code>, immediate Drive push, final unconditional sweep. Recovery is Gemini-only this round: resume with the recorded run id (<code>--resume-run</code>, or <code>gemini_batch.py list --remote</code> + <code>attach</code> when the id never reached the log); never resubmit a submitted Batch.</p>
+<pre class="code"><code>set -euo pipefail
+T=projects/bluemneme/scythe-valkyrie
+mkdir -p &quot;$T/generated&quot; &quot;$T/notes&quot;
+# Seed the Gemini balance on this host if not already current (USD):
+#   python3 tools/spend_preflight.py set-balance gemini AMOUNT_USD
+
+# The two bases and the two deterministic crops must already match Drive:
+bash tools/drive_sync.sh pull &quot;$T/generated&quot;
+
+PIDS=()
+gen() {  # gen &lt;stem&gt; &lt;rolls&gt; &lt;prompt&gt; &lt;log&gt; &lt;image...&gt;
+  local stem=&quot;$1&quot; rolls=&quot;$2&quot; prompt=&quot;$3&quot; log=&quot;$4&quot;; shift 4
+  local args=()
+  for img in &quot;$@&quot;; do args+=(--image &quot;$img&quot;); done
+  ( python3 tools/gemini_gen.py --prompt-file &quot;$prompt&quot; &quot;${args[@]}&quot; \
+      --out-dir &quot;$T/generated&quot; --out-stem &quot;$stem&quot; \
+      --model gemini-3.1-flash-image --image-size 2K --rolls &quot;$rolls&quot; \
+      --drive-sync 2&gt;&amp;1 | tee -a &quot;$T/notes/$log&quot; ) &amp;
+  PIDS+=($!)
+}
+W1=&quot;$T/generated/scythe-valkyrie-r2-w1-gptimage2-2.png&quot;
+W2=&quot;$T/generated/scythe-valkyrie-r2-w2-riverflow25-1.webp&quot;
+EX=&quot;$T/generated/scythe-valkyrie-r3-blade-exemplar.png&quot;
+DG=&quot;$T/generated/scythe-valkyrie-r3-w2-dagger-base.png&quot;
+gen scythe-valkyrie-r3-w1-rem    2 &quot;$T/prompts/r3-w1-rem.txt&quot;    r3-gen-w1-rem.log    &quot;$W1&quot;
+gen scythe-valkyrie-r3-w1-crit   2 &quot;$T/prompts/r3-w1-crit.txt&quot;   r3-gen-w1-crit.log   &quot;$W1&quot;
+gen scythe-valkyrie-r3-w1-critex 2 &quot;$T/prompts/r3-w1-critex.txt&quot; r3-gen-w1-critex.log &quot;$W1&quot; &quot;$EX&quot;
+gen scythe-valkyrie-r3-w1-all    2 &quot;$T/prompts/r3-w1-all.txt&quot;    r3-gen-w1-all.log    &quot;$W1&quot;
+gen scythe-valkyrie-r3-w2-rem    2 &quot;$T/prompts/r3-w2-rem.txt&quot;    r3-gen-w2-rem.log    &quot;$W2&quot;
+gen scythe-valkyrie-r3-w2-crit   2 &quot;$T/prompts/r3-w2-crit.txt&quot;   r3-gen-w2-crit.log   &quot;$W2&quot;
+gen scythe-valkyrie-r3-w2-critex 2 &quot;$T/prompts/r3-w2-critex.txt&quot; r3-gen-w2-critex.log &quot;$W2&quot; &quot;$EX&quot;
+gen scythe-valkyrie-r3-w2-all    2 &quot;$T/prompts/r3-w2-all.txt&quot;    r3-gen-w2-all.log    &quot;$W2&quot;
+gen scythe-valkyrie-r3-w2-dagger 1 &quot;$T/prompts/r3-w2-dagger.txt&quot; r3-gen-w2-dagger.log &quot;$DG&quot;
+FAIL=0
+for pid in &quot;${PIDS[@]}&quot;; do wait &quot;$pid&quot; || FAIL=1; done
+bash tools/drive_sync.sh push &quot;$T/generated&quot;
+(( FAIL == 0 )) || {
+  echo &quot;a cell failed — resume its recorded Batch run (never resubmit)&quot; &gt;&amp;2
+  exit 1
+}</code></pre></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-flask"/></svg><span>Generation — wave 2 (2 dependent cells, after fast screens)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>Base-integrity screen for each declared input (<code>r3-w1-crit-1</code>, <code>r3-w2-crit-1</code>): the file decodes, the canvas is the expected tall shape, and the FAST crop audit confirms an intact single figure (a failed edit is still a valid seq base if the figure is intact; a corrupted/garbled output is not). On a failed screen, skip that seq cell and record the skip in <code>rounds.md</code> — no substitute input.</p>
+<pre class="code"><code>set -euo pipefail
+T=projects/bluemneme/scythe-valkyrie
+C1=$(compgen -G &quot;$T/generated/scythe-valkyrie-r3-w1-crit-1.*&quot; | head -n1)
+C2=$(compgen -G &quot;$T/generated/scythe-valkyrie-r3-w2-crit-1.*&quot; | head -n1)
+test -n &quot;$C1&quot; &amp;&amp; python3 tools/gemini_gen.py \
+  --prompt-file &quot;$T/prompts/r3-w1-seq.txt&quot; --image &quot;$C1&quot; \
+  --out-dir &quot;$T/generated&quot; --out-stem scythe-valkyrie-r3-w1-seq \
+  --model gemini-3.1-flash-image --image-size 2K --rolls 1 \
+  --drive-sync 2&gt;&amp;1 | tee -a &quot;$T/notes/r3-gen-w1-seq.log&quot;
+test -n &quot;$C2&quot; &amp;&amp; python3 tools/gemini_gen.py \
+  --prompt-file &quot;$T/prompts/r3-w2-seq.txt&quot; --image &quot;$C2&quot; \
+  --out-dir &quot;$T/generated&quot; --out-stem scythe-valkyrie-r3-w2-seq \
+  --model gemini-3.1-flash-image --image-size 2K --rolls 1 \
+  --drive-sync 2&gt;&amp;1 | tee -a &quot;$T/notes/r3-gen-w2-seq.log&quot;
+bash tools/drive_sync.sh push &quot;$T/generated&quot;</code></pre></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>W2-F deterministic paste-back (free local step)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>The flash31 crop edit comes back at flash&#x27;s own resolution; resize it back to the exact 680x850 crop, feather-composite into the untouched 4K original at <code>(1180,1450)</code>, and register the derived artifact:</p>
+<pre class="code"><code>python3 - &lt;&lt;&#x27;EOF&#x27;
+from PIL import Image
+import numpy as np, glob
+T = &#x27;projects/bluemneme/scythe-valkyrie/generated/&#x27;
+edit = Image.open(glob.glob(T+&#x27;scythe-valkyrie-r3-w2-dagger-1.*&#x27;)[0]).convert(&#x27;RGB&#x27;).resize((680,850), Image.LANCZOS)
+base = Image.open(T+&#x27;scythe-valkyrie-r2-w2-riverflow25-1.webp&#x27;).convert(&#x27;RGB&#x27;)
+m = np.zeros((850,680), dtype=np.float32); F = 48  # feather px
+for i in range(850):
+    for j in range(680):
+        m[i,j] = min(1.0, min(i, 849-i, j, 679-j) / F)
+mask = Image.fromarray((m*255).astype(&#x27;uint8&#x27;))
+base.paste(edit, (1180,1450), mask)
+base.save(T+&#x27;scythe-valkyrie-r3-w2-daggercomp-1.png&#x27;)
+EOF
+bash tools/drive_sync.sh push projects/bluemneme/scythe-valkyrie/generated
+# then append the derived-crop lineage record for r3-w2-daggercomp-1
+# (parents: r3-w2-dagger-1 + r2-w2-riverflow25-1, this exact command).</code></pre></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-flask"/></svg><span>FAST lane — crop audits and the edit-locality screen</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><ul>
+<li>Fresh-context crop audit per output as it lands: one chip per asked edit (landed / partial / failed / mutated), plus base-fidelity chips (face, pose, background, lighting) and any NEW tells introduced; verdicts append via <code>tools/review_log.py</code> (reviewer <code>claude-crop-audit</code>).</li>
+<li>Deterministic edit-locality screen (navigation only, no gate): resize the output to its base&#x27;s canvas, mean-abs RGB diff, report the changed-pixel fraction (threshold |Δ|&gt;12) inside vs outside the arm&#x27;s declared edit regions. Declared regions (approximate, viewer coordinates on the base canvas):</li>
+<ul>
+<li>W1 (1152x2560): BLADE = (0,1750)-(1152,2560) ∪ (820,1500)-(1152,2000); WINGTOPS = (0,150)-(330,700) ∪ (700,0)-(1152,650); HAFT = (150,450)-(950,1750); GRIP = (700,1050)-(950,1400). Arms A/B/C: BLADE ∪ WINGTOPS; arm D: + HAFT ∪ GRIP; arm E: HAFT ∪ GRIP.</li>
+<li>W2 (2160x3840): DAGGER/GRIP = (1180,1450)-(1860,2300); SKULL = (700,1320)-(1060,1660); SHARD = (330,1930)-(540,2120); BLADE = (0,2400)-(2160,3840) ∪ (1500,2700)-(2160,3400); WINGTOPS = (1250,0)-(2160,1100). Arm A: DAGGER ∪ SKULL ∪ SHARD; arms B/C/D: + BLADE ∪ WINGTOPS; arm E: DAGGER/GRIP; W2-F composite: DAGGER (expect ~zero outside).</li>
+</ul>
+<li>Canvas shape recorded per output; the flash31 shape behaviour on tall photoreal edits goes to <code>rounds.md</code> (r2&#x27;s template evidence was 9:20-ish but not pixel-exact).</li>
+</ul></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-flask"/></svg><span>SLOW lane — round-level blind detector</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>Expected set = the 19 reviewable outputs: <code>-1</code>/<code>-2</code> of the eight full-frame stems, the up-to-two seq cells (minus any recorded skip), and <code>r3-w2-daggercomp-1</code>. The raw <code>r3-w2-dagger-1</code> crop output is excluded (not a full-frame candidate; its evidence lives in the composite). Build the manifest with the same exact-set gate shape as r2 (enumerate expected ids independently, refuse missing/duplicate/extra), submit one two-wave Batch run against <code>spec.md</code>, resume — never resubmit — after interruption, and require the completeness postcondition (blind-detect records from THIS run for all and only the expected ids) before the panel is rebuilt COMPLETE.</p></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>Panel and finishing</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><ul>
+<li>Build <code>r3-panel.json</code> (asks + next_steps mandatory; <code>runbook</code> field set): every card shows the arm beside its base with the locality-diff figures in the card notes; the two base originals head the auto-derived core inputs strip. Share as <strong>PROVISIONAL — slow checks pending</strong> once FAST is complete on all landed outputs; rebuild as <strong>COMPLETE</strong> when the blind run lands. Public Pages publication for Jake needs Dimitri&#x27;s separate per-review OK.</li>
+<li>On Jake&#x27;s pick: a W1 winner ships as the free local 1080x2400 downscale (push to Drive, record the exact command in <code>rounds.md</code>); a W2 winner closes this round on the pick, with its 9:16→9:20 scenery extension planned as its own follow-up round. If every arm loses to its base, the round closes reject-all and the untouched r2 picks stand.</li>
+</ul></div></details>
+</section>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+<template id="in-0"><h2>scythe-valkyrie-r2-w1-gptimage2-2</h2><p class="gmeta">gpt-image-2-2026-04-21 via openai · size=1152x2560 quality=high output_format=png · $0.16 · 2026-08-07T05:44:18</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r2-w1-ember.txt</p><pre>OUTPUT AND CAMERA
+A photorealistic full-body cinematic character render of an original character, composed as a premium PHONE WALLPAPER in tall 9:20 portrait orientation for a 1080x2400 screen. Show ONE figure only, in a NEAR-FRONTAL THREE-QUARTER view, large in frame — she fills most of the frame height and is the unambiguous subject, with softly dramatic lighting and crisp detail on the character over a quieter, softer background. The complete scythe from counterweight to blade tip stays inside the frame; the wings may run off the frame edges rather than shrinking her. This is character concept art, not a photograph of a toy: no presentation card, no watermark, and no text, labels, logos, or game marks anywhere in the image.
+
+HAIR AND HALO — NO HOOD, CROWN FULLY REVEALED
+She wears NO hood and no mantle: her hair and face are fully revealed. Rising above and behind her head is her DARK DEATH CROWN — an ominous halo-like crown in the suit&#x27;s own design language: SPIKY radiating blades forming a deliberately BROKEN, PARTIAL arc — never a full closed circle — dark gunmetal with silver edge highlights, grimdark, ceremonial, and ominous, reading clearly as a crown of death. It is mounted solidly behind her head through visible sculpted supports, and it is not any existing franchise halo design.
+
+HELD-CONSTANT CHARACTER PROGRAM
+She is an original ANGEL-OF-DEATH VALKYRIE — an elegant, ominous, ceremonial reaper, played absolutely straight. Slender adult feminine build with realistic proportions, not heroic exaggeration. Her face has mature East Asian features, a calm direct gaze, and a softly angular oval face — an original face, no real person&#x27;s likeness. Her long dark hair is elegant and sculptural; it may hang with a gentle echo of the wing arc, but it must NOT stream as if she were mid-attack.
+
+Her suit is a sleek, solid death-valkyrie armor in an original design language: dark gunmetal and black primary surfaces, silver structural framing and edge highlights, restrained deep-red accents. Her lower body wears a SECTIONED METAL SKIRT that reads as a skirt/cloak hybrid, with separate shaped armour on each leg and armored boots. The chestplate leaves a slight gap of bare skin between its top edge and her neck — a modest decolletage. Panel lines are bold and sculptural. The styling motif is skull-and-death themed — ominous, elegant, ceremonial — expressed through the sculpted forms themselves, never through printed graphics.
+
+Her WINGS are a dark wing array MIXING BIOLOGICAL AND MECHANICAL construction: dark crow-like feathering layered with articulated SOLID metal wing-blades, silver structural framing, and red accents. EXACTLY TWO wings attach through explicit, solid mechanical roots at her upper back — one spreading on the VIEWER&#x27;S LEFT and one on the VIEWER&#x27;S RIGHT, never both on one side — and they curve gently INWARDS to suit the tall frame; asymmetry between the two wings is welcome. Never detached, never floating free of her back.
+
+Her ONLY prop is a GREAT SCYTHE in the same design language — an elegant valkyrie weapon, not a farm tool. The haft is perfectly STRAIGHT with a smooth CYLINDRICAL cross-section — never curved, never hexagonal or faceted — armored in the suit&#x27;s design language, with a spear-like counterweight projecting beyond the upper grip. The blade is exactly ONE long blade with smooth, CONSISTENT curvature along its whole length, joined to the haft by an ornate mechanical head — techno-gothic, and never a second blade anywhere on the weapon. She holds it two-handed with the grips widely separated: BOTH hands are unmistakable five-fingered wraps around the clean haft, thumbs visible, with unbroken shoulder-to-hand anatomy. She carries nothing else — no firearm, no staff, no second prop.
+
+POSE AND COMPOSITION
+The pose is POISED, STATUESQUE, and OMINOUS — a controlled character portrait, never a mid-swing action frame. She LEVITATES: both feet float clearly above the ground, armored toes pointed downward, with nothing touching or supporting her. Even while floating, her body holds a tall near-frontal three-quarter CONTRAPPOSTO with a pronounced vertical S-curve: the pelvis sits under a lifted, backward-arched chest, and her head tilts back and to the side while her eyes turn toward the viewer. The VIEWER&#x27;S RIGHT leg is long and nearly straight as if carrying weight; the VIEWER&#x27;S LEFT leg is relaxed and slightly bent. Her upper hand grips the haft around waist level on the VIEWER&#x27;S LEFT; her lower hand grips beside her upper thigh on the VIEWER&#x27;S RIGHT. The haft cuts steeply from upper VIEWER&#x27;S LEFT to lower VIEWER&#x27;S RIGHT, passing IN FRONT of her body — the scythe is on full display, never hidden behind her. The ornate blade head sits low on the VIEWER&#x27;S RIGHT, and the long blade sweeps across IN FRONT of her legs toward the lower VIEWER&#x27;S LEFT with clearly visible clearance from her body. One large wing mass rises toward the upper VIEWER&#x27;S RIGHT; the other sweeps down and out toward the lower VIEWER&#x27;S LEFT, opposing the haft diagonal and swirling the composition while the body itself stays still.
+
+BACKGROUND AND GLOW — W1 EMBER AFTERMATH
+Far below and behind her, a ruined city reduced to rubble: low broken silhouettes, drifting smoke, sparse rising embers, a deep warm ember light glowing low in the scene under a dark sky. The background stays soft, low-contrast, and uncluttered — all focus stays on the character, and the quiet destruction implies she is partly responsible for it. A SUBTLE ember-orange energy radiance traces the blade edge and the halo spikes — restrained and dim, with no lens flares, no bright beams, and no explosions of light.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-1"><h2>scythe-valkyrie-r2-w1-gptimage2-2</h2><p class="gmeta">gpt-image-2-2026-04-21 via openai · size=1152x2560 quality=high output_format=png · $0.16 · 2026-08-07T05:44:18</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r2-w1-ember.txt</p><pre>OUTPUT AND CAMERA
+A photorealistic full-body cinematic character render of an original character, composed as a premium PHONE WALLPAPER in tall 9:20 portrait orientation for a 1080x2400 screen. Show ONE figure only, in a NEAR-FRONTAL THREE-QUARTER view, large in frame — she fills most of the frame height and is the unambiguous subject, with softly dramatic lighting and crisp detail on the character over a quieter, softer background. The complete scythe from counterweight to blade tip stays inside the frame; the wings may run off the frame edges rather than shrinking her. This is character concept art, not a photograph of a toy: no presentation card, no watermark, and no text, labels, logos, or game marks anywhere in the image.
+
+HAIR AND HALO — NO HOOD, CROWN FULLY REVEALED
+She wears NO hood and no mantle: her hair and face are fully revealed. Rising above and behind her head is her DARK DEATH CROWN — an ominous halo-like crown in the suit&#x27;s own design language: SPIKY radiating blades forming a deliberately BROKEN, PARTIAL arc — never a full closed circle — dark gunmetal with silver edge highlights, grimdark, ceremonial, and ominous, reading clearly as a crown of death. It is mounted solidly behind her head through visible sculpted supports, and it is not any existing franchise halo design.
+
+HELD-CONSTANT CHARACTER PROGRAM
+She is an original ANGEL-OF-DEATH VALKYRIE — an elegant, ominous, ceremonial reaper, played absolutely straight. Slender adult feminine build with realistic proportions, not heroic exaggeration. Her face has mature East Asian features, a calm direct gaze, and a softly angular oval face — an original face, no real person&#x27;s likeness. Her long dark hair is elegant and sculptural; it may hang with a gentle echo of the wing arc, but it must NOT stream as if she were mid-attack.
+
+Her suit is a sleek, solid death-valkyrie armor in an original design language: dark gunmetal and black primary surfaces, silver structural framing and edge highlights, restrained deep-red accents. Her lower body wears a SECTIONED METAL SKIRT that reads as a skirt/cloak hybrid, with separate shaped armour on each leg and armored boots. The chestplate leaves a slight gap of bare skin between its top edge and her neck — a modest decolletage. Panel lines are bold and sculptural. The styling motif is skull-and-death themed — ominous, elegant, ceremonial — expressed through the sculpted forms themselves, never through printed graphics.
+
+Her WINGS are a dark wing array MIXING BIOLOGICAL AND MECHANICAL construction: dark crow-like feathering layered with articulated SOLID metal wing-blades, silver structural framing, and red accents. EXACTLY TWO wings attach through explicit, solid mechanical roots at her upper back — one spreading on the VIEWER&#x27;S LEFT and one on the VIEWER&#x27;S RIGHT, never both on one side — and they curve gently INWARDS to suit the tall frame; asymmetry between the two wings is welcome. Never detached, never floating free of her back.
+
+Her ONLY prop is a GREAT SCYTHE in the same design language — an elegant valkyrie weapon, not a farm tool. The haft is perfectly STRAIGHT with a smooth CYLINDRICAL cross-section — never curved, never hexagonal or faceted — armored in the suit&#x27;s design language, with a spear-like counterweight projecting beyond the upper grip. The blade is exactly ONE long blade with smooth, CONSISTENT curvature along its whole length, joined to the haft by an ornate mechanical head — techno-gothic, and never a second blade anywhere on the weapon. She holds it two-handed with the grips widely separated: BOTH hands are unmistakable five-fingered wraps around the clean haft, thumbs visible, with unbroken shoulder-to-hand anatomy. She carries nothing else — no firearm, no staff, no second prop.
+
+POSE AND COMPOSITION
+The pose is POISED, STATUESQUE, and OMINOUS — a controlled character portrait, never a mid-swing action frame. She LEVITATES: both feet float clearly above the ground, armored toes pointed downward, with nothing touching or supporting her. Even while floating, her body holds a tall near-frontal three-quarter CONTRAPPOSTO with a pronounced vertical S-curve: the pelvis sits under a lifted, backward-arched chest, and her head tilts back and to the side while her eyes turn toward the viewer. The VIEWER&#x27;S RIGHT leg is long and nearly straight as if carrying weight; the VIEWER&#x27;S LEFT leg is relaxed and slightly bent. Her upper hand grips the haft around waist level on the VIEWER&#x27;S LEFT; her lower hand grips beside her upper thigh on the VIEWER&#x27;S RIGHT. The haft cuts steeply from upper VIEWER&#x27;S LEFT to lower VIEWER&#x27;S RIGHT, passing IN FRONT of her body — the scythe is on full display, never hidden behind her. The ornate blade head sits low on the VIEWER&#x27;S RIGHT, and the long blade sweeps across IN FRONT of her legs toward the lower VIEWER&#x27;S LEFT with clearly visible clearance from her body. One large wing mass rises toward the upper VIEWER&#x27;S RIGHT; the other sweeps down and out toward the lower VIEWER&#x27;S LEFT, opposing the haft diagonal and swirling the composition while the body itself stays still.
+
+BACKGROUND AND GLOW — W1 EMBER AFTERMATH
+Far below and behind her, a ruined city reduced to rubble: low broken silhouettes, drifting smoke, sparse rising embers, a deep warm ember light glowing low in the scene under a dark sky. The background stays soft, low-contrast, and uncluttered — all focus stays on the character, and the quiet destruction implies she is partly responsible for it. A SUBTLE ember-orange energy radiance traces the blade edge and the halo spikes — restrained and dim, with no lens flares, no bright beams, and no explosions of light.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-2"><h2>scythe-valkyrie-r2-w1-gptimage2-2</h2><p class="gmeta">gpt-image-2-2026-04-21 via openai · size=1152x2560 quality=high output_format=png · $0.16 · 2026-08-07T05:44:18</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r2-w1-ember.txt</p><pre>OUTPUT AND CAMERA
+A photorealistic full-body cinematic character render of an original character, composed as a premium PHONE WALLPAPER in tall 9:20 portrait orientation for a 1080x2400 screen. Show ONE figure only, in a NEAR-FRONTAL THREE-QUARTER view, large in frame — she fills most of the frame height and is the unambiguous subject, with softly dramatic lighting and crisp detail on the character over a quieter, softer background. The complete scythe from counterweight to blade tip stays inside the frame; the wings may run off the frame edges rather than shrinking her. This is character concept art, not a photograph of a toy: no presentation card, no watermark, and no text, labels, logos, or game marks anywhere in the image.
+
+HAIR AND HALO — NO HOOD, CROWN FULLY REVEALED
+She wears NO hood and no mantle: her hair and face are fully revealed. Rising above and behind her head is her DARK DEATH CROWN — an ominous halo-like crown in the suit&#x27;s own design language: SPIKY radiating blades forming a deliberately BROKEN, PARTIAL arc — never a full closed circle — dark gunmetal with silver edge highlights, grimdark, ceremonial, and ominous, reading clearly as a crown of death. It is mounted solidly behind her head through visible sculpted supports, and it is not any existing franchise halo design.
+
+HELD-CONSTANT CHARACTER PROGRAM
+She is an original ANGEL-OF-DEATH VALKYRIE — an elegant, ominous, ceremonial reaper, played absolutely straight. Slender adult feminine build with realistic proportions, not heroic exaggeration. Her face has mature East Asian features, a calm direct gaze, and a softly angular oval face — an original face, no real person&#x27;s likeness. Her long dark hair is elegant and sculptural; it may hang with a gentle echo of the wing arc, but it must NOT stream as if she were mid-attack.
+
+Her suit is a sleek, solid death-valkyrie armor in an original design language: dark gunmetal and black primary surfaces, silver structural framing and edge highlights, restrained deep-red accents. Her lower body wears a SECTIONED METAL SKIRT that reads as a skirt/cloak hybrid, with separate shaped armour on each leg and armored boots. The chestplate leaves a slight gap of bare skin between its top edge and her neck — a modest decolletage. Panel lines are bold and sculptural. The styling motif is skull-and-death themed — ominous, elegant, ceremonial — expressed through the sculpted forms themselves, never through printed graphics.
+
+Her WINGS are a dark wing array MIXING BIOLOGICAL AND MECHANICAL construction: dark crow-like feathering layered with articulated SOLID metal wing-blades, silver structural framing, and red accents. EXACTLY TWO wings attach through explicit, solid mechanical roots at her upper back — one spreading on the VIEWER&#x27;S LEFT and one on the VIEWER&#x27;S RIGHT, never both on one side — and they curve gently INWARDS to suit the tall frame; asymmetry between the two wings is welcome. Never detached, never floating free of her back.
+
+Her ONLY prop is a GREAT SCYTHE in the same design language — an elegant valkyrie weapon, not a farm tool. The haft is perfectly STRAIGHT with a smooth CYLINDRICAL cross-section — never curved, never hexagonal or faceted — armored in the suit&#x27;s design language, with a spear-like counterweight projecting beyond the upper grip. The blade is exactly ONE long blade with smooth, CONSISTENT curvature along its whole length, joined to the haft by an ornate mechanical head — techno-gothic, and never a second blade anywhere on the weapon. She holds it two-handed with the grips widely separated: BOTH hands are unmistakable five-fingered wraps around the clean haft, thumbs visible, with unbroken shoulder-to-hand anatomy. She carries nothing else — no firearm, no staff, no second prop.
+
+POSE AND COMPOSITION
+The pose is POISED, STATUESQUE, and OMINOUS — a controlled character portrait, never a mid-swing action frame. She LEVITATES: both feet float clearly above the ground, armored toes pointed downward, with nothing touching or supporting her. Even while floating, her body holds a tall near-frontal three-quarter CONTRAPPOSTO with a pronounced vertical S-curve: the pelvis sits under a lifted, backward-arched chest, and her head tilts back and to the side while her eyes turn toward the viewer. The VIEWER&#x27;S RIGHT leg is long and nearly straight as if carrying weight; the VIEWER&#x27;S LEFT leg is relaxed and slightly bent. Her upper hand grips the haft around waist level on the VIEWER&#x27;S LEFT; her lower hand grips beside her upper thigh on the VIEWER&#x27;S RIGHT. The haft cuts steeply from upper VIEWER&#x27;S LEFT to lower VIEWER&#x27;S RIGHT, passing IN FRONT of her body — the scythe is on full display, never hidden behind her. The ornate blade head sits low on the VIEWER&#x27;S RIGHT, and the long blade sweeps across IN FRONT of her legs toward the lower VIEWER&#x27;S LEFT with clearly visible clearance from her body. One large wing mass rises toward the upper VIEWER&#x27;S RIGHT; the other sweeps down and out toward the lower VIEWER&#x27;S LEFT, opposing the haft diagonal and swirling the composition while the body itself stays still.
+
+BACKGROUND AND GLOW — W1 EMBER AFTERMATH
+Far below and behind her, a ruined city reduced to rubble: low broken silhouettes, drifting smoke, sparse rising embers, a deep warm ember light glowing low in the scene under a dark sky. The background stays soft, low-contrast, and uncluttered — all focus stays on the character, and the quiet destruction implies she is partly responsible for it. A SUBTLE ember-orange energy radiance traces the blade edge and the halo spikes — restrained and dim, with no lens flares, no bright beams, and no explosions of light.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-3"><h2>scythe-valkyrie-r3-blade-exemplar</h2><p class="gmeta">? · 2026-08-07T14:22:13</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/b5bf1c715e73b00d.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/f11e636c945b5b78.jpg" data-cap="scythe-valkyrie-r1-v3-riverflow25-1.webp" alt="scythe-valkyrie-r1-v3-riverflow25-1.webp"><figcaption>scythe-valkyrie-r1-v3-riverflow25-1.webp</figcaption></figure></div></template>
+<template id="in-4"><h2>scythe-valkyrie-r2-w1-gptimage2-2</h2><p class="gmeta">gpt-image-2-2026-04-21 via openai · size=1152x2560 quality=high output_format=png · $0.16 · 2026-08-07T05:44:18</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r2-w1-ember.txt</p><pre>OUTPUT AND CAMERA
+A photorealistic full-body cinematic character render of an original character, composed as a premium PHONE WALLPAPER in tall 9:20 portrait orientation for a 1080x2400 screen. Show ONE figure only, in a NEAR-FRONTAL THREE-QUARTER view, large in frame — she fills most of the frame height and is the unambiguous subject, with softly dramatic lighting and crisp detail on the character over a quieter, softer background. The complete scythe from counterweight to blade tip stays inside the frame; the wings may run off the frame edges rather than shrinking her. This is character concept art, not a photograph of a toy: no presentation card, no watermark, and no text, labels, logos, or game marks anywhere in the image.
+
+HAIR AND HALO — NO HOOD, CROWN FULLY REVEALED
+She wears NO hood and no mantle: her hair and face are fully revealed. Rising above and behind her head is her DARK DEATH CROWN — an ominous halo-like crown in the suit&#x27;s own design language: SPIKY radiating blades forming a deliberately BROKEN, PARTIAL arc — never a full closed circle — dark gunmetal with silver edge highlights, grimdark, ceremonial, and ominous, reading clearly as a crown of death. It is mounted solidly behind her head through visible sculpted supports, and it is not any existing franchise halo design.
+
+HELD-CONSTANT CHARACTER PROGRAM
+She is an original ANGEL-OF-DEATH VALKYRIE — an elegant, ominous, ceremonial reaper, played absolutely straight. Slender adult feminine build with realistic proportions, not heroic exaggeration. Her face has mature East Asian features, a calm direct gaze, and a softly angular oval face — an original face, no real person&#x27;s likeness. Her long dark hair is elegant and sculptural; it may hang with a gentle echo of the wing arc, but it must NOT stream as if she were mid-attack.
+
+Her suit is a sleek, solid death-valkyrie armor in an original design language: dark gunmetal and black primary surfaces, silver structural framing and edge highlights, restrained deep-red accents. Her lower body wears a SECTIONED METAL SKIRT that reads as a skirt/cloak hybrid, with separate shaped armour on each leg and armored boots. The chestplate leaves a slight gap of bare skin between its top edge and her neck — a modest decolletage. Panel lines are bold and sculptural. The styling motif is skull-and-death themed — ominous, elegant, ceremonial — expressed through the sculpted forms themselves, never through printed graphics.
+
+Her WINGS are a dark wing array MIXING BIOLOGICAL AND MECHANICAL construction: dark crow-like feathering layered with articulated SOLID metal wing-blades, silver structural framing, and red accents. EXACTLY TWO wings attach through explicit, solid mechanical roots at her upper back — one spreading on the VIEWER&#x27;S LEFT and one on the VIEWER&#x27;S RIGHT, never both on one side — and they curve gently INWARDS to suit the tall frame; asymmetry between the two wings is welcome. Never detached, never floating free of her back.
+
+Her ONLY prop is a GREAT SCYTHE in the same design language — an elegant valkyrie weapon, not a farm tool. The haft is perfectly STRAIGHT with a smooth CYLINDRICAL cross-section — never curved, never hexagonal or faceted — armored in the suit&#x27;s design language, with a spear-like counterweight projecting beyond the upper grip. The blade is exactly ONE long blade with smooth, CONSISTENT curvature along its whole length, joined to the haft by an ornate mechanical head — techno-gothic, and never a second blade anywhere on the weapon. She holds it two-handed with the grips widely separated: BOTH hands are unmistakable five-fingered wraps around the clean haft, thumbs visible, with unbroken shoulder-to-hand anatomy. She carries nothing else — no firearm, no staff, no second prop.
+
+POSE AND COMPOSITION
+The pose is POISED, STATUESQUE, and OMINOUS — a controlled character portrait, never a mid-swing action frame. She LEVITATES: both feet float clearly above the ground, armored toes pointed downward, with nothing touching or supporting her. Even while floating, her body holds a tall near-frontal three-quarter CONTRAPPOSTO with a pronounced vertical S-curve: the pelvis sits under a lifted, backward-arched chest, and her head tilts back and to the side while her eyes turn toward the viewer. The VIEWER&#x27;S RIGHT leg is long and nearly straight as if carrying weight; the VIEWER&#x27;S LEFT leg is relaxed and slightly bent. Her upper hand grips the haft around waist level on the VIEWER&#x27;S LEFT; her lower hand grips beside her upper thigh on the VIEWER&#x27;S RIGHT. The haft cuts steeply from upper VIEWER&#x27;S LEFT to lower VIEWER&#x27;S RIGHT, passing IN FRONT of her body — the scythe is on full display, never hidden behind her. The ornate blade head sits low on the VIEWER&#x27;S RIGHT, and the long blade sweeps across IN FRONT of her legs toward the lower VIEWER&#x27;S LEFT with clearly visible clearance from her body. One large wing mass rises toward the upper VIEWER&#x27;S RIGHT; the other sweeps down and out toward the lower VIEWER&#x27;S LEFT, opposing the haft diagonal and swirling the composition while the body itself stays still.
+
+BACKGROUND AND GLOW — W1 EMBER AFTERMATH
+Far below and behind her, a ruined city reduced to rubble: low broken silhouettes, drifting smoke, sparse rising embers, a deep warm ember light glowing low in the scene under a dark sky. The background stays soft, low-contrast, and uncluttered — all focus stays on the character, and the quiet destruction implies she is partly responsible for it. A SUBTLE ember-orange energy radiance traces the blade edge and the halo spikes — restrained and dim, with no lens flares, no bright beams, and no explosions of light.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-5"><h2>scythe-valkyrie-r2-w2-riverflow25-1</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=4K aspect_ratio=9:16 · $0.47 · 2026-08-07T05:35:50</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r2-w2-fog.txt</p><pre>OUTPUT AND CAMERA
+A photorealistic full-body cinematic character render of an original character, composed as a premium PHONE WALLPAPER in tall 9:20 portrait orientation for a 1080x2400 screen. Show ONE figure only, in a NEAR-FRONTAL THREE-QUARTER view, large in frame — she fills most of the frame height and is the unambiguous subject, with softly dramatic lighting and crisp detail on the character over a quieter, softer background. The complete scythe from counterweight to blade tip stays inside the frame; the wings may run off the frame edges rather than shrinking her. This is character concept art, not a photograph of a toy: no presentation card, no watermark, and no text, labels, logos, or game marks anywhere in the image.
+
+HAIR AND HALO — NO HOOD, CROWN FULLY REVEALED
+She wears NO hood and no mantle: her hair and face are fully revealed. Rising above and behind her head is her DARK DEATH CROWN — an ominous halo-like crown in the suit&#x27;s own design language: SPIKY radiating blades forming a deliberately BROKEN, PARTIAL arc — never a full closed circle — dark gunmetal with silver edge highlights, grimdark, ceremonial, and ominous, reading clearly as a crown of death. It is mounted solidly behind her head through visible sculpted supports, and it is not any existing franchise halo design.
+
+HELD-CONSTANT CHARACTER PROGRAM
+She is an original ANGEL-OF-DEATH VALKYRIE — an elegant, ominous, ceremonial reaper, played absolutely straight. Slender adult feminine build with realistic proportions, not heroic exaggeration. Her face has mature East Asian features, a calm direct gaze, and a softly angular oval face — an original face, no real person&#x27;s likeness. Her long dark hair is elegant and sculptural; it may hang with a gentle echo of the wing arc, but it must NOT stream as if she were mid-attack.
+
+Her suit is a sleek, solid death-valkyrie armor in an original design language: dark gunmetal and black primary surfaces, silver structural framing and edge highlights, restrained deep-red accents. Her lower body wears a SECTIONED METAL SKIRT that reads as a skirt/cloak hybrid, with separate shaped armour on each leg and armored boots. The chestplate leaves a slight gap of bare skin between its top edge and her neck — a modest decolletage. Panel lines are bold and sculptural. The styling motif is skull-and-death themed — ominous, elegant, ceremonial — expressed through the sculpted forms themselves, never through printed graphics.
+
+Her WINGS are a dark wing array MIXING BIOLOGICAL AND MECHANICAL construction: dark crow-like feathering layered with articulated SOLID metal wing-blades, silver structural framing, and red accents. EXACTLY TWO wings attach through explicit, solid mechanical roots at her upper back — one spreading on the VIEWER&#x27;S LEFT and one on the VIEWER&#x27;S RIGHT, never both on one side — and they curve gently INWARDS to suit the tall frame; asymmetry between the two wings is welcome. Never detached, never floating free of her back.
+
+Her ONLY prop is a GREAT SCYTHE in the same design language — an elegant valkyrie weapon, not a farm tool. The haft is perfectly STRAIGHT with a smooth CYLINDRICAL cross-section — never curved, never hexagonal or faceted — armored in the suit&#x27;s design language, with a spear-like counterweight projecting beyond the upper grip. The blade is exactly ONE long blade with smooth, CONSISTENT curvature along its whole length, joined to the haft by an ornate mechanical head — techno-gothic, and never a second blade anywhere on the weapon. She holds it two-handed with the grips widely separated: BOTH hands are unmistakable five-fingered wraps around the clean haft, thumbs visible, with unbroken shoulder-to-hand anatomy. She carries nothing else — no firearm, no staff, no second prop.
+
+POSE AND COMPOSITION
+The pose is POISED, STATUESQUE, and OMINOUS — a controlled character portrait, never a mid-swing action frame. She LEVITATES: both feet float clearly above the ground, armored toes pointed downward, with nothing touching or supporting her. Even while floating, her body holds a tall near-frontal three-quarter CONTRAPPOSTO with a pronounced vertical S-curve: the pelvis sits under a lifted, backward-arched chest, and her head tilts back and to the side while her eyes turn toward the viewer. The VIEWER&#x27;S RIGHT leg is long and nearly straight as if carrying weight; the VIEWER&#x27;S LEFT leg is relaxed and slightly bent. Her upper hand grips the haft around waist level on the VIEWER&#x27;S LEFT; her lower hand grips beside her upper thigh on the VIEWER&#x27;S RIGHT. The haft cuts steeply from upper VIEWER&#x27;S LEFT to lower VIEWER&#x27;S RIGHT, passing IN FRONT of her body — the scythe is on full display, never hidden behind her. The ornate blade head sits low on the VIEWER&#x27;S RIGHT, and the long blade sweeps across IN FRONT of her legs toward the lower VIEWER&#x27;S LEFT with clearly visible clearance from her body. One large wing mass rises toward the upper VIEWER&#x27;S RIGHT; the other sweeps down and out toward the lower VIEWER&#x27;S LEFT, opposing the haft diagonal and swirling the composition while the body itself stays still.
+
+BACKGROUND AND GLOW — W2 COLD FOG
+Shattered ruins dissolve into pale fog behind and below her: a cool grey-blue moonlit palette, with soft backlight rimming her silhouette. The background stays soft, low-contrast, and uncluttered — all focus stays on the character, and the fog-shrouded ruin implies she is partly responsible for it. A SUBTLE cold silver-white radiance traces the halo spikes and the wing edges, leaving her red accents as the only warm notes — restrained and dim, with no lens flares, no bright beams, and no explosions of light.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-6"><h2>scythe-valkyrie-r2-w2-riverflow25-1</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=4K aspect_ratio=9:16 · $0.47 · 2026-08-07T05:35:50</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r2-w2-fog.txt</p><pre>OUTPUT AND CAMERA
+A photorealistic full-body cinematic character render of an original character, composed as a premium PHONE WALLPAPER in tall 9:20 portrait orientation for a 1080x2400 screen. Show ONE figure only, in a NEAR-FRONTAL THREE-QUARTER view, large in frame — she fills most of the frame height and is the unambiguous subject, with softly dramatic lighting and crisp detail on the character over a quieter, softer background. The complete scythe from counterweight to blade tip stays inside the frame; the wings may run off the frame edges rather than shrinking her. This is character concept art, not a photograph of a toy: no presentation card, no watermark, and no text, labels, logos, or game marks anywhere in the image.
+
+HAIR AND HALO — NO HOOD, CROWN FULLY REVEALED
+She wears NO hood and no mantle: her hair and face are fully revealed. Rising above and behind her head is her DARK DEATH CROWN — an ominous halo-like crown in the suit&#x27;s own design language: SPIKY radiating blades forming a deliberately BROKEN, PARTIAL arc — never a full closed circle — dark gunmetal with silver edge highlights, grimdark, ceremonial, and ominous, reading clearly as a crown of death. It is mounted solidly behind her head through visible sculpted supports, and it is not any existing franchise halo design.
+
+HELD-CONSTANT CHARACTER PROGRAM
+She is an original ANGEL-OF-DEATH VALKYRIE — an elegant, ominous, ceremonial reaper, played absolutely straight. Slender adult feminine build with realistic proportions, not heroic exaggeration. Her face has mature East Asian features, a calm direct gaze, and a softly angular oval face — an original face, no real person&#x27;s likeness. Her long dark hair is elegant and sculptural; it may hang with a gentle echo of the wing arc, but it must NOT stream as if she were mid-attack.
+
+Her suit is a sleek, solid death-valkyrie armor in an original design language: dark gunmetal and black primary surfaces, silver structural framing and edge highlights, restrained deep-red accents. Her lower body wears a SECTIONED METAL SKIRT that reads as a skirt/cloak hybrid, with separate shaped armour on each leg and armored boots. The chestplate leaves a slight gap of bare skin between its top edge and her neck — a modest decolletage. Panel lines are bold and sculptural. The styling motif is skull-and-death themed — ominous, elegant, ceremonial — expressed through the sculpted forms themselves, never through printed graphics.
+
+Her WINGS are a dark wing array MIXING BIOLOGICAL AND MECHANICAL construction: dark crow-like feathering layered with articulated SOLID metal wing-blades, silver structural framing, and red accents. EXACTLY TWO wings attach through explicit, solid mechanical roots at her upper back — one spreading on the VIEWER&#x27;S LEFT and one on the VIEWER&#x27;S RIGHT, never both on one side — and they curve gently INWARDS to suit the tall frame; asymmetry between the two wings is welcome. Never detached, never floating free of her back.
+
+Her ONLY prop is a GREAT SCYTHE in the same design language — an elegant valkyrie weapon, not a farm tool. The haft is perfectly STRAIGHT with a smooth CYLINDRICAL cross-section — never curved, never hexagonal or faceted — armored in the suit&#x27;s design language, with a spear-like counterweight projecting beyond the upper grip. The blade is exactly ONE long blade with smooth, CONSISTENT curvature along its whole length, joined to the haft by an ornate mechanical head — techno-gothic, and never a second blade anywhere on the weapon. She holds it two-handed with the grips widely separated: BOTH hands are unmistakable five-fingered wraps around the clean haft, thumbs visible, with unbroken shoulder-to-hand anatomy. She carries nothing else — no firearm, no staff, no second prop.
+
+POSE AND COMPOSITION
+The pose is POISED, STATUESQUE, and OMINOUS — a controlled character portrait, never a mid-swing action frame. She LEVITATES: both feet float clearly above the ground, armored toes pointed downward, with nothing touching or supporting her. Even while floating, her body holds a tall near-frontal three-quarter CONTRAPPOSTO with a pronounced vertical S-curve: the pelvis sits under a lifted, backward-arched chest, and her head tilts back and to the side while her eyes turn toward the viewer. The VIEWER&#x27;S RIGHT leg is long and nearly straight as if carrying weight; the VIEWER&#x27;S LEFT leg is relaxed and slightly bent. Her upper hand grips the haft around waist level on the VIEWER&#x27;S LEFT; her lower hand grips beside her upper thigh on the VIEWER&#x27;S RIGHT. The haft cuts steeply from upper VIEWER&#x27;S LEFT to lower VIEWER&#x27;S RIGHT, passing IN FRONT of her body — the scythe is on full display, never hidden behind her. The ornate blade head sits low on the VIEWER&#x27;S RIGHT, and the long blade sweeps across IN FRONT of her legs toward the lower VIEWER&#x27;S LEFT with clearly visible clearance from her body. One large wing mass rises toward the upper VIEWER&#x27;S RIGHT; the other sweeps down and out toward the lower VIEWER&#x27;S LEFT, opposing the haft diagonal and swirling the composition while the body itself stays still.
+
+BACKGROUND AND GLOW — W2 COLD FOG
+Shattered ruins dissolve into pale fog behind and below her: a cool grey-blue moonlit palette, with soft backlight rimming her silhouette. The background stays soft, low-contrast, and uncluttered — all focus stays on the character, and the fog-shrouded ruin implies she is partly responsible for it. A SUBTLE cold silver-white radiance traces the halo spikes and the wing edges, leaving her red accents as the only warm notes — restrained and dim, with no lens flares, no bright beams, and no explosions of light.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-7"><h2>scythe-valkyrie-r2-w2-riverflow25-1</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=4K aspect_ratio=9:16 · $0.47 · 2026-08-07T05:35:50</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r2-w2-fog.txt</p><pre>OUTPUT AND CAMERA
+A photorealistic full-body cinematic character render of an original character, composed as a premium PHONE WALLPAPER in tall 9:20 portrait orientation for a 1080x2400 screen. Show ONE figure only, in a NEAR-FRONTAL THREE-QUARTER view, large in frame — she fills most of the frame height and is the unambiguous subject, with softly dramatic lighting and crisp detail on the character over a quieter, softer background. The complete scythe from counterweight to blade tip stays inside the frame; the wings may run off the frame edges rather than shrinking her. This is character concept art, not a photograph of a toy: no presentation card, no watermark, and no text, labels, logos, or game marks anywhere in the image.
+
+HAIR AND HALO — NO HOOD, CROWN FULLY REVEALED
+She wears NO hood and no mantle: her hair and face are fully revealed. Rising above and behind her head is her DARK DEATH CROWN — an ominous halo-like crown in the suit&#x27;s own design language: SPIKY radiating blades forming a deliberately BROKEN, PARTIAL arc — never a full closed circle — dark gunmetal with silver edge highlights, grimdark, ceremonial, and ominous, reading clearly as a crown of death. It is mounted solidly behind her head through visible sculpted supports, and it is not any existing franchise halo design.
+
+HELD-CONSTANT CHARACTER PROGRAM
+She is an original ANGEL-OF-DEATH VALKYRIE — an elegant, ominous, ceremonial reaper, played absolutely straight. Slender adult feminine build with realistic proportions, not heroic exaggeration. Her face has mature East Asian features, a calm direct gaze, and a softly angular oval face — an original face, no real person&#x27;s likeness. Her long dark hair is elegant and sculptural; it may hang with a gentle echo of the wing arc, but it must NOT stream as if she were mid-attack.
+
+Her suit is a sleek, solid death-valkyrie armor in an original design language: dark gunmetal and black primary surfaces, silver structural framing and edge highlights, restrained deep-red accents. Her lower body wears a SECTIONED METAL SKIRT that reads as a skirt/cloak hybrid, with separate shaped armour on each leg and armored boots. The chestplate leaves a slight gap of bare skin between its top edge and her neck — a modest decolletage. Panel lines are bold and sculptural. The styling motif is skull-and-death themed — ominous, elegant, ceremonial — expressed through the sculpted forms themselves, never through printed graphics.
+
+Her WINGS are a dark wing array MIXING BIOLOGICAL AND MECHANICAL construction: dark crow-like feathering layered with articulated SOLID metal wing-blades, silver structural framing, and red accents. EXACTLY TWO wings attach through explicit, solid mechanical roots at her upper back — one spreading on the VIEWER&#x27;S LEFT and one on the VIEWER&#x27;S RIGHT, never both on one side — and they curve gently INWARDS to suit the tall frame; asymmetry between the two wings is welcome. Never detached, never floating free of her back.
+
+Her ONLY prop is a GREAT SCYTHE in the same design language — an elegant valkyrie weapon, not a farm tool. The haft is perfectly STRAIGHT with a smooth CYLINDRICAL cross-section — never curved, never hexagonal or faceted — armored in the suit&#x27;s design language, with a spear-like counterweight projecting beyond the upper grip. The blade is exactly ONE long blade with smooth, CONSISTENT curvature along its whole length, joined to the haft by an ornate mechanical head — techno-gothic, and never a second blade anywhere on the weapon. She holds it two-handed with the grips widely separated: BOTH hands are unmistakable five-fingered wraps around the clean haft, thumbs visible, with unbroken shoulder-to-hand anatomy. She carries nothing else — no firearm, no staff, no second prop.
+
+POSE AND COMPOSITION
+The pose is POISED, STATUESQUE, and OMINOUS — a controlled character portrait, never a mid-swing action frame. She LEVITATES: both feet float clearly above the ground, armored toes pointed downward, with nothing touching or supporting her. Even while floating, her body holds a tall near-frontal three-quarter CONTRAPPOSTO with a pronounced vertical S-curve: the pelvis sits under a lifted, backward-arched chest, and her head tilts back and to the side while her eyes turn toward the viewer. The VIEWER&#x27;S RIGHT leg is long and nearly straight as if carrying weight; the VIEWER&#x27;S LEFT leg is relaxed and slightly bent. Her upper hand grips the haft around waist level on the VIEWER&#x27;S LEFT; her lower hand grips beside her upper thigh on the VIEWER&#x27;S RIGHT. The haft cuts steeply from upper VIEWER&#x27;S LEFT to lower VIEWER&#x27;S RIGHT, passing IN FRONT of her body — the scythe is on full display, never hidden behind her. The ornate blade head sits low on the VIEWER&#x27;S RIGHT, and the long blade sweeps across IN FRONT of her legs toward the lower VIEWER&#x27;S LEFT with clearly visible clearance from her body. One large wing mass rises toward the upper VIEWER&#x27;S RIGHT; the other sweeps down and out toward the lower VIEWER&#x27;S LEFT, opposing the haft diagonal and swirling the composition while the body itself stays still.
+
+BACKGROUND AND GLOW — W2 COLD FOG
+Shattered ruins dissolve into pale fog behind and below her: a cool grey-blue moonlit palette, with soft backlight rimming her silhouette. The background stays soft, low-contrast, and uncluttered — all focus stays on the character, and the fog-shrouded ruin implies she is partly responsible for it. A SUBTLE cold silver-white radiance traces the halo spikes and the wing edges, leaving her red accents as the only warm notes — restrained and dim, with no lens flares, no bright beams, and no explosions of light.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-8"><h2>scythe-valkyrie-r3-blade-exemplar</h2><p class="gmeta">? · 2026-08-07T14:22:13</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/b5bf1c715e73b00d.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/f11e636c945b5b78.jpg" data-cap="scythe-valkyrie-r1-v3-riverflow25-1.webp" alt="scythe-valkyrie-r1-v3-riverflow25-1.webp"><figcaption>scythe-valkyrie-r1-v3-riverflow25-1.webp</figcaption></figure></div></template>
+<template id="in-9"><h2>scythe-valkyrie-r2-w2-riverflow25-1</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=4K aspect_ratio=9:16 · $0.47 · 2026-08-07T05:35:50</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r2-w2-fog.txt</p><pre>OUTPUT AND CAMERA
+A photorealistic full-body cinematic character render of an original character, composed as a premium PHONE WALLPAPER in tall 9:20 portrait orientation for a 1080x2400 screen. Show ONE figure only, in a NEAR-FRONTAL THREE-QUARTER view, large in frame — she fills most of the frame height and is the unambiguous subject, with softly dramatic lighting and crisp detail on the character over a quieter, softer background. The complete scythe from counterweight to blade tip stays inside the frame; the wings may run off the frame edges rather than shrinking her. This is character concept art, not a photograph of a toy: no presentation card, no watermark, and no text, labels, logos, or game marks anywhere in the image.
+
+HAIR AND HALO — NO HOOD, CROWN FULLY REVEALED
+She wears NO hood and no mantle: her hair and face are fully revealed. Rising above and behind her head is her DARK DEATH CROWN — an ominous halo-like crown in the suit&#x27;s own design language: SPIKY radiating blades forming a deliberately BROKEN, PARTIAL arc — never a full closed circle — dark gunmetal with silver edge highlights, grimdark, ceremonial, and ominous, reading clearly as a crown of death. It is mounted solidly behind her head through visible sculpted supports, and it is not any existing franchise halo design.
+
+HELD-CONSTANT CHARACTER PROGRAM
+She is an original ANGEL-OF-DEATH VALKYRIE — an elegant, ominous, ceremonial reaper, played absolutely straight. Slender adult feminine build with realistic proportions, not heroic exaggeration. Her face has mature East Asian features, a calm direct gaze, and a softly angular oval face — an original face, no real person&#x27;s likeness. Her long dark hair is elegant and sculptural; it may hang with a gentle echo of the wing arc, but it must NOT stream as if she were mid-attack.
+
+Her suit is a sleek, solid death-valkyrie armor in an original design language: dark gunmetal and black primary surfaces, silver structural framing and edge highlights, restrained deep-red accents. Her lower body wears a SECTIONED METAL SKIRT that reads as a skirt/cloak hybrid, with separate shaped armour on each leg and armored boots. The chestplate leaves a slight gap of bare skin between its top edge and her neck — a modest decolletage. Panel lines are bold and sculptural. The styling motif is skull-and-death themed — ominous, elegant, ceremonial — expressed through the sculpted forms themselves, never through printed graphics.
+
+Her WINGS are a dark wing array MIXING BIOLOGICAL AND MECHANICAL construction: dark crow-like feathering layered with articulated SOLID metal wing-blades, silver structural framing, and red accents. EXACTLY TWO wings attach through explicit, solid mechanical roots at her upper back — one spreading on the VIEWER&#x27;S LEFT and one on the VIEWER&#x27;S RIGHT, never both on one side — and they curve gently INWARDS to suit the tall frame; asymmetry between the two wings is welcome. Never detached, never floating free of her back.
+
+Her ONLY prop is a GREAT SCYTHE in the same design language — an elegant valkyrie weapon, not a farm tool. The haft is perfectly STRAIGHT with a smooth CYLINDRICAL cross-section — never curved, never hexagonal or faceted — armored in the suit&#x27;s design language, with a spear-like counterweight projecting beyond the upper grip. The blade is exactly ONE long blade with smooth, CONSISTENT curvature along its whole length, joined to the haft by an ornate mechanical head — techno-gothic, and never a second blade anywhere on the weapon. She holds it two-handed with the grips widely separated: BOTH hands are unmistakable five-fingered wraps around the clean haft, thumbs visible, with unbroken shoulder-to-hand anatomy. She carries nothing else — no firearm, no staff, no second prop.
+
+POSE AND COMPOSITION
+The pose is POISED, STATUESQUE, and OMINOUS — a controlled character portrait, never a mid-swing action frame. She LEVITATES: both feet float clearly above the ground, armored toes pointed downward, with nothing touching or supporting her. Even while floating, her body holds a tall near-frontal three-quarter CONTRAPPOSTO with a pronounced vertical S-curve: the pelvis sits under a lifted, backward-arched chest, and her head tilts back and to the side while her eyes turn toward the viewer. The VIEWER&#x27;S RIGHT leg is long and nearly straight as if carrying weight; the VIEWER&#x27;S LEFT leg is relaxed and slightly bent. Her upper hand grips the haft around waist level on the VIEWER&#x27;S LEFT; her lower hand grips beside her upper thigh on the VIEWER&#x27;S RIGHT. The haft cuts steeply from upper VIEWER&#x27;S LEFT to lower VIEWER&#x27;S RIGHT, passing IN FRONT of her body — the scythe is on full display, never hidden behind her. The ornate blade head sits low on the VIEWER&#x27;S RIGHT, and the long blade sweeps across IN FRONT of her legs toward the lower VIEWER&#x27;S LEFT with clearly visible clearance from her body. One large wing mass rises toward the upper VIEWER&#x27;S RIGHT; the other sweeps down and out toward the lower VIEWER&#x27;S LEFT, opposing the haft diagonal and swirling the composition while the body itself stays still.
+
+BACKGROUND AND GLOW — W2 COLD FOG
+Shattered ruins dissolve into pale fog behind and below her: a cool grey-blue moonlit palette, with soft backlight rimming her silhouette. The background stays soft, low-contrast, and uncluttered — all focus stays on the character, and the fog-shrouded ruin implies she is partly responsible for it. A SUBTLE cold silver-white radiance traces the halo spikes and the wing edges, leaving her red accents as the only warm notes — restrained and dim, with no lens flares, no bright beams, and no explosions of light.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-10"><h2>scythe-valkyrie-r3-w2-dagger-base</h2><p class="gmeta">? · 2026-08-07T14:22:13</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/78b8ec40866070f0.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ccd0aebc408f7c7a.jpg" data-cap="scythe-valkyrie-r2-w2-riverflow25-1.webp" alt="scythe-valkyrie-r2-w2-riverflow25-1.webp"><figcaption>scythe-valkyrie-r2-w2-riverflow25-1.webp</figcaption></figure></div></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbRefRow=document.getElementById('lb-refrow'),lbRef=document.getElementById('lb-ref'),
+      lbCopyId=document.getElementById('lb-copy-id'),lbCopyLink=document.getElementById('lb-copy-link'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body'),
+      developerMode=document.getElementById('developer-mode');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+function setDeveloperMode(enabled){
+  document.querySelectorAll('[data-developer]').forEach(function(node){node.hidden=!enabled;});
+  document.documentElement.dataset.developer=enabled?'true':'false';
+  if(developerMode)developerMode.setAttribute('aria-checked',enabled?'true':'false');
+}
+if(developerMode){
+  developerMode.addEventListener('change',function(){setDeveloperMode(developerMode.checked);});
+  setDeveloperMode(false);
+}
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  const ref=z.dataset.ref||'',anchor=z.dataset.anchor||'';
+  lbRefRow.hidden=!(ref&&anchor);
+  if(ref&&anchor){
+    lbRef.textContent='#'+ref;
+    lbCopyId.dataset.copyId='#'+ref;
+    lbCopyLink.dataset.copy=anchor;
+  }
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy a card's short display id, or copy/share its deep link. The URL is this
+// page plus the card's #id anchor, so a recipient lands scrolled to (and
+// highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  const ci=e.target.closest('[data-copy-id]');
+  if(ci){copyText(ci.dataset.copyId,ci);e.preventDefault();return;}
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+
+document.addEventListener('click', function (e) {
+  var b = e.target.closest('[data-copy]');
+  if (!b) return;
+  var pre = b.closest('details').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(function () {
+    var was = b.textContent;
+    b.textContent = 'Copied'; b.classList.add('done');
+    setTimeout(function () { b.textContent = was; b.classList.remove('done'); }, 1600);
+  });
+});
+</script>
+</body></html>
