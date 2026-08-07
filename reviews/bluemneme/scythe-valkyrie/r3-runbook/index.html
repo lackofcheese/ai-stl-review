@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="a0478588f77a71e713478d5e295cbae0375919cc3ce07fce5f32e918bb319c2e">
+<meta name="ai-stl-plan-digest" content="70db08c477c27360ca20d8324e20b158b71e5fc505ee210e401b4e5bbe1c2fa0">
 <title>Scythe Valkyrie — Round 3 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -759,6 +759,7 @@ Apart from that edit, reproduce IMAGE 1 EXACTLY: the same hand pose and skin, th
 python3 tools/render_runbook.py \
   --runbook projects/bluemneme/scythe-valkyrie/runbooks/r3-runbook.md \
   --cases projects/bluemneme/scythe-valkyrie/runbooks/r3-cases.json \
+  --lineage projects/bluemneme/scythe-valkyrie/lineage.json \
   --review-pending --project &quot;BlueMneme&quot; --character &quot;Scythe Valkyrie&quot; \
   --out /tmp/scythe-valkyrie-r3-runbook
 python3 tools/publish_review.py /tmp/scythe-valkyrie-r3-runbook \
