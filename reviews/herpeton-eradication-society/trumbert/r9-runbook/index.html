@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="3223a8f5dc2b31d2c60fa628c47bd42cc90a7be9e4864ae228fe86fc76cb88aa">
+<meta name="ai-stl-plan-digest" content="6e3791071809ecbdfb6b601d33894e45b2bdd0433c28ef9a4e10e1816ab26b8d">
 <title>Trumbert — Round 9 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -761,12 +761,15 @@ tools/drive_sync.sh pull \
 
 # Ten Meshy multi-view runs via the durable manifest coordinator. Each
 # completed download is pushed to Drive from the coordinator&#x27;s flushed `wrote`
-# line, while the other tasks keep polling. A failed push is remembered and
-# makes the attached pipeline fail after all coordinator output is drained.
+# line, while the other tasks keep polling. After every run or resume, an
+# unconditional final sweep catches a failed last push or already-finalized
+# recovery before the function permits validation.
 # Every task explicitly sets remesh:false; the provider request is therefore
 # should_remesh:false with no target_polycount.
 P=projects/herpeton-eradication-society/trumbert
 meshy_with_drive_sync() {
+  local -a statuses
+  set +e
   python3 tools/meshy_manifest.py &quot;$@&quot; 2&gt;&amp;1 | {
     push_failed=0
     while IFS= read -r line; do
@@ -779,11 +782,16 @@ meshy_with_drive_sync() {
     done
     exit &quot;$push_failed&quot;
   }
+  statuses=(&quot;${PIPESTATUS[@]}&quot;)
+  set -e
+  # This always runs, including for a finalized resume that emits no `wrote`.
+  tools/drive_sync.sh push &quot;$P/models/round-9&quot;
+  test &quot;${statuses[0]}&quot; -eq 0
 }
 meshy_with_drive_sync run --manifest &quot;$P/notes/r9-meshy-manifest.json&quot;
 # record the printed RUN_ID in rounds.md; after any interruption:
 # redefine the function above in the recovery shell, then use the identical
-# completion-triggered Drive path rather than a bare coordinator resume:
+# completion-triggered Drive path plus final sweep, never a bare resume:
 #   meshy_with_drive_sync resume --run RUN_ID
 
 # The pipeline above has pushed every landed mesh before this raw-only
