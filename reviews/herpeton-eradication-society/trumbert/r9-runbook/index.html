@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="2d348f5b37b2edc7cf1b57d19e3f106a7b30d09c881a62b0a46d5da8bb0ae3b2">
+<meta name="ai-stl-plan-digest" content="8013bc4a073c7dc9ddf681f186fefd090b461c6d3926c8e335a29194c3f48e18">
 <title>Trumbert — Round 9 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -456,22 +456,22 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
 <nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Herpeton Eradication Society</a><span class="sep">&rsaquo;</span><a href="../">Trumbert</a></nav>
 <div class="eyebrow">Round 9 · Meshy run</div>
 <h1>Trumbert — Round 9 runbook</h1>
-<div class="statusrow"><span class="pill s-await"><span class="dot"></span>Awaiting renewed sign-off</span><span class="fact">Opened <b>2026-07-17</b></span></div>
-<p class="statusnote">crop gate approved 2026-08-01; proposal refreshed to the current runbook/start-gate format 2026-08-07; no credits spent</p>
+<div class="statusrow"><span class="pill s-appr"><span class="dot"></span>Approved — not started</span><span class="fact">Dimitri · 2026-08-07</span><span class="fact">Opened <b>2026-07-17</b></span></div>
+<p class="statusnote">; merge-triggered start transition is PR #404; no credits spent</p>
 <div class="statusrow sub"><span class="fact inert" title="Published at round close">&#128203; Review panel &mdash; at round close</span></div>
-<div class="ask"><p class="lbl"><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</p><p><strong>Renewed sign-off on this refreshed plan and the 100-credit cap.</strong> The crop gate is already approved; this refresh does not change any of the 20 Meshy input images, the five task settings or the one-roll-per-recipe matrix. <a class="jump" href="#ask">Read the full ask &darr;</a></p></div>
-<div class="glance"><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg>Rolls</span><span class="v">5</span><span class="s">across 5 cases</span></div><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Planned</span><span class="v">100 credits</span><span class="s">balance 2,630 → 2,530</span></div></div>
-<div class="meter"><p class="top"><span>Planned spend against the provider balance</span><b>100 / 2,630 credits</b></p><div class="bar"><i class="spent" style="width:3.802%;"></i></div><div class="legend"><span><i></i>meshy 100 credits</span><span><i class="o"></i>Remaining 2,530 credits</span><span>images $0.00</span></div></div>
+<div class="ask"><p class="lbl"><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</p><p><strong>Start authorization is recorded.</strong> Dimitri approved two rolls for each of the five crop sets (ten calls, 200-credit cap) and asked PR #404 to be the merge-triggered start PR on 2026-08-07. <a class="jump" href="#ask">Read the full ask &darr;</a></p></div>
+<div class="glance"><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg>Rolls</span><span class="v">10</span><span class="s">across 5 cases</span></div><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Planned</span><span class="v">200 credits</span><span class="s">balance 2,630 → 2,430</span></div></div>
+<div class="meter"><p class="top"><span>Planned spend against the provider balance</span><b>200 / 2,630 credits</b></p><div class="bar"><i class="spent" style="width:7.605%;"></i></div><div class="legend"><span><i></i>meshy 200 credits</span><span><i class="o"></i>Remaining 2,430 credits</span><span>images $0.00</span></div></div>
 <nav class="snav"><a href="#goal">Goal</a><a href="#choices">Choices</a><a href="#inputs">Inputs</a><a href="#judged">Judging</a><a href="#ask">The ask</a><a href="#cost">Cost</a><a href="#facts">Round facts</a><a href="#tech">Technical plan</a></nav>
-<section class="s" id="goal"><h2><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg>Goal</h2><div class="md"><p>Turn the Round 7–8 turnaround work into actual printable-candidate meshes: one multi-view Meshy reconstruction per picked sheet, so we finally see which turnaround recipe survives the jump to 3D — and get the first real pipeline-path meshes to weigh against the Round 1 direct-text baseline.</p></div><div class="strips"><div class="stage"><span class="lbl">Default path</span><span class="st">Concept</span><span class="arw">&rsaquo;</span><span class="st">Turnaround</span><span class="arw">&rsaquo;</span><span class="st now">Meshy</span><span class="arw">&rsaquo;</span><span class="st">Mesh check</span><span class="arw">&rsaquo;</span><span class="st">Test print</span></div><div class="lineage"><span class="lbl">This round</span><span class="rn">r8</span><span class="arw">&rsaquo;</span><span class="rn this">r9</span><span class="arw">&rsaquo;</span><span class="rn next">r10 — mesh validation / finishing for the human-picked raw survivor(s): 24 mm scaling, fixed-mm thin-part probing and any separately approved repair</span></div></div></section>
-<section class="s" id="choices"><h2><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg>The choices on the table</h2><div class="md"><p>Single approach this round: each picked sheet&#x27;s four panels (front / shield-side / true back / sword-side) go to Meshy multi-view (meshy-6, raw highest-precision no-remesh output at Meshy&#x27;s native full triangle count, 1 roll each). The five candidates ARE the comparison — one per surviving turnaround recipe:</p></div><div class="choices"><article class="choice"><header><span class="key">g14</span><h3>R7 divider-deviator</h3><span class="rolls">1 roll</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>The R7 &quot;ignored-template&quot; keeper: crisp panels, divider lines cut away, P1 scale-matched</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>r7-divider-grey14-noborder-r6sword-1 + its crops</p><a class="jump" href="#case-g14-r7-divider-deviator"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">nt14</span><h3>no-template 1×4</h3><span class="rolls">1 roll</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>R8&#x27;s words-only wide strip (recipe A)</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>r8-notmpl-1x4-flash31-2 + its crops</p><a class="jump" href="#case-nt14-no-template-1-4"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">nt22</span><h3>no-template 2×2</h3><span class="rolls">1 roll</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>R8&#x27;s words-only grid (recipe B)</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>r8-notmpl-2x2-flash31-3 + its crops</p><a class="jump" href="#case-nt22-no-template-2-2"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">bl14</span><h3>blank-canvas 1×4</h3><span class="rolls">1 roll</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>R8&#x27;s dividerless sizing-canvas strip (recipe C, the ghost-free 3512-class width)</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>r8-blank-1x4-flash31-2 + its crops</p><a class="jump" href="#case-bl14-blank-canvas-1-4"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">bl22</span><h3>blank-canvas 2×2</h3><span class="rolls">1 roll</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>R8&#x27;s dividerless sizing-canvas grid (recipe D)</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>r8-blank-2x2-flash31-2 + its crops</p><a class="jump" href="#case-bl22-blank-canvas-2-2"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article></div><div class="shape"><div class="mx" style="grid-template-columns:auto repeat(1,minmax(46px,1fr))"><span></span><span class="hd">roll 1</span><span class="rh">g14</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">nt14</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">nt22</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">bl14</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">bl22</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span></div><p class="cap"><b>5 rolls total</b> — 5 choices, one roll each</p></div><div class="md"><p>Five Meshy image runs total — no reserve rolls; a defect that looks stochastic rather than recipe-driven becomes a follow-up ask, not silent extra spend. (Deviation from the two-roll default, Dimitri&#x27;s explicit call: breadth across five recipes instead of roll insurance on fewer.)</p></div></section>
+<section class="s" id="goal"><h2><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg>Goal</h2><div class="md"><p>Turn the Round 7–8 turnaround work into actual printable-candidate meshes: two independent multi-view Meshy reconstructions per picked sheet, so we finally see which turnaround recipe survives the jump to 3D — and get the first real pipeline-path meshes to weigh against the Round 1 direct-text baseline.</p></div><div class="strips"><div class="stage"><span class="lbl">Default path</span><span class="st">Concept</span><span class="arw">&rsaquo;</span><span class="st">Turnaround</span><span class="arw">&rsaquo;</span><span class="st now">Meshy</span><span class="arw">&rsaquo;</span><span class="st">Mesh check</span><span class="arw">&rsaquo;</span><span class="st">Test print</span></div><div class="lineage"><span class="lbl">This round</span><span class="rn">r8</span><span class="arw">&rsaquo;</span><span class="rn this">r9</span><span class="arw">&rsaquo;</span><span class="rn next">r10 — mesh validation / finishing for the human-picked raw survivor(s): 24 mm scaling, fixed-mm thin-part probing and any separately approved repair</span></div></div></section>
+<section class="s" id="choices"><h2><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg>The choices on the table</h2><div class="md"><p>Single approach this round: each picked sheet&#x27;s four panels (front / shield-side / true back / sword-side) go to Meshy multi-view (meshy-6, raw highest-precision no-remesh output at Meshy&#x27;s native full triangle count, 2 rolls each). The five recipes are the comparison, with two stochastic returns per surviving turnaround recipe:</p></div><div class="choices"><article class="choice"><header><span class="key">g14</span><h3>R7 divider-deviator</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>The R7 &quot;ignored-template&quot; keeper: crisp panels, divider lines cut away, P1 scale-matched</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>r7-divider-grey14-noborder-r6sword-1 + its crops</p><a class="jump" href="#case-g14-r7-divider-deviator"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">nt14</span><h3>no-template 1×4</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>R8&#x27;s words-only wide strip (recipe A)</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>r8-notmpl-1x4-flash31-2 + its crops</p><a class="jump" href="#case-nt14-no-template-1-4"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">nt22</span><h3>no-template 2×2</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>R8&#x27;s words-only grid (recipe B)</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>r8-notmpl-2x2-flash31-3 + its crops</p><a class="jump" href="#case-nt22-no-template-2-2"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">bl14</span><h3>blank-canvas 1×4</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>R8&#x27;s dividerless sizing-canvas strip (recipe C, the ghost-free 3512-class width)</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>r8-blank-1x4-flash31-2 + its crops</p><a class="jump" href="#case-bl14-blank-canvas-1-4"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">bl22</span><h3>blank-canvas 2×2</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>R8&#x27;s dividerless sizing-canvas grid (recipe D)</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>r8-blank-2x2-flash31-2 + its crops</p><a class="jump" href="#case-bl22-blank-canvas-2-2"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article></div><div class="shape"><div class="mx" style="grid-template-columns:auto repeat(2,minmax(46px,1fr))"><span></span><span class="hd">roll 1</span><span class="hd">roll 2</span><span class="rh">g14</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">nt14</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">nt22</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">bl14</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">bl22</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span></div><p class="cap"><b>10 rolls total</b> — 5 choices, 2 + 2 + 2 + 2 + 2</p></div><div class="md"><p>Ten Meshy image runs total — two independent rolls for each of five recipes. This restores the standard stochastic-defect insurance while retaining the five-recipe breadth (Dimitri, 2026-08-07); there are no reserve rolls beyond the ten approved calls.</p></div></section>
 <section class="rb-inputs" id="inputs">
 <h2><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>Inputs — what this round runs on</h2>
 <p class="blurb">Everything that goes in, grouped by the choice it belongs to. Click any image to zoom; open a prompt to read the exact text this round spends against. Crop sets show both the cut overview and every exact output crop.</p>
 <section class="rb-case" id="case-shared-by-every-case">
 <h3 class="rb-case-h">Shared by every case<span class="rb-case-count">1 prompt</span></h3>
 <p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
-<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Meshy task settings — r9-meshy-manifest.json<span class="rb-size">3 kB · 105 words</span></summary><div class="phead"><p class="path">projects/herpeton-eradication-society/trumbert/notes/r9-meshy-manifest.json</p><button class="copy" data-copy>Copy meshy task settings</button></div><pre>{
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Meshy task settings — r9-meshy-manifest.json<span class="rb-size">5 kB · 205 words</span></summary><div class="phead"><p class="path">projects/herpeton-eradication-society/trumbert/notes/r9-meshy-manifest.json</p><button class="copy" data-copy>Copy meshy task settings</button></div><pre>{
  &quot;tasks&quot;: [
   {
    &quot;kind&quot;: &quot;image&quot;,
@@ -491,6 +491,19 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
    &quot;ai_model&quot;: &quot;meshy-6&quot;,
    &quot;topology&quot;: &quot;triangle&quot;,
    &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/meshy/round-9/inputs-g14-amended-20260801/trumbert-r9-g14-in-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/meshy/round-9/inputs-g14-amended-20260801/trumbert-r9-g14-in-shield-side.png&quot;,
+    &quot;../generated/meshy/round-9/inputs-g14-amended-20260801/trumbert-r9-g14-in-back.png&quot;,
+    &quot;../generated/meshy/round-9/inputs-g14-amended-20260801/trumbert-r9-g14-in-sword-side.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-9/trumbert-r9-g14-m2-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-6&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
    &quot;front&quot;: &quot;../generated/meshy/round-9/inputs-nt14/trumbert-r9-nt14-in-front.png&quot;,
    &quot;views&quot;: [
     &quot;../generated/meshy/round-9/inputs-nt14/trumbert-r9-nt14-in-shield-side.png&quot;,
@@ -498,6 +511,19 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
     &quot;../generated/meshy/round-9/inputs-nt14/trumbert-r9-nt14-in-sword-side.png&quot;
    ],
    &quot;out&quot;: &quot;../models/round-9/trumbert-r9-nt14-m1-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-6&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/meshy/round-9/inputs-nt14/trumbert-r9-nt14-in-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/meshy/round-9/inputs-nt14/trumbert-r9-nt14-in-shield-side.png&quot;,
+    &quot;../generated/meshy/round-9/inputs-nt14/trumbert-r9-nt14-in-back.png&quot;,
+    &quot;../generated/meshy/round-9/inputs-nt14/trumbert-r9-nt14-in-sword-side.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-9/trumbert-r9-nt14-m2-raw.stl&quot;
   },
   {
    &quot;kind&quot;: &quot;image&quot;,
@@ -517,6 +543,19 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
    &quot;ai_model&quot;: &quot;meshy-6&quot;,
    &quot;topology&quot;: &quot;triangle&quot;,
    &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/meshy/round-9/inputs-nt22/trumbert-r9-nt22-in-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/meshy/round-9/inputs-nt22/trumbert-r9-nt22-in-shield-side.png&quot;,
+    &quot;../generated/meshy/round-9/inputs-nt22/trumbert-r9-nt22-in-back.png&quot;,
+    &quot;../generated/meshy/round-9/inputs-nt22/trumbert-r9-nt22-in-sword-side.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-9/trumbert-r9-nt22-m2-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-6&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
    &quot;front&quot;: &quot;../generated/meshy/round-9/inputs-bl14/trumbert-r9-bl14-in-front.png&quot;,
    &quot;views&quot;: [
     &quot;../generated/meshy/round-9/inputs-bl14/trumbert-r9-bl14-in-shield-side.png&quot;,
@@ -530,6 +569,19 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
    &quot;ai_model&quot;: &quot;meshy-6&quot;,
    &quot;topology&quot;: &quot;triangle&quot;,
    &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/meshy/round-9/inputs-bl14/trumbert-r9-bl14-in-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/meshy/round-9/inputs-bl14/trumbert-r9-bl14-in-shield-side.png&quot;,
+    &quot;../generated/meshy/round-9/inputs-bl14/trumbert-r9-bl14-in-back.png&quot;,
+    &quot;../generated/meshy/round-9/inputs-bl14/trumbert-r9-bl14-in-sword-side.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-9/trumbert-r9-bl14-m2-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-6&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
    &quot;front&quot;: &quot;../generated/meshy/round-9/inputs-bl22/trumbert-r9-bl22-in-front.png&quot;,
    &quot;views&quot;: [
     &quot;../generated/meshy/round-9/inputs-bl22/trumbert-r9-bl22-in-shield-side.png&quot;,
@@ -537,6 +589,19 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
     &quot;../generated/meshy/round-9/inputs-bl22/trumbert-r9-bl22-in-sword-side.png&quot;
    ],
    &quot;out&quot;: &quot;../models/round-9/trumbert-r9-bl22-m1-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-6&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/meshy/round-9/inputs-bl22/trumbert-r9-bl22-in-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/meshy/round-9/inputs-bl22/trumbert-r9-bl22-in-shield-side.png&quot;,
+    &quot;../generated/meshy/round-9/inputs-bl22/trumbert-r9-bl22-in-back.png&quot;,
+    &quot;../generated/meshy/round-9/inputs-bl22/trumbert-r9-bl22-in-sword-side.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-9/trumbert-r9-bl22-m2-raw.stl&quot;
   }
  ]
 }
@@ -608,27 +673,28 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
 </div></div>
 </section>
 </section>
-<section class="s" id="judged"><h2><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>How the round is judged</h2><div class="md"><p><strong>FAST only.</strong> Each raw mesh is pushed to Drive the moment it lands, before any evaluation. It then gets unit-neutral validation (watertightness, components, non-manifold edges, Euler and bounds), 4-view turnaround renders plus hand/prop zooms, and a fresh-context per-feature COMPARATIVE audit across all five raw returns. The checklist covers scimitar shape and grip, digit count (thumb+3 is expected from the shared r6sword base), shield, chest sunburst, ankh pendant, fur cloak, ears, both feet/ground contact and any detached or phantom geometry.</p>
+<section class="s" id="judged"><h2><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>How the round is judged</h2><div class="md"><p><strong>FAST only.</strong> Each raw mesh is pushed to Drive the moment it lands, before any evaluation. It then gets unit-neutral validation (watertightness, components, non-manifold edges, Euler and bounds), 4-view turnaround renders plus hand/prop zooms, and a fresh-context per-feature COMPARATIVE audit across all ten raw returns, first within each recipe&#x27;s pair and then across recipes. The checklist covers scimitar shape and grip, digit count (thumb+3 is expected from the shared r6sword base), shield, chest sunburst, ankh pendant, fur cloak, ears, both feet/ground contact and any detached or phantom geometry.</p>
 <p>R9 deliberately stops at raw evidence: no scaling, debasing, fixed-millimetre thin-part threshold or repair runs here. Those operations can create or promote a delivery mesh and therefore belong to the separately proposed r10 mesh-validation / finishing round, after the raw survivors are known. Visual fragility is still recorded in R9, with the scimitar blade/tip, ankh, ears and hair locks called out as likely risk features; it is not converted into a millimetre claim on Meshy&#x27;s arbitrary raw units.</p>
 <p>Verdicts append to <code>reviews.jsonl</code>; the r9 panel carries an explicit <code>mesh</code> STL on every card so Dimitri can rotate each raw return (decimated display proxies where the artifact cap requires them; exact STLs remain canonical on Drive). Dimitri&#x27;s live-3D look is the final R9 gate, including the pathway comparison against the R1 direct-text baseline. There is no SLOW lane and no provisional/complete split because this round makes no images and every required check is local.</p></div></section>
 <section class="s" id="ask"><h2><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</h2><div class="md cta"><ol>
-<li><strong>Renewed sign-off on this refreshed plan and the 100-credit cap.</strong> The crop gate is already approved; this refresh does not change any of the 20 Meshy input images, the five task settings or the one-roll-per-recipe matrix. It narrows R9 to raw reconstruction and raw-unit comparison, with 24 mm finishing deferred to r10.</li>
-<li><strong>At close:</strong> pick the raw mesh or meshes worth advancing to r10, or reject all five. The r9 panel will show every raw STL interactively beside the audit evidence and the R1 direct-text baseline comparison.</li>
+<li><strong>Start authorization is recorded.</strong> Dimitri approved two rolls for each of the five crop sets (ten calls, 200-credit cap) and asked PR #404 to be the merge-triggered start PR on 2026-08-07. The crop pixels and task settings remain unchanged; only the independent roll count doubled.</li>
+<li><strong>At close:</strong> pick the raw mesh or meshes worth advancing to r10, or reject all ten. The r9 panel will show every raw STL interactively beside the audit evidence and the R1 direct-text baseline comparison.</li>
 </ol></div></section>
-<section class="s" id="cost"><h2><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Cost</h2><div class="md"><p>Meshy: 5 image runs × 20 credits = <strong>100 credits</strong> (last-reconciled balance 2630 → ~2530; the live preflight is authoritative at execution). Image models: <strong>$0</strong>. FAST evaluation is local and free. There is no SLOW/blind-detect lane because R9 generates meshes, not images.</p></div><div class="costgrid"><div class="costrow"><span class="n">meshy</span><span class="t" style="width:100%"></span><span class="a">100 credits</span></div><div class="costrow"><span class="n">images</span><span></span><span class="a">$0.00</span></div></div></section>
-<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>Meshy run — multi-view image→3D of the R7/R8 keeper picks</dd><dt>Owner</dt><dd>Codex (local) → Dimitri review</dd><dt>Date opened</dt><dd>2026-07-17</dd><dt>Inputs</dt><dd>Dimitri&#x27;s five R7/R8 keeper picks (1 roll each, his call, 2026-07-17): <code>trumbert-r7-divider-grey14-noborder-r6sword-flash31-1</code>, <code>trumbert-r8-notmpl-1x4-flash31-2</code>, <code>trumbert-r8-notmpl-2x2-flash31-3</code>, <code>trumbert-r8-blank-1x4-flash31-2</code>, <code>trumbert-r8-blank-2x2-flash31-2</code> — plus their detected-position panel crops <code>trumbert-r9-crops-{nt14,nt22,bl14,bl22}</code> and the appended correction <code>trumbert-r9-crops-g14-amended-20260801</code> (prepared BEFORE this runbook published, per Dimitri&#x27;s ask: the cheap human-checkable prep happens before any spend)</dd><dt>Produces</dt><dd>five raw meshes <code>trumbert-r9-{g14,nt14,nt22,bl14,bl22}-m1</code> (<code>models/round-9/…-raw.stl</code>) plus raw-unit validation evidence and turnaround renders; no scaled or repaired mesh</dd><dt>Branch</dt><dd><code>codex/trumbert-r9-refresh</code></dd><dt>Evaluation lanes</dt><dd>FAST only — immediate Drive durability, unit-neutral mesh checks, turnaround renders and fresh-context comparative audit. No image generation, so no blind-detect lane; every required R9 check is fast.</dd><dt>Prior round</dt><dd>R8 closed with the divider-conditioning diagnosis and a pool of clean 4-view keeper candidates; Dimitri picked five sheets spanning the surviving recipes (R7 divider-deviator, no-template 1×4/2×2, blank-canvas 1×4/2×2) and chose breadth over the usual two-roll-per-keeper insurance — 1 Meshy roll each across 5 candidates (<code>round-feedback.jsonl</code> r8→r9). All five sheets descend from the r6sword base, so the known thumb+3 sword hand and sturdy-build drift ride along; digit count stays a hard audit item.</dd><dt>Next</dt><dd>r10 — mesh validation / finishing for the human-picked raw survivor(s): 24 mm scaling, fixed-mm thin-part probing and any separately approved repair</dd><dt>Spend</dt><dd>meshy 100 credits · balance 2630 -&gt; 2530 · images $0</dd></dl></section>
+<section class="s" id="cost"><h2><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Cost</h2><div class="md"><p>Meshy: 10 image runs × 20 credits = <strong>200 credits</strong> (last-reconciled balance 2630 → ~2430; the live preflight is authoritative at execution). Image models: <strong>$0</strong>. FAST evaluation is local and free. There is no SLOW/blind-detect lane because R9 generates meshes, not images.</p></div><div class="costgrid"><div class="costrow"><span class="n">meshy</span><span class="t" style="width:100%"></span><span class="a">200 credits</span></div><div class="costrow"><span class="n">images</span><span></span><span class="a">$0.00</span></div></div></section>
+<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>Meshy run — multi-view image→3D of the R7/R8 keeper picks</dd><dt>Owner</dt><dd>Codex (local) → Dimitri review</dd><dt>Date opened</dt><dd>2026-07-17</dd><dt>Inputs</dt><dd>Dimitri&#x27;s five R7/R8 keeper picks (2 rolls each; amended 2026-08-07): <code>trumbert-r7-divider-grey14-noborder-r6sword-flash31-1</code>, <code>trumbert-r8-notmpl-1x4-flash31-2</code>, <code>trumbert-r8-notmpl-2x2-flash31-3</code>, <code>trumbert-r8-blank-1x4-flash31-2</code>, <code>trumbert-r8-blank-2x2-flash31-2</code> — plus their detected-position panel crops <code>trumbert-r9-crops-{nt14,nt22,bl14,bl22}</code> and the appended correction <code>trumbert-r9-crops-g14-amended-20260801</code> (prepared BEFORE this runbook published, per Dimitri&#x27;s ask: the cheap human-checkable prep happens before any spend)</dd><dt>Produces</dt><dd>ten raw meshes <code>trumbert-r9-{g14,nt14,nt22,bl14,bl22}-m{1,2}</code> (<code>models/round-9/…-raw.stl</code>) plus raw-unit validation evidence and turnaround renders; no scaled or repaired mesh</dd><dt>Branch</dt><dd><code>codex/trumbert-r9-refresh</code></dd><dt>Evaluation lanes</dt><dd>FAST only — immediate Drive durability, unit-neutral mesh checks, turnaround renders and fresh-context comparative audit. No image generation, so no blind-detect lane; every required R9 check is fast.</dd><dt>Prior round</dt><dd>R8 closed with the divider-conditioning diagnosis and a pool of clean 4-view keeper candidates; Dimitri picked five sheets spanning the surviving recipes (R7 divider-deviator, no-template 1×4/2×2, blank-canvas 1×4/2×2). R9 restores the normal two-roll insurance for each keeper by Dimitri&#x27;s 2026-08-07 amendment (<code>round-feedback.jsonl</code>). All five sheets descend from the r6sword base, so the known thumb+3 sword hand and sturdy-build drift ride along; digit count stays a hard audit item.</dd><dt>Next</dt><dd>r10 — mesh validation / finishing for the human-picked raw survivor(s): 24 mm scaling, fixed-mm thin-part probing and any separately approved repair</dd><dt>Spend</dt><dd>meshy 200 credits · balance 2630 -&gt; 2430 · images $0</dd></dl></section>
 <section class="s" id="tech"><h2><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>Technical plan</h2>
 <p class="intro">crops, manifest, commands (pipeline detail)</p>
 <details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>What changed going in (process deltas)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><ul>
-<li><strong>2026-08-07 standards refresh (plan amendment):</strong> the five Meshy inputs, manifest, roll counts and 100-credit cap are unchanged. The typed head now declares evaluation lanes, next round and spend; the command block uses the merge-triggered start gate; and raw evaluation stops before 24 mm scaling or fixed-mm thin probing. Those keeper-producing finishing operations move to r10, whose sign-off will see the actual raw survivors. The amendment is append-logged in <code>round-feedback.jsonl</code>; no Meshy credits have been spent.</li>
+<li><strong>2026-08-07 standards refresh (plan amendment):</strong> the five Meshy inputs, task settings and crop pixels are unchanged. The typed head now declares evaluation lanes, next round and spend; the command block uses the merge-triggered start gate; and raw evaluation stops before 24 mm scaling or fixed-mm thin probing. Those keeper-producing finishing operations move to r10, whose sign-off will see the actual raw survivors. The amendment is append-logged in <code>round-feedback.jsonl</code>; no Meshy credits have been spent.</li>
+<li><strong>2026-08-07 two-roll/start amendment:</strong> Dimitri restored the normal two-roll insurance for every keeper, expanding the manifest from five to ten tasks and the cap from 100 to 200 credits, and directed PR #404 to carry the merge-triggered <code>In progress</code> transition. No crop or provider setting changed.</li>
 </ul>
 <ul>
 <li><strong>New committed tool <code>tools/turnaround_crops.py</code></strong> — the R8 &quot;N&quot;-cell detected-position crop rule, productionized (the N cell was ad-hoc PIL). Content mask = saturation OR luminance edges (grey steel counts, smooth gradients don&#x27;t); each axis segmented into exactly R×C figure segments by low-content gap bands, speck segments (detached blade tips) absorbed into the neighbor across the smaller gap; panels exclude the whole gap band and stay clear of detected dark divider columns; <code>--match-height</code> downscales panels to a uniform figure height (used for g14 only, whose P1 runs larger — the N-cell precedent). Two failure modes were caught and fixed during pre-flight on exactly these sheets: a mean-darkness divider test that misread figure-dense columns as dividers, and a fraction-based content profile that clipped thin near-horizontal scimitar blades from two 2×2 shield-side panels (now a solid-run test: any ≥4 px contiguous content run marks a column occupied). The 2026-08-01 amendment also trims near-edge full-span frame/ground rules, uses exact full-span divider runs when they account for every cut, excludes rule edges from figure-height measurement, and ignores ≤4 px height noise so a nominal match does not resample pixels.</li>
 <li><strong>Crops before runbook publish</strong> (Dimitri, 2026-07-17): deterministic prep that a human can check moved ahead of the publish, so the sign-off covers the exact Meshy inputs. Crops, composites and JSON reports are on Drive under <code>generated/meshy/round-9/</code>; the original lineage entries remain frozen, with <code>trumbert-r9-crops-g14-amended-20260801</code> appended to record the corrected g14 rectangles.</li>
-<li><strong>Meshy manifest</strong> (<code>notes/r9-meshy-manifest.json</code>, committed with this runbook): five independent image tasks, each explicitly pins <code>meshy-6</code>, triangle topology and <code>remesh: false</code>. The coordinator normalizes that to the sole provider setting <code>should_remesh: false</code>; it sends no <code>target_polycount</code>, so Meshy returns its raw native full triangle count instead of the low-quality 300k-capped remesh. Provider task ids are durable and polling is concurrent (<code>meshy_manifest.py</code>); resume with <code>resume --run RUN_ID</code>, never a repeated create.</li>
+<li><strong>Meshy manifest</strong> (<code>notes/r9-meshy-manifest.json</code>, committed with this runbook): ten independent image tasks (two per crop set), each explicitly pins <code>meshy-6</code>, triangle topology and <code>remesh: false</code>. The coordinator normalizes that to the sole provider setting <code>should_remesh: false</code>; it sends no <code>target_polycount</code>, so Meshy returns its raw native full triangle count instead of the low-quality 300k-capped remesh. Provider task ids are durable and polling is concurrent (<code>meshy_manifest.py</code>); resume with <code>resume --run RUN_ID</code>, never a repeated create.</li>
 <li><strong>Raw evaluation stops before finishing.</strong> R9 may inspect topology and bounds in Meshy&#x27;s native units and render the raw geometry, but it does not export a 24 mm derivative or run fixed-mm thresholds. The selected raw survivor(s) advance to a separately signed-off r10 mesh-validation / finishing round.</li>
 </ul></div></details>
-<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg><span>Experiment matrix</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><div class="tablewrap"><table><thead><tr><th>#</th><th>Source (input)</th><th>Crops (input)</th><th>Views front + 3</th><th>Out (output)</th></tr></thead><tbody><tr><td>1</td><td>trumbert-r7-divider-grey14-noborder-r6sword-flash31-1</td><td>inputs-g14-amended-20260801/trumbert-r9-g14-in-*</td><td>front + shield-side, back, sword-side</td><td>models/round-9/trumbert-r9-g14-m1-raw.stl</td></tr><tr><td>2</td><td>trumbert-r8-notmpl-1x4-flash31-2</td><td>inputs-nt14/trumbert-r9-nt14-in-*</td><td>same</td><td>models/round-9/trumbert-r9-nt14-m1-raw.stl</td></tr><tr><td>3</td><td>trumbert-r8-notmpl-2x2-flash31-3</td><td>inputs-nt22/trumbert-r9-nt22-in-*</td><td>same</td><td>models/round-9/trumbert-r9-nt22-m1-raw.stl</td></tr><tr><td>4</td><td>trumbert-r8-blank-1x4-flash31-2</td><td>inputs-bl14/trumbert-r9-bl14-in-*</td><td>same</td><td>models/round-9/trumbert-r9-bl14-m1-raw.stl</td></tr><tr><td>5</td><td>trumbert-r8-blank-2x2-flash31-2</td><td>inputs-bl22/trumbert-r9-bl22-in-*</td><td>same</td><td>models/round-9/trumbert-r9-bl22-m1-raw.stl</td></tr></tbody></table></div></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg><span>Experiment matrix</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><div class="tablewrap"><table><thead><tr><th>#</th><th>Source (input)</th><th>Crops (input)</th><th>Views front + 3</th><th>Out (output)</th></tr></thead><tbody><tr><td>1–2</td><td>trumbert-r7-divider-grey14-noborder-r6sword-flash31-1</td><td>inputs-g14-amended-20260801/trumbert-r9-g14-in-*</td><td>front + shield-side, back, sword-side</td><td>models/round-9/trumbert-r9-g14-m{1,2}-raw.stl</td></tr><tr><td>3–4</td><td>trumbert-r8-notmpl-1x4-flash31-2</td><td>inputs-nt14/trumbert-r9-nt14-in-*</td><td>same</td><td>models/round-9/trumbert-r9-nt14-m{1,2}-raw.stl</td></tr><tr><td>5–6</td><td>trumbert-r8-notmpl-2x2-flash31-3</td><td>inputs-nt22/trumbert-r9-nt22-in-*</td><td>same</td><td>models/round-9/trumbert-r9-nt22-m{1,2}-raw.stl</td></tr><tr><td>7–8</td><td>trumbert-r8-blank-1x4-flash31-2</td><td>inputs-bl14/trumbert-r9-bl14-in-*</td><td>same</td><td>models/round-9/trumbert-r9-bl14-m{1,2}-raw.stl</td></tr><tr><td>9–10</td><td>trumbert-r8-blank-2x2-flash31-2</td><td>inputs-bl22/trumbert-r9-bl22-in-*</td><td>same</td><td>models/round-9/trumbert-r9-bl22-m{1,2}-raw.stl</td></tr></tbody></table></div></div></details>
 <details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-branch"/></svg><span>Commands</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><h4>Publish this amendment before renewed sign-off</h4>
 <p>After the refresh commit is pushed, re-render and republish the same public runbook slug from that clean pushed branch, before renewed sign-off. The source PR may still be draft: the embedded plan digest pins the exact pushed commit. The review link remains inert until the r9 panel exists:</p>
 <pre class="code"><code>set -euo pipefail
@@ -642,26 +708,26 @@ python3 tools/render_runbook.py \
 python3 tools/publish_review.py /tmp/trumbert-r9-runbook \
   --slug herpeton-eradication-society/trumbert/r9-runbook \
   --title &quot;Trumbert — Round 9 runbook&quot; \
-  --message &quot;Republish Trumbert R9 — current runbook/start-gate format&quot;</code></pre>
-<h4>Post-merge amendment announcement</h4>
-<p>Only after the refresh PR merges, append the amendment reply to R9&#x27;s existing Discord thread and advance its header from that reply:</p>
+  --message &quot;Republish Trumbert R9 — two rolls per keeper and start gate&quot;</code></pre>
+<h4>Post-merge approval record</h4>
+<p>Only after PR #404 merges, append the approved amendment to R9&#x27;s existing Discord thread and advance its header from that reply. The start reply remains separate and follows the exact-main/gate verification below:</p>
 <pre class="code"><code>set -euo pipefail
 python3 tools/discord_share.py --channel trumbert \
   --thread 1533065771029237920 \
   --thread-name &quot;Round 9 — Trumbert updates&quot; \
-  --once trumbert-r9-runbook-refresh-20260807 \
-  --message &quot;R9 proposal refreshed without changing the five inputs or 100-credit cap: current typed runbook, merge-triggered start gate, raw comparison in R9 and 24 mm finishing deferred to R10. Renewed plan/spend sign-off is still required; no credits spent.&quot;
+  --once trumbert-r9-approved-two-roll-20260807 \
+  --message &quot;R9 approved and merged as the start PR: two raw no-remesh Meshy rolls for each of five keeper crop sets, ten calls / 200-credit cap. Crop pixels and task settings are unchanged; 24 mm finishing remains deferred to R10. No credits spent yet.&quot;
 python3 tools/discord_share.py --channel trumbert \
   --update-header 1533065771029237920 \
   --headline &quot;Round 9 — Trumbert&quot; \
-  --status &quot;PROPOSED — crop gate approved; refreshed plan awaiting renewed sign-off&quot; \
-  --decision &quot;Approve the refreshed five-run raw Meshy plan and 100-credit cap&quot; \
-  --spend-state &quot;0 of 100 Meshy credits spent&quot; \
-  --spend-estimate &quot;100 Meshy credits planned&quot; \
+  --status &quot;APPROVED — start gate running&quot; \
+  --decision &quot;Run ten raw meshes; pick the survivor(s) for R10 finishing&quot; \
+  --spend-state &quot;0 of 200 Meshy credits spent&quot; \
+  --spend-estimate &quot;200 Meshy credits planned&quot; \
   --artifact-label Runbook \
   --artifact-link &quot;https://lackofcheese.github.io/ai-stl-review/reviews/herpeton-eradication-society/trumbert/r9-runbook/&quot; \
-  --event-id trumbert-r9-runbook-refresh-20260807</code></pre>
-<p>The approval setup happens before R9 waits at <code>Approved — not started</code>: append Dimitri&#x27;s sign-off with <code>tools/round_gate.py</code>, commit and push the gate record, verify it against the freshly republished canonical runbook page, then wait for an explicit instruction to start. Starting uses a lifecycle-only PR that changes R9&#x27;s current state in <code>rounds.md</code> to <code>In progress</code>; this frozen runbook is not edited.</p>
+  --event-id trumbert-r9-approved-two-roll-20260807</code></pre>
+<p>Before PR #404 can merge, append Dimitri&#x27;s sign-off with <code>tools/round_gate.py</code>, commit and push the gate record, and verify it against the freshly republished canonical runbook page. PR #404 carries Dimitri&#x27;s explicitly requested <code>In progress</code> state transition alongside the approved two-roll amendment; its merge is the start authorization.</p>
 <h4>Post-merge start gate</h4>
 <p>After Dimitri approves and merges the start PR, execute from exact current <code>main</code>. The Discord start reply and header update happen after the durable gate passes and before the first paid provider call:</p>
 <pre class="code"><code>set -euo pipefail
@@ -677,14 +743,14 @@ python3 tools/discord_share.py --channel trumbert \
   --thread 1533065771029237920 \
   --thread-name &quot;Round 9 — Trumbert updates&quot; \
   --once trumbert-r9-started \
-  --message &quot;R9 started from merged current main after the durable gate passed: five raw no-remesh Meshy reconstructions, 100-credit cap.&quot;
+  --message &quot;R9 started from merged current main after the durable gate passed: ten raw no-remesh Meshy reconstructions, two per keeper, 200-credit cap.&quot;
 python3 tools/discord_share.py --channel trumbert \
   --update-header 1533065771029237920 \
   --headline &quot;Round 9 — Trumbert&quot; \
-  --status &quot;IN PROGRESS — five raw multi-view Meshy reconstructions&quot; \
+  --status &quot;IN PROGRESS — ten raw multi-view Meshy reconstructions&quot; \
   --decision &quot;Pick the raw survivor(s) for the separately runbooked R10 finishing pass&quot; \
-  --spend-state &quot;0 of 100 Meshy credits spent&quot; \
-  --spend-estimate &quot;100 Meshy credits planned&quot; \
+  --spend-state &quot;0 of 200 Meshy credits spent&quot; \
+  --spend-estimate &quot;200 Meshy credits planned&quot; \
   --artifact-label Runbook \
   --artifact-link &quot;https://lackofcheese.github.io/ai-stl-review/reviews/herpeton-eradication-society/trumbert/r9-runbook/&quot; \
   --event-id trumbert-r9-started
@@ -693,7 +759,7 @@ python3 tools/discord_share.py --channel trumbert \
 tools/drive_sync.sh pull \
   projects/herpeton-eradication-society/trumbert/generated/meshy/round-9
 
-# Five Meshy multi-view runs via the durable manifest coordinator. Each
+# Ten Meshy multi-view runs via the durable manifest coordinator. Each
 # completed download is pushed to Drive from the coordinator&#x27;s flushed `wrote`
 # line, while the other tasks keep polling. A failed push is remembered and
 # makes the attached pipeline fail after all coordinator output is drained.
@@ -717,9 +783,11 @@ python3 tools/meshy_manifest.py run \
 #   python3 tools/meshy_manifest.py resume --run RUN_ID
 
 # The pipeline above has pushed every landed mesh before this raw-only
-# validation and rendering stage. Repeat with CELL={g14,nt14,nt22,bl14,bl22}.
+# validation and rendering stage. Repeat with CELL={g14,nt14,nt22,bl14,bl22}
+# and ROLL={1,2}.
 CELL=g14
-STEM=&quot;trumbert-r9-${CELL}-m1&quot;
+ROLL=1
+STEM=&quot;trumbert-r9-${CELL}-m${ROLL}&quot;
 STL=&quot;$P/models/round-9/${STEM}-raw.stl&quot;
 python3 tools/mesh_validate.py --stl &quot;$STL&quot; --units raw \
   --label &quot;$STEM-raw&quot; \
