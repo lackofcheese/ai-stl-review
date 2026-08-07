@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="8013bc4a073c7dc9ddf681f186fefd090b461c6d3926c8e335a29194c3f48e18">
+<meta name="ai-stl-plan-digest" content="3223a8f5dc2b31d2c60fa628c47bd42cc90a7be9e4864ae228fe86fc76cb88aa">
 <title>Trumbert — Round 9 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -675,7 +675,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
 </section>
 <section class="s" id="judged"><h2><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>How the round is judged</h2><div class="md"><p><strong>FAST only.</strong> Each raw mesh is pushed to Drive the moment it lands, before any evaluation. It then gets unit-neutral validation (watertightness, components, non-manifold edges, Euler and bounds), 4-view turnaround renders plus hand/prop zooms, and a fresh-context per-feature COMPARATIVE audit across all ten raw returns, first within each recipe&#x27;s pair and then across recipes. The checklist covers scimitar shape and grip, digit count (thumb+3 is expected from the shared r6sword base), shield, chest sunburst, ankh pendant, fur cloak, ears, both feet/ground contact and any detached or phantom geometry.</p>
 <p>R9 deliberately stops at raw evidence: no scaling, debasing, fixed-millimetre thin-part threshold or repair runs here. Those operations can create or promote a delivery mesh and therefore belong to the separately proposed r10 mesh-validation / finishing round, after the raw survivors are known. Visual fragility is still recorded in R9, with the scimitar blade/tip, ankh, ears and hair locks called out as likely risk features; it is not converted into a millimetre claim on Meshy&#x27;s arbitrary raw units.</p>
-<p>Verdicts append to <code>reviews.jsonl</code>; the r9 panel carries an explicit <code>mesh</code> STL on every card so Dimitri can rotate each raw return (decimated display proxies where the artifact cap requires them; exact STLs remain canonical on Drive). Dimitri&#x27;s live-3D look is the final R9 gate, including the pathway comparison against the R1 direct-text baseline. There is no SLOW lane and no provisional/complete split because this round makes no images and every required check is local.</p></div></section>
+<p>Verdicts append to <code>reviews.jsonl</code>; the r9 panel carries an explicit <code>mesh</code> STL on every card so Dimitri can rotate each raw return. Build the ten-card inline artifact with <code>review_page.py --mesh-max-faces 10000</code>: ten binary-STL display proxies then budget about 6.7 MiB after base64, leaving room under the roughly 16 MiB artifact cap for renders and page markup; exact STLs remain canonical on Drive. Dimitri&#x27;s live-3D look is the final R9 gate, including the pathway comparison against the R1 direct-text baseline. There is no SLOW lane and no provisional/complete split because this round makes no images and every required check is local.</p></div></section>
 <section class="s" id="ask"><h2><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</h2><div class="md cta"><ol>
 <li><strong>Start authorization is recorded.</strong> Dimitri approved two rolls for each of the five crop sets (ten calls, 200-credit cap) and asked PR #404 to be the merge-triggered start PR on 2026-08-07. The crop pixels and task settings remain unchanged; only the independent roll count doubled.</li>
 <li><strong>At close:</strong> pick the raw mesh or meshes worth advancing to r10, or reject all ten. The r9 panel will show every raw STL interactively beside the audit evidence and the R1 direct-text baseline comparison.</li>
@@ -766,21 +766,25 @@ tools/drive_sync.sh pull \
 # Every task explicitly sets remesh:false; the provider request is therefore
 # should_remesh:false with no target_polycount.
 P=projects/herpeton-eradication-society/trumbert
-python3 tools/meshy_manifest.py run \
-  --manifest &quot;$P/notes/r9-meshy-manifest.json&quot; 2&gt;&amp;1 | {
-  push_failed=0
-  while IFS= read -r line; do
-    printf &#x27;%s\n&#x27; &quot;$line&quot;
-    case &quot;$line&quot; in
-      wrote*&quot;/models/round-9/&quot;*&quot;-raw.stl (&quot;*)
-        tools/drive_sync.sh push &quot;$P/models/round-9&quot; || push_failed=1
-        ;;
-    esac
-  done
-  exit &quot;$push_failed&quot;
+meshy_with_drive_sync() {
+  python3 tools/meshy_manifest.py &quot;$@&quot; 2&gt;&amp;1 | {
+    push_failed=0
+    while IFS= read -r line; do
+      printf &#x27;%s\n&#x27; &quot;$line&quot;
+      case &quot;$line&quot; in
+        wrote*&quot;/models/round-9/&quot;*&quot;-raw.stl (&quot;*)
+          tools/drive_sync.sh push &quot;$P/models/round-9&quot; || push_failed=1
+          ;;
+      esac
+    done
+    exit &quot;$push_failed&quot;
+  }
 }
+meshy_with_drive_sync run --manifest &quot;$P/notes/r9-meshy-manifest.json&quot;
 # record the printed RUN_ID in rounds.md; after any interruption:
-#   python3 tools/meshy_manifest.py resume --run RUN_ID
+# redefine the function above in the recovery shell, then use the identical
+# completion-triggered Drive path rather than a bare coordinator resume:
+#   meshy_with_drive_sync resume --run RUN_ID
 
 # The pipeline above has pushed every landed mesh before this raw-only
 # validation and rendering stage. Repeat with CELL={g14,nt14,nt22,bl14,bl22}
@@ -791,7 +795,7 @@ STEM=&quot;trumbert-r9-${CELL}-m${ROLL}&quot;
 STL=&quot;$P/models/round-9/${STEM}-raw.stl&quot;
 python3 tools/mesh_validate.py --stl &quot;$STL&quot; --units raw \
   --label &quot;$STEM-raw&quot; \
-  --out &quot;$P/notes/r9-${CELL}-raw-validation.json&quot;
+  --out &quot;$P/notes/${STEM}-raw-validation.json&quot;
 python3 tools/stl_render.py --stl &quot;$STL&quot; \
   --out-dir &quot;$P/generated/renders/round-9&quot; \
   --stem &quot;$STEM-raw&quot; --mode turnaround
