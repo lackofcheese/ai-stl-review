@@ -164,6 +164,62 @@ jobs:
         self.assertTrue(any("not pinned" in error for error in errors))
         self.assertTrue(any("AI/LLM" in error for error in errors))
 
+    def test_unlisted_project_must_stay_off_root_index(self) -> None:
+        manifest_path = self.root / "reviews.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["_unlisted"] = ["team"]
+        manifest_path.write_text(json.dumps(manifest, indent=1) + "\n", encoding="utf-8")
+        self.write_html("index.html", "No listed projects")
+        self.assertEqual(validate(self.root), [])
+
+        self.write_html("index.html", '<a href="reviews/team/">Team</a>')
+        self.assertTrue(any("unlisted project is exposed" in error for error in validate(self.root)))
+
+    def test_pages_workflow_allows_only_serialized_deploy_permissions(self) -> None:
+        pages = self.root / ".github/workflows/pages.yml"
+        pages.write_text(
+            """name: Deploy Pages
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - run: python -B scripts/validate_site.py .
+      - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b
+  deploy:
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128
+        with:
+          timeout: 900000
+""",
+            encoding="utf-8",
+        )
+        self.assertEqual(validate(self.root), [])
+
+        pages.write_text(
+            pages.read_text().replace("cancel-in-progress: false", "cancel-in-progress: true"),
+            encoding="utf-8",
+        )
+        self.assertTrue(any("without cancellation" in error for error in validate(self.root)))
+
+        pages.write_text(
+            pages.read_text()
+            .replace("cancel-in-progress: true", "cancel-in-progress: false")
+            .replace("    if: github.ref == 'refs/heads/main'\n", ""),
+            encoding="utf-8",
+        )
+        self.assertTrue(any("gated to the main ref" in error for error in validate(self.root)))
+
 
 if __name__ == "__main__":
     unittest.main()
