@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="23e20fa963dd9e6d4db049dc7c87f98e688124dbff64d6b280284709cb0c15b1">
+<meta name="ai-stl-plan-digest" content="d537dd0873a0c3c8dc721c9624e2079f9b566db25a6061fb3e20900f305f9605">
 <title>TreeMolin — Round 19 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -484,7 +484,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
 <section class="s" id="judged"><h2><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>How the round is judged</h2><div class="md"><ul>
 <li><strong>Source identity:</strong> the two local/Drive-backed raw STLs must match the R18 SHA-256 values pinned below.</li>
 <li><strong>Placement contract:</strong> output height is 50.00 mm, XY bounds are centered, minimum Z is zero, and the operation reports the exact uniform scale.</li>
-<li><strong>Geometry preservation:</strong> face count, watertightness and winding consistency must match each source; independent validation must still report one component, zero open edges, zero non-manifold edges, zero degenerate faces and zero duplicate faces.</li>
+<li><strong>Geometry preservation:</strong> face count, watertightness and winding consistency must match each source; an independently derived source-to-output coordinate comparison must match the declared uniform affine transform within 0.0001 mm; independent validation must still report one component, zero open edges, zero non-manifold edges, zero degenerate faces and zero duplicate faces.</li>
 <li><strong>Final-scale evidence:</strong> record dimensions, volume, surface roughness and the 0.28 mm-pitch thin-connection probe for both meshes.</li>
 <li><strong>Human comparison:</strong> inspect fresh full-resolution four-azimuth renders at equal scale. A1 M12&#x27;s accepted sail cutout is not a defect in this round.</li>
 </ul></div></section>
@@ -553,7 +553,81 @@ tools/drive_sync.sh push &quot;$P/models/round-19&quot;</code></pre>
     --azimuths 270,0,90,180 --elevation 12
 done
 tools/drive_sync.sh push &quot;$P/generated/renders/round-19&quot;</code></pre>
-<p>Fail the round rather than presenting a keeper if either independent validation loses the source&#x27;s one-component/watertight/winding-consistent state, reports any open or non-manifold edge, misses 50.00 mm height or Z=0 flooring, or if a new render shows an unintended change. Append the output artifacts and complete <code>clean</code> metadata to <code>lineage.json</code>, record results in <code>rounds.md</code>, and build a private two-card R19 review for Dimitri. Publishing that results panel or its clean STLs is a separate per-review decision; the standing runbook exception does not authorize it.</p></div></details>
+<p>Persist the two append-only output artifacts and their required clean metadata. The high-pass values are parsed from the already-written roughness reports; <code>mesh_stats.py</code> then independently measures and merges the remaining headline fields into each exact artifact&#x27;s <code>clean</code> block.</p>
+<pre class="code"><code>python3 - &lt;&lt;&#x27;PY&#x27;
+import ast
+import datetime
+from pathlib import Path
+
+from tools.genlog import append_lineage_record
+
+project = Path(&quot;projects/treeman-windmill&quot;)
+lineage = project / &quot;lineage.json&quot;
+cases = [
+    (
+        &quot;a1-m12&quot;,
+        &quot;treeman-r19-a1-m12-clean-50mm&quot;,
+        &quot;treeman-r18-clay-bright-grokq-m12-raw&quot;,
+    ),
+    (
+        &quot;a3-m6&quot;,
+        &quot;treeman-r19-a3-m6-clean-50mm&quot;,
+        &quot;treeman-r18-clay-orig-grokq-m6-raw&quot;,
+    ),
+]
+for short, artifact_id, parent in cases:
+    roughness = (project / f&quot;notes/r19-{short}-roughness.txt&quot;).read_text()
+    overall_line = next(
+        line for line in roughness.splitlines()
+        if line.strip().startswith(&quot;OVERALL &quot;)
+    )
+    overall = ast.literal_eval(overall_line.split(&quot;OVERALL&quot;, 1)[1].strip())
+    stem = f&quot;treeman-r19-{short}-clean-50mm&quot;
+    render_root = project / &quot;generated/renders/round-19&quot;
+    files = [
+        project / f&quot;models/round-19/{stem}.stl&quot;,
+        render_root / f&quot;{stem}-turnaround.png&quot;,
+        *(
+            render_root / f&quot;{stem}-turnaround-az{az}.png&quot;
+            for az in (270, 0, 90, 180)
+        ),
+    ]
+    append_lineage_record(
+        lineage,
+        {
+            &quot;id&quot;: artifact_id,
+            &quot;round&quot;: 19,
+            &quot;kind&quot;: &quot;clean-mesh&quot;,
+            &quot;parents&quot;: [parent],
+            &quot;status&quot;: &quot;finishing-review&quot;,
+            &quot;tool&quot;: &quot;mesh_place.py --target-height-mm 50&quot;,
+            &quot;generated&quot;: datetime.date.today().isoformat(),
+            &quot;file&quot;: str(files[1]),
+            &quot;files&quot;: [str(path) for path in files],
+            &quot;notes&quot;: (
+                &quot;Geometry-preserving R19 placement: uniform scale to 50 mm &quot;
+                &quot;overall Z, XY centered, minimum Z floored to zero; no cut, &quot;
+                &quot;repair, smoothing or remesh.&quot;
+            ),
+            &quot;clean&quot;: {
+                &quot;target_mm&quot;: 50.0,
+                &quot;axis&quot;: &quot;z&quot;,
+                &quot;floor_z0&quot;: True,
+                &quot;hp_rms_um&quot;: overall[&quot;hp_rms_um&quot;],
+            },
+        },
+        unique_by=(&quot;id&quot;,),
+    )
+PY
+
+python3 tools/mesh_stats.py \
+  --stl &quot;$P/models/round-19/treeman-r19-a1-m12-clean-50mm.stl&quot; \
+  --lineage &quot;$P/lineage.json&quot; --id treeman-r19-a1-m12-clean-50mm
+python3 tools/mesh_stats.py \
+  --stl &quot;$P/models/round-19/treeman-r19-a3-m6-clean-50mm.stl&quot; \
+  --lineage &quot;$P/lineage.json&quot; --id treeman-r19-a3-m6-clean-50mm
+python3 tools/repo_guards.py records</code></pre>
+<p>Fail the round rather than presenting a keeper if either independent validation loses the source&#x27;s one-component/watertight/winding-consistent state, reports any open or non-manifold edge, misses 50.00 mm height or Z=0 flooring, exceeds the affine-coordinate tolerance, or if a new render shows an unintended change. Record results in <code>rounds.md</code> and build a private two-card R19 review for Dimitri. Publishing that results panel or its clean STLs is a separate per-review decision; the standing runbook exception does not authorize it.</p></div></details>
 </section>
 </main>
 <div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
