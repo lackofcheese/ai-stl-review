@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="1e59fe763ecaeb1a0058c1533bc26f736c7258bd3ed3b07b28c35c57ed347954">
+<meta name="ai-stl-plan-digest" content="fa84aa09d4bd48bfc2cbde01d62dd42bb76c3558819a4bf8b026d71cff6a0a33">
 <title>TreeMolin — Round 20 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -453,72 +453,551 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/></symbol><symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 4v16M5 8h14M7.5 8l-2.5 5h5zM16.5 8l2.5 5h-5z"/></symbol><symbol id="i-in" viewBox="0 0 24 24"><path d="M12 3v11m0 0 4-4m-4 4-4-4M4 17v3h16v-3"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.6"/></symbol><symbol id="i-hand" viewBox="0 0 24 24"><path d="M9 11V5.6a1.6 1.6 0 0 1 3.2 0V11m0-1.2a1.6 1.6 0 0 1 3.2 0V12m0-1a1.6 1.6 0 0 1 3.2 0v4.4A5.6 5.6 0 0 1 12.8 21h-1.3a5 5 0 0 1-3.9-1.9L4.9 15a1.6 1.6 0 0 1 2.5-2L9 15"/></symbol><symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4v9.2M14.4 9.6a2.6 2.6 0 0 0-4.8 1.2c0 2.6 4.8 1 4.8 3.6a2.6 2.6 0 0 1-4.8 1.2"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M21.2 12h-2.4M5.2 12H2.8M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7M18.5 18.5l-1.7-1.7M7.2 7.2 5.5 5.5"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></symbol><symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/></symbol><symbol id="i-img" viewBox="0 0 24 24"><rect x="3.2" y="4.6" width="17.6" height="14.8" rx="2"/><circle cx="8.6" cy="9.8" r="1.5"/><path d="m3.9 17 5-4.6 4 3.4 3-2.4 4.2 3.6"/></symbol><symbol id="i-txt" viewBox="0 0 24 24"><path d="M6.5 3.6h7.2L18.5 8.4V20.4H6.5z"/><path d="M13.4 3.8v4.8h4.9M9.2 12.6h6M9.2 16h6"/></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="m9.5 5.5 7 6.5-7 6.5"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4V12l3 1.8"/></symbol><symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6.5" cy="5.5" r="2.2"/><circle cx="6.5" cy="18.5" r="2.2"/><circle cx="17.5" cy="8.5" r="2.2"/><path d="M6.5 7.7v8.6M17.5 10.7c0 3.4-2.6 4.6-5.4 5.1"/></symbol><symbol id="i-flask" viewBox="0 0 24 24"><path d="M10 3.5h4M10.8 3.5v6.2L5.6 18a2 2 0 0 0 1.7 3h9.4a2 2 0 0 0 1.7-3l-5.2-8.3V3.5"/><path d="M8 14.5h8"/></symbol><symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 3.2 20 7.6v8.8L12 20.8 4 16.4V7.6z"/><path d="M4 7.6l8 4.4 8-4.4M12 12v8.8"/></symbol></defs></svg>
 <main>
-<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Treeman-windmill</a><span class="sep">&rsaquo;</span><a href="../">Treeman</a></nav>
-<div class="eyebrow">Round 20 · mesh validation</div>
+<div class="eyebrow">Round 20 · Meshy run</div>
 <h1>TreeMolin — Round 20 runbook</h1>
-<div class="statusrow"><span class="pill s-appr"><span class="dot"></span>Approved — not started</span><span class="fact">Dimitri · 2026-08-11</span><span class="fact">Opened <b>2026-08-11</b></span></div>
-<p class="statusnote">plan frozen; no transform or new render has run</p>
+<div class="statusrow"><span class="pill s-await"><span class="dot"></span>Awaiting sign-off</span><span class="fact">Opened <b>2026-08-11</b></span></div>
 <div class="statusrow sub"><span class="fact inert" title="Published at round close">&#128203; Review panel &mdash; at round close</span></div>
-<div class="ask"><p class="lbl"><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</p><p>Approve this exact supplemental plan. <a class="jump" href="#ask">Read the full ask &darr;</a></p></div>
-<div class="glance"><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Planned</span><span class="v">$0.00</span><span class="s">of a $0.00 cap</span></div></div>
-<div class="meter"><p class="top"><span>Planned spend against the round cap</span><b>$0.00 / $0.00</b></p><div class="bar"></div><div class="legend"><span><i class="o"></i>Headroom $0.00</span></div></div>
+<div class="ask"><p class="lbl"><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</p><p>Approve the three arms and the 12/12/12 roll split at the 1,080-credit conservative cap (likely actual ≈720; live balance 3,210). <a class="jump" href="#ask">Read the full ask &darr;</a></p></div>
+<div class="glance"><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg>Rolls</span><span class="v">36</span><span class="s">across 3 cases</span></div><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Planned</span><span class="v">1,080 credits</span><span class="s">of a 1,080 credits cap</span></div></div>
+<div class="meter"><p class="top"><span>Planned spend against the round cap</span><b>1,080 / 1,080 credits</b></p><div class="bar"><i class="spent" style="width:100%;"></i></div><div class="legend"><span><i></i>meshy 1,080 credits</span><span><i class="o"></i>Headroom 0 credits</span><span>images $0.00</span></div></div>
 <nav class="snav"><a href="#goal">Goal</a><a href="#choices">Choices</a><a href="#inputs">Inputs</a><a href="#judged">Judging</a><a href="#ask">The ask</a><a href="#cost">Cost</a><a href="#facts">Round facts</a><a href="#tech">Technical plan</a></nav>
-<section class="s" id="goal"><h2><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg>Goal</h2><div class="md"><p>Give Babs&#x27;s two preferred R18 rolls the same geometry-preserving 50 mm placement used in R19, then compare them fairly with the two existing R19 finalists. The final public panel will show all four at the same physical scale with eight evenly spaced views and a live rotatable mesh on every card.</p>
-<p>R19 remains frozen history. R20 is a supplemental validation round because a new mesh placement/validation pass must have its own written plan before it runs.</p></div><div class="strips"><div class="stage"><span class="lbl">Default path</span><span class="st">Concept</span><span class="arw">&rsaquo;</span><span class="st">Turnaround</span><span class="arw">&rsaquo;</span><span class="st">Meshy</span><span class="arw">&rsaquo;</span><span class="st now">Mesh check</span><span class="arw">&rsaquo;</span><span class="st">Test print</span></div><div class="lineage"><span class="lbl">This round</span><span class="rn">r19</span><span class="arw">&rsaquo;</span><span class="rn this">r20</span></div></div></section>
-<section class="s" id="choices"><h2><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg>The choices on the table</h2><div class="md"><p>This is one bounded no-surgery approach applied to each late finalist. The two existing R19 outputs are held comparison references, not altered meshes.</p></div><div class="choices"><article class="choice"><header><h3>Late A1 M2 — bright-grokq M2</h3><span class="rolls">0 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether Babs&#x27;s A1 preference remains competitive after exact 50 mm placement and printability checks</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span><code>treeman-r18-clay-bright-grokq-m2-raw</code> plus both R19 comparison references</p><p class="cx"><span class="ck">Rolls</span>0 calls</p><a class="jump" href="#case-late-a1-m2-bright-grokq-m2"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><h3>Late A2 M8 — bright-flash31 M8</h3><span class="rolls">0 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether Babs&#x27;s A2 preference remains competitive after exact 50 mm placement and printability checks</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span><code>treeman-r18-clay-bright-flash31-m8-raw</code> plus both R19 comparison references</p><p class="cx"><span class="ck">Rolls</span>0 calls</p><a class="jump" href="#case-late-a2-m8-bright-flash31-m8"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article></div><div class="shape"><div class="mx" style="grid-template-columns:auto repeat(0,minmax(46px,1fr))"><span></span><span class="rh">Late A1 M2</span><span class="rh">Late A2 M8</span></div><p class="cap"><b>0 rolls total</b> — 2 choices, 0 + 0</p></div><div class="md"><p>Two deterministic local mesh outputs, four eight-direction render sets, no provider calls and no stochastic rolls.</p></div></section>
+<section class="s" id="goal"><h2><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg>Goal</h2><div class="md"><p>Meshy released its next-generation <strong>meshy-7</strong> model (2026-08-12) on the same multi-image endpoint the pipeline uses, claiming higher-fidelity geometry than Meshy 6. R18 left us an unusually strong measuring stick: 12 rolls per clay arm on approved inputs, with per-arm watertight rates and sail verdicts recorded. This round reruns those three arms with <strong>the model as the single changed variable</strong> — identical inputs, identical settings — to measure whether meshy-7 moves exactly the defects r18 quantified: the non-watertight rate, stray second shells, and bent/doubled/detached sails. It also pins meshy-7&#x27;s real credit price from the first task&#x27;s billing, and its outcome decides whether meshy-7 becomes the pipeline&#x27;s default reconstruction model.</p></div><div class="strips"><div class="stage"><span class="lbl">Default path</span><span class="st">Concept</span><span class="arw">&rsaquo;</span><span class="st">Turnaround</span><span class="arw">&rsaquo;</span><span class="st now">Meshy</span><span class="arw">&rsaquo;</span><span class="st">Mesh check</span><span class="arw">&rsaquo;</span><span class="st">Test print</span></div><div class="lineage"><span class="lbl">This round</span><span class="rn">r18</span><span class="arw">&rsaquo;</span><span class="rn this">r20</span><span class="arw">&rsaquo;</span><span class="rn next">r21 — a finishing pass for a winning r20 mesh, if any beats the R19 finalists</span></div></div></section>
+<section class="s" id="choices"><h2><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg>The choices on the table</h2><div class="md"><p>All rolls are Meshy 7 (<code>ai_model: meshy-7</code>), triangle topology, no remesh, texturing off — identical settings to r18 wave 1 except the model, so each arm is a direct 12-vs-12 model A/B. Each case&#x27;s input is that sheet&#x27;s exact four R18 slot crops (front as Meshy&#x27;s main view), pulled from Drive and re-proved pixel-identical before spend.</p></div><div class="choices"><article class="choice"><header><span class="key">1</span><h3>Clay, brightened · grokq sheet</h3><span class="rolls">12 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Does meshy-7 lift the arm that produced finalist A1 M12? (meshy-6 baseline: 7/12 watertight, 8/12 sail candidates)</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>treeman-r17-clay-B-2x2-bright-grokq-1 (exact R18 slot crops)</p><a class="jump" href="#case-1-clay-brightened-grokq-sheet"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">2</span><h3>Clay, brightened · flash31 sheet</h3><span class="rolls">12 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>The arm with the most headroom — 7/12 watertight but only 3/12 sail candidates on meshy-6. Does a better geometry model rescue the weaker sheet?</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>treeman-r17-clay-B-2x2-bright-flash31-1 (exact R18 slot crops)</p><a class="jump" href="#case-2-clay-brightened-flash31-sheet"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">3</span><h3>Clay, original · grokq sheet</h3><span class="rolls">12 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>The un-brightened regime control and finalist A3 M6&#x27;s arm (meshy-6 baseline: 5/12 watertight, 6/12 sail candidates)</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>treeman-r17-clay-B-2x2-orig-grokq-1 (exact R18 slot crops)</p><a class="jump" href="#case-3-clay-original-grokq-sheet"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article></div><div class="shape"><div class="mx" style="grid-template-columns:auto repeat(12,minmax(46px,1fr))"><span></span><span class="hd">roll 1</span><span class="hd">roll 2</span><span class="hd">roll 3</span><span class="hd">roll 4</span><span class="hd">roll 5</span><span class="hd">roll 6</span><span class="hd">roll 7</span><span class="hd">roll 8</span><span class="hd">roll 9</span><span class="hd">roll 10</span><span class="hd">roll 11</span><span class="hd">roll 12</span><span class="rh">1</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">2</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">3</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span></div><p class="cap"><b>36 rolls total</b> — 3 choices, 12 + 12 + 12</p></div><div class="md"><p>Three cases × 12 rolls = 36 Meshy calls. The <strong>1,080-credit cap</strong> prices every roll at the conservative 30-credit preflight ceiling, because Meshy has not published meshy-7 pricing yet; at meshy-6 parity the actual cost is 20/roll = <strong>720 credits</strong>, and each task&#x27;s provider-reported <code>consumed_credits</code> reconciles the ledger to actuals automatically. Live balance at drafting: 3,210 credits. Submission is <strong>staged in four bounded sequential manifests</strong> — a 1-task pricing probe (arm 1&#x27;s m1), then the three per-arm waves (11/12/12 tasks) — because the coordinator submits a manifest&#x27;s every create before polling: the probe makes the price gate enforceable before the fleet is committed, and no wave exceeds 12 concurrent pending tasks, safely below the ~30-task account queue ceiling that turned 14 r18 creates into terminal rejects needing registry surgery. Deliberate exclusion: <strong>arm 4 (fb225) is dropped</strong> — Dimitri, 2026-08-11 — as the consistently broken arm; no photo-direct input returns in this round.</p></div></section>
 <section class="rb-inputs" id="inputs">
 <h2><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>Inputs — what this round runs on</h2>
 <p class="blurb">Everything that goes in, grouped by the choice it belongs to. Click any image to zoom; open a prompt to read the exact text this round spends against. Crop sets show both the cut overview and every exact output crop.</p>
-<section class="rb-case" id="case-late-a1-m2-bright-grokq-m2">
-<h3 class="rb-case-h">Late A1 M2 — bright-grokq M2<span class="rb-case-count">3 images</span></h3>
-<p class="rb-case-note">Babs&#x27;s first late preference. The raw source&#x27;s one-face shard is preserved and reported; R20 performs no component filtering or repair.</p>
-<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Late A1 M2 — raw source</span><code class="rb-art-id">treeman-r18-clay-bright-grokq-m2-raw</code><button class="ibtn" data-inputs="in-0">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/d00dc6c640072742.jpg" data-cap="treeman-r18-clay-bright-grokq-m2-raw · treeman-r18-clay-bright-grokq-m2-raw-turnaround"><img src="../../../../assets/b1ed181d422a8220.jpg" alt="treeman-r18-clay-bright-grokq-m2-raw · treeman-r18-clay-bright-grokq-m2-raw-turnaround" loading="lazy"></div><figcaption>treeman-r18-clay-bright-grokq-m2-raw-turnaround</figcaption></figure>
+<section class="rb-case" id="case-1-clay-brightened-grokq-sheet">
+<h3 class="rb-case-h">1 — Clay, brightened · grokq sheet<span class="rb-case-count">1 image · 2 prompts</span></h3>
+<p class="rb-case-note">Finalist A1 M12&#x27;s arm. Meshy-6 baseline: 7/12 watertight, 8/12 sail candidates. Consumed via its exact four R18 slot crops (front as Meshy&#x27;s main view).</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">clay B · brightened reference · grokq</span><code class="rb-art-id">treeman-r17-clay-B-2x2-bright-grokq-1</code><button class="ibtn" data-inputs="in-0">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/4750daac00348ca0.jpg" data-cap="treeman-r17-clay-B-2x2-bright-grokq-1"><img src="../../../../assets/7ec16ba35403ffd3.jpg" alt="treeman-r17-clay-B-2x2-bright-grokq-1" loading="lazy"></div></figure>
 </div></div>
-<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">R19 A1 M12 — held comparison reference</span><code class="rb-art-id">treeman-r19-a1-m12-clean-50mm</code><button class="ibtn" data-inputs="in-1">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/f9f30a7875d74d59.jpg" data-cap="treeman-r19-a1-m12-clean-50mm · treeman-r19-a1-m12-clean-50mm-turnaround"><img src="../../../../assets/2488749dac531785.jpg" alt="treeman-r19-a1-m12-clean-50mm · treeman-r19-a1-m12-clean-50mm-turnaround" loading="lazy"></div><figcaption>treeman-r19-a1-m12-clean-50mm-turnaround</figcaption></figure>
-</div></div>
-<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">R19 A3 M6 — held comparison reference</span><code class="rb-art-id">treeman-r19-a3-m6-clean-50mm</code><button class="ibtn" data-inputs="in-2">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5953532cced9d136.jpg" data-cap="treeman-r19-a3-m6-clean-50mm · treeman-r19-a3-m6-clean-50mm-turnaround"><img src="../../../../assets/6a7da7223b71ed64.jpg" alt="treeman-r19-a3-m6-clean-50mm · treeman-r19-a3-m6-clean-50mm-turnaround" loading="lazy"></div><figcaption>treeman-r19-a3-m6-clean-50mm-turnaround</figcaption></figure>
-</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Meshy task manifest — Pricing probe manifest (1 task — arm 1&#x27;s m1; meshy-7, triangle, no remesh; gates the waves)<span class="rb-size">1 kB · 25 words</span></summary><div class="phead"><p class="path">projects/treeman-windmill/notes/r20-meshy-probe.json</p><button class="copy" data-copy>Copy meshy task manifest</button></div><pre>{
+ &quot;tasks&quot;: [
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-grokq-m1-raw.stl&quot;
+  }
+ ]
+}
+</pre></details>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Meshy task manifest — Arm 1 wave manifest (m2–m12, 11 tasks; identical settings)<span class="rb-size">6 kB · 225 words</span></summary><div class="phead"><p class="path">projects/treeman-windmill/notes/r20-meshy-wave-a1.json</p><button class="copy" data-copy>Copy meshy task manifest</button></div><pre>{
+ &quot;tasks&quot;: [
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-grokq-m2-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-grokq-m3-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-grokq-m4-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-grokq-m5-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-grokq-m6-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-grokq-m7-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-grokq-m8-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-grokq-m9-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-grokq-m10-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-grokq-m11-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-grokq-m12-raw.stl&quot;
+  }
+ ]
+}
+</pre></details>
 </section>
-<section class="rb-case" id="case-late-a2-m8-bright-flash31-m8">
-<h3 class="rb-case-h">Late A2 M8 — bright-flash31 M8<span class="rb-case-count">3 images</span></h3>
-<p class="rb-case-note">Babs&#x27;s second late preference. The raw source&#x27;s eight-face and one-face shards are preserved and reported; R20 performs no component filtering or repair.</p>
-<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Late A2 M8 — raw source</span><code class="rb-art-id">treeman-r18-clay-bright-flash31-m8-raw</code><button class="ibtn" data-inputs="in-3">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/7345e7237f84fb66.jpg" data-cap="treeman-r18-clay-bright-flash31-m8-raw · treeman-r18-clay-bright-flash31-m8-raw-turnaround"><img src="../../../../assets/6a389449fe973211.jpg" alt="treeman-r18-clay-bright-flash31-m8-raw · treeman-r18-clay-bright-flash31-m8-raw-turnaround" loading="lazy"></div><figcaption>treeman-r18-clay-bright-flash31-m8-raw-turnaround</figcaption></figure>
+<section class="rb-case" id="case-2-clay-brightened-flash31-sheet">
+<h3 class="rb-case-h">2 — Clay, brightened · flash31 sheet<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">The most-headroom arm: 7/12 watertight but only 3/12 sail candidates on meshy-6. Same exact R18 slot crops.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">clay B · brightened reference · flash31</span><code class="rb-art-id">treeman-r17-clay-B-2x2-bright-flash31-1</code><button class="ibtn" data-inputs="in-1">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b2853edd38eb8265.jpg" data-cap="treeman-r17-clay-B-2x2-bright-flash31-1"><img src="../../../../assets/5cae9a93f68b2ec7.jpg" alt="treeman-r17-clay-B-2x2-bright-flash31-1" loading="lazy"></div></figure>
 </div></div>
-<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">R19 A1 M12 — held comparison reference</span><code class="rb-art-id">treeman-r19-a1-m12-clean-50mm</code><button class="ibtn" data-inputs="in-4">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/f9f30a7875d74d59.jpg" data-cap="treeman-r19-a1-m12-clean-50mm · treeman-r19-a1-m12-clean-50mm-turnaround"><img src="../../../../assets/2488749dac531785.jpg" alt="treeman-r19-a1-m12-clean-50mm · treeman-r19-a1-m12-clean-50mm-turnaround" loading="lazy"></div><figcaption>treeman-r19-a1-m12-clean-50mm-turnaround</figcaption></figure>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Meshy task manifest — Arm 2 wave manifest (12 tasks; identical settings)<span class="rb-size">6 kB · 245 words</span></summary><div class="phead"><p class="path">projects/treeman-windmill/notes/r20-meshy-wave-a2.json</p><button class="copy" data-copy>Copy meshy task manifest</button></div><pre>{
+ &quot;tasks&quot;: [
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-flash31-m1-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-flash31-m2-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-flash31-m3-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-flash31-m4-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-flash31-m5-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-flash31-m6-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-flash31-m7-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-flash31-m8-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-flash31-m9-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-flash31-m10-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-flash31-m11-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-bright-flash31-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-bright-flash31-m12-raw.stl&quot;
+  }
+ ]
+}
+</pre></details>
+</section>
+<section class="rb-case" id="case-3-clay-original-grokq-sheet">
+<h3 class="rb-case-h">3 — Clay, original · grokq sheet<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">The un-brightened regime control and finalist A3 M6&#x27;s arm. Meshy-6 baseline: 5/12 watertight, 6/12 sail candidates. Same exact R18 slot crops.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">clay B · original reference · grokq</span><code class="rb-art-id">treeman-r17-clay-B-2x2-orig-grokq-1</code><button class="ibtn" data-inputs="in-2">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/2cac60b0674a7650.jpg" data-cap="treeman-r17-clay-B-2x2-orig-grokq-1"><img src="../../../../assets/2987ff0b21fe708e.jpg" alt="treeman-r17-clay-B-2x2-orig-grokq-1" loading="lazy"></div></figure>
 </div></div>
-<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">R19 A3 M6 — held comparison reference</span><code class="rb-art-id">treeman-r19-a3-m6-clean-50mm</code><button class="ibtn" data-inputs="in-5">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5953532cced9d136.jpg" data-cap="treeman-r19-a3-m6-clean-50mm · treeman-r19-a3-m6-clean-50mm-turnaround"><img src="../../../../assets/6a7da7223b71ed64.jpg" alt="treeman-r19-a3-m6-clean-50mm · treeman-r19-a3-m6-clean-50mm-turnaround" loading="lazy"></div><figcaption>treeman-r19-a3-m6-clean-50mm-turnaround</figcaption></figure>
-</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Meshy task manifest — Arm 3 wave manifest (12 tasks; identical settings)<span class="rb-size">6 kB · 245 words</span></summary><div class="phead"><p class="path">projects/treeman-windmill/notes/r20-meshy-wave-a3.json</p><button class="copy" data-copy>Copy meshy task manifest</button></div><pre>{
+ &quot;tasks&quot;: [
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-orig-grokq-m1-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-orig-grokq-m2-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-orig-grokq-m3-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-orig-grokq-m4-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-orig-grokq-m5-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-orig-grokq-m6-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-orig-grokq-m7-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-orig-grokq-m8-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-orig-grokq-m9-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-orig-grokq-m10-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-orig-grokq-m11-raw.stl&quot;
+  },
+  {
+   &quot;kind&quot;: &quot;image&quot;,
+   &quot;ai_model&quot;: &quot;meshy-7&quot;,
+   &quot;topology&quot;: &quot;triangle&quot;,
+   &quot;remesh&quot;: false,
+   &quot;front&quot;: &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-front.png&quot;,
+   &quot;views&quot;: [
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side1.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-back.png&quot;,
+    &quot;../generated/crops/round-18/treeman-r18-crop-orig-grokq-side2.png&quot;
+   ],
+   &quot;out&quot;: &quot;../models/round-20/treeman-r20-clay-orig-grokq-m12-raw.stl&quot;
+  }
+ ]
+}
+</pre></details>
 </section>
 </section>
 <section class="s" id="judged"><h2><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>How the round is judged</h2><div class="md"><ul>
-<li><strong>Source identity:</strong> both late R18 STLs and both R19 reference STLs must match the SHA-256 values pinned in the technical plan.</li>
-<li><strong>Placement contract:</strong> each late output is uniformly scaled to 50.00 mm overall Z height, centered in X/Y and moved so minimum Z is zero.</li>
-<li><strong>Geometry preservation:</strong> the operation may not delete the known microscopic shards in either late source. Face/component counts, winding, and main-shell topology must match the corresponding source; an independently derived source-to-output affine comparison must stay within 0.0001 mm.</li>
-<li><strong>Mechanical evidence:</strong> record overall and main-shell topology, dimensions, volume, surface roughness, and the 0.28 mm-pitch thin-connection probe. A1 M2 begins with one watertight 1,283,480-face main shell plus one one-face shard; A2 M8 begins with one watertight 1,203,674-face main shell plus eight-face and one-face shards. Those facts must be visible rather than silently cleaned.</li>
-<li><strong>Compass evidence:</strong> render every finalist at azimuths 270°, 315°, 0°, 45°, 90°, 135°, 180° and 225° at the same elevation and framing. These are the front, front-right, right, back-right, back, back-left, left and front-left steps in the established model convention.</li>
-<li><strong>Human comparison:</strong> Babs and Dimitri rotate the four exact meshes and weigh visual preference against topology and thin-feature risk. Static evidence is a pre-filter, not a substitute for live 3D inspection.</li>
+<li><strong>FAST:</strong> exactly r18&#x27;s screens, so the comparison is like-for-like: every mesh pushes to Drive the moment it lands (<code>--drive-sync</code>; a mesh stays <code>LANDED</code> until its push succeeds), then locally and free: the trimesh geometry tally (watertight / real shells / winding, same 100-face shell threshold), four-azimuth turnaround renders, and the fresh-context per-arm comparative sail review walking the same four sail questions (straight vs bent, single vs doubled/ghosted, hub attachment, unwanted holes). The close tally presents each arm side by side with its r18 baseline (12 vs 12). The pricing probe&#x27;s <code>consumed_credits</code> (step 2a) is recorded in <code>rounds.md</code> as the authoritative meshy-7 price BEFORE any arm wave submits, resolving the provisional 30-credit preflight ceiling; a probe price above 30 stops the round for a plan amendment.</li>
+<li><strong>SLOW:</strong> none. No images are generated, so there is no blind-detect lane and no dollar spend (same reasoning as r18).</li>
+<li><strong>Human gate:</strong> per-arm interactive mesh pages (every roll rotatable, as the r18 set) published privately at close; Dimitri rotates and answers the two round questions: (a) does meshy-7 become the pipeline&#x27;s default reconstruction model, and (b) does any r20 roll join or displace the R19 finalists. The r20-panel review carries the verdict asks.</li>
 </ul></div></section>
-<section class="s" id="ask"><h2><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</h2><div class="md cta"><p>Approve this exact supplemental plan. After its public panel is ready, pick one of A1 M12, A3 M6, A1 M2 or A2 M8—or reject all four with the defect a later round must address.</p></div></section>
-<section class="s" id="cost"><h2><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Cost</h2><div class="md"><p>Free and local: no image-model calls, Meshy credits, or other paid API calls.</p></div><div class="costgrid"><div class="costrow"><span class="n">local</span><span></span><span class="a">$0.00</span></div></div></section>
-<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>mesh validation — late-finalist 50 mm placement and four-way compass comparison</dd><dt>Owner</dt><dd>Codex (local) → Dimitri review</dd><dt>Date opened</dt><dd>2026-08-11</dd><dt>Inputs</dt><dd>treeman-r18-clay-bright-grokq-m2-raw · treeman-r18-clay-bright-flash31-m8-raw · treeman-r19-a1-m12-clean-50mm · treeman-r19-a3-m6-clean-50mm</dd><dt>Produces</dt><dd>treeman-r20-a1-m2-clean-50mm · treeman-r20-a2-m8-clean-50mm · two append-only R19 comparison-evidence artifacts · eight-direction renders and one four-way interactive review</dd><dt>Branch</dt><dd><code>codex/treeman-r20-late-finalists</code></dd><dt>Evaluation lanes</dt><dd>FAST — source-hash gate, deterministic placement of two late finalists, topology/dimension/roughness/thin-part checks, eight-direction full-resolution renders for all four finalists, fresh-context comparative audit, then a provisional four-way panel; SLOW — none; HUMAN GATE — Dimitri/Babs live-3D review</dd><dt>Prior round</dt><dd>r19 — Babs&#x27;s late preference adds R18 A1 M2 and A2 M8 to the equal-scale decision without rewriting R19; Dimitri requested eight 45-degree compass views for every finalist.</dd><dt>Spend</dt><dd>local $0 · cap $0</dd></dl></section>
+<section class="s" id="ask"><h2><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</h2><div class="md cta"><p>Approve the three arms and the 12/12/12 roll split at the 1,080-credit conservative cap (likely actual ≈720; live balance 3,210). Any subset works — dropping or halving a row frees its share at your call. Note execution also waits on PR #460 (meshy-7 preflight support in the tooling) merging; the coordinator fails closed at preflight without it.</p></div></section>
+<section class="s" id="cost"><h2><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Cost</h2><div class="md"><p>Meshy: 36 rolls × 30-credit conservative ceiling = <strong>1,080 credits</strong> (the cap). At meshy-6-parity pricing the actual is 36 × 20 = <strong>720 credits</strong>; the 1-task pricing probe (step 2a) pins the real price before the arm waves submit, and per-task <code>consumed_credits</code> reconciliation trues up the ledger. Images: <strong>$0</strong>. Evaluation is local and free (no C1–C9 / blind-detect lane — no images are generated, per the r18 precedent).</p></div><div class="costgrid"><div class="costrow"><span class="n">meshy</span><span class="t" style="width:100%"></span><span class="a">1,080 credits</span></div><div class="costrow"><span class="n">images</span><span></span><span class="a">$0.00</span></div></div></section>
+<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>Meshy run — meshy-7 A/B rerun of the r18 clay arms</dd><dt>Owner</dt><dd>Claude (local) → Dimitri review</dd><dt>Date opened</dt><dd>2026-08-11</dd><dt>Inputs</dt><dd>treeman-r17-clay-B-2x2-bright-grokq-1 · treeman-r17-clay-B-2x2-bright-flash31-1 · treeman-r17-clay-B-2x2-orig-grokq-1 — consumed via their exact R18 slot-crop sets, reused byte-identical (no recropping)</dd><dt>Produces</dt><dd>treeman-r20-clay-bright-grokq-m{1..12}-raw · treeman-r20-clay-bright-flash31-m{1..12}-raw · treeman-r20-clay-orig-grokq-m{1..12}-raw (36 raw Meshy 7 meshes)</dd><dt>Branch</dt><dd><code>claude/treeman-r20-runbook</code></dd><dt>Evaluation lanes</dt><dd>FAST — automatic Drive push per landing through <code>meshy_manifest.py --drive-sync</code>, trimesh geometry tally, four-azimuth turnaround renders, and the per-arm comparative sail review scored on the exact r18 rubric so every number reads against the r18 baseline; SLOW — none (no images are generated, so there is no blind-detect lane; the gate is Dimitri&#x27;s rotation)</dd><dt>Prior round</dt><dd>r18 — the 48-roll Meshy-6 baseline on these same inputs: watertight 7/12 · 7/12 · 5/12 across the three clay arms, sail-candidate counts 8 · 3 · 6, two finalists (A1 M12, A3 M6) now in R19 finishing. Arm 4 (fb225, the photo front+back+225° set) is dropped on Dimitri&#x27;s direction (2026-08-11): it was the consistently broken arm — 1/12 sail candidates — and r17 had already closed the photo-direct route.</dd><dt>Next</dt><dd>r21 — a finishing pass for a winning r20 mesh, if any beats the R19 finalists</dd><dt>Spend</dt><dd>meshy 1080 credits · images $0 · cap 1080 credits</dd></dl></section>
 <section class="s" id="tech"><h2><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>Technical plan</h2>
-<p class="intro">placement, validation, compass renders and handoff</p>
-<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>What changed going in</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><ul>
-<li>Babs prefers R18 A1 M2 and A2 M8. That append-only late verdict seeds R20; it does not alter R18&#x27;s or R19&#x27;s frozen plan/history.</li>
-<li>R19&#x27;s transform contract is held constant: uniform scale to 50.00 mm overall height, XY centering and minimum-Z flooring only.</li>
-<li>No shard deletion, component filtering, cutting, capping, filling, repair, smoothing, debasing or remeshing is authorized.</li>
-<li>The evidence standard expands from four cardinal azimuths to eight 45-degree compass steps for all four finalists. New R20 comparison-evidence records carry the fresh renders for the immutable R19 meshes.</li>
-<li>Dimitri explicitly approved the world-readable four-way review for Babs, all four exact STL downloads exposed through its live mesh cards, and a private-Treeman-category Discord share on 2026-08-11. Publication still waits for checked-in R20 output paths and the repository&#x27;s publication checkpoint.</li>
+<p class="intro">inputs, identity gate, commands (pipeline detail)</p>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>What changed going in (spec / prompt / process deltas)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><ul>
+<li>No spec or prompt changes: this round generates no images. Its only text inputs are the four committed staged Meshy task manifests — <code>notes/r20-meshy-probe.json</code> (1 task: arm 1&#x27;s m1), <code>notes/r20-meshy-wave-a1.json</code> (arm 1&#x27;s m2–m12), <code>notes/r20-meshy-wave-a2.json</code> (arm 2), <code>notes/r20-meshy-wave-a3.json</code> (arm 3). Across the four files the single delta vs the r18 clay tasks is <code>ai_model: meshy-7</code>; <code>tests/test_treeman_r20_manifest.py</code> pins that mechanically (union = 36 tasks, each differing from its r18 counterpart in exactly <code>ai_model</code> and <code>out</code>, probe = arm 1 m1, every manifest ≤ 12 tasks).</li>
+<li>Submission staging is a process delta from r18&#x27;s single 48-task manifest, forced by two r18/r20 facts: the coordinator submits every create in a manifest before polling (so a single-manifest price gate cannot act before the whole fleet is committed), and the account&#x27;s ~30-pending queue ceiling turned 14 r18 creates into terminal <code>REJECTED</code> records that needed a registry reset to recover. Probe-then-bounded-waves removes both failure modes by construction.</li>
+<li>Tooling dependency: <strong>PR #460</strong> adds meshy-7 to the Meshy spend preflight with a conservative 30-credit reservation ceiling (pricing unpublished; <code>SUCCEEDED</code> tasks commit actual <code>consumed_credits</code>). Without it every meshy-7 call aborts before provider contact, so that PR merges first.</li>
+<li>meshy-7 changed the provider-side <code>should_remesh</code> default to <code>false</code>; moot here because every task sends <code>should_remesh</code> explicitly (<code>false</code>, as r18 — the gorgon r10/r11 no-remesh rule).</li>
+<li>Inputs are the exact R18 slot crops — no recropping and no new crop gate. Their identity is re-proved before spend by regenerating the crops from the Drive sheets with the r18-recorded trims and requiring pixel equality (step 1 below), the same property r18&#x27;s pre-spend gate established.</li>
 </ul></div></details>
-<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg><span>Experiment matrix</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Operation</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>1</td><td><code>treeman-r18-clay-bright-grokq-m2-raw</code></td><td>uniform scale to 50.00 mm overall Z; center XY; set min Z=0; preserve every component</td><td><code>treeman-r20-a1-m2-clean-50mm</code></td></tr><tr><td>2</td><td><code>treeman-r18-clay-bright-flash31-m8-raw</code></td><td>uniform scale to 50.00 mm overall Z; center XY; set min Z=0; preserve every component</td><td><code>treeman-r20-a2-m8-clean-50mm</code></td></tr><tr><td>3</td><td><code>treeman-r19-a1-m12-clean-50mm</code></td><td>render-only eight-direction comparison evidence; no mesh write</td><td><code>treeman-r20-r19-a1-m12-comparison-50mm</code></td></tr><tr><td>4</td><td><code>treeman-r19-a3-m6-clean-50mm</code></td><td>render-only eight-direction comparison evidence; no mesh write</td><td><code>treeman-r20-r19-a3-m6-comparison-50mm</code></td></tr><tr><td>5</td><td><code>treeman-r20-a1-m2-clean-50mm</code></td><td>eight-direction render set after validation</td><td>same artifact&#x27;s render evidence</td></tr><tr><td>6</td><td><code>treeman-r20-a2-m8-clean-50mm</code></td><td>eight-direction render set after validation</td><td>same artifact&#x27;s render evidence</td></tr></tbody></table></div></div></details>
-<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-branch"/></svg><span>Commands</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><h4>Post-merge start gate</h4>
-<p>The lifecycle-only start PR changes current state in <code>rounds.md</code>, not this frozen plan. After Dimitri approves and merges it, execution begins only from exact current <code>main</code> and the already-recorded R20 greenlight:</p>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg><span>Experiment matrix</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Variant axes</th><th>Prompt</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>1</td><td>treeman-r17-clay-B-2x2-bright-grokq-1 → exact R18 crops <code>treeman-r18-crop-bright-grokq-{front,side1,back,side2}</code></td><td>meshy-7 · clay · brightened · grokq</td><td>notes/r20-meshy-probe.json (m1) + notes/r20-meshy-wave-a1.json (m2–m12)</td><td>treeman-r20-clay-bright-grokq-m{1..12}-raw</td></tr><tr><td>2</td><td>treeman-r17-clay-B-2x2-bright-flash31-1 → exact R18 crops <code>treeman-r18-crop-bright-flash31-*</code></td><td>meshy-7 · clay · brightened · flash31</td><td>notes/r20-meshy-wave-a2.json</td><td>treeman-r20-clay-bright-flash31-m{1..12}-raw</td></tr><tr><td>3</td><td>treeman-r17-clay-B-2x2-orig-grokq-1 → exact R18 crops <code>treeman-r18-crop-orig-grokq-*</code></td><td>meshy-7 · clay · original · grokq</td><td>notes/r20-meshy-wave-a3.json</td><td>treeman-r20-clay-orig-grokq-m{1..12}-raw</td></tr></tbody></table></div>
+<p>Model policy: Meshy 7 only — that comparison is the round. The manifests are execution mechanics; they authorize nothing beyond this approved runbook.</p></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-branch"/></svg><span>Commands</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>Setup: base checkout venv (<code>~/dev/ai-stl-pipeline/.venv</code>), secrets via <code>tools/_secrets.py</code>; pull the input binaries with <code>tools/drive_sync.sh pull projects/treeman-windmill/generated/crops/round-18</code> (the 12 exact crops) and the three source sheets under <code>projects/treeman-windmill/generated/</code>.</p>
+<h4>Post-merge start gate</h4>
+<p>The start PR changes current state in <code>rounds.md</code>, not this frozen plan. After Dimitri approves and merges it, execution must begin with this exact fail-closed shape:</p>
 <pre class="code"><code>set -euo pipefail
 git fetch origin main
 test &quot;$(git rev-parse HEAD)&quot; = &quot;$(git rev-parse origin/main)&quot;
@@ -527,205 +1006,265 @@ python3 tools/round_gate.py verify \
   --published-html &quot;${AI_STL_REVIEW_DIR:-../ai-stl-review}/reviews/treeman-windmill/treeman/r20-runbook/index.html&quot;
 test &quot;$(git rev-parse HEAD)&quot; = &quot;$(git rev-parse origin/main)&quot;
 
-# Append the private Treeman Discord start reply and advance the round header
-# from that completed reply&#x27;s event id. Only then run the commands below.</code></pre>
-<h4>Inputs and identity gate</h4>
+# Append the private Treeman Discord start reply (--once treeman-r20-started)
+# to the Round 20 thread; advance its header with that completed reply&#x27;s
+# --event-id. Only then run the paid commands below.</code></pre>
+<h4>1 — Input identity gate (free, before spend)</h4>
+<p>The wave consumes the exact R18 crops. Re-prove their identity by regenerating each sheet&#x27;s slot crops with the r18-recorded trims (bright-grokq 2 px, bright-flash31 9 px, orig-grokq 0 px) into a scratch directory and requiring pixel equality with the pulled round-18 crops:</p>
+<pre class="code"><code>python3 tools/meshy_crops.py \
+  --sheet projects/treeman-windmill/generated/treeman-r17-clay-B-2x2-bright-grokq-1.png \
+  --grid 2x2 --views front side1 back side2 --trim-px 2 \
+  --out-dir /tmp/r20-identity/bright-grokq --prefix check
+# repeat for bright-flash31 (.jpg source, --trim-px 9) and orig-grokq (--trim-px 0)
+
+python3 - &lt;&lt;&#x27;PY&#x27;
+import pathlib, sys
+import numpy as np
+from PIL import Image
+crops = pathlib.Path(&#x27;projects/treeman-windmill/generated/crops/round-18&#x27;)
+bad = []
+for arm, ext in ((&#x27;bright-grokq&#x27;, &#x27;png&#x27;), (&#x27;bright-flash31&#x27;, &#x27;png&#x27;), (&#x27;orig-grokq&#x27;, &#x27;png&#x27;)):
+    for view in (&#x27;front&#x27;, &#x27;side1&#x27;, &#x27;back&#x27;, &#x27;side2&#x27;):
+        ref = crops / f&#x27;treeman-r18-crop-{arm}-{view}.{ext}&#x27;
+        new = pathlib.Path(f&#x27;/tmp/r20-identity/{arm}&#x27;) / f&#x27;check-{view}.{ext}&#x27;
+        same = np.array_equal(np.asarray(Image.open(ref)), np.asarray(Image.open(new)))
+        print(f&#x27;{arm}/{view}: {&quot;identical&quot; if same else &quot;DIFFERS&quot;}&#x27;)
+        if not same:
+            bad.append(ref.name)
+sys.exit(f&#x27;identity gate FAILED: {bad}&#x27; if bad else 0)
+PY</code></pre>
+<p>All 12 must report <code>identical</code> BEFORE any Meshy call; log the check in <code>rounds.md</code>. A mismatch stops the round for reconciliation — never proceed on divergent inputs.</p>
+<h4>2a — Pricing probe (1 task; gates the fleet)</h4>
+<pre class="code"><code>python3 -u tools/meshy_manifest.py run \
+  --manifest projects/treeman-windmill/notes/r20-meshy-probe.json \
+  --drive-sync
+# Record the printed run id in rounds.md the moment it prints.</code></pre>
+<p>Wait for the probe to reach <code>FINALIZED</code>, then record its <code>consumed_credits</code> in <code>rounds.md</code> as the authoritative meshy-7 per-task price. <strong>Gate:</strong> at ≤ 30 credits the 1,080-credit cap holds — proceed to 2b. Above 30 credits the approved cap cannot cover 36 rolls — STOP; the round returns to Dimitri for a logged plan amendment before any wave submits.</p>
+<h4>2b — Per-arm waves, sequential (the rest of the paid spend)</h4>
+<p>Run the three bounded manifests ONE AT A TIME, starting each only after the previous run PROVES <code>FINALIZED</code> — never concurrently (each stays ≤ 12 pending tasks, below the ~30-task account queue ceiling that rejected 14 r18 creates). The coordinator&#x27;s CLI exits 0 even when a run ends <code>PARTIAL</code> (a task hit <code>REJECTED</code>/<code>FAILED</code>/<code>CANCELED</code>/<code>EXPIRED</code>), so the gate between waves must inspect the recorded run state, not the exit code. The coordinator runs under <code>python3 -u</code>: piped through <code>tee</code>, a block-buffered stdout could hold the <code>Meshy manifest run:</code> line — the only recovery handle — past an abrupt kill; unbuffered, the id reaches <code>$RUN_LOG</code> and the console the moment the run exists, before the long polling phase. Record it in <code>rounds.md</code> as soon as it prints, not at wave end:</p>
 <pre class="code"><code>set -euo pipefail
-P=projects/treeman-windmill
-tools/drive_sync.sh pull &quot;$P/models/round-18&quot;
-tools/drive_sync.sh pull &quot;$P/models/round-19&quot;
-echo &#x27;c0daf8ac5afc9db1e01d629e8ee92355a59d4fb8bd365b20f333529d7e0c5923  projects/treeman-windmill/models/round-18/treeman-r18-clay-bright-grokq-m2-raw.stl&#x27; | sha256sum --check --strict
-echo &#x27;c831c12c1cb9d49b8cffc6f0d459c4485e4a0ece5f07e45e55068fa3f1fd12d4  projects/treeman-windmill/models/round-18/treeman-r18-clay-bright-flash31-m8-raw.stl&#x27; | sha256sum --check --strict
-echo &#x27;cff394ae63ed3ea572a9f2a10da2fd2c84ee1546a982a0a0eaa4e656ee206b1d  projects/treeman-windmill/models/round-19/treeman-r19-a1-m12-clean-50mm.stl&#x27; | sha256sum --check --strict
-echo &#x27;2df90ed9219ea8e0cdf87bb6ffe4fc873c2dac0692b9d6a161413fa01855a7fd  projects/treeman-windmill/models/round-19/treeman-r19-a3-m6-clean-50mm.stl&#x27; | sha256sum --check --strict</code></pre>
-<h4>Deterministic placement and immediate Drive durability</h4>
-<p>Each late output is a new append-only artifact. Never overwrite, rename or filter either R18 source.</p>
-<pre class="code"><code>python3 tools/mesh_place.py \
-  --stl &quot;$P/models/round-18/treeman-r18-clay-bright-grokq-m2-raw.stl&quot; \
-  --out &quot;$P/models/round-20/treeman-r20-a1-m2-clean-50mm.stl&quot; \
-  --target-height-mm 50 \
-  --report &quot;$P/notes/r20-a1-m2-placement.json&quot;
-tools/drive_sync.sh push &quot;$P/models/round-20&quot;
-# Immediately hand Dimitri the pre-shared Drive folder URL for
-# My Drive/minis-pipeline/projects/treeman-windmill/models/round-20/ together
-# with the exact A1 M2 filename. Do not begin validation until delivered.
-
-python3 tools/mesh_place.py \
-  --stl &quot;$P/models/round-18/treeman-r18-clay-bright-flash31-m8-raw.stl&quot; \
-  --out &quot;$P/models/round-20/treeman-r20-a2-m8-clean-50mm.stl&quot; \
-  --target-height-mm 50 \
-  --report &quot;$P/notes/r20-a2-m8-placement.json&quot;
-tools/drive_sync.sh push &quot;$P/models/round-20&quot;
-# Immediately hand Dimitri the same Drive folder URL together with the exact
-# A2 M8 filename. Do not begin validation until delivered.</code></pre>
-<h4>Independent final-scale checks</h4>
-<pre class="code"><code>for CANDIDATE in a1-m2 a2-m8; do
-  STL=&quot;$P/models/round-20/treeman-r20-${CANDIDATE}-clean-50mm.stl&quot;
-  python3 tools/mesh_validate.py --stl &quot;$STL&quot; --units mm \
-    --label &quot;treeman-r20-${CANDIDATE}-clean-50mm&quot; \
-    --out &quot;$P/notes/r20-${CANDIDATE}-validation.json&quot;
-  python3 tools/mesh_stats.py --stl &quot;$STL&quot; --json
-  python3 tools/mesh_roughness.py --stl &quot;$STL&quot; --bands \
-    &gt; &quot;$P/notes/r20-${CANDIDATE}-roughness.txt&quot;
-  python3 tools/mesh_thin_parts.py --stl &quot;$STL&quot; --pitch 0.28 \
-    --fragile-mm 0.8 &gt; &quot;$P/notes/r20-${CANDIDATE}-thin-parts.txt&quot;
-  python3 tools/mesh_thin_parts.py --stl &quot;$STL&quot; --pitch 0.28 --fragility \
-    &gt; &quot;$P/notes/r20-${CANDIDATE}-fragility.txt&quot;
-done</code></pre>
-<p>Independently compare each output with its source under the placement report&#x27;s declared affine transform. Fail if maximum coordinate error exceeds 0.0001 mm, or if face count, component-face counts, winding consistency, main-shell open edges or main-shell non-manifold edges change. The overall late meshes are not allowed to be called watertight while their preserved microscopic shards remain.</p>
-<h4>Eight-direction compass renders</h4>
-<p>Use the same elevation and framing for every candidate. Store all new binary renders under Round 20 and push them to Drive after they land.</p>
-<pre class="code"><code>python3 tools/stl_render.py \
-  --stl &quot;$P/models/round-19/treeman-r19-a1-m12-clean-50mm.stl&quot; \
-  --out-dir &quot;$P/generated/renders/round-20&quot; \
-  --stem treeman-r20-r19-a1-m12-comparison-50mm --mode turnaround \
-  --azimuths 270,315,0,45,90,135,180,225 --elevation 12 --ncols 4 \
-  --labels Front,Front-right,Right,Back-right,Back,Back-left,Left,Front-left
-python3 tools/stl_render.py \
-  --stl &quot;$P/models/round-19/treeman-r19-a3-m6-clean-50mm.stl&quot; \
-  --out-dir &quot;$P/generated/renders/round-20&quot; \
-  --stem treeman-r20-r19-a3-m6-comparison-50mm --mode turnaround \
-  --azimuths 270,315,0,45,90,135,180,225 --elevation 12 --ncols 4 \
-  --labels Front,Front-right,Right,Back-right,Back,Back-left,Left,Front-left
-for CANDIDATE in a1-m2 a2-m8; do
-  python3 tools/stl_render.py \
-    --stl &quot;$P/models/round-20/treeman-r20-${CANDIDATE}-clean-50mm.stl&quot; \
-    --out-dir &quot;$P/generated/renders/round-20&quot; \
-    --stem &quot;treeman-r20-${CANDIDATE}-clean-50mm&quot; --mode turnaround \
-    --azimuths 270,315,0,45,90,135,180,225 --elevation 12 --ncols 4 \
-    --labels Front,Front-right,Right,Back-right,Back,Back-left,Left,Front-left
+for W in a1 a2 a3; do
+  RUN_LOG=$(mktemp)
+  python3 -u tools/meshy_manifest.py run \
+    --manifest &quot;projects/treeman-windmill/notes/r20-meshy-wave-$W.json&quot; \
+    --drive-sync | tee &quot;$RUN_LOG&quot;
+  RUN_ID=$(sed -n &#x27;s/^Meshy manifest run: //p&#x27; &quot;$RUN_LOG&quot;)
+  # Record the run id in rounds.md immediately, before the next wave.
+  python3 tools/meshy_manifest.py status --run &quot;$RUN_ID&quot; | python3 -c &#x27;
+import json, sys
+state = json.load(sys.stdin).get(&quot;state&quot;)
+sys.exit(0 if state == &quot;FINALIZED&quot; else f&quot;wave ended {state}, not FINALIZED — STOP&quot;)&#x27;
 done
-tools/drive_sync.sh push &quot;$P/generated/renders/round-20&quot;</code></pre>
-<p>Append four new lineage records: two clean-mesh outputs with required <code>clean</code> metadata, plus two render-evidence records parented to the immutable R19 artifacts. Each record lists its exact STL and all nine new render files (the composite plus eight azimuths). The reference evidence copies the already committed <code>clean</code> headline block from its unchanged R19 parent; the mesh bytes are the same exact source-hash-gated file.</p>
-<pre class="code"><code>python3 - &lt;&lt;&#x27;PY&#x27;
-import ast
-import datetime
-import json
-from pathlib import Path
-
-from tools.genlog import append_lineage_record
-
-project = Path(&quot;projects/treeman-windmill&quot;)
-lineage = project / &quot;lineage.json&quot;
-by_id = {
-    artifact[&quot;id&quot;]: artifact
-    for artifact in json.loads(lineage.read_text())[&quot;artifacts&quot;]
-}
-azimuths = (270, 315, 0, 45, 90, 135, 180, 225)
-render_root = project / &quot;generated/renders/round-20&quot;
-today = datetime.date.today().isoformat()
-
-for short, artifact_id, parent in (
-    (&quot;a1-m2&quot;, &quot;treeman-r20-a1-m2-clean-50mm&quot;,
-     &quot;treeman-r18-clay-bright-grokq-m2-raw&quot;),
-    (&quot;a2-m8&quot;, &quot;treeman-r20-a2-m8-clean-50mm&quot;,
-     &quot;treeman-r18-clay-bright-flash31-m8-raw&quot;),
-):
-    roughness = (project / f&quot;notes/r20-{short}-roughness.txt&quot;).read_text()
-    overall_line = next(
-        line for line in roughness.splitlines()
-        if line.strip().startswith(&quot;OVERALL &quot;)
-    )
-    overall = ast.literal_eval(overall_line.split(&quot;OVERALL&quot;, 1)[1].strip())
-    stem = f&quot;treeman-r20-{short}-clean-50mm&quot;
-    files = [
-        render_root / f&quot;{stem}-turnaround.png&quot;,
-        project / f&quot;models/round-20/{stem}.stl&quot;,
-        *(render_root / f&quot;{stem}-turnaround-az{az}.png&quot; for az in azimuths),
-    ]
-    append_lineage_record(
-        lineage,
-        {
-            &quot;id&quot;: artifact_id,
-            &quot;round&quot;: 20,
-            &quot;kind&quot;: &quot;clean-mesh&quot;,
-            &quot;parents&quot;: [parent],
-            &quot;status&quot;: &quot;finishing-review&quot;,
-            &quot;tool&quot;: &quot;mesh_place.py --target-height-mm 50&quot;,
-            &quot;generated&quot;: today,
-            &quot;file&quot;: str(files[0]),
-            &quot;files&quot;: [str(path) for path in files],
-            &quot;notes&quot;: (
-                &quot;Geometry-preserving R20 placement: uniform scale to 50 mm &quot;
-                &quot;overall Z, XY centered, minimum Z floored to zero; every &quot;
-                &quot;source component preserved; no filtering, cut, repair, &quot;
-                &quot;smoothing or remesh.&quot;
-            ),
-            &quot;clean&quot;: {
-                &quot;target_mm&quot;: 50.0,
-                &quot;axis&quot;: &quot;z&quot;,
-                &quot;floor_z0&quot;: True,
-                &quot;hp_rms_um&quot;: overall[&quot;hp_rms_um&quot;],
-            },
-        },
-        unique_by=(&quot;id&quot;,),
-    )
-
-for short, artifact_id, parent, mesh in (
-    (&quot;a1-m12&quot;, &quot;treeman-r20-r19-a1-m12-comparison-50mm&quot;,
-     &quot;treeman-r19-a1-m12-clean-50mm&quot;,
-     project / &quot;models/round-19/treeman-r19-a1-m12-clean-50mm.stl&quot;),
-    (&quot;a3-m6&quot;, &quot;treeman-r20-r19-a3-m6-comparison-50mm&quot;,
-     &quot;treeman-r19-a3-m6-clean-50mm&quot;,
-     project / &quot;models/round-19/treeman-r19-a3-m6-clean-50mm.stl&quot;),
-):
-    stem = f&quot;treeman-r20-r19-{short}-comparison-50mm&quot;
-    files = [
-        render_root / f&quot;{stem}-turnaround.png&quot;,
-        mesh,
-        *(render_root / f&quot;{stem}-turnaround-az{az}.png&quot; for az in azimuths),
-    ]
-    append_lineage_record(
-        lineage,
-        {
-            &quot;id&quot;: artifact_id,
-            &quot;round&quot;: 20,
-            &quot;kind&quot;: &quot;mesh-comparison-evidence&quot;,
-            &quot;parents&quot;: [parent],
-            &quot;status&quot;: &quot;comparison-review&quot;,
-            &quot;tool&quot;: &quot;stl_render.py --azimuths 270,315,0,45,90,135,180,225&quot;,
-            &quot;generated&quot;: today,
-            &quot;file&quot;: str(files[0]),
-            &quot;files&quot;: [str(path) for path in files],
-            &quot;notes&quot;: (
-                &quot;R20 eight-direction comparison evidence for the unchanged &quot;
-                &quot;R19 exact mesh; no mesh output or geometry mutation.&quot;
-            ),
-            &quot;clean&quot;: dict(by_id[parent][&quot;clean&quot;]),
-        },
-        unique_by=(&quot;id&quot;,),
-    )
-PY
-
-python3 tools/mesh_stats.py \
-  --stl &quot;$P/models/round-20/treeman-r20-a1-m2-clean-50mm.stl&quot; \
-  --lineage &quot;$P/lineage.json&quot; --id treeman-r20-a1-m2-clean-50mm
-python3 tools/mesh_stats.py \
-  --stl &quot;$P/models/round-20/treeman-r20-a2-m8-clean-50mm.stl&quot; \
-  --lineage &quot;$P/lineage.json&quot; --id treeman-r20-a2-m8-clean-50mm
-python3 tools/repo_guards.py records</code></pre>
-<h4>Review and publication</h4>
-<p>Run the complete fresh-context feature checklist across matched compass views, then build <code>r20-panel.json</code> with four mesh cards. The public page and all four exact STL downloads are explicitly approved for Babs. Publish it with its sibling runbook only after the results PR&#x27;s checked-in publication inventory and exposure checkpoint pass:</p>
-<pre class="code"><code>python3 tools/review_page.py projects/treeman-windmill/r20-panel.json \
-  --lineage projects/treeman-windmill/lineage.json \
-  --reviews projects/treeman-windmill/reviews.jsonl \
-  --out /tmp/treeman-r20-panel --mesh-max-faces 30000
-python3 tools/publish_review.py /tmp/treeman-r20-panel \
-  --slug treeman-windmill/treeman/r20-panel \
-  --with-runbook /tmp/treeman-r20-runbook --publish-meshes</code></pre>
-<p>The publisher&#x27;s <code>unlisted:</code> line is mandatory. After the page is live, append the results reply inside the existing Round 20 thread in the private Treeman Discord category and advance its header using that completed reply&#x27;s event id. Do not post Treeman content to another alias or to the public Discord feedback service.</p></div></details>
+# After any interruption:
+# python3 tools/meshy_manifest.py resume --run RUN_ID --drive-sync
+# Never re-run a manifest.
+# Ambiguous create: reconcile the Meshy task id, `attach`, then resume.</code></pre>
+<p>Four run ids total (probe + three waves); every recovery resumes the exact run id that owns the task, never a fresh submission. A <code>PARTIAL</code> wave stops the round before the next arm submits: inspect the per-task states in the registry — a task interrupted mid-flight resumes under the same run id, but a terminal <code>REJECTED</code>/<code>FAILED</code> task is NOT recoverable through <code>resume</code> (the coordinator treats <code>PARTIAL</code> as terminal), so record the outcome in <code>rounds.md</code> and return to Dimitri before any further spend: the balanced 12-vs-12 arm comparison is part of the approved plan, and continuing to spend around a short arm needs his call, not the operator&#x27;s.</p>
+<h4>3 — FAST validation as each mesh lands</h4>
+<p>Geometry tally + renders per mesh (as r18), then the per-arm comparative sail review by a fresh-context subagent over the renders, scored on the r18 rubric; append verdicts to <code>reviews.jsonl</code> via <code>tools/review_log.py</code>. Begin each mesh&#x27;s validation only after the coordinator records its successful Drive-backed durability.</p>
+<h4>4 — Close</h4>
+<p>Build the r20-panel review (every roll rotatable, per-arm pages as the r18 set), publish privately, and hand over with the cross-arm tally in <code>rounds.md</code> presented side by side with the r18 baseline (watertight rate, real shells, sail verdicts, per-arm 12-vs-12). Public publication only on Dimitri&#x27;s explicit per-review OK.</p></div></details>
 </section>
 </main>
 <div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
 <div id="ilb" hidden><div class="panel">
 <button class="x" data-close aria-label="close">&times;</button>
 <div id="ilb-body"></div></div></div>
-<template id="in-0"><h2>treeman-r18-clay-bright-grokq-m2-raw · treeman-r18-clay-bright-grokq-m2-raw-turnaround</h2><p class="gmeta">meshy-6 · 2026-08-07</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-grokq-front.png (not on this machine)" alt="projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-grokq-front.png (not on this machine)"><figcaption>projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-grokq-front.png (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-grokq-side1.png (not on this machine)" alt="projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-grokq-side1.png (not on this machine)"><figcaption>projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-grokq-side1.png (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-grokq-back.png (not on this machine)" alt="projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-grokq-back.png (not on this machine)"><figcaption>projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-grokq-back.png (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-grokq-side2.png (not on this machine)" alt="projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-grokq-side2.png (not on this machine)"><figcaption>projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-grokq-side2.png (not on this machine)</figcaption></figure></div></template>
-<template id="in-1"><h2>treeman-r19-a1-m12-clean-50mm · treeman-r19-a1-m12-clean-50mm-turnaround</h2><p class="gmeta">? · 2026-08-11</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
-<template id="in-2"><h2>treeman-r19-a3-m6-clean-50mm · treeman-r19-a3-m6-clean-50mm-turnaround</h2><p class="gmeta">? · 2026-08-11</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
-<template id="in-3"><h2>treeman-r18-clay-bright-flash31-m8-raw · treeman-r18-clay-bright-flash31-m8-raw-turnaround</h2><p class="gmeta">meshy-6 · 2026-08-07</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-flash31-front.png (not on this machine)" alt="projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-flash31-front.png (not on this machine)"><figcaption>projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-flash31-front.png (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-flash31-side1.png (not on this machine)" alt="projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-flash31-side1.png (not on this machine)"><figcaption>projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-flash31-side1.png (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-flash31-back.png (not on this machine)" alt="projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-flash31-back.png (not on this machine)"><figcaption>projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-flash31-back.png (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-flash31-side2.png (not on this machine)" alt="projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-flash31-side2.png (not on this machine)"><figcaption>projects/treeman-windmill/generated/crops/round-18/treeman-r18-crop-bright-flash31-side2.png (not on this machine)</figcaption></figure></div></template>
-<template id="in-4"><h2>treeman-r19-a1-m12-clean-50mm · treeman-r19-a1-m12-clean-50mm-turnaround</h2><p class="gmeta">? · 2026-08-11</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
-<template id="in-5"><h2>treeman-r19-a3-m6-clean-50mm · treeman-r19-a3-m6-clean-50mm-turnaround</h2><p class="gmeta">? · 2026-08-11</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-0"><h2>treeman-r17-clay-B-2x2-bright-grokq-1</h2><p class="gmeta">x-ai/grok-imagine-image-quality via openrouter · resolution=2K aspect_ratio=3:4 · $0.09 · 2026-08-06T11:33:28</p><h3>Prompt</h3><p class="path">projects/treeman-windmill/prompts/r14-clay-turnaround-B.txt</p><pre>TWO images are attached. Image 1 is a 4-view REFERENCE turnaround of ONE
+physical sculpted miniature — an ancient hulking treeman fused with a
+ruined windmill — with its panels ALREADY in the target slot order, a
+smooth rotational turntable: slot 1 = NEAR-FRONT (body turned only ~20°, the
+face angled slightly toward the VIEWER&#x27;S LEFT); slot 2 = straight FRONT,
+face square to the viewer; slot 3 = RIGHT THREE-QUARTER (body yawed ~45° so
+the smooth pauldron shoulder turns toward the camera and the face angles
+toward the VIEWER&#x27;S RIGHT); slot 4 = BACK (the full rotor X and ball hub
+centered, the face hidden). Image 2 is a blank panel template.
+
+TASK: repaint this EXACT sculpt as a clean monochrome matte CLAY-SCULPT
+concept turnaround, like a ZBrush screenshot. Repaint each reference panel
+into the MATCHING template slot, following the template&#x27;s reading order
+(a single horizontal row = left to right; a 2x2 grid = top-left, top-right,
+then bottom-left, bottom-right). Keep the SAME camera angle per slot as the
+reference, and the SAME design, hulking pose and proportions in every slot.
+The reference is the truth for every feature: the gaping root-fang maw
+embedded in the chest, the heavy bark brow, the pinecone-scale beard, the
+branch-stub crown with the tilted conical thatched mill cap and mushrooms,
+the horizontal brick courses banding the belly, the smooth wooden pauldron
+plate on one shoulder, the jagged plank along the opposite forearm, the
+horned beast head sculpted into the back of that same forearm (visible in
+the back view), the twisted vine sash, the round puffball growths at the
+hips, the huge chunky segmented talon-claws, and the thick flared
+root-trunk legs.
+
+THE ROTOR: exactly FOUR weathered plank sails in an X configuration
+(diagonals), radiating from a large wooden BALL hub on the mid-back. In the
+near-front and front views (slots 1 and 2) only the two UPPER blades project
+past the silhouette; the lower two stay hidden behind the body and arms. In
+the BACK view (slot 4) the full X and ball hub are centered and clearly
+visible.
+
+SAIL CONSTRUCTION: build each of the four sails as a single SOLID piece —
+a spar rail carrying about THREE thick plank BOARDS along one side,
+weathered and tattered at the ends. NO thin cloth webbing and NO holes: any
+gaps between the boards are filled solid so each sail is ONE connected solid
+slab, yet still reads as a constructed plank windmill sail (the separate
+boards show as raised relief, but there is no see-through gap). Rebuild the
+source&#x27;s broken bare lower-left spar (back view) into a matching solid
+boarded sail.
+
+SIDE ANCHORS (do not mirror the body): the smooth wooden pauldron plate, the
+jagged plank forearm and the pincer hand are all the SAME arm. In the
+near-front and front views (slots 1 and 2) that pauldron/plank/pincer arm is
+on the VIEWER&#x27;S LEFT and the BIG CLAW hand is on the VIEWER&#x27;S RIGHT. In slot
+3 (right three-quarter) the pauldron shoulder is the one rotated toward the
+camera. In the BACK view (slot 4) the pauldron/plank arm is on the VIEWER&#x27;S
+RIGHT, and the horned beast head on the back of the opposite (big-claw)
+forearm appears on the VIEWER&#x27;S LEFT.
+
+MASONRY: mortar-lined horizontal brick courses band the belly/mid-torso and,
+as the reference shows, also course the legs — level horizontal masonry with
+mortar lines (leg brick is correct; keep it level, not slanted).
+
+REMOVE / DO NOT COPY from the photos: the round black display bases and
+cylinder plinths (he stands directly on bare ground — NO base, pedestal,
+rock or ground slab of any kind, both flared root-bells planted flat); the
+dark blue photo backdrop (use a plain uniform LIGHT GREY background); any
+logo or text remnants; the bluish specular highlights on the flat planks
+(that is photo lighting, not material — render everything as uniform matte
+clay, no shine, no metal, no color). Do NOT add a crow or any bird, and no
+new props. Grim, brutal, ancient — never silly, never horror. No text or
+labels anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="projects/treeman-windmill/generated/treeman-r17-source-4view-turntable-2x2-bright.png (not on this machine)" alt="projects/treeman-windmill/generated/treeman-r17-source-4view-turntable-2x2-bright.png (not on this machine)"><figcaption>projects/treeman-windmill/generated/treeman-r17-source-4view-turntable-2x2-bright.png (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="projects/treeman-windmill/generated/treeman-r15-template-2x2.png (not on this machine)" alt="projects/treeman-windmill/generated/treeman-r15-template-2x2.png (not on this machine)"><figcaption>projects/treeman-windmill/generated/treeman-r15-template-2x2.png (not on this machine)</figcaption></figure></div></template>
+<template id="in-1"><h2>treeman-r17-clay-B-2x2-bright-flash31-1</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-06T11:35:20</p><h3>Prompt</h3><p class="path">projects/treeman-windmill/prompts/r14-clay-turnaround-B.txt</p><pre>TWO images are attached. Image 1 is a 4-view REFERENCE turnaround of ONE
+physical sculpted miniature — an ancient hulking treeman fused with a
+ruined windmill — with its panels ALREADY in the target slot order, a
+smooth rotational turntable: slot 1 = NEAR-FRONT (body turned only ~20°, the
+face angled slightly toward the VIEWER&#x27;S LEFT); slot 2 = straight FRONT,
+face square to the viewer; slot 3 = RIGHT THREE-QUARTER (body yawed ~45° so
+the smooth pauldron shoulder turns toward the camera and the face angles
+toward the VIEWER&#x27;S RIGHT); slot 4 = BACK (the full rotor X and ball hub
+centered, the face hidden). Image 2 is a blank panel template.
+
+TASK: repaint this EXACT sculpt as a clean monochrome matte CLAY-SCULPT
+concept turnaround, like a ZBrush screenshot. Repaint each reference panel
+into the MATCHING template slot, following the template&#x27;s reading order
+(a single horizontal row = left to right; a 2x2 grid = top-left, top-right,
+then bottom-left, bottom-right). Keep the SAME camera angle per slot as the
+reference, and the SAME design, hulking pose and proportions in every slot.
+The reference is the truth for every feature: the gaping root-fang maw
+embedded in the chest, the heavy bark brow, the pinecone-scale beard, the
+branch-stub crown with the tilted conical thatched mill cap and mushrooms,
+the horizontal brick courses banding the belly, the smooth wooden pauldron
+plate on one shoulder, the jagged plank along the opposite forearm, the
+horned beast head sculpted into the back of that same forearm (visible in
+the back view), the twisted vine sash, the round puffball growths at the
+hips, the huge chunky segmented talon-claws, and the thick flared
+root-trunk legs.
+
+THE ROTOR: exactly FOUR weathered plank sails in an X configuration
+(diagonals), radiating from a large wooden BALL hub on the mid-back. In the
+near-front and front views (slots 1 and 2) only the two UPPER blades project
+past the silhouette; the lower two stay hidden behind the body and arms. In
+the BACK view (slot 4) the full X and ball hub are centered and clearly
+visible.
+
+SAIL CONSTRUCTION: build each of the four sails as a single SOLID piece —
+a spar rail carrying about THREE thick plank BOARDS along one side,
+weathered and tattered at the ends. NO thin cloth webbing and NO holes: any
+gaps between the boards are filled solid so each sail is ONE connected solid
+slab, yet still reads as a constructed plank windmill sail (the separate
+boards show as raised relief, but there is no see-through gap). Rebuild the
+source&#x27;s broken bare lower-left spar (back view) into a matching solid
+boarded sail.
+
+SIDE ANCHORS (do not mirror the body): the smooth wooden pauldron plate, the
+jagged plank forearm and the pincer hand are all the SAME arm. In the
+near-front and front views (slots 1 and 2) that pauldron/plank/pincer arm is
+on the VIEWER&#x27;S LEFT and the BIG CLAW hand is on the VIEWER&#x27;S RIGHT. In slot
+3 (right three-quarter) the pauldron shoulder is the one rotated toward the
+camera. In the BACK view (slot 4) the pauldron/plank arm is on the VIEWER&#x27;S
+RIGHT, and the horned beast head on the back of the opposite (big-claw)
+forearm appears on the VIEWER&#x27;S LEFT.
+
+MASONRY: mortar-lined horizontal brick courses band the belly/mid-torso and,
+as the reference shows, also course the legs — level horizontal masonry with
+mortar lines (leg brick is correct; keep it level, not slanted).
+
+REMOVE / DO NOT COPY from the photos: the round black display bases and
+cylinder plinths (he stands directly on bare ground — NO base, pedestal,
+rock or ground slab of any kind, both flared root-bells planted flat); the
+dark blue photo backdrop (use a plain uniform LIGHT GREY background); any
+logo or text remnants; the bluish specular highlights on the flat planks
+(that is photo lighting, not material — render everything as uniform matte
+clay, no shine, no metal, no color). Do NOT add a crow or any bird, and no
+new props. Grim, brutal, ancient — never silly, never horror. No text or
+labels anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="projects/treeman-windmill/generated/treeman-r17-source-4view-turntable-2x2-bright.png (not on this machine)" alt="projects/treeman-windmill/generated/treeman-r17-source-4view-turntable-2x2-bright.png (not on this machine)"><figcaption>projects/treeman-windmill/generated/treeman-r17-source-4view-turntable-2x2-bright.png (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="projects/treeman-windmill/generated/treeman-r15-template-2x2.png (not on this machine)" alt="projects/treeman-windmill/generated/treeman-r15-template-2x2.png (not on this machine)"><figcaption>projects/treeman-windmill/generated/treeman-r15-template-2x2.png (not on this machine)</figcaption></figure></div></template>
+<template id="in-2"><h2>treeman-r17-clay-B-2x2-orig-grokq-1</h2><p class="gmeta">x-ai/grok-imagine-image-quality via openrouter · resolution=2K aspect_ratio=3:4 · $0.09 · 2026-08-06T11:33:28</p><h3>Prompt</h3><p class="path">projects/treeman-windmill/prompts/r14-clay-turnaround-B.txt</p><pre>TWO images are attached. Image 1 is a 4-view REFERENCE turnaround of ONE
+physical sculpted miniature — an ancient hulking treeman fused with a
+ruined windmill — with its panels ALREADY in the target slot order, a
+smooth rotational turntable: slot 1 = NEAR-FRONT (body turned only ~20°, the
+face angled slightly toward the VIEWER&#x27;S LEFT); slot 2 = straight FRONT,
+face square to the viewer; slot 3 = RIGHT THREE-QUARTER (body yawed ~45° so
+the smooth pauldron shoulder turns toward the camera and the face angles
+toward the VIEWER&#x27;S RIGHT); slot 4 = BACK (the full rotor X and ball hub
+centered, the face hidden). Image 2 is a blank panel template.
+
+TASK: repaint this EXACT sculpt as a clean monochrome matte CLAY-SCULPT
+concept turnaround, like a ZBrush screenshot. Repaint each reference panel
+into the MATCHING template slot, following the template&#x27;s reading order
+(a single horizontal row = left to right; a 2x2 grid = top-left, top-right,
+then bottom-left, bottom-right). Keep the SAME camera angle per slot as the
+reference, and the SAME design, hulking pose and proportions in every slot.
+The reference is the truth for every feature: the gaping root-fang maw
+embedded in the chest, the heavy bark brow, the pinecone-scale beard, the
+branch-stub crown with the tilted conical thatched mill cap and mushrooms,
+the horizontal brick courses banding the belly, the smooth wooden pauldron
+plate on one shoulder, the jagged plank along the opposite forearm, the
+horned beast head sculpted into the back of that same forearm (visible in
+the back view), the twisted vine sash, the round puffball growths at the
+hips, the huge chunky segmented talon-claws, and the thick flared
+root-trunk legs.
+
+THE ROTOR: exactly FOUR weathered plank sails in an X configuration
+(diagonals), radiating from a large wooden BALL hub on the mid-back. In the
+near-front and front views (slots 1 and 2) only the two UPPER blades project
+past the silhouette; the lower two stay hidden behind the body and arms. In
+the BACK view (slot 4) the full X and ball hub are centered and clearly
+visible.
+
+SAIL CONSTRUCTION: build each of the four sails as a single SOLID piece —
+a spar rail carrying about THREE thick plank BOARDS along one side,
+weathered and tattered at the ends. NO thin cloth webbing and NO holes: any
+gaps between the boards are filled solid so each sail is ONE connected solid
+slab, yet still reads as a constructed plank windmill sail (the separate
+boards show as raised relief, but there is no see-through gap). Rebuild the
+source&#x27;s broken bare lower-left spar (back view) into a matching solid
+boarded sail.
+
+SIDE ANCHORS (do not mirror the body): the smooth wooden pauldron plate, the
+jagged plank forearm and the pincer hand are all the SAME arm. In the
+near-front and front views (slots 1 and 2) that pauldron/plank/pincer arm is
+on the VIEWER&#x27;S LEFT and the BIG CLAW hand is on the VIEWER&#x27;S RIGHT. In slot
+3 (right three-quarter) the pauldron shoulder is the one rotated toward the
+camera. In the BACK view (slot 4) the pauldron/plank arm is on the VIEWER&#x27;S
+RIGHT, and the horned beast head on the back of the opposite (big-claw)
+forearm appears on the VIEWER&#x27;S LEFT.
+
+MASONRY: mortar-lined horizontal brick courses band the belly/mid-torso and,
+as the reference shows, also course the legs — level horizontal masonry with
+mortar lines (leg brick is correct; keep it level, not slanted).
+
+REMOVE / DO NOT COPY from the photos: the round black display bases and
+cylinder plinths (he stands directly on bare ground — NO base, pedestal,
+rock or ground slab of any kind, both flared root-bells planted flat); the
+dark blue photo backdrop (use a plain uniform LIGHT GREY background); any
+logo or text remnants; the bluish specular highlights on the flat planks
+(that is photo lighting, not material — render everything as uniform matte
+clay, no shine, no metal, no color). Do NOT add a crow or any bird, and no
+new props. Grim, brutal, ancient — never silly, never horror. No text or
+labels anywhere.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="projects/treeman-windmill/generated/treeman-r15-source-4view-turntable-2x2.png (not on this machine)" alt="projects/treeman-windmill/generated/treeman-r15-source-4view-turntable-2x2.png (not on this machine)"><figcaption>projects/treeman-windmill/generated/treeman-r15-source-4view-turntable-2x2.png (not on this machine)</figcaption></figure><figure><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-full="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMjYyNjJlIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZpbGw9IiM5ODkzOWYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5pbWFnZSBub3Qgb24gdGhpcyBtYWNoaW5lPC90ZXh0Pjwvc3ZnPg==" data-cap="projects/treeman-windmill/generated/treeman-r15-template-2x2.png (not on this machine)" alt="projects/treeman-windmill/generated/treeman-r15-template-2x2.png (not on this machine)"><figcaption>projects/treeman-windmill/generated/treeman-r15-template-2x2.png (not on this machine)</figcaption></figure></div></template>
 <script>
 const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
       lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
