@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="f6f0171ebdb660a160092807faac36ab85fee2a2e22296c3d94a5bad4ce36b3e">
+<meta name="ai-stl-plan-digest" content="1ff1b2e6a5dcaa3621198f88677ae35faa1a421b5b9614475f0bda35c604513f">
 <title>TreeMolin — Round 21 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -516,6 +516,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
 <li>No shard deletion, component filtering, cutting, capping, filling, repair, smoothing, debasing or remeshing is authorized.</li>
 <li>The evidence standard expands from four cardinal azimuths to eight 45-degree compass steps for all four finalists. New R21 comparison-evidence records carry the fresh renders for the immutable R19 meshes.</li>
 <li>Dimitri explicitly approved the world-readable four-way review for Babs, all four exact STL downloads exposed through its live mesh cards, and a private-Treeman-category Discord share on 2026-08-11. Publication still waits for checked-in R21 output paths and the repository&#x27;s publication checkpoint.</li>
+<li>The existing Discord renumbering reply and <code>APPROVED — NOT STARTED</code> header update were posted before this approval state merged. They remain immutable audit history, not valid transition provenance. After this PR merges, post a new reply confirming that R21 approval is now canonical, update the header from that completed event, and append both records through a follow-up PR.</li>
 </ul></div></details>
 <details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg><span>Experiment matrix</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Operation</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>1</td><td><code>treeman-r18-clay-bright-grokq-m2-raw</code></td><td>uniform scale to 50.00 mm overall Z; center XY; set min Z=0; preserve every component</td><td><code>treeman-r21-a1-m2-clean-50mm</code></td></tr><tr><td>2</td><td><code>treeman-r18-clay-bright-flash31-m8-raw</code></td><td>uniform scale to 50.00 mm overall Z; center XY; set min Z=0; preserve every component</td><td><code>treeman-r21-a2-m8-clean-50mm</code></td></tr><tr><td>3</td><td><code>treeman-r19-a1-m12-clean-50mm</code></td><td>render-only eight-direction comparison evidence; no mesh write</td><td><code>treeman-r21-r19-a1-m12-comparison-50mm</code></td></tr><tr><td>4</td><td><code>treeman-r19-a3-m6-clean-50mm</code></td><td>render-only eight-direction comparison evidence; no mesh write</td><td><code>treeman-r21-r19-a3-m6-comparison-50mm</code></td></tr><tr><td>5</td><td><code>treeman-r21-a1-m2-clean-50mm</code></td><td>eight-direction render set after validation</td><td>same artifact&#x27;s render evidence</td></tr><tr><td>6</td><td><code>treeman-r21-a2-m8-clean-50mm</code></td><td>eight-direction render set after validation</td><td>same artifact&#x27;s render evidence</td></tr></tbody></table></div></div></details>
 <details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-branch"/></svg><span>Commands</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><h4>Post-merge start gate</h4>
@@ -560,7 +561,145 @@ tools/drive_sync.sh push &quot;$P/models/round-21&quot;
 # Immediately hand Dimitri the same Drive folder URL together with the exact
 # A2 M8 filename. Do not begin validation until delivered.</code></pre>
 <h4>Independent final-scale checks</h4>
-<pre class="code"><code>for CANDIDATE in a1-m2 a2-m8; do
+<pre class="code"><code>python3 - &lt;&lt;&#x27;PY&#x27;
+from collections import Counter
+import hashlib
+import json
+from pathlib import Path
+
+import numpy as np
+import trimesh
+import trimesh.grouping as grouping
+
+project = Path(&quot;projects/treeman-windmill&quot;)
+cases = (
+    (
+        &quot;a1-m2&quot;,
+        project / &quot;models/round-18/treeman-r18-clay-bright-grokq-m2-raw.stl&quot;,
+        project / &quot;models/round-21/treeman-r21-a1-m2-clean-50mm.stl&quot;,
+    ),
+    (
+        &quot;a2-m8&quot;,
+        project / &quot;models/round-18/treeman-r18-clay-bright-flash31-m8-raw.stl&quot;,
+        project / &quot;models/round-21/treeman-r21-a2-m8-clean-50mm.stl&quot;,
+    ),
+)
+
+
+def digest(path):
+    value = hashlib.sha256()
+    with path.open(&quot;rb&quot;) as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b&quot;&quot;):
+            value.update(chunk)
+    return value.hexdigest()
+
+
+def load_mesh(path, *, process):
+    mesh = trimesh.load(path, force=&quot;mesh&quot;, process=process)
+    if isinstance(mesh, trimesh.Scene):
+        mesh = mesh.to_mesh()
+    if not isinstance(mesh, trimesh.Trimesh) or not len(mesh.faces):
+        raise RuntimeError(f&quot;not a non-empty triangle mesh: {path}&quot;)
+    return mesh
+
+
+def topology(mesh):
+    components = trimesh.graph.connected_components(
+        mesh.face_adjacency,
+        nodes=np.arange(len(mesh.faces), dtype=np.int64),
+        engine=&quot;scipy&quot;,
+    )
+    if not components:
+        raise RuntimeError(&quot;mesh has no connected components&quot;)
+    main_faces = np.asarray(mesh.faces[max(components, key=len)], dtype=np.int64)
+    edges = np.sort(
+        np.vstack(
+            (
+                main_faces[:, (0, 1)],
+                main_faces[:, (1, 2)],
+                main_faces[:, (2, 0)],
+            )
+        ),
+        axis=1,
+    )
+    edge_groups = Counter(
+        len(group) for group in grouping.group_rows(edges)
+    )
+    return {
+        &quot;faces&quot;: int(len(mesh.faces)),
+        &quot;component_faces&quot;: sorted(int(len(component)) for component in components),
+        &quot;winding_consistent&quot;: bool(mesh.is_winding_consistent),
+        &quot;main_shell_faces&quot;: int(len(main_faces)),
+        &quot;main_shell_open_edges&quot;: int(edge_groups.get(1, 0)),
+        &quot;main_shell_non_manifold_edges&quot;: int(
+            sum(count for degree, count in edge_groups.items() if degree &gt; 2)
+        ),
+    }
+
+
+for short, source_path, output_path in cases:
+    report_path = project / f&quot;notes/r21-{short}-placement.json&quot;
+    evidence_path = project / f&quot;notes/r21-{short}-affine-verify.json&quot;
+    if evidence_path.exists():
+        raise FileExistsError(f&quot;refusing to overwrite evidence: {evidence_path}&quot;)
+
+    source = load_mesh(source_path, process=False)
+    output = load_mesh(output_path, process=False)
+    report = json.loads(report_path.read_text())
+    source_bounds = np.asarray(source.bounds, dtype=float)
+    scale = 50.0 / float(source_bounds[1, 2] - source_bounds[0, 2])
+    scaled_bounds = source_bounds * scale
+    translation = np.asarray(
+        [
+            -float((scaled_bounds[0, 0] + scaled_bounds[1, 0]) / 2.0),
+            -float((scaled_bounds[0, 1] + scaled_bounds[1, 1]) / 2.0),
+            -float(scaled_bounds[0, 2]),
+        ]
+    )
+    if not np.isclose(float(report[&quot;scale&quot;]), scale, atol=1e-9):
+        raise RuntimeError(f&quot;{short}: placement report scale is not derivable&quot;)
+    if not np.allclose(report[&quot;translation_mm&quot;], translation, atol=1e-8):
+        raise RuntimeError(f&quot;{short}: placement report translation is not derivable&quot;)
+
+    source_sha = digest(source_path)
+    output_sha = digest(output_path)
+    if report[&quot;source_sha256&quot;] != source_sha:
+        raise RuntimeError(f&quot;{short}: placement report source digest mismatch&quot;)
+    if report[&quot;output_sha256&quot;] != output_sha:
+        raise RuntimeError(f&quot;{short}: placement report output digest mismatch&quot;)
+
+    expected = np.asarray(source.triangles, dtype=float) * scale + translation
+    actual = np.asarray(output.triangles, dtype=float)
+    if actual.shape != expected.shape:
+        raise RuntimeError(f&quot;{short}: triangle-coordinate shape changed&quot;)
+    max_error = float(np.max(np.abs(actual - expected)))
+    if max_error &gt; 0.0001:
+        raise RuntimeError(f&quot;{short}: affine error {max_error} mm exceeds 0.0001&quot;)
+
+    source_topology = topology(load_mesh(source_path, process=True))
+    output_topology = topology(load_mesh(output_path, process=True))
+    if output_topology != source_topology:
+        raise RuntimeError(
+            f&quot;{short}: topology changed: {source_topology} -&gt; {output_topology}&quot;
+        )
+    evidence = {
+        &quot;schema_version&quot;: 1,
+        &quot;checker&quot;: &quot;independent-runbook-consumer&quot;,
+        &quot;source&quot;: str(source_path),
+        &quot;source_sha256&quot;: source_sha,
+        &quot;output&quot;: str(output_path),
+        &quot;output_sha256&quot;: output_sha,
+        &quot;derived_scale&quot;: round(scale, 12),
+        &quot;derived_translation_mm&quot;: [round(float(v), 9) for v in translation],
+        &quot;max_affine_coordinate_error_mm&quot;: round(max_error, 12),
+        &quot;source_topology&quot;: source_topology,
+        &quot;output_topology&quot;: output_topology,
+    }
+    evidence_path.write_text(json.dumps(evidence, indent=2, sort_keys=True) + &quot;\n&quot;)
+    print(f&quot;verified independent affine/topology preservation -&gt; {evidence_path}&quot;)
+PY
+
+for CANDIDATE in a1-m2 a2-m8; do
   STL=&quot;$P/models/round-21/treeman-r21-${CANDIDATE}-clean-50mm.stl&quot;
   python3 tools/mesh_validate.py --stl &quot;$STL&quot; --units mm \
     --label &quot;treeman-r21-${CANDIDATE}-clean-50mm&quot; \
@@ -573,7 +712,7 @@ tools/drive_sync.sh push &quot;$P/models/round-21&quot;
   python3 tools/mesh_thin_parts.py --stl &quot;$STL&quot; --pitch 0.28 --fragility \
     &gt; &quot;$P/notes/r21-${CANDIDATE}-fragility.txt&quot;
 done</code></pre>
-<p>Independently compare each output with its source under the placement report&#x27;s declared affine transform. Fail if maximum coordinate error exceeds 0.0001 mm, or if face count, component-face counts, winding consistency, main-shell open edges or main-shell non-manifold edges change. The overall late meshes are not allowed to be called watertight while their preserved microscopic shards remain.</p>
+<p>The first command block is the independent consumer-side preservation check. It imports no producer code: it re-derives the 50 mm scale/translation from each pinned source, checks both placement-report digests, compares every raw output triangle with the independently transformed source within 0.0001 mm, compares face/component-face counts, winding consistency, and main-shell open and non-manifold edges, and writes a durable <code>r21-*-affine-verify.json</code> report. The overall late meshes are not allowed to be called watertight while their preserved microscopic shards remain.</p>
 <h4>Eight-direction compass renders</h4>
 <p>Use the same elevation and framing for every candidate. Store all new binary renders under Round 21 and push them to Drive after they land.</p>
 <pre class="code"><code>python3 tools/stl_render.py \
@@ -632,6 +771,7 @@ for short, artifact_id, parent in (
     files = [
         render_root / f&quot;{stem}-turnaround.png&quot;,
         project / f&quot;models/round-21/{stem}.stl&quot;,
+        project / f&quot;notes/r21-{short}-affine-verify.json&quot;,
         *(render_root / f&quot;{stem}-turnaround-az{az}.png&quot; for az in azimuths),
     ]
     append_lineage_record(
