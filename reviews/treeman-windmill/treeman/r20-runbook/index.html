@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="8c9d21d84e48fa4593beac3c09248eaa4236f535368d0cc04566124045b205e7">
+<meta name="ai-stl-plan-digest" content="a244111b508c75393e436bcebf6bab38071b3fc1fc89ee44e3382c02ebacf34a">
 <title>TreeMolin — Round 20 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -506,7 +506,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
 </ul></div></section>
 <section class="s" id="ask"><h2><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</h2><div class="md cta"><p>Approve this exact supplemental plan. After its public panel is ready, pick one of A1 M12, A3 M6, A1 M2 or A2 M8—or reject all four with the defect a later round must address.</p></div></section>
 <section class="s" id="cost"><h2><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Cost</h2><div class="md"><p>Free and local: no image-model calls, Meshy credits, or other paid API calls.</p></div><div class="costgrid"><div class="costrow"><span class="n">local</span><span></span><span class="a">$0.00</span></div></div></section>
-<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>mesh validation — late-finalist 50 mm placement and four-way compass comparison</dd><dt>Owner</dt><dd>Codex (local) → Dimitri review</dd><dt>Date opened</dt><dd>2026-08-11</dd><dt>Inputs</dt><dd>treeman-r18-clay-bright-grokq-m2-raw · treeman-r18-clay-bright-flash31-m8-raw · treeman-r19-a1-m12-clean-50mm · treeman-r19-a3-m6-clean-50mm</dd><dt>Produces</dt><dd>treeman-r20-a1-m2-clean-50mm · treeman-r20-a2-m8-clean-50mm · two append-only R19 comparison-evidence artifacts · eight-direction renders and one four-way interactive review</dd><dt>Branch</dt><dd><code>codex/treeman-r20-late-finalists</code></dd><dt>Evaluation lanes</dt><dd>FAST — source-hash gate, deterministic placement of two late finalists, topology/dimension/roughness/thin-part checks, eight-direction full-resolution renders for all four finalists, fresh-context comparative audit, and Dimitri/Babs live-3D review; SLOW — none</dd><dt>Prior round</dt><dd>r19 — Babs&#x27;s late preference adds R18 A1 M2 and A2 M8 to the equal-scale decision without rewriting R19; Dimitri requested eight 45-degree compass views for every finalist.</dd><dt>Spend</dt><dd>local $0 · cap $0</dd></dl></section>
+<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>mesh validation — late-finalist 50 mm placement and four-way compass comparison</dd><dt>Owner</dt><dd>Codex (local) → Dimitri review</dd><dt>Date opened</dt><dd>2026-08-11</dd><dt>Inputs</dt><dd>treeman-r18-clay-bright-grokq-m2-raw · treeman-r18-clay-bright-flash31-m8-raw · treeman-r19-a1-m12-clean-50mm · treeman-r19-a3-m6-clean-50mm</dd><dt>Produces</dt><dd>treeman-r20-a1-m2-clean-50mm · treeman-r20-a2-m8-clean-50mm · two append-only R19 comparison-evidence artifacts · eight-direction renders and one four-way interactive review</dd><dt>Branch</dt><dd><code>codex/treeman-r20-late-finalists</code></dd><dt>Evaluation lanes</dt><dd>FAST — source-hash gate, deterministic placement of two late finalists, topology/dimension/roughness/thin-part checks, eight-direction full-resolution renders for all four finalists, fresh-context comparative audit, then a provisional four-way panel; SLOW — none; HUMAN GATE — Dimitri/Babs live-3D review</dd><dt>Prior round</dt><dd>r19 — Babs&#x27;s late preference adds R18 A1 M2 and A2 M8 to the equal-scale decision without rewriting R19; Dimitri requested eight 45-degree compass views for every finalist.</dd><dt>Spend</dt><dd>local $0 · cap $0</dd></dl></section>
 <section class="s" id="tech"><h2><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>Technical plan</h2>
 <p class="intro">placement, validation, compass renders and handoff</p>
 <details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>What changed going in</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><ul>
@@ -546,13 +546,18 @@ echo &#x27;2df90ed9219ea8e0cdf87bb6ffe4fc873c2dac0692b9d6a161413fa01855a7fd  pro
   --target-height-mm 50 \
   --report &quot;$P/notes/r20-a1-m2-placement.json&quot;
 tools/drive_sync.sh push &quot;$P/models/round-20&quot;
+# Immediately hand Dimitri the pre-shared Drive folder URL for
+# My Drive/minis-pipeline/projects/treeman-windmill/models/round-20/ together
+# with the exact A1 M2 filename. Do not begin validation until delivered.
 
 python3 tools/mesh_place.py \
   --stl &quot;$P/models/round-18/treeman-r18-clay-bright-flash31-m8-raw.stl&quot; \
   --out &quot;$P/models/round-20/treeman-r20-a2-m8-clean-50mm.stl&quot; \
   --target-height-mm 50 \
   --report &quot;$P/notes/r20-a2-m8-placement.json&quot;
-tools/drive_sync.sh push &quot;$P/models/round-20&quot;</code></pre>
+tools/drive_sync.sh push &quot;$P/models/round-20&quot;
+# Immediately hand Dimitri the same Drive folder URL together with the exact
+# A2 M8 filename. Do not begin validation until delivered.</code></pre>
 <h4>Independent final-scale checks</h4>
 <pre class="code"><code>for CANDIDATE in a1-m2 a2-m8; do
   STL=&quot;$P/models/round-20/treeman-r20-${CANDIDATE}-clean-50mm.stl&quot;
@@ -591,7 +596,114 @@ for CANDIDATE in a1-m2 a2-m8; do
     --labels Front,Front-right,Right,Back-right,Back,Back-left,Left,Front-left
 done
 tools/drive_sync.sh push &quot;$P/generated/renders/round-20&quot;</code></pre>
-<p>Append four new lineage records: two clean-mesh outputs with required <code>clean</code> metadata, plus two render-evidence records parented to the immutable R19 artifacts. Each record lists its exact STL and all nine new render files (the composite plus eight azimuths). Run <code>mesh_stats.py --lineage</code> for each clean output and <code>repo_guards.py records</code> for append-only validation.</p>
+<p>Append four new lineage records: two clean-mesh outputs with required <code>clean</code> metadata, plus two render-evidence records parented to the immutable R19 artifacts. Each record lists its exact STL and all nine new render files (the composite plus eight azimuths). The reference evidence copies the already committed <code>clean</code> headline block from its unchanged R19 parent; the mesh bytes are the same exact source-hash-gated file.</p>
+<pre class="code"><code>python3 - &lt;&lt;&#x27;PY&#x27;
+import ast
+import datetime
+import json
+from pathlib import Path
+
+from tools.genlog import append_lineage_record
+
+project = Path(&quot;projects/treeman-windmill&quot;)
+lineage = project / &quot;lineage.json&quot;
+by_id = {
+    artifact[&quot;id&quot;]: artifact
+    for artifact in json.loads(lineage.read_text())[&quot;artifacts&quot;]
+}
+azimuths = (270, 315, 0, 45, 90, 135, 180, 225)
+render_root = project / &quot;generated/renders/round-20&quot;
+today = datetime.date.today().isoformat()
+
+for short, artifact_id, parent in (
+    (&quot;a1-m2&quot;, &quot;treeman-r20-a1-m2-clean-50mm&quot;,
+     &quot;treeman-r18-clay-bright-grokq-m2-raw&quot;),
+    (&quot;a2-m8&quot;, &quot;treeman-r20-a2-m8-clean-50mm&quot;,
+     &quot;treeman-r18-clay-bright-flash31-m8-raw&quot;),
+):
+    roughness = (project / f&quot;notes/r20-{short}-roughness.txt&quot;).read_text()
+    overall_line = next(
+        line for line in roughness.splitlines()
+        if line.strip().startswith(&quot;OVERALL &quot;)
+    )
+    overall = ast.literal_eval(overall_line.split(&quot;OVERALL&quot;, 1)[1].strip())
+    stem = f&quot;treeman-r20-{short}-clean-50mm&quot;
+    files = [
+        render_root / f&quot;{stem}-turnaround.png&quot;,
+        project / f&quot;models/round-20/{stem}.stl&quot;,
+        *(render_root / f&quot;{stem}-turnaround-az{az}.png&quot; for az in azimuths),
+    ]
+    append_lineage_record(
+        lineage,
+        {
+            &quot;id&quot;: artifact_id,
+            &quot;round&quot;: 20,
+            &quot;kind&quot;: &quot;clean-mesh&quot;,
+            &quot;parents&quot;: [parent],
+            &quot;status&quot;: &quot;finishing-review&quot;,
+            &quot;tool&quot;: &quot;mesh_place.py --target-height-mm 50&quot;,
+            &quot;generated&quot;: today,
+            &quot;file&quot;: str(files[0]),
+            &quot;files&quot;: [str(path) for path in files],
+            &quot;notes&quot;: (
+                &quot;Geometry-preserving R20 placement: uniform scale to 50 mm &quot;
+                &quot;overall Z, XY centered, minimum Z floored to zero; every &quot;
+                &quot;source component preserved; no filtering, cut, repair, &quot;
+                &quot;smoothing or remesh.&quot;
+            ),
+            &quot;clean&quot;: {
+                &quot;target_mm&quot;: 50.0,
+                &quot;axis&quot;: &quot;z&quot;,
+                &quot;floor_z0&quot;: True,
+                &quot;hp_rms_um&quot;: overall[&quot;hp_rms_um&quot;],
+            },
+        },
+        unique_by=(&quot;id&quot;,),
+    )
+
+for short, artifact_id, parent, mesh in (
+    (&quot;a1-m12&quot;, &quot;treeman-r20-r19-a1-m12-comparison-50mm&quot;,
+     &quot;treeman-r19-a1-m12-clean-50mm&quot;,
+     project / &quot;models/round-19/treeman-r19-a1-m12-clean-50mm.stl&quot;),
+    (&quot;a3-m6&quot;, &quot;treeman-r20-r19-a3-m6-comparison-50mm&quot;,
+     &quot;treeman-r19-a3-m6-clean-50mm&quot;,
+     project / &quot;models/round-19/treeman-r19-a3-m6-clean-50mm.stl&quot;),
+):
+    stem = f&quot;treeman-r20-r19-{short}-comparison-50mm&quot;
+    files = [
+        render_root / f&quot;{stem}-turnaround.png&quot;,
+        mesh,
+        *(render_root / f&quot;{stem}-turnaround-az{az}.png&quot; for az in azimuths),
+    ]
+    append_lineage_record(
+        lineage,
+        {
+            &quot;id&quot;: artifact_id,
+            &quot;round&quot;: 20,
+            &quot;kind&quot;: &quot;mesh-comparison-evidence&quot;,
+            &quot;parents&quot;: [parent],
+            &quot;status&quot;: &quot;comparison-review&quot;,
+            &quot;tool&quot;: &quot;stl_render.py --azimuths 270,315,0,45,90,135,180,225&quot;,
+            &quot;generated&quot;: today,
+            &quot;file&quot;: str(files[0]),
+            &quot;files&quot;: [str(path) for path in files],
+            &quot;notes&quot;: (
+                &quot;R20 eight-direction comparison evidence for the unchanged &quot;
+                &quot;R19 exact mesh; no mesh output or geometry mutation.&quot;
+            ),
+            &quot;clean&quot;: dict(by_id[parent][&quot;clean&quot;]),
+        },
+        unique_by=(&quot;id&quot;,),
+    )
+PY
+
+python3 tools/mesh_stats.py \
+  --stl &quot;$P/models/round-20/treeman-r20-a1-m2-clean-50mm.stl&quot; \
+  --lineage &quot;$P/lineage.json&quot; --id treeman-r20-a1-m2-clean-50mm
+python3 tools/mesh_stats.py \
+  --stl &quot;$P/models/round-20/treeman-r20-a2-m8-clean-50mm.stl&quot; \
+  --lineage &quot;$P/lineage.json&quot; --id treeman-r20-a2-m8-clean-50mm
+python3 tools/repo_guards.py records</code></pre>
 <h4>Review and publication</h4>
 <p>Run the complete fresh-context feature checklist across matched compass views, then build <code>r20-panel.json</code> with four mesh cards. The public page is explicitly approved for Babs; publish it with its sibling runbook and the exact four mesh paths only after Dimitri explicitly confirms the world-readable STL downloads at exact-page sign-off and the results PR&#x27;s checked-in publication inventory and exposure checkpoint pass:</p>
 <pre class="code"><code>python3 tools/review_page.py projects/treeman-windmill/r20-panel.json \
