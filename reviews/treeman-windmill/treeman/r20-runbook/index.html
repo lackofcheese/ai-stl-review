@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="a244111b508c75393e436bcebf6bab38071b3fc1fc89ee44e3382c02ebacf34a">
+<meta name="ai-stl-plan-digest" content="1e59fe763ecaeb1a0058c1533bc26f736c7258bd3ed3b07b28c35c57ed347954">
 <title>TreeMolin — Round 20 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -456,8 +456,8 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
 <nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Treeman-windmill</a><span class="sep">&rsaquo;</span><a href="../">Treeman</a></nav>
 <div class="eyebrow">Round 20 · mesh validation</div>
 <h1>TreeMolin — Round 20 runbook</h1>
-<div class="statusrow"><span class="pill s-await"><span class="dot"></span>Awaiting sign-off</span><span class="fact">Opened <b>2026-08-11</b></span></div>
-<p class="statusnote">no transform or new render has run</p>
+<div class="statusrow"><span class="pill s-appr"><span class="dot"></span>Approved — not started</span><span class="fact">Dimitri · 2026-08-11</span><span class="fact">Opened <b>2026-08-11</b></span></div>
+<p class="statusnote">plan frozen; no transform or new render has run</p>
 <div class="statusrow sub"><span class="fact inert" title="Published at round close">&#128203; Review panel &mdash; at round close</span></div>
 <div class="ask"><p class="lbl"><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</p><p>Approve this exact supplemental plan. <a class="jump" href="#ask">Read the full ask &darr;</a></p></div>
 <div class="glance"><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Planned</span><span class="v">$0.00</span><span class="s">of a $0.00 cap</span></div></div>
@@ -514,7 +514,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
 <li>R19&#x27;s transform contract is held constant: uniform scale to 50.00 mm overall height, XY centering and minimum-Z flooring only.</li>
 <li>No shard deletion, component filtering, cutting, capping, filling, repair, smoothing, debasing or remeshing is authorized.</li>
 <li>The evidence standard expands from four cardinal azimuths to eight 45-degree compass steps for all four finalists. New R20 comparison-evidence records carry the fresh renders for the immutable R19 meshes.</li>
-<li>Dimitri explicitly approved a world-readable four-way review for Babs and a private-Treeman-category Discord share. Because live mesh cards expose exact STL downloads through public R2, that separate mesh exposure must be named in the exact-page sign-off. Publication also waits for checked-in R20 output paths and the repository&#x27;s publication checkpoint.</li>
+<li>Dimitri explicitly approved the world-readable four-way review for Babs, all four exact STL downloads exposed through its live mesh cards, and a private-Treeman-category Discord share on 2026-08-11. Publication still waits for checked-in R20 output paths and the repository&#x27;s publication checkpoint.</li>
 </ul></div></details>
 <details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg><span>Experiment matrix</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Operation</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>1</td><td><code>treeman-r18-clay-bright-grokq-m2-raw</code></td><td>uniform scale to 50.00 mm overall Z; center XY; set min Z=0; preserve every component</td><td><code>treeman-r20-a1-m2-clean-50mm</code></td></tr><tr><td>2</td><td><code>treeman-r18-clay-bright-flash31-m8-raw</code></td><td>uniform scale to 50.00 mm overall Z; center XY; set min Z=0; preserve every component</td><td><code>treeman-r20-a2-m8-clean-50mm</code></td></tr><tr><td>3</td><td><code>treeman-r19-a1-m12-clean-50mm</code></td><td>render-only eight-direction comparison evidence; no mesh write</td><td><code>treeman-r20-r19-a1-m12-comparison-50mm</code></td></tr><tr><td>4</td><td><code>treeman-r19-a3-m6-clean-50mm</code></td><td>render-only eight-direction comparison evidence; no mesh write</td><td><code>treeman-r20-r19-a3-m6-comparison-50mm</code></td></tr><tr><td>5</td><td><code>treeman-r20-a1-m2-clean-50mm</code></td><td>eight-direction render set after validation</td><td>same artifact&#x27;s render evidence</td></tr><tr><td>6</td><td><code>treeman-r20-a2-m8-clean-50mm</code></td><td>eight-direction render set after validation</td><td>same artifact&#x27;s render evidence</td></tr></tbody></table></div></div></details>
 <details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-branch"/></svg><span>Commands</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><h4>Post-merge start gate</h4>
@@ -705,7 +705,7 @@ python3 tools/mesh_stats.py \
   --lineage &quot;$P/lineage.json&quot; --id treeman-r20-a2-m8-clean-50mm
 python3 tools/repo_guards.py records</code></pre>
 <h4>Review and publication</h4>
-<p>Run the complete fresh-context feature checklist across matched compass views, then build <code>r20-panel.json</code> with four mesh cards. The public page is explicitly approved for Babs; publish it with its sibling runbook and the exact four mesh paths only after Dimitri explicitly confirms the world-readable STL downloads at exact-page sign-off and the results PR&#x27;s checked-in publication inventory and exposure checkpoint pass:</p>
+<p>Run the complete fresh-context feature checklist across matched compass views, then build <code>r20-panel.json</code> with four mesh cards. The public page and all four exact STL downloads are explicitly approved for Babs. Publish it with its sibling runbook only after the results PR&#x27;s checked-in publication inventory and exposure checkpoint pass:</p>
 <pre class="code"><code>python3 tools/review_page.py projects/treeman-windmill/r20-panel.json \
   --lineage projects/treeman-windmill/lineage.json \
   --reviews projects/treeman-windmill/reviews.jsonl \
