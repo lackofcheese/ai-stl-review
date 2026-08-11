@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="3044fdfc4ecb80ac4c932bb3ea12e6159d856ac9b04cd59fabe23273a68edea1">
+<meta name="ai-stl-plan-digest" content="7b3dd2b6730bf92408d39febc48a65ebd58026c6c786c6bbedb325820109ca4f">
 <title>TreeMolin — Round 20 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -748,11 +748,11 @@ done
 # python3 tools/meshy_manifest.py resume --run RUN_ID --drive-sync
 # Never re-run a manifest.
 # Ambiguous create: reconcile the Meshy task id, `attach`, then resume.</code></pre>
-<p>Four run ids total (probe + three waves); every recovery resumes the exact run id that owns the task, never a fresh submission. A <code>PARTIAL</code> wave stops the round before the next arm submits: inspect the per-task states in the registry — a task interrupted mid-flight resumes under the same run id, but a terminal <code>REJECTED</code>/<code>FAILED</code> task is NOT recoverable through <code>resume</code> (the coordinator treats <code>PARTIAL</code> as terminal), so record the outcome in <code>rounds.md</code> and return to Dimitri before any further spend: the balanced 12-vs-12 arm comparison is part of the approved plan, and continuing to spend around a short arm needs his call, not the operator&#x27;s.</p>
+<p>Four run ids total (probe + three waves); every recovery resumes the exact run id that owns the task, never a fresh submission. A <code>PARTIAL</code> wave stops the round before the next arm submits: inspect the per-task states in the registry — a task interrupted mid-flight resumes under the same run id, but a terminal <code>REJECTED</code>/<code>FAILED</code> task is NOT recoverable through <code>resume</code> (the coordinator treats <code>PARTIAL</code> as terminal), so record the outcome in <code>rounds.md</code> and return to Dimitri before any further spend: the balanced 4-roll-per-arm comparison is part of the approved plan, and continuing to spend around a short arm needs his call, not the operator&#x27;s.</p>
 <h4>3 — FAST validation as each mesh lands</h4>
 <p>Geometry tally + renders per mesh (as r18), then the per-arm comparative sail review by a fresh-context subagent over the renders, scored on the r18 rubric; append verdicts to <code>reviews.jsonl</code> via <code>tools/review_log.py</code>. Begin each mesh&#x27;s validation only after the coordinator records its successful Drive-backed durability.</p>
 <h4>4 — Close</h4>
-<p>Build the r20-panel review (every roll rotatable, per-arm pages as the r18 set), publish privately, and hand over with the cross-arm tally in <code>rounds.md</code> presented side by side with the r18 baseline (watertight rate, real shells, sail verdicts, per-arm 12-vs-12). Public publication only on Dimitri&#x27;s explicit per-review OK.</p></div></details>
+<p>Build the r20-panel review (every roll rotatable, per-arm pages as the r18 set), publish privately, and hand over with the cross-arm tally in <code>rounds.md</code> presented side by side with the r18 baseline (watertight rate, real shells, sail verdicts, per-arm 4-vs-12 against the r18 baseline rates). Public publication only on Dimitri&#x27;s explicit per-review OK.</p></div></details>
 </section>
 </main>
 <div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
