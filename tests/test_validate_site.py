@@ -172,6 +172,17 @@ jobs:
             workflow.read_text()
             .replace("  workflow_dispatch:\n\n", "")
             .replace(
+                "\npermissions:",
+                "\non:\n  pull_request:\n\npermissions:",
+            ),
+            encoding="utf-8",
+        )
+        self.assertTrue(any("must not access secrets" in error for error in validate(self.root)))
+
+        workflow.write_text(
+            workflow.read_text()
+            .replace("on:\n  pull_request:\n\n", "")
+            .replace(
                 "${{ secrets.AI_STL_DISCORD_ACTIONS_TOKEN }}",
                 "${{ secrets.UNRELATED_TOKEN }}",
             ),

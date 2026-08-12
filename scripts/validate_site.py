@@ -61,6 +61,8 @@ def _allows_discord_wakeup_secret(path: Path, text: str) -> bool:
         return False
     if not text.startswith(DISCORD_WAKEUP_PREFIX):
         return False
+    if len(re.findall(r"(?m)^on\s*:", text)) != 1:
+        return False
     expected = (
         "AI_STL_DISCORD_ACTIONS_TOKEN: "
         "${{ secrets.AI_STL_DISCORD_ACTIONS_TOKEN }}"
