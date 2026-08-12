@@ -129,6 +129,56 @@ jobs:
         )
         self.assertTrue(any("must not access secrets" in error for error in validate(self.root)))
 
+    def test_only_fixed_main_push_discord_wakeup_may_access_its_token(self) -> None:
+        workflow = self.root / ".github/workflows/discord-wakeup.yml"
+        workflow.write_text(
+            """name: Wake Discord reconciliation
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  wake-worker:
+    steps:
+      - name: Dispatch and prove exact worker run
+        env:
+          AI_STL_DISCORD_ACTIONS_TOKEN: ${{ secrets.AI_STL_DISCORD_ACTIONS_TOKEN }}
+        run: python -B scripts/discord_wakeup.py
+""",
+            encoding="utf-8",
+        )
+        self.assertEqual(validate(self.root), [])
+
+        workflow.write_text(
+            workflow.read_text().replace("      - main", "      - feature"),
+            encoding="utf-8",
+        )
+        self.assertTrue(any("must not access secrets" in error for error in validate(self.root)))
+
+        workflow.write_text(
+            workflow.read_text()
+            .replace("      - feature", "      - main")
+            .replace("\npermissions:", "\n  workflow_dispatch:\n\npermissions:"),
+            encoding="utf-8",
+        )
+        self.assertTrue(any("must not access secrets" in error for error in validate(self.root)))
+
+        workflow.write_text(
+            workflow.read_text()
+            .replace("  workflow_dispatch:\n\n", "")
+            .replace(
+                "${{ secrets.AI_STL_DISCORD_ACTIONS_TOKEN }}",
+                "${{ secrets.UNRELATED_TOKEN }}",
+            ),
+            encoding="utf-8",
+        )
+        self.assertTrue(any("must not access secrets" in error for error in validate(self.root)))
+
     def test_cross_page_fragment_is_reported(self) -> None:
         page = self.root / "reviews/team/character/r1-runbook/index.html"
         page.write_text(

@@ -39,6 +39,36 @@ ACTION_PERMISSION = re.compile(
     r"id-token|issues|models|packages|pages|pull-requests|security-events|statuses):\s*"
     r"([a-z-]+)\s*$"
 )
+SECRET_REFERENCE = re.compile(
+    r"\$\{\{[^}]*\bsecrets\s*(?:\.|\[)", re.IGNORECASE
+)
+DISCORD_WAKEUP_PREFIX = """name: Wake Discord reconciliation
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+"""
+
+
+def _allows_discord_wakeup_secret(path: Path, text: str) -> bool:
+    """Allow one fixed Actions-only credential in the main-push wakeup."""
+    if path.name not in {"discord-wakeup.yml", "discord-wakeup.yaml"}:
+        return False
+    if not text.startswith(DISCORD_WAKEUP_PREFIX):
+        return False
+    expected = (
+        "AI_STL_DISCORD_ACTIONS_TOKEN: "
+        "${{ secrets.AI_STL_DISCORD_ACTIONS_TOKEN }}"
+    )
+    if text.count(expected) != 1:
+        return False
+    references = SECRET_REFERENCE.findall(text)
+    return len(references) == 1
 
 
 class DuplicateJsonKey(ValueError):
@@ -498,8 +528,11 @@ def _validate_workflows(root: Path, errors: list[str]) -> None:
         text = path.read_text(encoding="utf-8")
         if "pull_request_target:" in text:
             errors.append(f"{label}: pull_request_target is forbidden for public PR validation")
-        if re.search(r"\$\{\{[^}]*\bsecrets\s*(?:\.|\[)", text, re.IGNORECASE):
-            errors.append(f"{label}: pull-request workflows must not access secrets")
+        if SECRET_REFERENCE.search(text) and not _allows_discord_wakeup_secret(path, text):
+            errors.append(
+                f"{label}: workflows must not access secrets outside the fixed "
+                "main-push Discord wakeup"
+            )
         if AI_WORKFLOW.search(text):
             errors.append(f"{label}: automatic AI/LLM invocation is forbidden in this public repository")
         if not re.search(r"(?m)^permissions:\s*\n\s{2}contents:\s*read\s*$", text):
