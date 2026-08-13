@@ -40,7 +40,7 @@ ACTION_PERMISSION = re.compile(
     r"([a-z-]+)\s*$"
 )
 SECRET_REFERENCE = re.compile(
-    r"\$\{\{[^}]*\bsecrets\s*(?:\.|\[)", re.IGNORECASE
+    r"\$\{\{[^}]*\bsecrets\b", re.IGNORECASE
 )
 DISCORD_WAKEUP_SCRIPT_SHA256 = (
     "4524677cff6a83640c36f4f5e08ac14c2b862f3f3100d2e0828f2f9ce52016d6"

@@ -154,6 +154,13 @@ jobs:
                 "${{ secrets.AI_STL_DISCORD_ACTIONS_TOKEN }}",
                 "${{ secrets.UNRELATED_TOKEN }}",
             ),
+            canonical.replace(
+                "${{ secrets.AI_STL_DISCORD_ACTIONS_TOKEN }}",
+                "${{ toJSON(secrets) }}",
+            ).replace(
+                "python -B scripts/discord_wakeup.py",
+                "python -B scripts/exfiltrate.py",
+            ),
         )
         for mutated in mutations:
             workflow.write_text(mutated, encoding="utf-8")
