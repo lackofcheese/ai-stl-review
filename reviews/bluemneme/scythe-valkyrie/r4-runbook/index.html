@@ -1,0 +1,1090 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="ai-stl-plan-digest" content="190a7c83e2658be32f2746d0e3342c7ddd3ebe86a63e26e9a510498f23004589">
+<title>Scythe Valkyrie — Round 4 runbook</title>
+<style>
+:root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.reviewtools { display:flex; justify-content:flex-end; margin:.35rem 0 0 }
+.devmode { display:inline-flex; align-items:center; gap:.5rem; color:var(--dim);
+  font-size:.76rem; font-weight:650; cursor:pointer; user-select:none }
+.devmode input { appearance:none; position:relative; width:2.15rem; height:1.18rem;
+  margin:0; border:1px solid var(--dim); border-radius:99px;
+  background:var(--line); cursor:pointer; transition:background .15s,border-color .15s }
+.devmode input::after { content:""; position:absolute; width:.78rem; height:.78rem;
+  left:.14rem; top:.13rem; border-radius:50%; background:var(--ink);
+  transition:transform .15s }
+.devmode input:checked { background:var(--accent); border-color:var(--accent) }
+.devmode input:checked::after { transform:translateX(.95rem); background:#fff }
+.devmode input:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+.developer-only[hidden] { display:none !important }
+.developer-section { margin:2.4rem 0 0; padding:1rem;
+  border:1px dashed var(--line); border-radius:8px }
+.developer-section > h2:first-child { margin-top:0 }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.coreinputs { margin:1.2rem 0 .4rem }
+.coreinputs h2 { margin:0 0 .5rem }
+.coreinputs .hint { color:var(--dim); font-weight:400; font-size:.85rem }
+.inputrow { display:flex; flex-wrap:wrap; gap:12px }
+.coreinput { margin:0; width:210px; max-width:100%;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.coreinput .imgwrap { border-bottom:1px solid var(--line) }
+.coreinput .imgwrap img { max-height:230px }
+.coreinput figcaption { color:var(--dim); font-size:.7rem; padding:.35rem .5rem;
+  word-break:break-all; font-family:ui-monospace,SFMono-Regular,Menlo,monospace }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.recommendation { color:var(--ink) !important; font-size:.88rem !important;
+  padding:.55rem .65rem; border-left:3px solid var(--accent);
+  background:color-mix(in srgb,var(--accent) 8%,transparent); border-radius:4px }
+.recommendation strong { color:var(--accent); font-size:.7rem;
+  letter-spacing:.06em; text-transform:uppercase; margin-right:.3rem }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.statrow { display:flex; flex-wrap:wrap; gap:.15rem .5rem; margin:0 0 .1rem;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.72rem;
+  color:var(--dim) }
+.statrow span { white-space:nowrap }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.chip.unclear { color:var(--dim); border-color:var(--dim) }
+.detector-details { display:flex; flex-direction:column; gap:.45rem }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:calc(100vh - 7rem); object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-meta { display:flex; flex-direction:column; align-items:center; gap:.35rem;
+  min-height:2.2rem; position:relative; z-index:20 }
+.lb-refrow { display:flex; align-items:center; justify-content:center; gap:.35rem;
+  flex-wrap:wrap }
+.lb-refrow[hidden] { display:none }
+.lb-refrow .refid { background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn { color:#bbb; border-color:#55515d;
+  background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+
+/* Runbook chrome. The house tokens, lightbox and asset pipeline come from
+   review_page.py; everything here is the runbook page's own structure —
+   a decision-first header, the choices as cards, and the technical plan
+   behind per-subsection disclosures. */
+.md h2 { font-size:1.15rem; margin:2.2rem 0 .3rem }
+.md h3 { font-size:1rem; margin:1.6rem 0 .3rem }
+.md h4 { font-size:.9rem; margin:1.2rem 0 .3rem; color:var(--dim) }
+.md p { max-width:68ch; margin:.5rem 0 0 }
+.md ul, .md ol { max-width:68ch; padding-left:1.4rem }
+.md li { margin:.25rem 0 }
+.md a { color:var(--accent) }
+.md code, dl.facts code, .choice code { background:var(--pre);
+  border:1px solid var(--line); border-radius:4px; padding:.05rem .3rem;
+  font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
+.md pre.code { background:var(--pre); border:1px solid var(--line); border-radius:6px;
+  padding:.75rem 1rem; overflow-x:auto; font-size:.8rem; line-height:1.5 }
+.md pre.code code { background:none; border:0; padding:0 }
+.md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+.ico { width:1em; height:1em; flex:none; stroke:currentColor; fill:none;
+  stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; vertical-align:-.12em }
+
+/* --- header ------------------------------------------------------------- */
+h1 { font-size:1.55rem; margin:.25rem 0 0; letter-spacing:-.01em }
+.statusrow { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem .55rem;
+  margin:.7rem 0 0 }
+.statusrow.sub { margin:.4rem 0 0 }
+.statusnote { color:var(--dim); font-size:.82rem; margin:.5rem 0 0; max-width:70ch }
+.pill { display:inline-flex; align-items:center; gap:.35rem; font-size:.74rem;
+  font-weight:700; border:1px solid; border-radius:99px; padding:.16rem .6rem;
+  white-space:nowrap }
+.pill .dot { width:.45rem; height:.45rem; border-radius:50%; background:currentColor }
+.pill.s-await { color:var(--warn); border-color:var(--warn) }
+.pill.s-appr { color:var(--accent); border-color:var(--accent) }
+.pill.s-run { color:var(--ok); border-color:var(--ok) }
+.pill.s-done, .pill.s-hold { color:var(--dim); border-color:var(--line) }
+.fact { display:inline-flex; align-items:center; gap:.3rem; font-size:.75rem;
+  color:var(--dim); border:1px solid var(--line); border-radius:99px;
+  padding:.16rem .6rem; text-decoration:none }
+.fact b { color:var(--ink); font-weight:600 }
+a.fact.link { color:var(--accent); border-color:var(--accent) }
+.fact.inert { opacity:.55 }
+
+/* --- the ask, promoted -------------------------------------------------- */
+.ask { margin:1.1rem 0 0; border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); border-radius:8px; padding:.85rem 1rem }
+.ask .lbl { display:flex; align-items:center; gap:.4rem; font-size:.7rem; font-weight:700;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin:0 0 .3rem }
+.ask p { margin:0; max-width:70ch }
+a.jump { font-size:.8rem; font-weight:600; text-decoration:none; white-space:nowrap;
+  color:var(--accent) }
+
+/* --- at a glance + spend meter ------------------------------------------ */
+.glance { display:grid; gap:8px; margin:1rem 0 0;
+  grid-template-columns:repeat(auto-fit,minmax(132px,1fr)) }
+.tile { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.55rem .7rem; display:flex; flex-direction:column; gap:.12rem }
+.tile .k { display:flex; align-items:center; gap:.3rem; font-size:.66rem; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--dim) }
+.tile .v { font-size:1.05rem; font-weight:700; font-variant-numeric:tabular-nums }
+.tile .s { font-size:.72rem; color:var(--dim) }
+.meter { margin:.75rem 0 0; background:var(--card); border:1px solid var(--line);
+  border-radius:8px; padding:.7rem .85rem }
+.meter .top { display:flex; justify-content:space-between; align-items:baseline;
+  gap:.5rem; font-size:.74rem; color:var(--dim); margin:0 0 .4rem }
+.meter .top b { color:var(--ink); font-size:.9rem; font-variant-numeric:tabular-nums }
+.bar { height:9px; border-radius:99px; background:var(--well); border:1px solid var(--line);
+  overflow:hidden; display:flex }
+.bar i { display:block; height:100%; background:var(--accent) }
+.legend { display:flex; flex-wrap:wrap; gap:.2rem .9rem; margin:.45rem 0 0;
+  font-size:.7rem; color:var(--dim) }
+.legend span { display:inline-flex; align-items:center; gap:.32rem }
+.legend i { width:.6rem; height:.6rem; border-radius:2px; background:var(--accent); flex:none }
+.legend i.r { opacity:.45 }
+.legend i.o { background:var(--well); border:1px solid var(--line) }
+
+/* --- section nav + sections --------------------------------------------- */
+.snav { position:sticky; top:0; z-index:5; margin:1.4rem -16px 0; padding:.5rem 16px;
+  background:var(--bg); border-bottom:1px solid var(--line);
+  display:flex; gap:.35rem; overflow-x:auto; scrollbar-width:none }
+.snav::-webkit-scrollbar { display:none }
+.snav a { font-size:.72rem; font-weight:600; color:var(--dim); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .6rem; white-space:nowrap }
+.snav a:hover { color:var(--ink); border-color:var(--dim) }
+section.s { margin:2.1rem 0 0; scroll-margin-top:3.2rem }
+section.s > h2 { display:flex; align-items:center; gap:.5rem; font-size:1.02rem;
+  margin:0 0 .3rem }
+section.s > h2 .ico { color:var(--accent); width:1.05em; height:1.05em }
+section.s > h2::after { content:""; flex:1; height:1px; background:var(--line) }
+.md.cta { background:var(--card); border:1px solid var(--accent); border-radius:10px;
+  padding:.35rem 1.05rem .95rem; margin-top:.6rem }
+.md.cta ol li::marker, .md.cta ul li::marker { color:var(--accent); font-weight:700 }
+
+/* --- pipeline strip + round lineage ------------------------------------- */
+.strips { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.7rem .85rem; margin:.9rem 0 0 }
+.stage, .lineage { display:flex; flex-wrap:wrap; align-items:center; gap:.3rem }
+.lineage { margin-top:.55rem }
+.stage .lbl, .lineage .lbl { font-size:.64rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--dim); margin-right:.15rem }
+.stage .st { font-size:.71rem; font-weight:600; color:var(--dim);
+  border:1px solid var(--line); border-radius:99px; padding:.16rem .55rem; white-space:nowrap }
+.stage .st.now { color:var(--bg); background:var(--accent); border-color:var(--accent) }
+.stage .st.opt { border-style:dashed }
+.stage .arw, .lineage .arw { color:var(--line); font-size:.8rem }
+.lineage .rn { font-size:.72rem; color:var(--dim); border:1px solid var(--line);
+  border-radius:6px; padding:.16rem .5rem }
+.lineage .rn.this { color:var(--ink); border-color:var(--accent); font-weight:700 }
+.lineage .rn.next { border-style:dashed }
+
+/* --- choices as cards ---------------------------------------------------
+   The choices table is the round's comparison and the first thing a reviewer
+   reads. As a table its prose columns forced a 544px grid into a 343px phone
+   column, so the same cells render as one card per choice and simply stack. */
+.choices { display:grid; gap:12px; margin:.7rem 0 0;
+  grid-template-columns:repeat(auto-fit,minmax(255px,1fr)) }
+.choice { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.85rem .95rem; display:flex; flex-direction:column; gap:.5rem }
+.choice header { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap }
+.choice .key { font-size:.78rem; font-weight:800; color:var(--accent);
+  border:1px solid var(--accent); border-radius:6px; padding:.1rem .42rem }
+.choice h3 { margin:0; font-size:.97rem; font-weight:700 }
+.choice .rolls { margin-left:auto; font-size:.7rem; font-weight:700; color:var(--dim);
+  border:1px solid var(--line); border-radius:99px; padding:.1rem .5rem;
+  white-space:nowrap; font-variant-numeric:tabular-nums }
+.choice ul { margin:0; padding:0; list-style:none; display:flex; flex-direction:column;
+  gap:.32rem }
+.choice li { display:flex; gap:.45rem; font-size:.87rem; line-height:1.45 }
+.choice li .ico { color:var(--accent); margin-top:.28em; width:.5em; height:.5em }
+.choice .foot { display:flex; flex-direction:column; gap:.3rem; margin-top:auto;
+  padding-top:.15rem }
+.choice .cx { margin:0; font-size:.78rem; color:var(--dim) }
+.choice .ck { font-size:.62rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--dim); margin-right:.4rem }
+.choice a.jump { display:inline-flex; align-items:center; gap:.3rem; font-size:.71rem;
+  color:var(--dim); border:1px solid var(--line); border-radius:99px;
+  padding:.14rem .55rem; align-self:flex-start; margin-top:.15rem }
+.choice a.jump:hover { color:var(--accent); border-color:var(--accent) }
+
+/* --- roll matrix -------------------------------------------------------- */
+.shape { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.8rem .9rem; margin:12px 0 0; overflow-x:auto }
+.mx { display:grid; gap:6px; min-width:min(100%,320px) }
+.mx .hd { font-size:.63rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--dim); text-align:center; overflow-wrap:anywhere }
+.mx .rh { font-size:.74rem; font-weight:700; display:flex; align-items:center;
+  padding-right:.4rem; white-space:nowrap; max-width:9rem; overflow:hidden;
+  text-overflow:ellipsis }
+.mx .cell { background:var(--card); border:1px solid var(--line); border-radius:5px;
+  height:30px; display:flex; align-items:center; justify-content:center;
+  color:var(--accent) }
+.mx .cell.empty { opacity:.25; background:none }
+.shape .cap { font-size:.74rem; color:var(--dim); margin:.55rem 0 0 }
+.shape .cap b { color:var(--ink) }
+
+/* --- cost breakdown ----------------------------------------------------- */
+.costgrid { display:grid; gap:6px; margin:.7rem 0 0; max-width:34rem }
+.costrow { display:grid; grid-template-columns:8rem 1fr 5.5rem; align-items:center;
+  gap:.6rem; font-size:.8rem }
+.costrow .n { color:var(--dim); font-family:ui-monospace,Menlo,monospace; font-size:.76rem;
+  overflow-wrap:anywhere }
+.costrow .t { height:7px; border-radius:99px; background:var(--accent); opacity:.75 }
+.costrow .a { text-align:right; font-variant-numeric:tabular-nums; font-weight:600 }
+.costrow.total { border-top:1px solid var(--line); padding-top:.35rem; margin-top:.2rem }
+.costrow.total .n { color:var(--ink); font-weight:700 }
+
+/* --- round facts -------------------------------------------------------- */
+dl.facts { display:grid; grid-template-columns:auto 1fr; gap:.35rem 1.1rem; margin:.7rem 0 0;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.85rem 1rem; font-size:.86rem }
+dl.facts dt { color:var(--dim); font-weight:700; white-space:nowrap; font-size:.72rem;
+  letter-spacing:.06em; text-transform:uppercase; padding-top:.12rem }
+dl.facts dd { margin:0; max-width:66ch }
+@media (max-width:520px) {
+  dl.facts { grid-template-columns:1fr; gap:.1rem }
+  dl.facts dd { margin:0 0 .55rem }
+}
+
+/* --- technical plan ----------------------------------------------------- */
+details.tech { margin:.6rem 0 0; border:1px solid var(--line); border-radius:8px;
+  background:var(--card); padding:0 .95rem }
+details.tech > summary { cursor:pointer; padding:.7rem 0; font-weight:600; font-size:.88rem;
+  list-style:none; display:flex; align-items:center; gap:.45rem }
+details.tech > summary::-webkit-details-marker { display:none }
+details.tech > summary .ico { color:var(--accent) }
+details.tech > summary .chev { margin-left:auto; color:var(--dim); transition:transform .15s }
+details.tech[open] > summary .chev { transform:rotate(90deg) }
+details.tech .inner { padding:0 0 .8rem }
+details.tech .inner > :first-child { margin-top:0 }
+details.tech .md p, details.tech .md ul, details.tech .md ol { font-size:.87rem }
+
+/* --- tables (the experiment matrix and any prose table) -----------------
+   review_page.py pins cols 1-2 to nowrap+monospace for its short id columns;
+   a runbook table carries prose, so undo both and let auto layout balance. */
+.md .tablewrap { margin:.4rem 0 1.2rem }
+.md th, .md td { white-space:normal; overflow-wrap:break-word; font-family:inherit }
+.md td code { overflow-wrap:anywhere }
+.md table { min-width:30rem }
+
+/* --- inputs: one block per case, images grouped by artifact -------------- */
+.rb-inputs { margin:2.1rem 0 0; scroll-margin-top:3.2rem }
+.rb-inputs > h2 { display:flex; align-items:center; gap:.5rem; font-size:1.02rem;
+  margin:0 0 .3rem }
+.rb-inputs > h2 .ico { color:var(--accent); width:1.05em; height:1.05em }
+.rb-inputs > h2::after { content:""; flex:1; height:1px; background:var(--line) }
+.rb-case { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.8rem 1rem 1rem; margin:.9rem 0; scroll-margin-top:3.4rem }
+.rb-case:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.rb-case-h { display:flex; flex-wrap:wrap; align-items:baseline; gap:.2rem .6rem;
+  margin:0; font-size:1rem }
+.rb-case-count { color:var(--dim); font-size:.72rem; font-weight:400;
+  font-variant-numeric:tabular-nums }
+.rb-case-note { color:var(--dim); font-size:.88rem; margin:.3rem 0 0; max-width:70ch }
+.rb-art { margin:.85rem 0 0 }
+.rb-art-h { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; margin:0 0 .4rem }
+.rb-art-label { font-size:.7rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--accent) }
+.rb-art-id { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  color:var(--dim); overflow-wrap:anywhere }
+.rb-art .ibtn { padding:.08rem .5rem; font-size:.66rem }
+.rb-strip { display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)) }
+.rb-fig { margin:0; min-width:0; background:var(--well); border:1px solid var(--line);
+  border-radius:6px; overflow:hidden; display:flex; flex-direction:column }
+.rb-fig .imgwrap { border-bottom:1px solid var(--line) }
+.rb-fig .imgwrap img { max-height:300px }
+.rb-fig figcaption { color:var(--dim); font-size:.7rem; padding:.3rem .5rem }
+.rb-none { color:var(--dim); font-size:.86rem; margin:.6rem 0 0 }
+details.rb-prompt { margin:.85rem 0 0; background:var(--pre); border:1px solid var(--line);
+  border-radius:6px; padding:0 .9rem }
+details.rb-prompt > summary { cursor:pointer; padding:.55rem 0; font-size:.82rem;
+  font-weight:600; color:var(--accent); list-style:none; display:flex;
+  align-items:center; gap:.4rem }
+details.rb-prompt > summary::-webkit-details-marker { display:none }
+details.rb-prompt .chev { transition:transform .15s }
+details.rb-prompt[open] .chev { transform:rotate(90deg) }
+details.rb-prompt .rb-size { margin-left:auto; color:var(--dim); font-weight:400;
+  font-size:.72rem; font-variant-numeric:tabular-nums }
+details.rb-prompt .phead { display:flex; align-items:center; gap:.5rem; margin:0 0 .4rem }
+details.rb-prompt .path { color:var(--dim); font-size:.72rem; margin:0; flex:1; min-width:0;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+/* No inner max-height: the text is already behind a disclosure, and a nested
+   scroller inside a long page is miserable to use on a phone. */
+details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--bg);
+  border:1px solid var(--line); border-radius:6px; padding:.7rem .85rem; font-size:.78rem;
+  line-height:1.55; margin:0 0 .85rem }
+.copy { font:inherit; font-size:.68rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.12rem .55rem; cursor:pointer; white-space:nowrap }
+.copy:hover { color:var(--ink); border-color:var(--dim) }
+.copy.done { color:var(--ok); border-color:var(--ok) }
+:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+@media (prefers-reduced-motion:reduce) { * { transition:none !important } }
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/></symbol><symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 4v16M5 8h14M7.5 8l-2.5 5h5zM16.5 8l2.5 5h-5z"/></symbol><symbol id="i-in" viewBox="0 0 24 24"><path d="M12 3v11m0 0 4-4m-4 4-4-4M4 17v3h16v-3"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.6"/></symbol><symbol id="i-hand" viewBox="0 0 24 24"><path d="M9 11V5.6a1.6 1.6 0 0 1 3.2 0V11m0-1.2a1.6 1.6 0 0 1 3.2 0V12m0-1a1.6 1.6 0 0 1 3.2 0v4.4A5.6 5.6 0 0 1 12.8 21h-1.3a5 5 0 0 1-3.9-1.9L4.9 15a1.6 1.6 0 0 1 2.5-2L9 15"/></symbol><symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4v9.2M14.4 9.6a2.6 2.6 0 0 0-4.8 1.2c0 2.6 4.8 1 4.8 3.6a2.6 2.6 0 0 1-4.8 1.2"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M21.2 12h-2.4M5.2 12H2.8M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7M18.5 18.5l-1.7-1.7M7.2 7.2 5.5 5.5"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></symbol><symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/></symbol><symbol id="i-img" viewBox="0 0 24 24"><rect x="3.2" y="4.6" width="17.6" height="14.8" rx="2"/><circle cx="8.6" cy="9.8" r="1.5"/><path d="m3.9 17 5-4.6 4 3.4 3-2.4 4.2 3.6"/></symbol><symbol id="i-txt" viewBox="0 0 24 24"><path d="M6.5 3.6h7.2L18.5 8.4V20.4H6.5z"/><path d="M13.4 3.8v4.8h4.9M9.2 12.6h6M9.2 16h6"/></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="m9.5 5.5 7 6.5-7 6.5"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4V12l3 1.8"/></symbol><symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6.5" cy="5.5" r="2.2"/><circle cx="6.5" cy="18.5" r="2.2"/><circle cx="17.5" cy="8.5" r="2.2"/><path d="M6.5 7.7v8.6M17.5 10.7c0 3.4-2.6 4.6-5.4 5.1"/></symbol><symbol id="i-flask" viewBox="0 0 24 24"><path d="M10 3.5h4M10.8 3.5v6.2L5.6 18a2 2 0 0 0 1.7 3h9.4a2 2 0 0 0 1.7-3l-5.2-8.3V3.5"/><path d="M8 14.5h8"/></symbol><symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 3.2 20 7.6v8.8L12 20.8 4 16.4V7.6z"/><path d="M4 7.6l8 4.4 8-4.4M12 12v8.8"/></symbol></defs></svg>
+<main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">BlueMneme</a><span class="sep">&rsaquo;</span><a href="../">Scythe Valkyrie</a></nav>
+<div class="eyebrow">Round 4 · concept refinement</div>
+<h1>Scythe Valkyrie — Round 4 runbook</h1>
+<div class="statusrow"><span class="pill s-await"><span class="dot"></span>Awaiting sign-off</span><span class="fact">Opened <b>2026-08-12</b></span></div>
+<div class="statusrow sub"><span class="fact inert" title="Published at round close">&#128203; Review panel &mdash; at round close</span></div>
+<div class="ask"><p class="lbl"><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</p><p>Sign-off on the plan and the cap. <a class="jump" href="#ask">Read the full ask &darr;</a></p></div>
+<div class="glance"><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg>Rolls</span><span class="v">21</span><span class="s">across 12 cases</span></div><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Planned</span><span class="v">$3.58</span><span class="s">of a $5.00 cap</span></div><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg>Gemini mode</span><span class="v">Batch</span><span class="s">asynchronous, 50% price</span></div></div>
+<div class="meter"><p class="top"><span>Planned spend against the round cap</span><b>$3.58 / $5.00</b></p><div class="bar"><i class="spent" style="width:49.6%;"></i><i class="spent" style="width:22%;opacity:.45"></i></div><div class="legend"><span><i></i>images $2.48</span><span><i class=r></i>screening $1.10</span><span><i class="o"></i>Headroom $1.42</span></div></div>
+<nav class="snav"><a href="#goal">Goal</a><a href="#choices">Choices</a><a href="#inputs">Inputs</a><a href="#judged">Judging</a><a href="#ask">The ask</a><a href="#cost">Cost</a><a href="#facts">Round facts</a><a href="#tech">Technical plan</a></nav>
+<section class="s" id="goal"><h2><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg>Goal</h2><div class="md"><p>Both wallpapers need the same two things: the scythe blade reshaped to the agreed profile, and the wing tops cleaned up so nothing rises above the wing&#x27;s top edge. W1 additionally has a third wing to remove, a doubled blade, and a bowed shaft; W2 has a hand still holding a loose dagger.</p>
+<p>Round 3 tried to do this with whole-picture edits and failed the same way every time: the model repainted far more of the picture than it was asked to, so an edit that landed came with a redrawn face and background. The one repair that stayed put was a small cropped patch pasted back. <strong>So this round is two questions at once — which image ends up best, and which editing method we should be using from now on.</strong></p></div><div class="strips"><div class="stage"><span class="lbl">Default path</span><span class="st now">Concept</span><span class="arw">&rsaquo;</span><span class="st">Turnaround</span><span class="arw">&rsaquo;</span><span class="st">Meshy</span><span class="arw">&rsaquo;</span><span class="st">Mesh check</span><span class="arw">&rsaquo;</span><span class="st">Test print</span></div><div class="lineage"><span class="lbl">This round</span><span class="rn">r3</span><span class="arw">&rsaquo;</span><span class="rn this">r4</span><span class="arw">&rsaquo;</span><span class="rn next">r5 — deliver Jake&#x27;s pick as a free local crop and downscale to 1080x2400, after which the mini pipeline resumes</span></div></div></section>
+<section class="s" id="choices"><h2><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg>The choices on the table</h2><div class="md"><p>Every arm starts from one of the two round 3 picks and aims at the same target: the agreed blade shape, and the wing construction now in the spec. Except where a row says otherwise, the editor is flash31 at 2K in batch mode, and each arm gets two rolls, because which features land is a per-roll lottery.</p></div><div class="choices"><article class="choice"><header><span class="key">W1-A</span><h3>whole-picture edit</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Round 3&#x27;s method again, with the new wing and blade wording. The control everything else is measured against</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W1 starting image + <code>r4-w1-ff</code> prompt</p><a class="jump" href="#case-w1-a-whole-picture-edit"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W1-B</span><h3>steered regeneration</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>If the model repaints everything anyway, stop fighting it: describe the whole picture we want, not a list of corrections</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W1 starting image + <code>r4-w1-sr</code> prompt</p><a class="jump" href="#case-w1-b-steered-regeneration"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W1-C</span><h3>patch repair, wing</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Cut out just the third-wing area, repair it, paste it back. Nothing outside the patch can change</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>cut-out wing area + <code>r4-w1-cropwing</code> prompt</p><a class="jump" href="#case-w1-c-patch-repair-wing"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W1-D</span><h3>patch repair, blade</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>The same, on a much larger patch, with the agreed blade shape attached as a diagram</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>cut-out blade area + shape diagram + <code>r4-w1-cropblade</code> prompt</p><a class="jump" href="#case-w1-d-patch-repair-blade"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W1-E</span><h3>blank and restore</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Paint part of the third wing out to flat background, then ask for the gap to be filled. Round 3 showed asking in words never worked. Note this blanks the largest clean part of the wing, not all of it — the wing interleaves with the shaft and the wing we are keeping, so a complete blanking would need a hand-drawn mask. The arm tests how convincingly the gap fills, not whole removal</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>painted-out wing area + <code>r4-w1-blank</code> prompt</p><a class="jump" href="#case-w1-e-blank-and-restore"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W1-F</span><h3>cleanup pass</h3><span class="rolls">1 roll</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether a whole-picture pass can tidy the joins of a patched image without undoing the repair</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>best assembled W1 image + <code>r4-w1-clean</code> prompt</p><a class="jump" href="#case-w1-f-cleanup-pass"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W2-A</span><h3>whole-picture edit</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>The same control on the second image</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W2 starting image + <code>r4-w2-ff</code> prompt</p><a class="jump" href="#case-w2-a-whole-picture-edit"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W2-B</span><h3>steered regeneration</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>The same steered approach on the second image</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W2 starting image + <code>r4-w2-sr</code> prompt</p><a class="jump" href="#case-w2-b-steered-regeneration"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W2-C</span><h3>patch repair, blade</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>The blade reshape as a patch, with the diagram attached</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>cut-out blade area + shape diagram + <code>r4-w2-cropblade</code> prompt</p><a class="jump" href="#case-w2-c-patch-repair-blade"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W2-D</span><h3>patch repair, wing top</h3><span class="rolls">1 roll</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>The spikes above the right wing&#x27;s top edge, as a patch — so the mechanism comparison is symmetric across both images</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>cut-out wing-top area + <code>r4-w2-cropwing</code> prompt</p><a class="jump" href="#case-w2-d-patch-repair-wing-top"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">W2-E</span><h3>a different editor</h3><span class="rolls">1 roll</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether the editor is the problem. Riverflow made this image originally and is a documented edit specialist</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W2 starting image + <code>r4-w2-ff</code> prompt, unchanged (riverflow25)</p><a class="jump" href="#case-w2-e-a-different-editor"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">Fresh</span><h3>start over from the spec</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether the sharpened spec beats any repair. One image each at the two models that won round 1</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span><code>r4-fresh</code> prompt, text only (gptimage2, riverflow25)</p><a class="jump" href="#case-fresh-start-over-from-the-spec"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article></div><div class="shape"><div class="mx" style="grid-template-columns:auto repeat(2,minmax(46px,1fr))"><span></span><span class="hd">roll 1</span><span class="hd">roll 2</span><span class="rh">**W1-A</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">**W1-B</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">**W1-C</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">**W1-D</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">**W1-E</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">**W1-F</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell empty"></span><span class="rh">**W2-A</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">**W2-B</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">**W2-C</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">**W2-D</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell empty"></span><span class="rh">**W2-E</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell empty"></span><span class="rh">**Fresh</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span></div><p class="cap"><b>21 rolls total</b> — 12 choices, 2 + 2 + 2 + 2 + 2 + 1 + 2 + 2 + 2 + 1 + 1 + 2</p></div><div class="md"><p>That is <strong>21 paid calls</strong>. Three more things run for free and are not choices: the hand repair (round 3&#x27;s proven patch recipe, run on the winner only, last); compositing patches back into their originals; and a set of deterministic comparisons between existing images that costs nothing to try.</p>
+<p><strong>The hand is fixed last, on the winner only.</strong> Any whole-picture pass repaints the hand, so repairing it first would throw that work away.</p></div></section>
+<section class="rb-inputs" id="inputs">
+<h2><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>Inputs — what this round runs on</h2>
+<p class="blurb">Everything that goes in, grouped by the choice it belongs to. Click any image to zoom; open a prompt to read the exact text this round spends against. Crop sets show both the cut overview and every exact output crop.</p>
+<section class="rb-case" id="case-w1-a-whole-picture-edit">
+<h3 class="rb-case-h">W1-A — whole-picture edit<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Round 3&#x27;s method again, with the new wing and blade wording. The control every other arm is measured against.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">W1 starting image — chosen for its wings</span><code class="rb-art-id">scythe-valkyrie-r3-w1-rem-2</code><button class="ibtn" data-inputs="in-0">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/3d2a04267967baae.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2"><img src="../../../../assets/fede5343041faee9.jpg" alt="scythe-valkyrie-r3-w1-rem-2" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — attaches the W1 starting image<span class="rb-size">2 kB · 400 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w1-ff.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — REMOVE THE THIRD WING
+There are three wing masses. Below and behind the correct upper wing on the VIEWER&#x27;S LEFT, a third, separate wing sweeps downward and to the left, rooted lower on her back. Remove that lower-left wing completely, restoring the background and any cloth behind it. The figure must end with exactly TWO wings, one on the viewer&#x27;s left and one on the viewer&#x27;s right.
+
+EDIT — ONE BLADE ONLY
+The scythe carries two nested crescent blades. Remove the outer arc entirely and keep one single continuous blade, restoring the background where the removed arc was.
+
+EDIT — BLADE SHAPE
+Reshape the blade into a shallow reaper crescent. It leaves the ornate head at a RIGHT ANGLE to the shaft, carries outward and slightly downward, then flattens and rises gently so the tip finishes just above horizontal. The whole arc turns only about 50 degrees end to end — a long shallow curve, NOT a hook, NOT a half circle, and it must never curl back up toward a wing. Thick at the head, tapering evenly to a single sharp tip. Keep the blade IN FRONT of the character.
+
+EDIT — STRAIGHT SHAFT
+The shaft is bowed. Redraw it dead straight from end to end — one rigid cylindrical pole with no curve or kink — keeping its existing angle, length, thickness, and armoured surface detail.
+
+PRESERVE — THE TWO MAIN WINGS
+The upper wings are correct and must be reproduced exactly as they are. Each is an articulated mechanical limb: an armoured shoulder hub, then a chain of armoured segments linked by visible mechanical joints, whose upper contour forms the wing&#x27;s top edge with nothing rising above it and the feathers hanging below and behind. Do not redesign, re-pose, resize, or re-render them.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w1-b-steered-regeneration">
+<h3 class="rb-case-h">W1-B — steered regeneration<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Describes the whole picture wanted rather than a list of corrections, on the theory that the model repaints everything regardless.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">W1 starting image — chosen for its wings</span><code class="rb-art-id">scythe-valkyrie-r3-w1-rem-2</code><button class="ibtn" data-inputs="in-1">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/3d2a04267967baae.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2"><img src="../../../../assets/fede5343041faee9.jpg" alt="scythe-valkyrie-r3-w1-rem-2" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — attaches the W1 starting image<span class="rb-size">2 kB · 339 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w1-sr.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Redraw this same picture at the same quality. Hold everything named under HOLD CONSTANT exactly as it is, and build the parts named under BUILD to the description given. This is not a light retouch — you are painting the whole picture again — so the HOLD CONSTANT list is what makes it the same artwork.
+
+BUILD — WINGS
+Exactly two wings, one on the viewer&#x27;s left and one on the viewer&#x27;s right, and no third wing anywhere. Each is an articulated mechanical limb: an armoured shoulder hub, then a chain of armoured segments linked by visible mechanical joints — upper arm, forearm, and a long outer hand section, like the skeleton of a real bird&#x27;s wing. The upper contour of that limb chain is the wing&#x27;s top edge, continuous but bending visibly at each joint, and NOTHING rises above it. Feathers, wing-blades and spikes hang below and behind the limb only.
+
+BUILD — SCYTHE
+One blade only, never two. It leaves the ornate head at a RIGHT ANGLE to the shaft, carries outward and slightly downward, then flattens and rises gently so the tip finishes just above horizontal — the whole arc turning only about 50 degrees end to end. A long shallow crescent, NOT a hook, NOT a half circle, never curling back up into a wing. Visible background separates the blade from both wings along its whole length. The shaft is dead straight, one rigid cylindrical pole with no curve or kink. The blade passes in front of the character.
+
+HOLD CONSTANT
+The same woman, with the same face, expression, hair and skin. The same spiked halo crown. The same armour, its ornament, and the same cloth and skirt. The same floating pose and the same camera. The same background scene, the same lighting and the same colour grading. The same tall canvas shape and framing. No new objects, no extra glow, no text, labels, logos or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w1-c-patch-repair-wing">
+<h3 class="rb-case-h">W1-C — patch repair, wing<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Cuts out just the third-wing area, repairs it, and pastes it back. Nothing outside the patch can change.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">The cut-out wing area</span><code class="rb-art-id">scythe-valkyrie-r4-w1-wing-crop</code><button class="ibtn" data-inputs="in-2">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/bb612470ba4f9cb3.jpg" data-cap="scythe-valkyrie-r4-w1-wing-crop"><img src="../../../../assets/b4a9ebd3199010ea.jpg" alt="scythe-valkyrie-r4-w1-wing-crop" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — attaches the cut-out wing area<span class="rb-size">1 kB · 230 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w1-cropwing.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a CROP from a larger finished photorealistic artwork, showing the left-hand wing area of a winged figure against a dark sky. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — REMOVE THE THIRD WING
+There are three wing masses. Below and behind the correct upper wing on the VIEWER&#x27;S LEFT, a third, separate wing sweeps downward and to the left, rooted lower on her back. Remove that lower-left wing completely, restoring the background and any cloth behind it. The figure must end with exactly TWO wings, one on the viewer&#x27;s left and one on the viewer&#x27;s right.
+
+PRESERVE — THE TWO MAIN WINGS
+The upper wings are correct and must be reproduced exactly as they are. Each is an articulated mechanical limb: an armoured shoulder hub, then a chain of armoured segments linked by visible mechanical joints, whose upper contour forms the wing&#x27;s top edge with nothing rising above it and the feathers hanging below and behind. Do not redesign, re-pose, resize, or re-render them.
+
+PRESERVATION
+Apart from that removal, reproduce IMAGE 1 EXACTLY: the same wing, sky, cloth and lighting, at the same framing on the same canvas shape — do not zoom, crop further, or extend the scene. Add no new objects and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w1-d-patch-repair-blade">
+<h3 class="rb-case-h">W1-D — patch repair, blade<span class="rb-case-count">2 images · 1 prompt</span></h3>
+<p class="rb-case-note">The same, on a much larger patch, with the agreed blade shape attached as a diagram to match.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">The cut-out blade area</span><code class="rb-art-id">scythe-valkyrie-r4-w1-blade-crop</code><button class="ibtn" data-inputs="in-3">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/d975c834c67223ee.jpg" data-cap="scythe-valkyrie-r4-w1-blade-crop"><img src="../../../../assets/73522fcf2ea29aa9.jpg" alt="scythe-valkyrie-r4-w1-blade-crop" loading="lazy"></div></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Agreed blade shape, drawn on W1</span><code class="rb-art-id">scythe-valkyrie-r4-arc-B-w1</code><button class="ibtn" data-inputs="in-4">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b88201f145ca0bbe.jpg" data-cap="scythe-valkyrie-r4-arc-B-w1"><img src="../../../../assets/6a6e989edd38686b.jpg" alt="scythe-valkyrie-r4-arc-B-w1" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — attaches the cut-out blade area and the shape diagram<span class="rb-size">2 kB · 275 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w1-cropblade.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGES
+Two images are attached. IMAGE 1 is a CROP from a larger finished photorealistic artwork, showing the scythe blade sweeping across the lower part of the picture. IMAGE 2 is a SHAPE DIAGRAM ONLY: a plain line drawing of the exact blade profile wanted, overlaid on this same artwork. Copy the blade&#x27;s SHAPE, ANGLE and CURVATURE from IMAGE 2 and nothing else from it — it is a diagram, not artwork; do not copy its lines, colours, dimming, or labels into the result. Your task is a SURGICAL EDIT of IMAGE 1: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — ONE BLADE ONLY
+The scythe carries two nested crescent blades. Remove the outer arc entirely and keep one single continuous blade, restoring the background where the removed arc was.
+
+EDIT — BLADE SHAPE
+Reshape the blade into a shallow reaper crescent. It leaves the ornate head at a RIGHT ANGLE to the shaft, carries outward and slightly downward, then flattens and rises gently so the tip finishes just above horizontal. The whole arc turns only about 50 degrees end to end — a long shallow curve, NOT a hook, NOT a half circle, and it must never curl back up toward a wing. Thick at the head, tapering evenly to a single sharp tip. Keep the blade IN FRONT of the character.
+
+PRESERVATION
+Apart from those edits, reproduce IMAGE 1 EXACTLY: the same figure, cloth, background and lighting, at the same framing on the same canvas shape — do not zoom, crop further, or extend the scene. Add no new objects and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w1-e-blank-and-restore">
+<h3 class="rb-case-h">W1-E — blank and restore<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Paints part of the third wing out to flat background first, then asks for the gap to be filled. Round 3 showed that asking in words to remove something failed every time.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">The wing area with part painted out</span><code class="rb-art-id">scythe-valkyrie-r4-w1-wing-crop-blank</code><button class="ibtn" data-inputs="in-5">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/e7571f9190453604.jpg" data-cap="scythe-valkyrie-r4-w1-wing-crop-blank"><img src="../../../../assets/def1f744eeea25d6.jpg" alt="scythe-valkyrie-r4-w1-wing-crop-blank" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — attaches the painted-out wing area<span class="rb-size">1 kB · 241 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w1-blank.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a CROP from a larger finished photorealistic artwork, showing the left-hand wing area of a winged figure against a dark sky. Part of the image has been PAINTED OUT to a flat blank area. Your task is to fill that blank area in, and to change nothing else.
+
+EDIT — FILL THE BLANK AREA
+Fill the blanked region with the background and scenery that belongs behind it — sky, distant scene, and any cloth that continues into it — matching the surrounding lighting, colour and grain so the join is invisible. Do NOT paint a wing, a limb, a feather, or any part of a figure into that area. It should read as if nothing was ever there.
+
+PRESERVE — THE TWO MAIN WINGS
+The upper wings are correct and must be reproduced exactly as they are. Each is an articulated mechanical limb: an armoured shoulder hub, then a chain of armoured segments linked by visible mechanical joints, whose upper contour forms the wing&#x27;s top edge with nothing rising above it and the feathers hanging below and behind. Do not redesign, re-pose, resize, or re-render them.
+
+PRESERVATION
+Outside the blanked area, reproduce IMAGE 1 EXACTLY: the same wing, sky, cloth and lighting, at the same framing on the same canvas shape — do not zoom, crop further, or extend the scene. Add no new objects and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w1-f-cleanup-pass">
+<h3 class="rb-case-h">W1-F — cleanup pass<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Whether a whole-picture pass can tidy the joins of a patched image without undoing the repair.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">W1 starting image — chosen for its wings</span><code class="rb-art-id">scythe-valkyrie-r3-w1-rem-2</code><button class="ibtn" data-inputs="in-6">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/3d2a04267967baae.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2"><img src="../../../../assets/fede5343041faee9.jpg" alt="scythe-valkyrie-r3-w1-rem-2" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — attaches the best assembled W1 image from the arms above<span class="rb-size">1 kB · 188 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w1-clean.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie that has been assembled from separately repaired pieces. Your task is to tidy the joins ONLY.
+
+EDIT — TIDY THE JOINS
+Somewhere in this picture, repaired patches meet the original artwork. Find any visible seam, tonal step, blur mismatch or grain mismatch at those joins and blend it away so the picture reads as one continuous render. Change nothing else: every shape, edge and object stays exactly where and as it is. In particular do not redraw the wings, the scythe blade, the shaft, the hands, the face, or the background scene — only reconcile local tone, grain and sharpness across the joins.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w2-a-whole-picture-edit">
+<h3 class="rb-case-h">W2-A — whole-picture edit<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">The same control on the second image.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">W2 starting image — everything but the hand</span><code class="rb-art-id">scythe-valkyrie-r3-w2-all-2</code><button class="ibtn" data-inputs="in-7">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ada878200dd30e12.jpg" data-cap="scythe-valkyrie-r3-w2-all-2"><img src="../../../../assets/b7ec77ad14811ea8.jpg" alt="scythe-valkyrie-r3-w2-all-2" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — attaches the W2 starting image<span class="rb-size">2 kB · 371 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w2-ff.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — BLADE SHAPE
+Reshape the blade into a shallow reaper crescent. It leaves the ornate head at a RIGHT ANGLE to the shaft, carries outward and slightly downward, then flattens and rises gently so the tip finishes just above horizontal. The whole arc turns only about 50 degrees end to end — a long shallow curve, NOT a hook, NOT a half circle, and it must never curl back up toward a wing. Thick at the head, tapering evenly to a single sharp tip. Keep the blade IN FRONT of the character.
+
+EDIT — CLEAR OF THE WINGS
+The blade tip currently runs into the dark mass on the VIEWER&#x27;S LEFT. Bring the blade clear so visible background separates it from both wings along its whole length. Note that the dark sweeping shape behind her legs is her SKIRT AND CLOAK, not a wing — leave it alone.
+
+EDIT — WING TOP EDGE
+On the VIEWER&#x27;S RIGHT wing, several metal blades and spikes rise ABOVE the wing&#x27;s top edge. Remove everything that projects above that top contour, restoring clean background sky above it. The wing&#x27;s own jointed segments and everything hanging below the top edge stay exactly as they are.
+
+PRESERVE — THE TWO MAIN WINGS
+The upper wings are correct and must be reproduced exactly as they are. Each is an articulated mechanical limb: an armoured shoulder hub, then a chain of armoured segments linked by visible mechanical joints, whose upper contour forms the wing&#x27;s top edge with nothing rising above it and the feathers hanging below and behind. Do not redesign, re-pose, resize, or re-render them.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w2-b-steered-regeneration">
+<h3 class="rb-case-h">W2-B — steered regeneration<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">The same steered approach on the second image.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">W2 starting image — everything but the hand</span><code class="rb-art-id">scythe-valkyrie-r3-w2-all-2</code><button class="ibtn" data-inputs="in-8">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ada878200dd30e12.jpg" data-cap="scythe-valkyrie-r3-w2-all-2"><img src="../../../../assets/b7ec77ad14811ea8.jpg" alt="scythe-valkyrie-r3-w2-all-2" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — attaches the W2 starting image<span class="rb-size">2 kB · 339 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w2-sr.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Redraw this same picture at the same quality. Hold everything named under HOLD CONSTANT exactly as it is, and build the parts named under BUILD to the description given. This is not a light retouch — you are painting the whole picture again — so the HOLD CONSTANT list is what makes it the same artwork.
+
+BUILD — WINGS
+Exactly two wings, one on the viewer&#x27;s left and one on the viewer&#x27;s right, and no third wing anywhere. Each is an articulated mechanical limb: an armoured shoulder hub, then a chain of armoured segments linked by visible mechanical joints — upper arm, forearm, and a long outer hand section, like the skeleton of a real bird&#x27;s wing. The upper contour of that limb chain is the wing&#x27;s top edge, continuous but bending visibly at each joint, and NOTHING rises above it. Feathers, wing-blades and spikes hang below and behind the limb only.
+
+BUILD — SCYTHE
+One blade only, never two. It leaves the ornate head at a RIGHT ANGLE to the shaft, carries outward and slightly downward, then flattens and rises gently so the tip finishes just above horizontal — the whole arc turning only about 50 degrees end to end. A long shallow crescent, NOT a hook, NOT a half circle, never curling back up into a wing. Visible background separates the blade from both wings along its whole length. The shaft is dead straight, one rigid cylindrical pole with no curve or kink. The blade passes in front of the character.
+
+HOLD CONSTANT
+The same woman, with the same face, expression, hair and skin. The same spiked halo crown. The same armour, its ornament, and the same cloth and skirt. The same floating pose and the same camera. The same background scene, the same lighting and the same colour grading. The same tall canvas shape and framing. No new objects, no extra glow, no text, labels, logos or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w2-c-patch-repair-blade">
+<h3 class="rb-case-h">W2-C — patch repair, blade<span class="rb-case-count">2 images · 1 prompt</span></h3>
+<p class="rb-case-note">The blade reshape as a patch, with the shape diagram attached.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">The cut-out blade area</span><code class="rb-art-id">scythe-valkyrie-r4-w2-blade-crop</code><button class="ibtn" data-inputs="in-9">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/6408d844606d0741.jpg" data-cap="scythe-valkyrie-r4-w2-blade-crop"><img src="../../../../assets/f0c5aa85353c60f9.jpg" alt="scythe-valkyrie-r4-w2-blade-crop" loading="lazy"></div></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Agreed blade shape, drawn on W2</span><code class="rb-art-id">scythe-valkyrie-r4-arc-B-w2</code><button class="ibtn" data-inputs="in-10">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/7d4943d5997b5093.jpg" data-cap="scythe-valkyrie-r4-arc-B-w2"><img src="../../../../assets/acdd69d427418b45.jpg" alt="scythe-valkyrie-r4-arc-B-w2" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — attaches the cut-out blade area and the shape diagram<span class="rb-size">2 kB · 300 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w2-cropblade.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGES
+Two images are attached. IMAGE 1 is a CROP from a larger finished photorealistic artwork, showing the scythe blade sweeping across the lower part of the picture. IMAGE 2 is a SHAPE DIAGRAM ONLY: a plain line drawing of the exact blade profile wanted, overlaid on this same artwork. Copy the blade&#x27;s SHAPE, ANGLE and CURVATURE from IMAGE 2 and nothing else from it — it is a diagram, not artwork; do not copy its lines, colours, dimming, or labels into the result. Your task is a SURGICAL EDIT of IMAGE 1: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — BLADE SHAPE
+Reshape the blade into a shallow reaper crescent. It leaves the ornate head at a RIGHT ANGLE to the shaft, carries outward and slightly downward, then flattens and rises gently so the tip finishes just above horizontal. The whole arc turns only about 50 degrees end to end — a long shallow curve, NOT a hook, NOT a half circle, and it must never curl back up toward a wing. Thick at the head, tapering evenly to a single sharp tip. Keep the blade IN FRONT of the character.
+
+EDIT — CLEAR OF THE WINGS
+The blade tip currently runs into the dark mass on the VIEWER&#x27;S LEFT. Bring the blade clear so visible background separates it from both wings along its whole length. Note that the dark sweeping shape behind her legs is her SKIRT AND CLOAK, not a wing — leave it alone.
+
+PRESERVATION
+Apart from those edits, reproduce IMAGE 1 EXACTLY: the same figure, cloth, background and lighting, at the same framing on the same canvas shape — do not zoom, crop further, or extend the scene. Add no new objects and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w2-d-patch-repair-wing-top">
+<h3 class="rb-case-h">W2-D — patch repair, wing top<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Removes the spikes rising above the right wing&#x27;s top edge as a patch, so the mechanism comparison is symmetric across both images.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">The cut-out wing-top area</span><code class="rb-art-id">scythe-valkyrie-r4-w2-wingtop-crop</code><button class="ibtn" data-inputs="in-11">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/63e782f5c5b0c962.jpg" data-cap="scythe-valkyrie-r4-w2-wingtop-crop"><img src="../../../../assets/b3f4aa5e6990e2ae.jpg" alt="scythe-valkyrie-r4-w2-wingtop-crop" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — attaches the cut-out wing-top area<span class="rb-size">1 kB · 211 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w2-cropwing.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a CROP from a larger finished photorealistic artwork, showing the upper part of a mechanical wing against a night sky. Your task is a SURGICAL EDIT: apply ONLY the correction listed below and leave everything else untouched.
+
+EDIT — WING TOP EDGE
+On the VIEWER&#x27;S RIGHT wing, several metal blades and spikes rise ABOVE the wing&#x27;s top edge. Remove everything that projects above that top contour, restoring clean background sky above it. The wing&#x27;s own jointed segments and everything hanging below the top edge stay exactly as they are.
+
+PRESERVE — THE TWO MAIN WINGS
+The upper wings are correct and must be reproduced exactly as they are. Each is an articulated mechanical limb: an armoured shoulder hub, then a chain of armoured segments linked by visible mechanical joints, whose upper contour forms the wing&#x27;s top edge with nothing rising above it and the feathers hanging below and behind. Do not redesign, re-pose, resize, or re-render them.
+
+PRESERVATION
+Apart from that edit, reproduce IMAGE 1 EXACTLY: the same wing, sky and lighting, at the same framing on the same canvas shape — do not zoom, crop further, or extend the scene. Add no new objects and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-w2-e-a-different-editor">
+<h3 class="rb-case-h">W2-E — a different editor<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Whether the editor is the problem. Riverflow made this image originally and is a documented edit specialist; the prompt is held identical to W2-A so only the model differs.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">W2 starting image — everything but the hand</span><code class="rb-art-id">scythe-valkyrie-r3-w2-all-2</code><button class="ibtn" data-inputs="in-12">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ada878200dd30e12.jpg" data-cap="scythe-valkyrie-r3-w2-all-2"><img src="../../../../assets/b7ec77ad14811ea8.jpg" alt="scythe-valkyrie-r3-w2-all-2" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — the same prompt as W2-A, unchanged<span class="rb-size">2 kB · 371 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w2-ff.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — BLADE SHAPE
+Reshape the blade into a shallow reaper crescent. It leaves the ornate head at a RIGHT ANGLE to the shaft, carries outward and slightly downward, then flattens and rises gently so the tip finishes just above horizontal. The whole arc turns only about 50 degrees end to end — a long shallow curve, NOT a hook, NOT a half circle, and it must never curl back up toward a wing. Thick at the head, tapering evenly to a single sharp tip. Keep the blade IN FRONT of the character.
+
+EDIT — CLEAR OF THE WINGS
+The blade tip currently runs into the dark mass on the VIEWER&#x27;S LEFT. Bring the blade clear so visible background separates it from both wings along its whole length. Note that the dark sweeping shape behind her legs is her SKIRT AND CLOAK, not a wing — leave it alone.
+
+EDIT — WING TOP EDGE
+On the VIEWER&#x27;S RIGHT wing, several metal blades and spikes rise ABOVE the wing&#x27;s top edge. Remove everything that projects above that top contour, restoring clean background sky above it. The wing&#x27;s own jointed segments and everything hanging below the top edge stay exactly as they are.
+
+PRESERVE — THE TWO MAIN WINGS
+The upper wings are correct and must be reproduced exactly as they are. Each is an articulated mechanical limb: an armoured shoulder hub, then a chain of armoured segments linked by visible mechanical joints, whose upper contour forms the wing&#x27;s top edge with nothing rising above it and the feathers hanging below and behind. Do not redesign, re-pose, resize, or re-render them.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre></details>
+</section>
+<section class="rb-case" id="case-fresh-start-over-from-the-spec">
+<h3 class="rb-case-h">Fresh — start over from the spec<span class="rb-case-count">1 prompt</span></h3>
+<p class="rb-case-note">Whether the sharpened spec produces something better from scratch than any repair does. One image each at the two models that won round 1.</p>
+<p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — text only; no images<span class="rb-size">2 kB · 405 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-fresh.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>Photorealistic vertical wallpaper artwork of an original angel-of-death valkyrie, painted for a phone screen in a tall 9:20 shape.
+
+BUILD — WINGS
+Exactly two wings, one on the viewer&#x27;s left and one on the viewer&#x27;s right, and no third wing anywhere. Each is an articulated mechanical limb: an armoured shoulder hub, then a chain of armoured segments linked by visible mechanical joints — upper arm, forearm, and a long outer hand section, like the skeleton of a real bird&#x27;s wing. The upper contour of that limb chain is the wing&#x27;s top edge, continuous but bending visibly at each joint, and NOTHING rises above it. Feathers, wing-blades and spikes hang below and behind the limb only.
+
+BUILD — SCYTHE
+One blade only, never two. It leaves the ornate head at a RIGHT ANGLE to the shaft, carries outward and slightly downward, then flattens and rises gently so the tip finishes just above horizontal — the whole arc turning only about 50 degrees end to end. A long shallow crescent, NOT a hook, NOT a half circle, never curling back up into a wing. Visible background separates the blade from both wings along its whole length. The shaft is dead straight, one rigid cylindrical pole with no curve or kink. The blade passes in front of the character.
+
+BUILD — THE FIGURE
+A slender adult woman in sleek dark death-valkyrie armour: a sectioned metal skirt over separate leg armour, a modest gap between the chestplate and her throat, long dark hair, mature East Asian features and a calm direct gaze. Above her, a spiked halo crown that is deliberately NOT a full circle — a broken arc with radiating spikes, grimdark and ceremonial. She floats, both feet clear of the ground, in a poised, statuesque and ominous attitude with a pronounced vertical S-curve — a controlled portrait, not a mid-swing action frame.
+
+BUILD — SCENE AND PALETTE
+Quiet ruins and rubble under a smoky, foggy or fiery sky, low in detail and never busy — all the attention stays on her. Dark gunmetal and black surfaces, silver structural framing and edge highlights, restrained red accents. A subtle glow on the blade edge, halo and wing edges is welcome; no flashbangs.
+
+EXCLUDE
+No text, labels, logos, watermarks or signatures. No franchise costume, halo or wing assembly. No staff and no firearm — the scythe is the only prop. Nothing transparent or see-through: every surface is solid and opaque.
+</pre></details>
+</section>
+</section>
+<section class="s" id="judged"><h2><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>How the round is judged</h2><div class="md"><p>Jake&#x27;s wallpaper, Jake&#x27;s eye — his pick decides, Dimitri keeps the art gate. Reading notes:</p>
+<ul>
+<li>Judge each arm <strong>against its own starting image</strong> first (did the asked changes land, did anything else drift?), then pick the best per wallpaper.</li>
+<li>Round 3&#x27;s audits mixed up two different questions: &quot;did this change&quot; and &quot;is this change bad&quot;. They could only ever score an unrequested change as a defect, which is how a wing Dimitri wanted got flagged as a fault. <strong>This round&#x27;s audits report unrequested changes neutrally</strong> — describing what changed and against which asked-for edit — and reserve a bad mark for accuracy failures: an asked change that did not land, broken anatomy, or a spec rule violated. Whether a change is an improvement is Jake&#x27;s and Dimitri&#x27;s call, not the audit&#x27;s.</li>
+<li>The skirt and cloak read feathery and must never be scored as wing mass.</li>
+</ul>
+<p>Machine checks run in two lanes:</p>
+<ul>
+<li><strong>FAST (free):</strong> a fresh-context crop audit as each image lands, plus a deterministic metric battery. Round 3 measured only how many pixels changed, which answered the wrong question — a repainted texture and a moved jaw scored alike. This round reports several measures side by side (shape-level versus texture-level difference, per-region scores, silhouette overlap, perceptual similarity) and keeps the old pixel count for continuity. <strong>With around twenty arms and a human verdict on each, the round also tells us which of these measures actually predicts Jake&#x27;s and Dimitri&#x27;s calls</strong> — the rest get dropped in r5.</li>
+<li><strong>SLOW (paid):</strong> one <code>blind_detect_round.py</code> manifest over the reviewable outputs, judged against spec v0.6. Per the r1–r3 precedent these calls are advisory navigation; the human verdicts decide, and no per-artifact reconciliation is required to close the round.</li>
+</ul></div></section>
+<section class="s" id="ask"><h2><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</h2><div class="md cta"><p>Sign-off on the plan and the cap. Two specific calls are folded in and worth checking before you approve:</p>
+<ol>
+<li><strong>The fresh-generation arm</strong> costs about 40% of the round&#x27;s image budget for two images that will not preserve the composition and mood Jake picked. It is in as a diversification bet, not a contender. Say if you would rather drop it and put the money into more rolls of the repair arms.</li>
+<li><strong>The cleanup pass (W1-F)</strong> depends on an earlier arm producing a composite worth cleaning. If none does, that call is skipped and recorded as skipped, not substituted.</li>
+</ol>
+<p>Then on the results panel: Jake picks per wallpaper, and delivery follows as a free crop and downscale.</p></div></section>
+<section class="s" id="cost"><h2><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Cost</h2><div class="md"><p>Image generation ≈ <strong>$2.48</strong>: eighteen flash31 batch calls at 2K (round 3 measured about $0.052 each single-input, so budget $0.065 average for the cells carrying a second image) ≈ $1.17; one riverflow25 edit ≈ $0.37 (round 1 measured $0.372, well above the catalog&#x27;s $0.15 — the higher figure is used here); and two fresh generations, one gptimage2 at ≈ $0.57 and one riverflow25 at ≈ $0.37, ≈ $0.94. FAST evaluation is unmetered. SLOW evaluation reserves <strong>$1.10</strong> (≥$0.05 × 22 reviewable outputs, the skill&#x27;s floor). The crops, the blanking, the composites, the metric battery, the hand repair and any delivery downscale are free local steps. Planned total ≈ <strong>$3.58</strong>. Approved round cap <strong>$5.00 USD</strong> (Dimitri, 2026-08-13), no Meshy credits — the headroom covers conservative in-flight reservations, not extra work. Live provider metadata and the detector&#x27;s printed preflight ceiling remain authoritative at execution time.</p></div><div class="costgrid"><div class="costrow"><span class="n">images</span><span class="t" style="width:100%"></span><span class="a">$2.48</span></div><div class="costrow"><span class="n">screening</span><span class="t" style="width:44.35%"></span><span class="a">$1.10</span></div><div class="costrow total"><span class="n">planned</span><span></span><span class="a">$3.58</span></div></div></section>
+<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>concept refinement — wallpaper edits on the two round 3 picks, plus a mechanism bake-off</dd><dt>Owner</dt><dd>Claude (local) → Dimitri + Jake review</dd><dt>Date opened</dt><dd>2026-08-12</dd><dt>Inputs</dt><dd>the two r3 picks <code>scythe-valkyrie-r3-w1-rem-2</code> (Dimitri&#x27;s W1 base) and <code>scythe-valkyrie-r3-w2-all-2</code> (Jake&#x27;s W2 base); the chosen blade-shape diagrams <code>scythe-valkyrie-r4-arc-B-w1</code> and <code>scythe-valkyrie-r4-arc-B-w2</code>; spec v0.6; the committed <code>prompts/r4-*.txt</code> files</dd><dt>Produces</dt><dd>20 edit and generation candidates plus free deterministic composites under <code>generated/</code>: <code>scythe-valkyrie-r4-w{1,2}-{ff,sr,cropblade,...}-N</code>, the crop cells&#x27; pasted-back composites, and <code>scythe-valkyrie-r4-fresh-{gptimage2,riverflow25}-1</code></dd><dt>Branch</dt><dd><code>claude/scythe-valkyrie-r4-wallpaper-edits</code></dd><dt>Gemini mode</dt><dd>batch (asynchronous, 50% price; every independent cell submitted up front, the dependent cleanup cell after its input lands)</dd><dt>Evaluation lanes</dt><dd>FAST — a deterministic metric battery plus a fresh-context crop audit as each image lands; SLOW — one two-wave Batch blind detector across the reviewable outputs</dd><dt>Models</dt><dd>flash31 · riverflow25 · gptimage2</dd><dt>Spend</dt><dd>images $2.48 · screening $1.10 · cap $5.00</dd><dt>Prior round</dt><dd>r3 closed 2026-08-12 on Jake&#x27;s and Dimitri&#x27;s joint review. No wallpaper was promoted; two candidates were picked as bases — W1 for its wings, W2 for everything but its hand. Two design rules became normative in spec v0.6: wings are an articulated mechanical limb with nothing above the top contour, and the blade leaves the haft perpendicular without curving overly much. Round 3 also showed that whole-frame editing at flash31 repaints 32–49% of the pixels it was told to preserve, while the one crop-and-paste-back repair changed nothing outside its crop — which is the mechanism question this round exists to settle.</dd><dt>Next</dt><dd>r5 — deliver Jake&#x27;s pick as a free local crop and downscale to 1080x2400, after which the mini pipeline resumes</dd></dl></section>
+<section class="s" id="tech"><h2><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>Technical plan</h2>
+<p class="intro">prompts, matrix, commands (pipeline detail)</p>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>What changed going in (spec / prompt / process deltas)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><ul>
+<li><strong>No spec change.</strong> The round enforces spec v0.6, whose wing articulated-limb construction and blade arc geometry landed in PR #477.</li>
+<li><strong>Blade target is profile B</strong>, chosen by Jake and Dimitri from ten rendered arc overlays. Because the perpendicular launch is the invariant and the two hafts sit at different angles, the absolute angles differ by image: W1 launches at 207.5° and finishes 22.5° above horizontal, W2 at 214.8° and 15.2°. The rendered overlays, not the numbers, are the reference — see the precision caveat in <code>rounds.md</code>.</li>
+<li><strong>Ten new prompt files</strong> <code>prompts/r4-*.txt</code>, generated from single-sourced shared blocks by the committed <code>prompts/r4-compose.py</code>. The blade-shape paragraph is byte-identical across all four arms that carry it, the wing-construction paragraph across all three that carry it, and the hold-constant block across both steered arms — true by construction rather than by hand-checking, and verifiable by re-running the composer. The W2 riverflow arm reuses <code>r4-w2-ff.txt</code> unchanged, which is the point of that comparison. The hand repair reuses r3&#x27;s proven <code>r3-w2-dagger.txt</code>.</li>
+<li><strong>Two new tools</strong>, both free and deterministic, committed with this plan: <code>tools/region_edit.py</code> (crop → edit → feather-composite back, generalising the r3 dagger recipe) and <code>tools/edit_diff.py</code> (the metric battery).</li>
+<li><strong>Audit chip semantics change</strong> (carried from r3): unrequested changes are reported neutrally rather than as defects. The crop-audit prompt encodes it.</li>
+</ul></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg><span>Experiment matrix</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Prompt</th><th>Out stem (output)</th><th>Rolls</th><th>Wave</th></tr></thead><tbody><tr><td>1</td><td><code>r3-w1-rem-2</code> (1 image, declared)</td><td><code>prompts/r4-w1-ff.txt</code></td><td><code>scythe-valkyrie-r4-w1-ff</code></td><td>2</td><td>1</td></tr><tr><td>2</td><td><code>r3-w1-rem-2</code> (1 image, declared)</td><td><code>prompts/r4-w1-sr.txt</code></td><td><code>scythe-valkyrie-r4-w1-sr</code></td><td>2</td><td>1</td></tr><tr><td>3</td><td><code>r4-w1-wing-crop</code> (1 image, declared)</td><td><code>prompts/r4-w1-cropwing.txt</code></td><td><code>scythe-valkyrie-r4-w1-cropwing</code></td><td>2</td><td>1</td></tr><tr><td>4</td><td><code>r4-w1-blade-crop</code> + <code>r4-arc-B-w1</code> (2 images, declared)</td><td><code>prompts/r4-w1-cropblade.txt</code></td><td><code>scythe-valkyrie-r4-w1-cropblade</code></td><td>2</td><td>1</td></tr><tr><td>5</td><td><code>r4-w1-wing-crop-blank</code> (1 image, declared)</td><td><code>prompts/r4-w1-blank.txt</code></td><td><code>scythe-valkyrie-r4-w1-blank</code></td><td>2</td><td>1</td></tr><tr><td>6</td><td><code>r3-w2-all-2</code> (1 image, declared)</td><td><code>prompts/r4-w2-ff.txt</code></td><td><code>scythe-valkyrie-r4-w2-ff</code></td><td>2</td><td>1</td></tr><tr><td>7</td><td><code>r3-w2-all-2</code> (1 image, declared)</td><td><code>prompts/r4-w2-sr.txt</code></td><td><code>scythe-valkyrie-r4-w2-sr</code></td><td>2</td><td>1</td></tr><tr><td>8</td><td><code>r4-w2-blade-crop</code> + <code>r4-arc-B-w2</code> (2 images, declared)</td><td><code>prompts/r4-w2-cropblade.txt</code></td><td><code>scythe-valkyrie-r4-w2-cropblade</code></td><td>2</td><td>1</td></tr><tr><td>9</td><td><code>r4-w2-wingtop-crop</code> (1 image, declared)</td><td><code>prompts/r4-w2-cropwing.txt</code></td><td><code>scythe-valkyrie-r4-w2-cropwing</code></td><td>1</td><td>1</td></tr><tr><td>10</td><td><code>r3-w2-all-2</code> (1 image, declared; riverflow25)</td><td><code>prompts/r4-w2-ff.txt</code></td><td><code>scythe-valkyrie-r4-w2-ffriver</code></td><td>1</td><td>1</td></tr><tr><td>11</td><td>text only; no images (gptimage2)</td><td><code>prompts/r4-fresh.txt</code></td><td><code>scythe-valkyrie-r4-fresh-gptimage2</code></td><td>1</td><td>1</td></tr><tr><td>12</td><td>text only; no images (riverflow25)</td><td><code>prompts/r4-fresh.txt</code></td><td><code>scythe-valkyrie-r4-fresh-riverflow25</code></td><td>1</td><td>1</td></tr><tr><td>13</td><td>best assembled W1 composite (1 image, selected after wave 1)</td><td><code>prompts/r4-w1-clean.txt</code></td><td><code>scythe-valkyrie-r4-w1-clean</code></td><td>1</td><td>2</td></tr></tbody></table></div>
+<p>Rows 1–8 plan two same-stem rolls each; rolls append and never overwrite. Rows 9–12 are single rolls. <strong>21 paid calls total</strong>, reconciling with the choices table. Row 13 is the only dependent cell: it waits for wave 1 and is skipped and recorded as skipped if no arm produces a composite worth cleaning — no substitute input.</p>
+<p><strong>Same-stem rolls keep this round outside coordinator v1</strong>, as in r2 and r3: each two-roll stem runs as one <code>gemini_gen.py --rolls 2</code> invocation with native <code>--resume-run</code> recovery. The two riverflow and one gptimage2 cells are synchronous providers with no resumable task id, so a missing output after the wrapper starts is an ambiguous manual stop — reconcile in <code>rounds.md</code> before any retry, per the skill.</p></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>Free deterministic steps</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>Cut at plan time and registered in <code>lineage.json</code>: <code>r4-w1-wing-crop</code> (0,940,620,2320 of <code>r3-w1-rem-2</code>), <code>r4-w1-wing-crop-blank</code> (that crop with (20,600)-(430,1350) filled with the sampled background tone through an 18px-feathered mask), <code>r4-w1-blade-crop</code> (0,2050,1376,2780), <code>r4-w2-blade-crop</code> (0,1500,1400,2560), and <code>r4-w2-wingtop-crop</code> (1120,60,1520,900 of <code>r3-w2-all-2</code>). Every patch arm&#x27;s output is composited back into its full-size original by <code>tools/region_edit.py</code>; the hand repair re-runs r3&#x27;s <code>r3-w2-dagger.txt</code> recipe on the winner&#x27;s own hand region, last.</p></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-branch"/></svg><span>Free deterministic experiments — run before any spend</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>These cost nothing and may change the matrix, so they run first and their results are recorded in <code>rounds.md</code>:</p>
+<ul>
+<li><strong>Sibling transplant.</strong> Round 3&#x27;s arms stayed pixel-registered to each other, so a wing region from one arm can be composited onto another. If this works on W1, part of the round may not need generating at all.</li>
+<li><strong>Identity restore.</strong> The base&#x27;s face can be pasted back into any rerendered arm; W2 registers at zero offset, W1 at a 12 px offset found by search. This makes the drift cost of whole-picture editing recoverable rather than fatal.</li>
+</ul></div></details>
+</section>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+<template id="in-0"><h2>scythe-valkyrie-r3-w1-rem-2</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-09T23:38:32</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w1-rem.txt</p><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — BLADE COUNT
+The scythe must have exactly ONE blade. In IMAGE 1 a second, parallel blade arc splits off below the main blade as it rises toward the ornate skull head on the lower VIEWER&#x27;S RIGHT. Remove the extra arc and close the gap so the weapon carries ONE single continuous blade, with the surrounding background restored where the extra arc was.
+
+EDIT — WING TOPS
+Feather tufts stick UP above the mechanical wing joints at the top of the wings. Remove every feather ABOVE the mechanical joints on both wings, restoring clean background sky above each joint. Feathers belong only BELOW and BEHIND the mechanical joint line; the joints themselves and the wings below them stay exactly as they are.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/948beb12526dab79.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/4ea110f64108531a.jpg" data-cap="scythe-valkyrie-r2-w1-gptimage2-2.png" alt="scythe-valkyrie-r2-w1-gptimage2-2.png"><figcaption>scythe-valkyrie-r2-w1-gptimage2-2.png</figcaption></figure></div></template>
+<template id="in-1"><h2>scythe-valkyrie-r3-w1-rem-2</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-09T23:38:32</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w1-rem.txt</p><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — BLADE COUNT
+The scythe must have exactly ONE blade. In IMAGE 1 a second, parallel blade arc splits off below the main blade as it rises toward the ornate skull head on the lower VIEWER&#x27;S RIGHT. Remove the extra arc and close the gap so the weapon carries ONE single continuous blade, with the surrounding background restored where the extra arc was.
+
+EDIT — WING TOPS
+Feather tufts stick UP above the mechanical wing joints at the top of the wings. Remove every feather ABOVE the mechanical joints on both wings, restoring clean background sky above each joint. Feathers belong only BELOW and BEHIND the mechanical joint line; the joints themselves and the wings below them stay exactly as they are.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/948beb12526dab79.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/4ea110f64108531a.jpg" data-cap="scythe-valkyrie-r2-w1-gptimage2-2.png" alt="scythe-valkyrie-r2-w1-gptimage2-2.png"><figcaption>scythe-valkyrie-r2-w1-gptimage2-2.png</figcaption></figure></div></template>
+<template id="in-2"><h2>scythe-valkyrie-r4-w1-wing-crop</h2><p class="gmeta">? · 2026-08-13T03:30:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/d67edd32e52ed202.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/3d2a04267967baae.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2.jpg" alt="scythe-valkyrie-r3-w1-rem-2.jpg"><figcaption>scythe-valkyrie-r3-w1-rem-2.jpg</figcaption></figure></div></template>
+<template id="in-3"><h2>scythe-valkyrie-r4-w1-blade-crop</h2><p class="gmeta">? · 2026-08-13T03:30:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/d67edd32e52ed202.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/3d2a04267967baae.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2.jpg" alt="scythe-valkyrie-r3-w1-rem-2.jpg"><figcaption>scythe-valkyrie-r3-w1-rem-2.jpg</figcaption></figure></div></template>
+<template id="in-4"><h2>scythe-valkyrie-r4-arc-B-w1</h2><p class="gmeta">? · 2026-08-13T03:35:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/d67edd32e52ed202.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/3d2a04267967baae.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2.jpg" alt="scythe-valkyrie-r3-w1-rem-2.jpg"><figcaption>scythe-valkyrie-r3-w1-rem-2.jpg</figcaption></figure></div></template>
+<template id="in-5"><h2>scythe-valkyrie-r4-w1-wing-crop-blank</h2><p class="gmeta">? · 2026-08-13T03:30:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/d212b818ecd0198a.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/bb612470ba4f9cb3.jpg" data-cap="scythe-valkyrie-r4-w1-wing-crop.png" alt="scythe-valkyrie-r4-w1-wing-crop.png"><figcaption>scythe-valkyrie-r4-w1-wing-crop.png</figcaption></figure></div></template>
+<template id="in-6"><h2>scythe-valkyrie-r3-w1-rem-2</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-09T23:38:32</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w1-rem.txt</p><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — BLADE COUNT
+The scythe must have exactly ONE blade. In IMAGE 1 a second, parallel blade arc splits off below the main blade as it rises toward the ornate skull head on the lower VIEWER&#x27;S RIGHT. Remove the extra arc and close the gap so the weapon carries ONE single continuous blade, with the surrounding background restored where the extra arc was.
+
+EDIT — WING TOPS
+Feather tufts stick UP above the mechanical wing joints at the top of the wings. Remove every feather ABOVE the mechanical joints on both wings, restoring clean background sky above each joint. Feathers belong only BELOW and BEHIND the mechanical joint line; the joints themselves and the wings below them stay exactly as they are.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/948beb12526dab79.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/4ea110f64108531a.jpg" data-cap="scythe-valkyrie-r2-w1-gptimage2-2.png" alt="scythe-valkyrie-r2-w1-gptimage2-2.png"><figcaption>scythe-valkyrie-r2-w1-gptimage2-2.png</figcaption></figure></div></template>
+<template id="in-7"><h2>scythe-valkyrie-r3-w2-all-2</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-09T23:38:28</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w2-all.txt</p><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — FREE HAND
+Her free hand on the VIEWER&#x27;S RIGHT, beside her hip, has a small extra dagger-like blade threaded between the fingers — it has no handle and attaches to nothing. Remove that blade completely, and move the hand onto the scythe haft where the haft passes beside her upper thigh on the VIEWER&#x27;S RIGHT: a natural, unmistakable five-fingered wrap around the haft, thumb visible, so she holds the scythe TWO-HANDED with the grips widely separated. Keep the arm&#x27;s shoulder-to-hand anatomy unbroken and natural.
+
+EDIT — WAIST SKULL
+The small sculpted skull ornament on her armour near the waist shows THREE eye sockets in a row. Redraw it as a normal skull with exactly TWO eye sockets, keeping its size, position, and material.
+
+EDIT — FLOATING SHARD
+A small, sharp, shiny metal fragment floats alone in the foggy gap on the VIEWER&#x27;S LEFT between the lower wing and her skirt, connected to nothing. Remove it completely and fill the area with the surrounding fog.
+
+EDIT — BLADE SHAPE
+Reshape the scythe blade into a proper reaper-scythe blade: exactly ONE long crescent with smooth, CONSISTENT curvature from the ornate skull head on the lower VIEWER&#x27;S RIGHT to a single sharp tip toward the lower VIEWER&#x27;S LEFT, thick at the head and tapering evenly along its whole length. Keep the blade IN FRONT of the character, and keep it clearly SEPARATE from the wings: visible background must remain between the blade tip and the long wing feathers on the VIEWER&#x27;S LEFT — the blade must never touch, join, or continue into a wing.
+
+EDIT — WING TOPS
+Stray blade elements stick UP above the mechanical wing joints at the top of the wings, most visibly on the VIEWER&#x27;S RIGHT wing. Remove the stray blade elements ABOVE the mechanical joints, restoring clean sky and fog above each joint. Wing-blades and feathers belong only BELOW and BEHIND the mechanical joint line; the joints themselves and the wing structure below them stay exactly as they are.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/78b8ec40866070f0.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ccd0aebc408f7c7a.jpg" data-cap="scythe-valkyrie-r2-w2-riverflow25-1.webp" alt="scythe-valkyrie-r2-w2-riverflow25-1.webp"><figcaption>scythe-valkyrie-r2-w2-riverflow25-1.webp</figcaption></figure></div></template>
+<template id="in-8"><h2>scythe-valkyrie-r3-w2-all-2</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-09T23:38:28</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w2-all.txt</p><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — FREE HAND
+Her free hand on the VIEWER&#x27;S RIGHT, beside her hip, has a small extra dagger-like blade threaded between the fingers — it has no handle and attaches to nothing. Remove that blade completely, and move the hand onto the scythe haft where the haft passes beside her upper thigh on the VIEWER&#x27;S RIGHT: a natural, unmistakable five-fingered wrap around the haft, thumb visible, so she holds the scythe TWO-HANDED with the grips widely separated. Keep the arm&#x27;s shoulder-to-hand anatomy unbroken and natural.
+
+EDIT — WAIST SKULL
+The small sculpted skull ornament on her armour near the waist shows THREE eye sockets in a row. Redraw it as a normal skull with exactly TWO eye sockets, keeping its size, position, and material.
+
+EDIT — FLOATING SHARD
+A small, sharp, shiny metal fragment floats alone in the foggy gap on the VIEWER&#x27;S LEFT between the lower wing and her skirt, connected to nothing. Remove it completely and fill the area with the surrounding fog.
+
+EDIT — BLADE SHAPE
+Reshape the scythe blade into a proper reaper-scythe blade: exactly ONE long crescent with smooth, CONSISTENT curvature from the ornate skull head on the lower VIEWER&#x27;S RIGHT to a single sharp tip toward the lower VIEWER&#x27;S LEFT, thick at the head and tapering evenly along its whole length. Keep the blade IN FRONT of the character, and keep it clearly SEPARATE from the wings: visible background must remain between the blade tip and the long wing feathers on the VIEWER&#x27;S LEFT — the blade must never touch, join, or continue into a wing.
+
+EDIT — WING TOPS
+Stray blade elements stick UP above the mechanical wing joints at the top of the wings, most visibly on the VIEWER&#x27;S RIGHT wing. Remove the stray blade elements ABOVE the mechanical joints, restoring clean sky and fog above each joint. Wing-blades and feathers belong only BELOW and BEHIND the mechanical joint line; the joints themselves and the wing structure below them stay exactly as they are.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/78b8ec40866070f0.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ccd0aebc408f7c7a.jpg" data-cap="scythe-valkyrie-r2-w2-riverflow25-1.webp" alt="scythe-valkyrie-r2-w2-riverflow25-1.webp"><figcaption>scythe-valkyrie-r2-w2-riverflow25-1.webp</figcaption></figure></div></template>
+<template id="in-9"><h2>scythe-valkyrie-r4-w2-blade-crop</h2><p class="gmeta">? · 2026-08-13T03:30:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/19ab31d60b1b870e.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ada878200dd30e12.jpg" data-cap="scythe-valkyrie-r3-w2-all-2.jpg" alt="scythe-valkyrie-r3-w2-all-2.jpg"><figcaption>scythe-valkyrie-r3-w2-all-2.jpg</figcaption></figure></div></template>
+<template id="in-10"><h2>scythe-valkyrie-r4-arc-B-w2</h2><p class="gmeta">? · 2026-08-13T03:35:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/19ab31d60b1b870e.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ada878200dd30e12.jpg" data-cap="scythe-valkyrie-r3-w2-all-2.jpg" alt="scythe-valkyrie-r3-w2-all-2.jpg"><figcaption>scythe-valkyrie-r3-w2-all-2.jpg</figcaption></figure></div></template>
+<template id="in-11"><h2>scythe-valkyrie-r4-w2-wingtop-crop</h2><p class="gmeta">? · 2026-08-13T03:30:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/19ab31d60b1b870e.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ada878200dd30e12.jpg" data-cap="scythe-valkyrie-r3-w2-all-2.jpg" alt="scythe-valkyrie-r3-w2-all-2.jpg"><figcaption>scythe-valkyrie-r3-w2-all-2.jpg</figcaption></figure></div></template>
+<template id="in-12"><h2>scythe-valkyrie-r3-w2-all-2</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-09T23:38:28</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w2-all.txt</p><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — FREE HAND
+Her free hand on the VIEWER&#x27;S RIGHT, beside her hip, has a small extra dagger-like blade threaded between the fingers — it has no handle and attaches to nothing. Remove that blade completely, and move the hand onto the scythe haft where the haft passes beside her upper thigh on the VIEWER&#x27;S RIGHT: a natural, unmistakable five-fingered wrap around the haft, thumb visible, so she holds the scythe TWO-HANDED with the grips widely separated. Keep the arm&#x27;s shoulder-to-hand anatomy unbroken and natural.
+
+EDIT — WAIST SKULL
+The small sculpted skull ornament on her armour near the waist shows THREE eye sockets in a row. Redraw it as a normal skull with exactly TWO eye sockets, keeping its size, position, and material.
+
+EDIT — FLOATING SHARD
+A small, sharp, shiny metal fragment floats alone in the foggy gap on the VIEWER&#x27;S LEFT between the lower wing and her skirt, connected to nothing. Remove it completely and fill the area with the surrounding fog.
+
+EDIT — BLADE SHAPE
+Reshape the scythe blade into a proper reaper-scythe blade: exactly ONE long crescent with smooth, CONSISTENT curvature from the ornate skull head on the lower VIEWER&#x27;S RIGHT to a single sharp tip toward the lower VIEWER&#x27;S LEFT, thick at the head and tapering evenly along its whole length. Keep the blade IN FRONT of the character, and keep it clearly SEPARATE from the wings: visible background must remain between the blade tip and the long wing feathers on the VIEWER&#x27;S LEFT — the blade must never touch, join, or continue into a wing.
+
+EDIT — WING TOPS
+Stray blade elements stick UP above the mechanical wing joints at the top of the wings, most visibly on the VIEWER&#x27;S RIGHT wing. Remove the stray blade elements ABOVE the mechanical joints, restoring clean sky and fog above each joint. Wing-blades and feathers belong only BELOW and BEHIND the mechanical joint line; the joints themselves and the wing structure below them stay exactly as they are.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/78b8ec40866070f0.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ccd0aebc408f7c7a.jpg" data-cap="scythe-valkyrie-r2-w2-riverflow25-1.webp" alt="scythe-valkyrie-r2-w2-riverflow25-1.webp"><figcaption>scythe-valkyrie-r2-w2-riverflow25-1.webp</figcaption></figure></div></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbRefRow=document.getElementById('lb-refrow'),lbRef=document.getElementById('lb-ref'),
+      lbCopyId=document.getElementById('lb-copy-id'),lbCopyLink=document.getElementById('lb-copy-link'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body'),
+      developerMode=document.getElementById('developer-mode');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+function setDeveloperMode(enabled){
+  document.querySelectorAll('[data-developer]').forEach(function(node){node.hidden=!enabled;});
+  document.documentElement.dataset.developer=enabled?'true':'false';
+  if(developerMode)developerMode.setAttribute('aria-checked',enabled?'true':'false');
+}
+if(developerMode){
+  developerMode.addEventListener('change',function(){setDeveloperMode(developerMode.checked);});
+  setDeveloperMode(false);
+}
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  const ref=z.dataset.ref||'',anchor=z.dataset.anchor||'';
+  lbRefRow.hidden=!(ref&&anchor);
+  if(ref&&anchor){
+    lbRef.textContent='#'+ref;
+    lbCopyId.dataset.copyId='#'+ref;
+    lbCopyLink.dataset.copy=anchor;
+  }
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy a card's short display id, or copy/share its deep link. The URL is this
+// page plus the card's #id anchor, so a recipient lands scrolled to (and
+// highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  const ci=e.target.closest('[data-copy-id]');
+  if(ci){copyText(ci.dataset.copyId,ci);e.preventDefault();return;}
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+
+document.addEventListener('click', function (e) {
+  var b = e.target.closest('[data-copy]');
+  if (!b) return;
+  var pre = b.closest('details').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(function () {
+    var was = b.textContent;
+    b.textContent = 'Copied'; b.classList.add('done');
+    setTimeout(function () { b.textContent = was; b.classList.remove('done'); }, 1600);
+  });
+});
+</script>
+</body></html>
