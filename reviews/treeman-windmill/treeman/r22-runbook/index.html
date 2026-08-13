@@ -1,0 +1,1161 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="ai-stl-plan-digest" content="4579e3aa570ef69c4978a7787ef22fe891303a945fe9381c0ea376621b32a576">
+<title>TreeMolin — Round 22 runbook</title>
+<style>
+:root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.reviewtools { display:flex; justify-content:flex-end; margin:.35rem 0 0 }
+.devmode { display:inline-flex; align-items:center; gap:.5rem; color:var(--dim);
+  font-size:.76rem; font-weight:650; cursor:pointer; user-select:none }
+.devmode input { appearance:none; position:relative; width:2.15rem; height:1.18rem;
+  margin:0; border:1px solid var(--dim); border-radius:99px;
+  background:var(--line); cursor:pointer; transition:background .15s,border-color .15s }
+.devmode input::after { content:""; position:absolute; width:.78rem; height:.78rem;
+  left:.14rem; top:.13rem; border-radius:50%; background:var(--ink);
+  transition:transform .15s }
+.devmode input:checked { background:var(--accent); border-color:var(--accent) }
+.devmode input:checked::after { transform:translateX(.95rem); background:#fff }
+.devmode input:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+.developer-only[hidden] { display:none !important }
+.developer-section { margin:2.4rem 0 0; padding:1rem;
+  border:1px dashed var(--line); border-radius:8px }
+.developer-section > h2:first-child { margin-top:0 }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.coreinputs { margin:1.2rem 0 .4rem }
+.coreinputs h2 { margin:0 0 .5rem }
+.coreinputs .hint { color:var(--dim); font-weight:400; font-size:.85rem }
+.inputrow { display:flex; flex-wrap:wrap; gap:12px }
+.coreinput { margin:0; width:210px; max-width:100%;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.coreinput .imgwrap { border-bottom:1px solid var(--line) }
+.coreinput .imgwrap img { max-height:230px }
+.coreinput figcaption { color:var(--dim); font-size:.7rem; padding:.35rem .5rem;
+  word-break:break-all; font-family:ui-monospace,SFMono-Regular,Menlo,monospace }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.recommendation { color:var(--ink) !important; font-size:.88rem !important;
+  padding:.55rem .65rem; border-left:3px solid var(--accent);
+  background:color-mix(in srgb,var(--accent) 8%,transparent); border-radius:4px }
+.recommendation strong { color:var(--accent); font-size:.7rem;
+  letter-spacing:.06em; text-transform:uppercase; margin-right:.3rem }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.statrow { display:flex; flex-wrap:wrap; gap:.15rem .5rem; margin:0 0 .1rem;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.72rem;
+  color:var(--dim) }
+.statrow span { white-space:nowrap }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.chip.unclear { color:var(--dim); border-color:var(--dim) }
+.detector-details { display:flex; flex-direction:column; gap:.45rem }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:calc(100vh - 7rem); object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-meta { display:flex; flex-direction:column; align-items:center; gap:.35rem;
+  min-height:2.2rem; position:relative; z-index:20 }
+.lb-refrow { display:flex; align-items:center; justify-content:center; gap:.35rem;
+  flex-wrap:wrap }
+.lb-refrow[hidden] { display:none }
+.lb-refrow .refid { background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn { color:#bbb; border-color:#55515d;
+  background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+
+/* Runbook chrome. The house tokens, lightbox and asset pipeline come from
+   review_page.py; everything here is the runbook page's own structure —
+   a decision-first header, the choices as cards, and the technical plan
+   behind per-subsection disclosures. */
+.md h2 { font-size:1.15rem; margin:2.2rem 0 .3rem }
+.md h3 { font-size:1rem; margin:1.6rem 0 .3rem }
+.md h4 { font-size:.9rem; margin:1.2rem 0 .3rem; color:var(--dim) }
+.md p { max-width:68ch; margin:.5rem 0 0 }
+.md ul, .md ol { max-width:68ch; padding-left:1.4rem }
+.md li { margin:.25rem 0 }
+.md a { color:var(--accent) }
+.md code, dl.facts code, .choice code { background:var(--pre);
+  border:1px solid var(--line); border-radius:4px; padding:.05rem .3rem;
+  font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
+.md pre.code { background:var(--pre); border:1px solid var(--line); border-radius:6px;
+  padding:.75rem 1rem; overflow-x:auto; font-size:.8rem; line-height:1.5 }
+.md pre.code code { background:none; border:0; padding:0 }
+.md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+.ico { width:1em; height:1em; flex:none; stroke:currentColor; fill:none;
+  stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; vertical-align:-.12em }
+
+/* --- header ------------------------------------------------------------- */
+h1 { font-size:1.55rem; margin:.25rem 0 0; letter-spacing:-.01em }
+.statusrow { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem .55rem;
+  margin:.7rem 0 0 }
+.statusrow.sub { margin:.4rem 0 0 }
+.statusnote { color:var(--dim); font-size:.82rem; margin:.5rem 0 0; max-width:70ch }
+.pill { display:inline-flex; align-items:center; gap:.35rem; font-size:.74rem;
+  font-weight:700; border:1px solid; border-radius:99px; padding:.16rem .6rem;
+  white-space:nowrap }
+.pill .dot { width:.45rem; height:.45rem; border-radius:50%; background:currentColor }
+.pill.s-await { color:var(--warn); border-color:var(--warn) }
+.pill.s-appr { color:var(--accent); border-color:var(--accent) }
+.pill.s-run { color:var(--ok); border-color:var(--ok) }
+.pill.s-done, .pill.s-hold { color:var(--dim); border-color:var(--line) }
+.fact { display:inline-flex; align-items:center; gap:.3rem; font-size:.75rem;
+  color:var(--dim); border:1px solid var(--line); border-radius:99px;
+  padding:.16rem .6rem; text-decoration:none }
+.fact b { color:var(--ink); font-weight:600 }
+a.fact.link { color:var(--accent); border-color:var(--accent) }
+.fact.inert { opacity:.55 }
+
+/* --- the ask, promoted -------------------------------------------------- */
+.ask { margin:1.1rem 0 0; border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); border-radius:8px; padding:.85rem 1rem }
+.ask .lbl { display:flex; align-items:center; gap:.4rem; font-size:.7rem; font-weight:700;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin:0 0 .3rem }
+.ask p { margin:0; max-width:70ch }
+a.jump { font-size:.8rem; font-weight:600; text-decoration:none; white-space:nowrap;
+  color:var(--accent) }
+
+/* --- at a glance + spend meter ------------------------------------------ */
+.glance { display:grid; gap:8px; margin:1rem 0 0;
+  grid-template-columns:repeat(auto-fit,minmax(132px,1fr)) }
+.tile { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.55rem .7rem; display:flex; flex-direction:column; gap:.12rem }
+.tile .k { display:flex; align-items:center; gap:.3rem; font-size:.66rem; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--dim) }
+.tile .v { font-size:1.05rem; font-weight:700; font-variant-numeric:tabular-nums }
+.tile .s { font-size:.72rem; color:var(--dim) }
+.meter { margin:.75rem 0 0; background:var(--card); border:1px solid var(--line);
+  border-radius:8px; padding:.7rem .85rem }
+.meter .top { display:flex; justify-content:space-between; align-items:baseline;
+  gap:.5rem; font-size:.74rem; color:var(--dim); margin:0 0 .4rem }
+.meter .top b { color:var(--ink); font-size:.9rem; font-variant-numeric:tabular-nums }
+.bar { height:9px; border-radius:99px; background:var(--well); border:1px solid var(--line);
+  overflow:hidden; display:flex }
+.bar i { display:block; height:100%; background:var(--accent) }
+.legend { display:flex; flex-wrap:wrap; gap:.2rem .9rem; margin:.45rem 0 0;
+  font-size:.7rem; color:var(--dim) }
+.legend span { display:inline-flex; align-items:center; gap:.32rem }
+.legend i { width:.6rem; height:.6rem; border-radius:2px; background:var(--accent); flex:none }
+.legend i.r { opacity:.45 }
+.legend i.o { background:var(--well); border:1px solid var(--line) }
+
+/* --- section nav + sections --------------------------------------------- */
+.snav { position:sticky; top:0; z-index:5; margin:1.4rem -16px 0; padding:.5rem 16px;
+  background:var(--bg); border-bottom:1px solid var(--line);
+  display:flex; gap:.35rem; overflow-x:auto; scrollbar-width:none }
+.snav::-webkit-scrollbar { display:none }
+.snav a { font-size:.72rem; font-weight:600; color:var(--dim); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .6rem; white-space:nowrap }
+.snav a:hover { color:var(--ink); border-color:var(--dim) }
+section.s { margin:2.1rem 0 0; scroll-margin-top:3.2rem }
+section.s > h2 { display:flex; align-items:center; gap:.5rem; font-size:1.02rem;
+  margin:0 0 .3rem }
+section.s > h2 .ico { color:var(--accent); width:1.05em; height:1.05em }
+section.s > h2::after { content:""; flex:1; height:1px; background:var(--line) }
+.md.cta { background:var(--card); border:1px solid var(--accent); border-radius:10px;
+  padding:.35rem 1.05rem .95rem; margin-top:.6rem }
+.md.cta ol li::marker, .md.cta ul li::marker { color:var(--accent); font-weight:700 }
+
+/* --- pipeline strip + round lineage ------------------------------------- */
+.strips { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.7rem .85rem; margin:.9rem 0 0 }
+.stage, .lineage { display:flex; flex-wrap:wrap; align-items:center; gap:.3rem }
+.lineage { margin-top:.55rem }
+.stage .lbl, .lineage .lbl { font-size:.64rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--dim); margin-right:.15rem }
+.stage .st { font-size:.71rem; font-weight:600; color:var(--dim);
+  border:1px solid var(--line); border-radius:99px; padding:.16rem .55rem; white-space:nowrap }
+.stage .st.now { color:var(--bg); background:var(--accent); border-color:var(--accent) }
+.stage .st.opt { border-style:dashed }
+.stage .arw, .lineage .arw { color:var(--line); font-size:.8rem }
+.lineage .rn { font-size:.72rem; color:var(--dim); border:1px solid var(--line);
+  border-radius:6px; padding:.16rem .5rem }
+.lineage .rn.this { color:var(--ink); border-color:var(--accent); font-weight:700 }
+.lineage .rn.next { border-style:dashed }
+
+/* --- choices as cards ---------------------------------------------------
+   The choices table is the round's comparison and the first thing a reviewer
+   reads. As a table its prose columns forced a 544px grid into a 343px phone
+   column, so the same cells render as one card per choice and simply stack. */
+.choices { display:grid; gap:12px; margin:.7rem 0 0;
+  grid-template-columns:repeat(auto-fit,minmax(255px,1fr)) }
+.choice { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.85rem .95rem; display:flex; flex-direction:column; gap:.5rem }
+.choice header { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap }
+.choice .key { font-size:.78rem; font-weight:800; color:var(--accent);
+  border:1px solid var(--accent); border-radius:6px; padding:.1rem .42rem }
+.choice h3 { margin:0; font-size:.97rem; font-weight:700 }
+.choice .rolls { margin-left:auto; font-size:.7rem; font-weight:700; color:var(--dim);
+  border:1px solid var(--line); border-radius:99px; padding:.1rem .5rem;
+  white-space:nowrap; font-variant-numeric:tabular-nums }
+.choice ul { margin:0; padding:0; list-style:none; display:flex; flex-direction:column;
+  gap:.32rem }
+.choice li { display:flex; gap:.45rem; font-size:.87rem; line-height:1.45 }
+.choice li .ico { color:var(--accent); margin-top:.28em; width:.5em; height:.5em }
+.choice .foot { display:flex; flex-direction:column; gap:.3rem; margin-top:auto;
+  padding-top:.15rem }
+.choice .cx { margin:0; font-size:.78rem; color:var(--dim) }
+.choice .ck { font-size:.62rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--dim); margin-right:.4rem }
+.choice a.jump { display:inline-flex; align-items:center; gap:.3rem; font-size:.71rem;
+  color:var(--dim); border:1px solid var(--line); border-radius:99px;
+  padding:.14rem .55rem; align-self:flex-start; margin-top:.15rem }
+.choice a.jump:hover { color:var(--accent); border-color:var(--accent) }
+
+/* --- roll matrix -------------------------------------------------------- */
+.shape { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.8rem .9rem; margin:12px 0 0; overflow-x:auto }
+.mx { display:grid; gap:6px; min-width:min(100%,320px) }
+.mx .hd { font-size:.63rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--dim); text-align:center; overflow-wrap:anywhere }
+.mx .rh { font-size:.74rem; font-weight:700; display:flex; align-items:center;
+  padding-right:.4rem; white-space:nowrap; max-width:9rem; overflow:hidden;
+  text-overflow:ellipsis }
+.mx .cell { background:var(--card); border:1px solid var(--line); border-radius:5px;
+  height:30px; display:flex; align-items:center; justify-content:center;
+  color:var(--accent) }
+.mx .cell.empty { opacity:.25; background:none }
+.shape .cap { font-size:.74rem; color:var(--dim); margin:.55rem 0 0 }
+.shape .cap b { color:var(--ink) }
+
+/* --- cost breakdown ----------------------------------------------------- */
+.costgrid { display:grid; gap:6px; margin:.7rem 0 0; max-width:34rem }
+.costrow { display:grid; grid-template-columns:8rem 1fr 5.5rem; align-items:center;
+  gap:.6rem; font-size:.8rem }
+.costrow .n { color:var(--dim); font-family:ui-monospace,Menlo,monospace; font-size:.76rem;
+  overflow-wrap:anywhere }
+.costrow .t { height:7px; border-radius:99px; background:var(--accent); opacity:.75 }
+.costrow .a { text-align:right; font-variant-numeric:tabular-nums; font-weight:600 }
+.costrow.total { border-top:1px solid var(--line); padding-top:.35rem; margin-top:.2rem }
+.costrow.total .n { color:var(--ink); font-weight:700 }
+
+/* --- round facts -------------------------------------------------------- */
+dl.facts { display:grid; grid-template-columns:auto 1fr; gap:.35rem 1.1rem; margin:.7rem 0 0;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.85rem 1rem; font-size:.86rem }
+dl.facts dt { color:var(--dim); font-weight:700; white-space:nowrap; font-size:.72rem;
+  letter-spacing:.06em; text-transform:uppercase; padding-top:.12rem }
+dl.facts dd { margin:0; max-width:66ch }
+@media (max-width:520px) {
+  dl.facts { grid-template-columns:1fr; gap:.1rem }
+  dl.facts dd { margin:0 0 .55rem }
+}
+
+/* --- technical plan ----------------------------------------------------- */
+details.tech { margin:.6rem 0 0; border:1px solid var(--line); border-radius:8px;
+  background:var(--card); padding:0 .95rem }
+details.tech > summary { cursor:pointer; padding:.7rem 0; font-weight:600; font-size:.88rem;
+  list-style:none; display:flex; align-items:center; gap:.45rem }
+details.tech > summary::-webkit-details-marker { display:none }
+details.tech > summary .ico { color:var(--accent) }
+details.tech > summary .chev { margin-left:auto; color:var(--dim); transition:transform .15s }
+details.tech[open] > summary .chev { transform:rotate(90deg) }
+details.tech .inner { padding:0 0 .8rem }
+details.tech .inner > :first-child { margin-top:0 }
+details.tech .md p, details.tech .md ul, details.tech .md ol { font-size:.87rem }
+
+/* --- tables (the experiment matrix and any prose table) -----------------
+   review_page.py pins cols 1-2 to nowrap+monospace for its short id columns;
+   a runbook table carries prose, so undo both and let auto layout balance. */
+.md .tablewrap { margin:.4rem 0 1.2rem }
+.md th, .md td { white-space:normal; overflow-wrap:break-word; font-family:inherit }
+.md td code { overflow-wrap:anywhere }
+.md table { min-width:30rem }
+
+/* --- inputs: one block per case, images grouped by artifact -------------- */
+.rb-inputs { margin:2.1rem 0 0; scroll-margin-top:3.2rem }
+.rb-inputs > h2 { display:flex; align-items:center; gap:.5rem; font-size:1.02rem;
+  margin:0 0 .3rem }
+.rb-inputs > h2 .ico { color:var(--accent); width:1.05em; height:1.05em }
+.rb-inputs > h2::after { content:""; flex:1; height:1px; background:var(--line) }
+.rb-case { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.8rem 1rem 1rem; margin:.9rem 0; scroll-margin-top:3.4rem }
+.rb-case:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.rb-case-h { display:flex; flex-wrap:wrap; align-items:baseline; gap:.2rem .6rem;
+  margin:0; font-size:1rem }
+.rb-case-count { color:var(--dim); font-size:.72rem; font-weight:400;
+  font-variant-numeric:tabular-nums }
+.rb-case-note { color:var(--dim); font-size:.88rem; margin:.3rem 0 0; max-width:70ch }
+.rb-art { margin:.85rem 0 0 }
+.rb-art-h { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; margin:0 0 .4rem }
+.rb-art-label { font-size:.7rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--accent) }
+.rb-art-id { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  color:var(--dim); overflow-wrap:anywhere }
+.rb-art .ibtn { padding:.08rem .5rem; font-size:.66rem }
+.rb-strip { display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)) }
+.rb-fig { margin:0; min-width:0; background:var(--well); border:1px solid var(--line);
+  border-radius:6px; overflow:hidden; display:flex; flex-direction:column }
+.rb-fig .imgwrap { border-bottom:1px solid var(--line) }
+.rb-fig .imgwrap img { max-height:300px }
+.rb-fig figcaption { color:var(--dim); font-size:.7rem; padding:.3rem .5rem }
+.rb-none { color:var(--dim); font-size:.86rem; margin:.6rem 0 0 }
+details.rb-prompt { margin:.85rem 0 0; background:var(--pre); border:1px solid var(--line);
+  border-radius:6px; padding:0 .9rem }
+details.rb-prompt > summary { cursor:pointer; padding:.55rem 0; font-size:.82rem;
+  font-weight:600; color:var(--accent); list-style:none; display:flex;
+  align-items:center; gap:.4rem }
+details.rb-prompt > summary::-webkit-details-marker { display:none }
+details.rb-prompt .chev { transition:transform .15s }
+details.rb-prompt[open] .chev { transform:rotate(90deg) }
+details.rb-prompt .rb-size { margin-left:auto; color:var(--dim); font-weight:400;
+  font-size:.72rem; font-variant-numeric:tabular-nums }
+details.rb-prompt .phead { display:flex; align-items:center; gap:.5rem; margin:0 0 .4rem }
+details.rb-prompt .path { color:var(--dim); font-size:.72rem; margin:0; flex:1; min-width:0;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+/* No inner max-height: the text is already behind a disclosure, and a nested
+   scroller inside a long page is miserable to use on a phone. */
+details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--bg);
+  border:1px solid var(--line); border-radius:6px; padding:.7rem .85rem; font-size:.78rem;
+  line-height:1.55; margin:0 0 .85rem }
+.copy { font:inherit; font-size:.68rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.12rem .55rem; cursor:pointer; white-space:nowrap }
+.copy:hover { color:var(--ink); border-color:var(--dim) }
+.copy.done { color:var(--ok); border-color:var(--ok) }
+:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+@media (prefers-reduced-motion:reduce) { * { transition:none !important } }
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/></symbol><symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 4v16M5 8h14M7.5 8l-2.5 5h5zM16.5 8l2.5 5h-5z"/></symbol><symbol id="i-in" viewBox="0 0 24 24"><path d="M12 3v11m0 0 4-4m-4 4-4-4M4 17v3h16v-3"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.6"/></symbol><symbol id="i-hand" viewBox="0 0 24 24"><path d="M9 11V5.6a1.6 1.6 0 0 1 3.2 0V11m0-1.2a1.6 1.6 0 0 1 3.2 0V12m0-1a1.6 1.6 0 0 1 3.2 0v4.4A5.6 5.6 0 0 1 12.8 21h-1.3a5 5 0 0 1-3.9-1.9L4.9 15a1.6 1.6 0 0 1 2.5-2L9 15"/></symbol><symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4v9.2M14.4 9.6a2.6 2.6 0 0 0-4.8 1.2c0 2.6 4.8 1 4.8 3.6a2.6 2.6 0 0 1-4.8 1.2"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M21.2 12h-2.4M5.2 12H2.8M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7M18.5 18.5l-1.7-1.7M7.2 7.2 5.5 5.5"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></symbol><symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/></symbol><symbol id="i-img" viewBox="0 0 24 24"><rect x="3.2" y="4.6" width="17.6" height="14.8" rx="2"/><circle cx="8.6" cy="9.8" r="1.5"/><path d="m3.9 17 5-4.6 4 3.4 3-2.4 4.2 3.6"/></symbol><symbol id="i-txt" viewBox="0 0 24 24"><path d="M6.5 3.6h7.2L18.5 8.4V20.4H6.5z"/><path d="M13.4 3.8v4.8h4.9M9.2 12.6h6M9.2 16h6"/></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="m9.5 5.5 7 6.5-7 6.5"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4V12l3 1.8"/></symbol><symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6.5" cy="5.5" r="2.2"/><circle cx="6.5" cy="18.5" r="2.2"/><circle cx="17.5" cy="8.5" r="2.2"/><path d="M6.5 7.7v8.6M17.5 10.7c0 3.4-2.6 4.6-5.4 5.1"/></symbol><symbol id="i-flask" viewBox="0 0 24 24"><path d="M10 3.5h4M10.8 3.5v6.2L5.6 18a2 2 0 0 0 1.7 3h9.4a2 2 0 0 0 1.7-3l-5.2-8.3V3.5"/><path d="M8 14.5h8"/></symbol><symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 3.2 20 7.6v8.8L12 20.8 4 16.4V7.6z"/><path d="M4 7.6l8 4.4 8-4.4M12 12v8.8"/></symbol></defs></svg>
+<main>
+<div class="eyebrow">Round 22 · mesh validation</div>
+<h1>TreeMolin — Round 22 runbook</h1>
+<div class="statusrow"><span class="pill s-await"><span class="dot"></span>Awaiting sign-off</span><span class="fact">Opened <b>2026-08-12</b></span></div>
+<div class="statusrow sub"><span class="fact inert" title="Published at round close">&#128203; Review panel &mdash; at round close</span></div>
+<div class="ask"><p class="lbl"><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</p><p>Approval of this exact measurement-only scope. <a class="jump" href="#ask">Read the full ask &darr;</a></p></div>
+<div class="glance"><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Planned</span><span class="v">$0.00</span><span class="s">of a $0.00 cap</span></div></div>
+<div class="meter"><p class="top"><span>Planned spend against the round cap</span><b>$0.00 / $0.00</b></p><div class="bar"></div><div class="legend"><span><i class="o"></i>Headroom $0.00</span></div></div>
+<nav class="snav"><a href="#goal">Goal</a><a href="#choices">Choices</a><a href="#inputs">Inputs</a><a href="#judged">Judging</a><a href="#ask">The ask</a><a href="#cost">Cost</a><a href="#facts">Round facts</a><a href="#tech">Technical plan</a></nav>
+<section class="s" id="goal"><h2><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg>Goal</h2><div class="md"><p>R20 asked whether Meshy-7 should replace Meshy-6 as the reconstruction model, and handed back a benchmark that cannot answer the printing half of the question. The raw meshes were checked in provider units, so nothing yet says how they behave at the 50 mm size Treeman actually prints at.</p>
+<p>This round puts all twelve R20 rolls into millimetre coordinates with the same no-surgery placement R19 and R21 used, then runs the same battery those rounds ran, so Meshy-7 and Meshy-6 are compared on identical measurements at identical scale. It adds one screen the earlier battery did not have: how much of each mesh&#x27;s tunnel topology survives when the mesh is resolved coarsely and then progressively closed.</p>
+<p>That addition is the point. Meshy-7 carries about 75–85 tunnels per mesh where Meshy-6 carried 7–15, and the raw count alone cannot tell a sub-resolution reconstruction pinhole — which fills in as a blob and inflates supports — from a deliberate millimetre gap in weathered bark or a sail lattice. The first is a real cost of the new model; the second is the detail we wanted from it. How fast each model&#x27;s topology disappears under coarsening separates those two readings without ever resolving an individual tunnel. Nothing in this round changes any geometry.</p>
+<p>The measurement is comparative, and the round is careful about what it can conclude. No figure the probe reports is a count of tunnels: each is an aggregate topology count of the mesh reduced to a voxel grid, and any such reduction can invent topology as well as remove it — closing the gap between two crossing twigs joins them into a ring and creates a tunnel that was never there. What the round can say is how Meshy-7 compares with Meshy-6 when both are measured identically, which is exactly the question R20 left open. A 60-handle gap between the two models is far larger than the measurement&#x27;s slack. What it cannot say, and will not claim, is &quot;N tunnels on this mesh are below 0.1 mm&quot;.</p></div><div class="strips"><div class="stage"><span class="lbl">Default path</span><span class="st">Concept</span><span class="arw">&rsaquo;</span><span class="st">Turnaround</span><span class="arw">&rsaquo;</span><span class="st">Meshy</span><span class="arw">&rsaquo;</span><span class="st now">Mesh check</span><span class="arw">&rsaquo;</span><span class="st">Test print</span></div><div class="lineage"><span class="lbl">This round</span><span class="rn">r20</span><span class="arw">&rsaquo;</span><span class="rn this">r22</span></div></div></section>
+<section class="s" id="choices"><h2><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg>The choices on the table</h2><div class="md"><p>One bounded measurement approach applied to all twelve R20 rolls. The four existing Meshy-6 50 mm meshes are held comparison references, read and never re-run or altered; their R19 and R21 reports stay frozen. Every row is local computation, so the round is free and the roll counts below are mesh counts, not provider calls.</p></div><div class="choices"><article class="choice"><header><span class="key">A1</span><h3>brightened clay / grokq</h3><span class="rolls">0 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether Meshy-7 improves or degrades print behaviour on the arm that produced finalists A1 M12 and A1 M2, against those two exact Meshy-6 references</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span><code>treeman-r20-clay-bright-grokq-m{1,2,3,4}-raw</code>, compared with <code>treeman-r19-a1-m12-clean-50mm</code> and <code>treeman-r21-a1-m2-clean-50mm</code></p><p class="cx"><span class="ck">Rolls</span>0 calls</p><a class="jump" href="#case-a1-brightened-clay-grokq"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">A2</span><h3>brightened clay / flash31</h3><span class="rolls">0 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>The same question on the arm Meshy-6 handled worst (3/12 sail candidates) and Meshy-7 handled cleanly (4/4), against the one Meshy-6 reference it has</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span><code>treeman-r20-clay-bright-flash31-m{1,2,3,4}-raw</code>, compared with <code>treeman-r21-a2-m8-clean-50mm</code></p><p class="cx"><span class="ck">Rolls</span>0 calls</p><a class="jump" href="#case-a2-brightened-clay-flash31"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">A3</span><h3>original clay / grokq</h3><span class="rolls">0 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>The same question on the un-brightened control arm and finalist A3 M6&#x27;s lineage</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span><code>treeman-r20-clay-orig-grokq-m{1,2,3,4}-raw</code>, compared with <code>treeman-r19-a3-m6-clean-50mm</code></p><p class="cx"><span class="ck">Rolls</span>0 calls</p><a class="jump" href="#case-a3-original-clay-grokq"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article></div><div class="shape"><div class="mx" style="grid-template-columns:auto repeat(0,minmax(46px,1fr))"><span></span><span class="rh">A1</span><span class="rh">A2</span><span class="rh">A3</span></div><p class="cap"><b>0 rolls total</b> — 3 choices, 0 + 0 + 0</p></div><div class="md"><p>Twelve deterministic local placements and their reports; no provider calls, no stochastic rolls, no new meshes beyond the placed copies.</p></div></section>
+<section class="rb-inputs" id="inputs">
+<h2><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>Inputs — what this round runs on</h2>
+<p class="blurb">Everything that goes in, grouped by the choice it belongs to. Click any image to zoom; open a prompt to read the exact text this round spends against. Crop sets show both the cut overview and every exact output crop.</p>
+<section class="rb-case" id="case-a1-brightened-clay-grokq">
+<h3 class="rb-case-h">A1 — brightened clay / grokq<span class="rb-case-count">6 images</span></h3>
+<p class="rb-case-note">Finalist A1 M12&#x27;s and A1 M2&#x27;s arm, so it carries two Meshy-6 references. M3 additionally carries one non-manifold edge on its dominant shell; that is a source fact and stays visible rather than being repaired.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">A1 M1 — Meshy-7 raw source</span><code class="rb-art-id">treeman-r20-clay-bright-grokq-m1-raw</code><button class="ibtn" data-inputs="in-0">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/e103b54003a1b2cc.jpg" data-cap="treeman-r20-clay-bright-grokq-m1-raw · treeman-r20-clay-bright-grokq-m1-raw-turnaround"><img src="../../../../assets/8fe72424ac7eb843.jpg" alt="treeman-r20-clay-bright-grokq-m1-raw · treeman-r20-clay-bright-grokq-m1-raw-turnaround" loading="lazy"></div><figcaption>treeman-r20-clay-bright-grokq-m1-raw-turnaround</figcaption></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">A1 M2 — Meshy-7 raw source</span><code class="rb-art-id">treeman-r20-clay-bright-grokq-m2-raw</code><button class="ibtn" data-inputs="in-1">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/7ea2bc6d1d9ca385.jpg" data-cap="treeman-r20-clay-bright-grokq-m2-raw · treeman-r20-clay-bright-grokq-m2-raw-turnaround"><img src="../../../../assets/1ed130fb67cb6422.jpg" alt="treeman-r20-clay-bright-grokq-m2-raw · treeman-r20-clay-bright-grokq-m2-raw-turnaround" loading="lazy"></div><figcaption>treeman-r20-clay-bright-grokq-m2-raw-turnaround</figcaption></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">A1 M3 — Meshy-7 raw source (one non-manifold edge on the main shell)</span><code class="rb-art-id">treeman-r20-clay-bright-grokq-m3-raw</code><button class="ibtn" data-inputs="in-2">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/7680ce57ee0771a0.jpg" data-cap="treeman-r20-clay-bright-grokq-m3-raw · treeman-r20-clay-bright-grokq-m3-raw-turnaround"><img src="../../../../assets/686dfe9bd7668e29.jpg" alt="treeman-r20-clay-bright-grokq-m3-raw · treeman-r20-clay-bright-grokq-m3-raw-turnaround" loading="lazy"></div><figcaption>treeman-r20-clay-bright-grokq-m3-raw-turnaround</figcaption></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">A1 M4 — Meshy-7 raw source</span><code class="rb-art-id">treeman-r20-clay-bright-grokq-m4-raw</code><button class="ibtn" data-inputs="in-3">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/8d1afd79e38fc645.jpg" data-cap="treeman-r20-clay-bright-grokq-m4-raw · treeman-r20-clay-bright-grokq-m4-raw-turnaround"><img src="../../../../assets/7f1a23ff5bbb416c.jpg" alt="treeman-r20-clay-bright-grokq-m4-raw · treeman-r20-clay-bright-grokq-m4-raw-turnaround" loading="lazy"></div><figcaption>treeman-r20-clay-bright-grokq-m4-raw-turnaround</figcaption></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">R19 A1 M12 — held Meshy-6 reference and thin-part gold</span><code class="rb-art-id">treeman-r19-a1-m12-clean-50mm</code><button class="ibtn" data-inputs="in-4">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/f9f30a7875d74d59.jpg" data-cap="treeman-r19-a1-m12-clean-50mm · treeman-r19-a1-m12-clean-50mm-turnaround"><img src="../../../../assets/2488749dac531785.jpg" alt="treeman-r19-a1-m12-clean-50mm · treeman-r19-a1-m12-clean-50mm-turnaround" loading="lazy"></div><figcaption>treeman-r19-a1-m12-clean-50mm-turnaround</figcaption></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">R21 A1 M2 — held Meshy-6 reference</span><code class="rb-art-id">treeman-r21-a1-m2-clean-50mm</code><button class="ibtn" data-inputs="in-5">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/62003c0a89145fb1.jpg" data-cap="treeman-r21-a1-m2-clean-50mm · treeman-r21-a1-m2-clean-50mm-turnaround"><img src="../../../../assets/f6acb7d20027cccf.jpg" alt="treeman-r21-a1-m2-clean-50mm · treeman-r21-a1-m2-clean-50mm-turnaround" loading="lazy"></div><figcaption>treeman-r21-a1-m2-clean-50mm-turnaround</figcaption></figure>
+</div></div>
+</section>
+<section class="rb-case" id="case-a2-brightened-clay-flash31">
+<h3 class="rb-case-h">A2 — brightened clay / flash31<span class="rb-case-count">5 images</span></h3>
+<p class="rb-case-note">The arm Meshy-6 handled worst (3/12 sail candidates) and Meshy-7 handled cleanly (4/4). It has one Meshy-6 reference, Babs&#x27;s late A2 M8.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">A2 M1 — Meshy-7 raw source</span><code class="rb-art-id">treeman-r20-clay-bright-flash31-m1-raw</code><button class="ibtn" data-inputs="in-6">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/2bd4c53817180956.jpg" data-cap="treeman-r20-clay-bright-flash31-m1-raw · treeman-r20-clay-bright-flash31-m1-raw-turnaround"><img src="../../../../assets/842c27ba3b675304.jpg" alt="treeman-r20-clay-bright-flash31-m1-raw · treeman-r20-clay-bright-flash31-m1-raw-turnaround" loading="lazy"></div><figcaption>treeman-r20-clay-bright-flash31-m1-raw-turnaround</figcaption></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">A2 M2 — Meshy-7 raw source</span><code class="rb-art-id">treeman-r20-clay-bright-flash31-m2-raw</code><button class="ibtn" data-inputs="in-7">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/92dcba38d4c82d06.jpg" data-cap="treeman-r20-clay-bright-flash31-m2-raw · treeman-r20-clay-bright-flash31-m2-raw-turnaround"><img src="../../../../assets/aa15932619f55c9d.jpg" alt="treeman-r20-clay-bright-flash31-m2-raw · treeman-r20-clay-bright-flash31-m2-raw-turnaround" loading="lazy"></div><figcaption>treeman-r20-clay-bright-flash31-m2-raw-turnaround</figcaption></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">A2 M3 — Meshy-7 raw source</span><code class="rb-art-id">treeman-r20-clay-bright-flash31-m3-raw</code><button class="ibtn" data-inputs="in-8">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/d0226708ccaa02dd.jpg" data-cap="treeman-r20-clay-bright-flash31-m3-raw · treeman-r20-clay-bright-flash31-m3-raw-turnaround"><img src="../../../../assets/b48f98c3c31d4049.jpg" alt="treeman-r20-clay-bright-flash31-m3-raw · treeman-r20-clay-bright-flash31-m3-raw-turnaround" loading="lazy"></div><figcaption>treeman-r20-clay-bright-flash31-m3-raw-turnaround</figcaption></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">A2 M4 — Meshy-7 raw source</span><code class="rb-art-id">treeman-r20-clay-bright-flash31-m4-raw</code><button class="ibtn" data-inputs="in-9">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5a3deabcbfdd3a08.jpg" data-cap="treeman-r20-clay-bright-flash31-m4-raw · treeman-r20-clay-bright-flash31-m4-raw-turnaround"><img src="../../../../assets/6c43a41f4e2118f0.jpg" alt="treeman-r20-clay-bright-flash31-m4-raw · treeman-r20-clay-bright-flash31-m4-raw-turnaround" loading="lazy"></div><figcaption>treeman-r20-clay-bright-flash31-m4-raw-turnaround</figcaption></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">R21 A2 M8 — held Meshy-6 reference and thin-part gold</span><code class="rb-art-id">treeman-r21-a2-m8-clean-50mm</code><button class="ibtn" data-inputs="in-10">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/f83005661f19dbe1.jpg" data-cap="treeman-r21-a2-m8-clean-50mm · treeman-r21-a2-m8-clean-50mm-turnaround"><img src="../../../../assets/25bc8d1eb5dfb052.jpg" alt="treeman-r21-a2-m8-clean-50mm · treeman-r21-a2-m8-clean-50mm-turnaround" loading="lazy"></div><figcaption>treeman-r21-a2-m8-clean-50mm-turnaround</figcaption></figure>
+</div></div>
+</section>
+<section class="rb-case" id="case-a3-original-clay-grokq">
+<h3 class="rb-case-h">A3 — original clay / grokq<span class="rb-case-count">5 images</span></h3>
+<p class="rb-case-note">The un-brightened control arm and finalist A3 M6&#x27;s lineage. M3 additionally carries one non-manifold edge on its dominant shell, preserved and reported.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">A3 M1 — Meshy-7 raw source</span><code class="rb-art-id">treeman-r20-clay-orig-grokq-m1-raw</code><button class="ibtn" data-inputs="in-11">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/de0bfcf4c8df3dd1.jpg" data-cap="treeman-r20-clay-orig-grokq-m1-raw · treeman-r20-clay-orig-grokq-m1-raw-turnaround"><img src="../../../../assets/0722e300f6eff084.jpg" alt="treeman-r20-clay-orig-grokq-m1-raw · treeman-r20-clay-orig-grokq-m1-raw-turnaround" loading="lazy"></div><figcaption>treeman-r20-clay-orig-grokq-m1-raw-turnaround</figcaption></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">A3 M2 — Meshy-7 raw source</span><code class="rb-art-id">treeman-r20-clay-orig-grokq-m2-raw</code><button class="ibtn" data-inputs="in-12">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ccab4915676406bb.jpg" data-cap="treeman-r20-clay-orig-grokq-m2-raw · treeman-r20-clay-orig-grokq-m2-raw-turnaround"><img src="../../../../assets/9d30ba799ce65bf3.jpg" alt="treeman-r20-clay-orig-grokq-m2-raw · treeman-r20-clay-orig-grokq-m2-raw-turnaround" loading="lazy"></div><figcaption>treeman-r20-clay-orig-grokq-m2-raw-turnaround</figcaption></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">A3 M3 — Meshy-7 raw source (one non-manifold edge on the main shell)</span><code class="rb-art-id">treeman-r20-clay-orig-grokq-m3-raw</code><button class="ibtn" data-inputs="in-13">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/09dfe74348c3a85a.jpg" data-cap="treeman-r20-clay-orig-grokq-m3-raw · treeman-r20-clay-orig-grokq-m3-raw-turnaround"><img src="../../../../assets/6cf6fc3847acca3b.jpg" alt="treeman-r20-clay-orig-grokq-m3-raw · treeman-r20-clay-orig-grokq-m3-raw-turnaround" loading="lazy"></div><figcaption>treeman-r20-clay-orig-grokq-m3-raw-turnaround</figcaption></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">A3 M4 — Meshy-7 raw source</span><code class="rb-art-id">treeman-r20-clay-orig-grokq-m4-raw</code><button class="ibtn" data-inputs="in-14">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/9cc64e280d0c4190.jpg" data-cap="treeman-r20-clay-orig-grokq-m4-raw · treeman-r20-clay-orig-grokq-m4-raw-turnaround"><img src="../../../../assets/3cd1e62db890602d.jpg" alt="treeman-r20-clay-orig-grokq-m4-raw · treeman-r20-clay-orig-grokq-m4-raw-turnaround" loading="lazy"></div><figcaption>treeman-r20-clay-orig-grokq-m4-raw-turnaround</figcaption></figure>
+</div></div>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">R19 A3 M6 — held Meshy-6 reference and thin-part gold</span><code class="rb-art-id">treeman-r19-a3-m6-clean-50mm</code><button class="ibtn" data-inputs="in-15">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5953532cced9d136.jpg" data-cap="treeman-r19-a3-m6-clean-50mm · treeman-r19-a3-m6-clean-50mm-turnaround"><img src="../../../../assets/6a7da7223b71ed64.jpg" alt="treeman-r19-a3-m6-clean-50mm · treeman-r19-a3-m6-clean-50mm-turnaround" loading="lazy"></div><figcaption>treeman-r19-a3-m6-clean-50mm-turnaround</figcaption></figure>
+</div></div>
+</section>
+</section>
+<section class="s" id="judged"><h2><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>How the round is judged</h2><div class="md"><p>Every check is FAST — local and deterministic — so there is no slow lane and no provisional/complete split. The round produces measurements; it selects nothing.</p>
+<ul>
+<li><strong>Source identity:</strong> each of the twelve raw R20 STLs must match the SHA-256 pinned in the technical plan before anything reads it.</li>
+<li><strong>Placement contract:</strong> each output is uniformly scaled to 50.00 mm overall Z height, centered in X/Y, and moved so minimum Z is zero. The operation reports the exact uniform scale.</li>
+<li><strong>Geometry preservation:</strong> face and component counts, winding, and main-shell edge topology must match each source, and an independently derived source-to-output affine comparison must stay within 0.0001 mm. The known microscopic shards must be preserved and disclosed, never silently filtered — eleven of the twelve rolls carry one to five shards of 1–4 faces each, and A1 M3 and A3 M3 additionally carry one non-manifold edge on the dominant shell. Those are source facts and stay visible in the reports.</li>
+<li><strong>Final-scale evidence, per mesh:</strong> dimensions and volume, topology in millimetre units, the banded surface-roughness profile, the 0.28 mm-pitch thin-connection probe both ungolded and diffed against that arm&#x27;s Meshy-6 reference, the global fragility index, and the grid handle screen.</li>
+<li><strong>Comparison:</strong> every measure is reported beside the same measure on the held Meshy-6 references at the same scale. Where a measure exists in the frozen R19/R21 reports it is read from them rather than recomputed, so the baseline cannot drift.</li>
+<li><strong>Handle screen specifically:</strong> voxel pitch 0.1 mm with closing diameters 0.2, 0.4, 0.6, 1.0 and 1.6 mm, identical for every mesh including the held Meshy-6 references, since the numbers are only comparable within one setting. Every figure the probe reports is an aggregate topology count of the voxel grid — handles in the grid, then handles after closing at each diameter — and none is a count of tunnels or identifies an individual feature. The round reports them as a Meshy-7-vs-Meshy-6 comparison and states that limit in the write-up rather than in a footnote.</li>
+<ul>
+<li>Nothing is derived from the meshes&#x27; own genus. That is deliberate and matters here: only 1 of the 12 R20 meshes and 2 of the 4 Meshy-6 references are whole-file watertight, so a mesh-side figure would be undefined on most of the set and, worse, asymmetrically so across the comparison. The grid is well-posed on all sixteen — every dominant shell has zero open edges, the extra components being 1–4 face shards.</li>
+<li><strong>The applicability check is the round&#x27;s, not the tool&#x27;s.</strong> The probe asserts no validity verdict: it reports <code>fill_ratio</code> and leaves the judgement to the caller. The counts only mean something if the voxel fill reconstructed a solid rather than a shell, so this round makes that an explicit, recorded gate of its own, applied to each of the sixteen meshes before any comparison is drawn:</li>
+<ol>
+<li>Every mesh&#x27;s <code>fill_ratio</code> must exceed <strong>5.0</strong>. A leaked fill sits at 1.0; a 50 mm reconstruction of this character sits near 21. The threshold is far below the expected value and far above the failure value, and is a screen for a leak rather than a calibrated quantity.</li>
+<li>The sixteen ratios must cluster. Any mesh below <strong>half the median</strong> of the set is treated as anomalous even if it clears the floor above.</li>
+<li>Independently of the probe, each mesh&#x27;s committed validation record must show a closed dominant shell (<code>main_component_open_edges == 0</code>). That holds for 12/12 R20 meshes and 4/4 Meshy-6 reference sources today, so it is a check that can fail rather than a restatement. A failure of any of the three stops the comparison for investigation and is recorded in <code>rounds.md</code>; it is never written up as a zero or quietly dropped. All three are cheap and are run before the arm-level comparison.</li>
+</ol>
+<li><code>topology_creation_detected</code> is recorded per mesh. This character is a likely trigger — crossing twigs and the sail lattice put surfaces within a millimetre of each other — so the round expects the flag to fire on some rolls, especially at the wider diameters, and treats that as a property of the geometry rather than a failure. Where it fires, that mesh&#x27;s sweep is reported with the flag beside it and is not read as tunnel sizes at all. The flag is a necessary condition only: a creation cancelled by a fill at the same radius still reads monotone, so an unflagged sweep is evidence, not proof.</li>
+<li>The round therefore cannot conclude &quot;N tunnels are below 0.1 mm on this mesh&quot;, and no result statement may be written that way. It can conclude that one model&#x27;s meshes carry substantially more or less grid topology than the other&#x27;s, and shed it faster or slower under closing, under identical measurement — which is what the open R20 verdict needs.</li>
+</ul>
+<li><strong>Probe applicability:</strong> all twelve dominant shells have zero open edges, so the voxel fill the thin-part and handle probes depend on is well posed on every mesh. If a fill nevertheless leaks on any roll, that roll&#x27;s handle numbers are recorded as unavailable with the evidence, not reported as zero.</li>
+<li><strong>Fresh-context comparative audit:</strong> one subagent walks a complete feature checklist over matched views of the Meshy-7 and Meshy-6 renders. It is a static pre-filter and picks no keeper.</li>
+<li><strong>Human gate:</strong> Dimitri&#x27;s live-3D benchmark verdict on R20 remains the decision. This round supplies evidence for it and does not close it.</li>
+</ul></div></section>
+<section class="s" id="ask"><h2><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</h2><div class="md cta"><p>Approval of this exact measurement-only scope. The round changes no geometry, picks no keeper, and starts no downstream work; it produces the print-scale numbers the open R20 benchmark verdict is currently missing.</p>
+<p>If the handle screen shows Meshy-7&#x27;s extra topology disappearing at sub-resolution coarsening while Meshy-6&#x27;s does not, a repair pass becomes worth proposing as its own round — morphological closing, or a targeted fill. That would be surgery on accepted geometry and is deliberately <strong>not</strong> in this round&#x27;s scope; it would need its own runbook and your separate sign-off.</p></div></section>
+<section class="s" id="cost"><h2><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Cost</h2><div class="md"><p>Free and local: no image-model calls, Meshy credits, or other paid API calls. Runtime is the only cost — the handle screen takes about a minute per mesh at this pitch, so the full battery is roughly half an hour of local compute.</p></div><div class="costgrid"><div class="costrow"><span class="n">local</span><span></span><span class="a">$0.00</span></div></div></section>
+<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>mesh validation — 50 mm placement and printability battery over the R20 Meshy-7 set</dd><dt>Owner</dt><dd>Claude (local) → Dimitri review</dd><dt>Date opened</dt><dd>2026-08-12</dd><dt>Inputs</dt><dd>the twelve <code>treeman-r20-clay-{bright-grokq,bright-flash31,orig-grokq}-m{1,2,3,4}-raw</code> meshes · held Meshy-6 references <code>treeman-r19-a1-m12-clean-50mm</code> · <code>treeman-r19-a3-m6-clean-50mm</code> · <code>treeman-r21-a1-m2-clean-50mm</code> · <code>treeman-r21-a2-m8-clean-50mm</code></dd><dt>Produces</dt><dd>twelve <code>treeman-r22-&lt;arm&gt;-m&lt;N&gt;-50mm</code> placements, each with its placement / validation / roughness / thin-part / handle-screen reports and an eight-direction compass render set</dd><dt>Branch</dt><dd><code>claude/treeman-r22-meshy7-printability</code></dd><dt>Evaluation lanes</dt><dd>FAST — source-hash gate, deterministic placement, topology and dimensional validation, final-scale roughness, the 0.28 mm thin-connection probe, the grid handle screen, full-resolution compass renders and one fresh-context comparative audit; SLOW — none</dd><dt>Prior round</dt><dd>r20 — the Meshy-7 benchmark verdict is open, and the evidence under it is incomplete. Its mechanical comparison found consistency sharply up (same-input face-count CV 0.3–1.1% against Meshy-6&#x27;s 4.6–5.6%) and sails retained 12/12 against 17/36, but whole-file watertightness down (1/12 against 19/36) and roughly seven times as many topological handles per mesh. Every one of those numbers is unit-neutral or visual. None of them was measured at print scale.</dd><dt>Spend</dt><dd>local $0 · cap $0</dd></dl></section>
+<section class="s" id="tech"><h2><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>Technical plan</h2>
+<p class="intro">placement, battery and handoff</p>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>What changed going in</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><ul>
+<li>The battery is R19&#x27;s, unchanged, extended to twelve meshes and given one new measurement: <code>tools/mesh_handles.py</code>. That tool did not exist for R19 or R21 and lands in its own reviewed PR (#481) before this round runs. Its merge-gate review narrowed what the closing sweep may be claimed to show; this plan is written against that narrowed contract, not the original one.</li>
+<li>The thin-connection probe additionally runs with <code>--gold</code> against the same-arm Meshy-6 reference. R19 and R21 ran it ungolded, which reports every structural neck the body legitimately has; diffing against the arm&#x27;s own Meshy-6 mesh suppresses those and isolates necks Meshy-7 introduced. Both forms are run, so the ungolded numbers stay directly comparable with the frozen R19/R21 reports.</li>
+<li>Renders use the eight-direction compass set Dimitri asked for in R21, not R19&#x27;s four azimuths, so Meshy-7 rolls and the held references are inspected at matched views.</li>
+<li>No surgery, in either direction: no sail repair, smoothing, remesh, hole fill, shard filtering, base removal, or underside cut. <code>mesh_place.py</code> is the only transform and it does uniform scale, XY centering and Z flooring only.</li>
+</ul></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg><span>Experiment matrix</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>Every row is the same deterministic operation. Sources are the exact R20 raw meshes; out-stems are new append-only artifacts. No source is renamed, moved, or overwritten.</p>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Operation</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>1</td><td><code>treeman-r20-clay-bright-grokq-m1-raw</code></td><td>uniform scale to 50.00 mm overall Z; center XY; set min Z=0</td><td><code>treeman-r22-a1-m1-50mm</code></td></tr><tr><td>2</td><td><code>treeman-r20-clay-bright-grokq-m2-raw</code></td><td>as above</td><td><code>treeman-r22-a1-m2-50mm</code></td></tr><tr><td>3</td><td><code>treeman-r20-clay-bright-grokq-m3-raw</code></td><td>as above</td><td><code>treeman-r22-a1-m3-50mm</code></td></tr><tr><td>4</td><td><code>treeman-r20-clay-bright-grokq-m4-raw</code></td><td>as above</td><td><code>treeman-r22-a1-m4-50mm</code></td></tr><tr><td>5</td><td><code>treeman-r20-clay-bright-flash31-m1-raw</code></td><td>as above</td><td><code>treeman-r22-a2-m1-50mm</code></td></tr><tr><td>6</td><td><code>treeman-r20-clay-bright-flash31-m2-raw</code></td><td>as above</td><td><code>treeman-r22-a2-m2-50mm</code></td></tr><tr><td>7</td><td><code>treeman-r20-clay-bright-flash31-m3-raw</code></td><td>as above</td><td><code>treeman-r22-a2-m3-50mm</code></td></tr><tr><td>8</td><td><code>treeman-r20-clay-bright-flash31-m4-raw</code></td><td>as above</td><td><code>treeman-r22-a2-m4-50mm</code></td></tr><tr><td>9</td><td><code>treeman-r20-clay-orig-grokq-m1-raw</code></td><td>as above</td><td><code>treeman-r22-a3-m1-50mm</code></td></tr><tr><td>10</td><td><code>treeman-r20-clay-orig-grokq-m2-raw</code></td><td>as above</td><td><code>treeman-r22-a3-m2-50mm</code></td></tr><tr><td>11</td><td><code>treeman-r20-clay-orig-grokq-m3-raw</code></td><td>as above</td><td><code>treeman-r22-a3-m3-50mm</code></td></tr><tr><td>12</td><td><code>treeman-r20-clay-orig-grokq-m4-raw</code></td><td>as above</td><td><code>treeman-r22-a3-m4-50mm</code></td></tr></tbody></table></div>
+<p>Gold references for the diffed thin-part probe, by arm: A1 → <code>treeman-r19-a1-m12-clean-50mm</code>, A2 → <code>treeman-r21-a2-m8-clean-50mm</code>, A3 → <code>treeman-r19-a3-m6-clean-50mm</code>.</p></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-branch"/></svg><span>Commands</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><h4>Post-merge start gate</h4>
+<p>The separate start PR changes current state in <code>rounds.md</code>, not this frozen plan. After Dimitri approves and merges it, execution begins only from exact current <code>main</code> and the recorded R22 greenlight:</p>
+<pre class="code"><code>set -euo pipefail
+git fetch origin main
+test &quot;$(git rev-parse HEAD)&quot; = &quot;$(git rev-parse origin/main)&quot;
+python3 tools/round_gate.py verify \
+  --file projects/treeman-windmill/round-gates.jsonl --round r22 \
+  --published-html &quot;${AI_STL_REVIEW_DIR:-../ai-stl-review}/reviews/treeman-windmill/treeman/r22-runbook/index.html&quot;
+test &quot;$(git rev-parse HEAD)&quot; = &quot;$(git rev-parse origin/main)&quot;
+
+# Append the private Treeman Discord start reply with the destination-scoped
+# once id recorded when this round opens, then advance the round header using
+# that completed reply&#x27;s event id. Only then run the commands below.</code></pre>
+<h4>Inputs and identity gate</h4>
+<pre class="code"><code>set -euo pipefail
+P=projects/treeman-windmill
+tools/drive_sync.sh pull &quot;$P/models/round-20&quot;
+tools/drive_sync.sh pull &quot;$P/models/round-19&quot;
+tools/drive_sync.sh pull &quot;$P/models/round-21&quot;
+sha256sum --check --strict &lt;&lt;&#x27;SUMS&#x27;
+a2040e3ffb4681c64daced7752b1320b3aa6a0cd6d04874a724cf2840df22b61  projects/treeman-windmill/models/round-20/treeman-r20-clay-bright-grokq-m1-raw.stl
+9719fda2b154a6eb0ebde0868a0e61bff62189971df39917483ccc4bd020d20a  projects/treeman-windmill/models/round-20/treeman-r20-clay-bright-grokq-m2-raw.stl
+fba573d0a3755331774018f84f6ea8fab1089471373b0a95164f28a2e0b9dc2c  projects/treeman-windmill/models/round-20/treeman-r20-clay-bright-grokq-m3-raw.stl
+d5a57808a5e69025e1e8145d245199fb0b8576db2ef6e065fdeb69b34df4fd4e  projects/treeman-windmill/models/round-20/treeman-r20-clay-bright-grokq-m4-raw.stl
+1c26e035d9311412f405f205808d92a0a3cd7509c6a7921eddd13aa90ed2efe3  projects/treeman-windmill/models/round-20/treeman-r20-clay-bright-flash31-m1-raw.stl
+081ede2209058e9c76cc156bebfad1ab177d904f7f0af2c27f527bd244a8d6e8  projects/treeman-windmill/models/round-20/treeman-r20-clay-bright-flash31-m2-raw.stl
+441ccb68b7147f9e8c3de7bd06990114f3a49fdcf43f9081efab9f59d5c4d89a  projects/treeman-windmill/models/round-20/treeman-r20-clay-bright-flash31-m3-raw.stl
+a03f0196a243885afd952a4342ed9d99f3311d8d083b6387abc3b7ed07c9b434  projects/treeman-windmill/models/round-20/treeman-r20-clay-bright-flash31-m4-raw.stl
+386c972e39ac52f1b462b51c5b005391b7744e08e4288c453d750dcb393dce74  projects/treeman-windmill/models/round-20/treeman-r20-clay-orig-grokq-m1-raw.stl
+79c547fd96d56e43e16e2c56f81a82f2fc3c9b65b131597300902a7bc83d7bc0  projects/treeman-windmill/models/round-20/treeman-r20-clay-orig-grokq-m2-raw.stl
+0d6b5e9807320cef50d648fb7a1fad58bc8e60c8edf97ef0a882554f3b41ba27  projects/treeman-windmill/models/round-20/treeman-r20-clay-orig-grokq-m3-raw.stl
+b714b9c21040b0276fc6432e4bb3a621f31b7f2cffd2a44b0cc4e662cb8bd058  projects/treeman-windmill/models/round-20/treeman-r20-clay-orig-grokq-m4-raw.stl
+cff394ae63ed3ea572a9f2a10da2fd2c84ee1546a982a0a0eaa4e656ee206b1d  projects/treeman-windmill/models/round-19/treeman-r19-a1-m12-clean-50mm.stl
+2df90ed9219ea8e0cdf87bb6ffe4fc873c2dac0692b9d6a161413fa01855a7fd  projects/treeman-windmill/models/round-19/treeman-r19-a3-m6-clean-50mm.stl
+1857759ce3c7d4a3bf4fcfbf8957e96e5dd29a1b998229d427c1fc7bf3656458  projects/treeman-windmill/models/round-21/treeman-r21-a1-m2-clean-50mm.stl
+9e1f3c698277aaf0d72617c6872b00565e7174961ab3d662dd9da9ea08949ee9  projects/treeman-windmill/models/round-21/treeman-r21-a2-m8-clean-50mm.stl
+SUMS</code></pre>
+<p>All sixteen inputs are in that one runnable gate — the twelve R20 sources and the four held Meshy-6 references. The reference values come from their committed per-mesh validation records (<code>notes/r19-*-validation.json</code>, <code>notes/r21-*-validation.json</code>), which is where their hashes were durably recorded; R21&#x27;s two also appear in <code>rounds.md</code> and match. No reference is used as a comparison mesh or as a thin-part gold before this gate passes.</p>
+<h4>Deterministic placement and immediate Drive durability</h4>
+<p>Each output is a new append-only artifact. Never overwrite or rename any R20 raw source.</p>
+<pre class="code"><code>set -euo pipefail
+P=projects/treeman-windmill
+declare -A SRC=(
+  [a1-m1]=treeman-r20-clay-bright-grokq-m1-raw   [a1-m2]=treeman-r20-clay-bright-grokq-m2-raw
+  [a1-m3]=treeman-r20-clay-bright-grokq-m3-raw   [a1-m4]=treeman-r20-clay-bright-grokq-m4-raw
+  [a2-m1]=treeman-r20-clay-bright-flash31-m1-raw [a2-m2]=treeman-r20-clay-bright-flash31-m2-raw
+  [a2-m3]=treeman-r20-clay-bright-flash31-m3-raw [a2-m4]=treeman-r20-clay-bright-flash31-m4-raw
+  [a3-m1]=treeman-r20-clay-orig-grokq-m1-raw     [a3-m2]=treeman-r20-clay-orig-grokq-m2-raw
+  [a3-m3]=treeman-r20-clay-orig-grokq-m3-raw     [a3-m4]=treeman-r20-clay-orig-grokq-m4-raw
+)
+for C in &quot;${!SRC[@]}&quot;; do
+  python3 tools/mesh_place.py \
+    --stl &quot;$P/models/round-20/${SRC[$C]}.stl&quot; \
+    --out &quot;$P/models/round-22/treeman-r22-${C}-50mm.stl&quot; \
+    --target-height-mm 50 \
+    --report &quot;$P/notes/r22-${C}-placement.json&quot;
+  # Each mesh reaches Drive the moment it lands, before the next is authored:
+  # an interruption must never leave a completed mesh local-only.
+  tools/drive_sync.sh push &quot;$P/models/round-22&quot;
+done</code></pre>
+<p>Every placed mesh is durable on Drive before the next placement starts and before any validation runs, per the standing rule. Twelve pushes of one new file each cost no more than one push of twelve.</p>
+<h4>Independent placement verification</h4>
+<p><code>mesh_place.py</code> verifies its own export, so that check could reproduce a producer-side omission. R21 used a separate consumer-side verifier for exactly this reason and R22 does the same: this reads both STLs off disk and derives the comparison itself, without consulting the placement report.</p>
+<pre class="code"><code>python3 - &lt;&lt;&#x27;PY&#x27;
+import hashlib
+import json
+import pathlib
+
+import numpy as np
+import trimesh
+
+project = pathlib.Path(&quot;projects/treeman-windmill&quot;)
+sources = {
+    &quot;a1-m1&quot;: &quot;treeman-r20-clay-bright-grokq-m1-raw&quot;,
+    &quot;a1-m2&quot;: &quot;treeman-r20-clay-bright-grokq-m2-raw&quot;,
+    &quot;a1-m3&quot;: &quot;treeman-r20-clay-bright-grokq-m3-raw&quot;,
+    &quot;a1-m4&quot;: &quot;treeman-r20-clay-bright-grokq-m4-raw&quot;,
+    &quot;a2-m1&quot;: &quot;treeman-r20-clay-bright-flash31-m1-raw&quot;,
+    &quot;a2-m2&quot;: &quot;treeman-r20-clay-bright-flash31-m2-raw&quot;,
+    &quot;a2-m3&quot;: &quot;treeman-r20-clay-bright-flash31-m3-raw&quot;,
+    &quot;a2-m4&quot;: &quot;treeman-r20-clay-bright-flash31-m4-raw&quot;,
+    &quot;a3-m1&quot;: &quot;treeman-r20-clay-orig-grokq-m1-raw&quot;,
+    &quot;a3-m2&quot;: &quot;treeman-r20-clay-orig-grokq-m2-raw&quot;,
+    &quot;a3-m3&quot;: &quot;treeman-r20-clay-orig-grokq-m3-raw&quot;,
+    &quot;a3-m4&quot;: &quot;treeman-r20-clay-orig-grokq-m4-raw&quot;,
+}
+failures = []
+for case, source in sorted(sources.items()):
+    src_path = project / f&quot;models/round-20/{source}.stl&quot;
+    out_path = project / f&quot;models/round-22/treeman-r22-{case}-50mm.stl&quot;
+    # process=False for the coordinate comparison: the STL&#x27;s exact triangles,
+    # unmerged. process=True for topology, where an unmerged soup would report
+    # one component per triangle and make the component check vacuous.
+    src = trimesh.load(src_path, force=&quot;mesh&quot;, process=False)
+    out = trimesh.load(out_path, force=&quot;mesh&quot;, process=False)
+    src_topo = trimesh.load(src_path, force=&quot;mesh&quot;, process=True)
+    out_topo = trimesh.load(out_path, force=&quot;mesh&quot;, process=True)
+    # Derive the PRESCRIBED transform from the SOURCE alone. Aligning the
+    # expectation to the output&#x27;s own minimum would only recover whatever
+    # offset the producer applied, so a consistently wrong translation would
+    # verify against itself.
+    scale = 50.0 / (src.bounds[1][2] - src.bounds[0][2])
+    scaled_low = src.bounds[0] * scale
+    scaled_high = src.bounds[1] * scale
+    translation = np.array([
+        -(scaled_low[0] + scaled_high[0]) / 2.0,
+        -(scaled_low[1] + scaled_high[1]) / 2.0,
+        -scaled_low[2],
+    ])
+    expected = np.asarray(src.triangles) * scale + translation
+    # The artifact&#x27;s OWN displacement, observed rather than prescribed. Used
+    # only to bind the report to the mesh, never as the expectation.
+    displacement = (
+        np.asarray(out.triangles).reshape(-1, 3)
+        - np.asarray(src.triangles).reshape(-1, 3) * scale
+    )
+    actual_translation = displacement.mean(0)
+    # rtol=0: np.allclose&#x27;s default 1e-5 relative term would accept roughly
+    # 0.0006mm of error at a 50mm coordinate, so the stated absolute limit
+    # would not actually be enforced.
+    max_error = (
+        float(np.abs(out.triangles - expected).max())
+        if out.triangles.shape == expected.shape
+        else float(&quot;inf&quot;)
+    )
+    checks = {
+        &quot;triangle count&quot;: len(out.faces) == len(src.faces),
+        &quot;coordinates within 0.0001mm&quot;: max_error &lt;= 1e-4,
+        &quot;height 50.00mm&quot;: abs((out.bounds[1][2] - out.bounds[0][2]) - 50.0) &lt;= 1e-4,
+        &quot;floored at z=0&quot;: abs(out.bounds[0][2]) &lt;= 1e-4,
+        &quot;xy centred&quot;: np.allclose(out.bounds.mean(axis=0)[:2], 0.0, atol=1e-4),
+        &quot;shards preserved&quot;: out_topo.body_count == src_topo.body_count,
+        &quot;winding preserved&quot;: (
+            out_topo.is_winding_consistent == src_topo.is_winding_consistent
+        ),
+        &quot;watertightness preserved&quot;: out_topo.is_watertight == src_topo.is_watertight,
+    }
+    # The placement REPORT is provenance and is checked too: a correct mesh with
+    # a wrong declared scale, translation or digest would otherwise leave the
+    # round with false placement provenance and every other gate passing.
+    report = json.loads(
+        (project / f&quot;notes/r22-{case}-placement.json&quot;).read_text()
+    )
+    src_digest = hashlib.sha256(src_path.read_bytes()).hexdigest()
+    out_digest = hashlib.sha256(out_path.read_bytes()).hexdigest()
+    checks.update({
+        &quot;report scale&quot;: abs(report[&quot;scale&quot;] - scale) &lt;= 1e-9,
+        &quot;report target height&quot;: report[&quot;target_height_mm&quot;] == 50.0,
+        &quot;report operation&quot;: report[&quot;operation&quot;] == &quot;uniform-scale-center-xy-floor-z&quot;,
+        &quot;report source digest&quot;: report[&quot;source_sha256&quot;] == src_digest,
+        &quot;report output digest&quot;: report[&quot;output_sha256&quot;] == out_digest,
+        # Full paths, not suffixes: the right basename under the wrong
+        # directory would otherwise leave false provenance in the record.
+        &quot;report source path&quot;: report[&quot;source&quot;] == str(src_path),
+        &quot;report output path&quot;: report[&quot;output&quot;] == str(out_path),
+        # Subscripted, never .get(): a missing key must raise, not silently
+        # satisfy the check against a default derived from the same data.
+        # Three checks, because two of them alone leave a gap either way. The
+        # report must match the PRESCRIBED transform (catches a producer that
+        # applies and reports the same wrong offset) AND match the ARTIFACT&#x27;s
+        # actual displacement (catches a producer that shifts the mesh but
+        # writes the correct translation). The 1e-4 affine tolerance above
+        # would admit either on its own.
+        &quot;report translation matches prescribed&quot;: np.allclose(
+            np.asarray(report[&quot;translation_mm&quot;]), translation, rtol=0, atol=1e-6
+        ),
+        # 1e-5, not 1e-6: STL stores float32, so a correct placement still
+        # shows ~2e-6mm of per-vertex spread at 50mm coordinates (float32 eps
+        # there is ~6e-6mm). Measured on a real placement before choosing it.
+        &quot;displacement is a pure translation&quot;: (
+            float(np.abs(displacement - actual_translation).max()) &lt;= 1e-5
+        ),
+        &quot;report translation matches the artifact&quot;: (
+            float(np.abs(actual_translation - np.asarray(report[&quot;translation_mm&quot;])).max())
+            &lt;= 1e-5
+        ),
+        &quot;report faces&quot;: report[&quot;faces&quot;] == len(out.faces),
+        &quot;report watertight&quot;: report[&quot;watertight&quot;] == out_topo.is_watertight,
+        &quot;report winding&quot;: (
+            report[&quot;winding_consistent&quot;] == out_topo.is_winding_consistent
+        ),
+        &quot;report output extents&quot;: np.allclose(
+            np.asarray(report[&quot;output_extents_mm&quot;]),
+            out.bounds[1] - out.bounds[0],
+            rtol=0,
+            atol=1e-6,
+        ),
+    })
+
+    bad = [name for name, ok in checks.items() if not ok]
+    print(f&quot;{case}: max coord error {max_error:.7f}mm  &quot;
+          f&quot;{&#x27;OK&#x27; if not bad else &#x27;FAIL &#x27; + &#x27;, &#x27;.join(bad)}&quot;)
+    if bad:
+        failures.append((case, bad))
+if failures:
+    raise SystemExit(f&quot;independent placement verification failed: {failures}&quot;)
+PY</code></pre>
+<p>A failure here fails the round. Shards are asserted PRESERVED, not filtered: <code>shards preserved</code> compares merged component counts, so it fails if a placement silently dropped one of the 1–4 face shards the R20 sources carry.</p>
+<p>The placement REPORT is verified alongside the mesh, since it is the round&#x27;s placement provenance and nothing else reads it: the declared scale, target height, operation, translation, output extents, source path, output path and both SHA-256 digests are re-derived here and compared. A correct mesh carrying a wrong declared scale or digest would otherwise pass every other gate.</p>
+<p>Verified against a real <code>mesh_place.py</code> run on a torus-plus-shard fixture: the checks pass on a correct placement, <code>shards preserved</code> reads 2 against 2 on the merged meshes, and nudging a single output vertex by 0.01 mm trips the coordinate check.</p>
+<h4>Final-scale battery</h4>
+<pre class="code"><code>set -euo pipefail
+P=projects/treeman-windmill
+declare -A GOLD=(
+  [a1]=&quot;$P/models/round-19/treeman-r19-a1-m12-clean-50mm.stl&quot;
+  [a2]=&quot;$P/models/round-21/treeman-r21-a2-m8-clean-50mm.stl&quot;
+  [a3]=&quot;$P/models/round-19/treeman-r19-a3-m6-clean-50mm.stl&quot;
+)
+for C in a1-m1 a1-m2 a1-m3 a1-m4 a2-m1 a2-m2 a2-m3 a2-m4 a3-m1 a3-m2 a3-m3 a3-m4; do
+  ARM=&quot;${C%%-*}&quot;
+  STL=&quot;$P/models/round-22/treeman-r22-${C}-50mm.stl&quot;
+  python3 tools/mesh_validate.py --stl &quot;$STL&quot; --units mm \
+    --label &quot;treeman-r22-${C}-50mm&quot; \
+    --out &quot;$P/notes/r22-mesh-validation/treeman-r22-${C}-50mm.json&quot;
+  python3 tools/mesh_stats.py --stl &quot;$STL&quot; --json \
+    &gt; &quot;$P/notes/r22-${C}-stats.json&quot;
+  python3 tools/mesh_roughness.py --stl &quot;$STL&quot; --bands \
+    &gt; &quot;$P/notes/r22-${C}-roughness.txt&quot;
+  python3 tools/mesh_thin_parts.py --stl &quot;$STL&quot; --pitch 0.28 \
+    --fragile-mm 0.8 &gt; &quot;$P/notes/r22-${C}-thin-parts.txt&quot;
+  python3 tools/mesh_thin_parts.py --stl &quot;$STL&quot; --pitch 0.28 \
+    --fragile-mm 0.8 --gold &quot;${GOLD[$ARM]}&quot; \
+    &gt; &quot;$P/notes/r22-${C}-thin-parts-vs-meshy6.txt&quot;
+  python3 tools/mesh_thin_parts.py --stl &quot;$STL&quot; --pitch 0.28 --fragility \
+    &gt; &quot;$P/notes/r22-${C}-fragility.txt&quot;
+  python3 tools/mesh_handles.py --stl &quot;$STL&quot; --pitch 0.1 \
+    --close-mm 0.2,0.4,0.6,1.0,1.6 \
+    --label &quot;treeman-r22-${C}-50mm&quot; \
+    --out &quot;$P/notes/r22-handles/treeman-r22-${C}-50mm.json&quot;
+  python3 tools/stl_render.py --stl &quot;$STL&quot; \
+    --out-dir &quot;$P/generated/renders/round-22&quot; \
+    --stem &quot;treeman-r22-${C}-50mm&quot; --mode turnaround \
+    --azimuths 270,315,0,45,90,135,180,225 --elevation 12
+done
+tools/drive_sync.sh push &quot;$P/generated/renders/round-22&quot;</code></pre>
+<p>The four held Meshy-6 references also receive the handle screen, since it is the one measure their frozen R19/R21 reports do not contain, and the figures are meaningless except against a mesh run at the same settings. They receive no placement, no re-render, and no other recomputation:</p>
+<pre class="code"><code>for REF in \
+  &quot;$P/models/round-19/treeman-r19-a1-m12-clean-50mm&quot; \
+  &quot;$P/models/round-19/treeman-r19-a3-m6-clean-50mm&quot; \
+  &quot;$P/models/round-21/treeman-r21-a1-m2-clean-50mm&quot; \
+  &quot;$P/models/round-21/treeman-r21-a2-m8-clean-50mm&quot;; do
+  python3 tools/mesh_handles.py --stl &quot;${REF}.stl&quot; --pitch 0.1 \
+    --close-mm 0.2,0.4,0.6,1.0,1.6 \
+    --out &quot;$P/notes/r22-handles/$(basename &quot;$REF&quot;).json&quot;
+done</code></pre>
+<h4>Main-shell topology comparison</h4>
+<p>The runbook requires each output&#x27;s main-shell edge topology to match its source, and a change there fails the round. <code>mesh_validate.py</code> writes the output record but compares it with nothing, so that condition would otherwise live only in prose. This diffs the committed R20 source record against the newly written R22 output record — two independently produced records, neither derived from the other — and catches a quantization or export defect that moves main-shell edges without changing the whole-file booleans the placement verifier already covers.</p>
+<pre class="code"><code>python3 - &lt;&lt;&#x27;PY&#x27;
+import json
+import pathlib
+
+notes = pathlib.Path(&quot;projects/treeman-windmill/notes&quot;)
+sources = {
+    &quot;a1-m1&quot;: &quot;treeman-r20-clay-bright-grokq-m1-raw&quot;,
+    &quot;a1-m2&quot;: &quot;treeman-r20-clay-bright-grokq-m2-raw&quot;,
+    &quot;a1-m3&quot;: &quot;treeman-r20-clay-bright-grokq-m3-raw&quot;,
+    &quot;a1-m4&quot;: &quot;treeman-r20-clay-bright-grokq-m4-raw&quot;,
+    &quot;a2-m1&quot;: &quot;treeman-r20-clay-bright-flash31-m1-raw&quot;,
+    &quot;a2-m2&quot;: &quot;treeman-r20-clay-bright-flash31-m2-raw&quot;,
+    &quot;a2-m3&quot;: &quot;treeman-r20-clay-bright-flash31-m3-raw&quot;,
+    &quot;a2-m4&quot;: &quot;treeman-r20-clay-bright-flash31-m4-raw&quot;,
+    &quot;a3-m1&quot;: &quot;treeman-r20-clay-orig-grokq-m1-raw&quot;,
+    &quot;a3-m2&quot;: &quot;treeman-r20-clay-orig-grokq-m2-raw&quot;,
+    &quot;a3-m3&quot;: &quot;treeman-r20-clay-orig-grokq-m3-raw&quot;,
+    &quot;a3-m4&quot;: &quot;treeman-r20-clay-orig-grokq-m4-raw&quot;,
+}
+fields = (
+    &quot;main_component_open_edges&quot;,
+    &quot;main_component_non_manifold_edges&quot;,
+    &quot;main_component_watertight&quot;,
+    &quot;components&quot;,
+    &quot;component_faces&quot;,
+    &quot;faces&quot;,
+    &quot;winding_consistent&quot;,
+    &quot;degenerate_faces&quot;,
+    &quot;duplicate_faces&quot;,
+)
+failures = []
+for case, source in sorted(sources.items()):
+    src = json.loads((notes / f&quot;r20-mesh-validation/{source}.json&quot;).read_text())[&quot;mesh&quot;]
+    out = json.loads(
+        (notes / f&quot;r22-mesh-validation/treeman-r22-{case}-50mm.json&quot;).read_text()
+    )[&quot;mesh&quot;]
+    diffs = {f: (src[f], out[f]) for f in fields if src[f] != out[f]}
+    print(f&quot;{case}: {&#x27;OK&#x27; if not diffs else &#x27;FAIL &#x27; + json.dumps(diffs)}&quot;)
+    if diffs:
+        failures.append((case, diffs))
+if failures:
+    raise SystemExit(f&quot;main-shell topology changed under placement: {failures}&quot;)
+print(&quot;main-shell topology: OK (12 meshes, source vs output)&quot;)
+PY</code></pre>
+<p><code>component_faces</code> is included deliberately: it fails if a shard&#x27;s face count changed or a shard was dropped, which a bare component count would miss.</p>
+<h4>Applicability gate, before any comparison is drawn</h4>
+<p><code>mesh_handles.py</code> asserts no validity verdict, so the round applies its own. This runs after all sixteen handle reports exist and before the arm-level comparison; a non-zero exit stops the round.</p>
+<pre class="code"><code>python3 - &lt;&lt;&#x27;PY&#x27;
+import json
+import pathlib
+import statistics
+
+reports = sorted(
+    pathlib.Path(&quot;projects/treeman-windmill/notes/r22-handles&quot;).glob(&quot;*.json&quot;)
+)
+assert len(reports) == 16, f&quot;expected 16 handle reports, found {len(reports)}&quot;
+ratios = {}
+for path in reports:
+    data = json.loads(path.read_text())
+    ratios[data[&quot;label&quot;]] = data[&quot;fill_ratio&quot;]
+
+# Third condition, independent of the probe: every MEASURED mesh must have a
+# closed dominant shell in its own validation record. These are the twelve R22
+# placed outputs the handle reports were produced from — not the R20 sources,
+# whose records would stay clean if placement or export opened an output shell —
+# plus the four references, which are not re-placed and so use their own frozen
+# records.
+notes = pathlib.Path(&quot;projects/treeman-windmill/notes&quot;)
+records = {}
+for path in sorted((notes / &quot;r22-mesh-validation&quot;).glob(&quot;*.json&quot;)):
+    records[json.loads(path.read_text())[&quot;label&quot;]] = path
+for stem in (&quot;r19-a1-m12&quot;, &quot;r19-a3-m6&quot;, &quot;r21-a1-m2&quot;, &quot;r21-a2-m8&quot;):
+    path = notes / f&quot;{stem}-validation.json&quot;
+    records[json.loads(path.read_text())[&quot;label&quot;]] = path
+assert len(records) == 16, f&quot;expected 16 validation records, found {len(records)}&quot;
+# Bind the two sets: every measured mesh must have a record and vice versa.
+missing = sorted(set(ratios) ^ set(records))
+assert not missing, f&quot;handle reports and validation records disagree: {missing}&quot;
+
+median = statistics.median(ratios.values())
+failures = []
+for label, ratio in sorted(ratios.items()):
+    reasons = []
+    if ratio &lt;= 5.0:
+        reasons.append(f&quot;fill_ratio {ratio} &lt;= 5.0 floor (a leaked fill reads 1.0)&quot;)
+    if ratio &lt; median / 2:
+        reasons.append(f&quot;fill_ratio {ratio} below half the set median {median}&quot;)
+    print(f&quot;{label}: fill_ratio {ratio}&quot;
+          + (f&quot;  FAIL: {&#x27;; &#x27;.join(reasons)}&quot; if reasons else &quot;&quot;))
+    if reasons:
+        failures.append((label, reasons))
+
+for label, path in sorted(records.items()):
+    open_edges = json.loads(path.read_text())[&quot;mesh&quot;][&quot;main_component_open_edges&quot;]
+    if open_edges != 0:
+        print(f&quot;{label}: main_component_open_edges {open_edges}  FAIL&quot;)
+        failures.append((label, [f&quot;main_component_open_edges {open_edges} != 0&quot;]))
+
+if failures:
+    raise SystemExit(f&quot;applicability gate failed: {failures}&quot;)
+print(f&quot;applicability gate: OK (16 records, median fill_ratio {median})&quot;)
+PY</code></pre>
+<p>The third condition reads validation records rather than the probe, so it is independent of everything above, and it EXECUTES rather than being asserted in prose. It reads the records of the meshes actually MEASURED — the twelve R22 placed outputs, not the R20 sources — so an output whose shell opened during placement or export cannot hide behind a clean source record. The symmetric difference assertion binds the two sets, so a missing or surplus report on either side is an error rather than a silently skipped mesh. Record the gate&#x27;s output in <code>rounds.md</code> whether it passes or fails.</p>
+<p>Those reference reports are new R22 evidence about frozen R19/R21 artifacts. They are written under <code>r22-handles/</code> and appended as R22 comparison-evidence records; no R19 or R21 record, report, or artifact is edited.</p>
+<h4>Records and handoff</h4>
+<p>Persist the twelve placed artifacts with their <code>clean</code> metadata exactly as R19 and R21 did — high-pass values parsed from the roughness reports, headline fields merged independently by <code>mesh_stats.py</code> — then extend each record&#x27;s <code>clean</code> block with its handle-spectrum summary and validate the stores:</p>
+<pre class="code"><code>python3 tools/repo_guards.py records</code></pre>
+<p>Fail the round rather than presenting a comparison if any placement loses its source&#x27;s component/winding/main-shell state, misses 50.00 mm height or Z=0 flooring, exceeds the affine-coordinate tolerance, silently drops a source shard, or if a render shows an unintended change. Record results in <code>rounds.md</code>, append the structured verdicts to <code>reviews.jsonl</code>, and build the <code>r22-panel</code> review with a live viewer per mesh. This round is private by default; publishing its panel or any placed STL is a separate per-review decision and the standing runbook exception does not authorize it.</p></div></details>
+</section>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+<template id="in-0"><h2>treeman-r20-clay-bright-grokq-m1-raw · treeman-r20-clay-bright-grokq-m1-raw-turnaround</h2><p class="gmeta">meshy-7 · 2026-08-12</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/ae8fee06c92130b9.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ffc50334f97bf386.jpg" data-cap="treeman-r18-crop-bright-grokq-front.png" alt="treeman-r18-crop-bright-grokq-front.png"><figcaption>treeman-r18-crop-bright-grokq-front.png</figcaption></figure><figure><img src="../../../../assets/b91d3c626db68a1d.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/db391e18e64be382.jpg" data-cap="treeman-r18-crop-bright-grokq-side1.png" alt="treeman-r18-crop-bright-grokq-side1.png"><figcaption>treeman-r18-crop-bright-grokq-side1.png</figcaption></figure><figure><img src="../../../../assets/af1aea919766411e.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/cd17032eccb2dc9d.jpg" data-cap="treeman-r18-crop-bright-grokq-back.png" alt="treeman-r18-crop-bright-grokq-back.png"><figcaption>treeman-r18-crop-bright-grokq-back.png</figcaption></figure><figure><img src="../../../../assets/9b2b3a7d4f354cd4.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/3c74b5eb8c353580.jpg" data-cap="treeman-r18-crop-bright-grokq-side2.png" alt="treeman-r18-crop-bright-grokq-side2.png"><figcaption>treeman-r18-crop-bright-grokq-side2.png</figcaption></figure></div></template>
+<template id="in-1"><h2>treeman-r20-clay-bright-grokq-m2-raw · treeman-r20-clay-bright-grokq-m2-raw-turnaround</h2><p class="gmeta">meshy-7 · 2026-08-12</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/ae8fee06c92130b9.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ffc50334f97bf386.jpg" data-cap="treeman-r18-crop-bright-grokq-front.png" alt="treeman-r18-crop-bright-grokq-front.png"><figcaption>treeman-r18-crop-bright-grokq-front.png</figcaption></figure><figure><img src="../../../../assets/b91d3c626db68a1d.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/db391e18e64be382.jpg" data-cap="treeman-r18-crop-bright-grokq-side1.png" alt="treeman-r18-crop-bright-grokq-side1.png"><figcaption>treeman-r18-crop-bright-grokq-side1.png</figcaption></figure><figure><img src="../../../../assets/af1aea919766411e.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/cd17032eccb2dc9d.jpg" data-cap="treeman-r18-crop-bright-grokq-back.png" alt="treeman-r18-crop-bright-grokq-back.png"><figcaption>treeman-r18-crop-bright-grokq-back.png</figcaption></figure><figure><img src="../../../../assets/9b2b3a7d4f354cd4.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/3c74b5eb8c353580.jpg" data-cap="treeman-r18-crop-bright-grokq-side2.png" alt="treeman-r18-crop-bright-grokq-side2.png"><figcaption>treeman-r18-crop-bright-grokq-side2.png</figcaption></figure></div></template>
+<template id="in-2"><h2>treeman-r20-clay-bright-grokq-m3-raw · treeman-r20-clay-bright-grokq-m3-raw-turnaround</h2><p class="gmeta">meshy-7 · 2026-08-12</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/ae8fee06c92130b9.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ffc50334f97bf386.jpg" data-cap="treeman-r18-crop-bright-grokq-front.png" alt="treeman-r18-crop-bright-grokq-front.png"><figcaption>treeman-r18-crop-bright-grokq-front.png</figcaption></figure><figure><img src="../../../../assets/b91d3c626db68a1d.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/db391e18e64be382.jpg" data-cap="treeman-r18-crop-bright-grokq-side1.png" alt="treeman-r18-crop-bright-grokq-side1.png"><figcaption>treeman-r18-crop-bright-grokq-side1.png</figcaption></figure><figure><img src="../../../../assets/af1aea919766411e.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/cd17032eccb2dc9d.jpg" data-cap="treeman-r18-crop-bright-grokq-back.png" alt="treeman-r18-crop-bright-grokq-back.png"><figcaption>treeman-r18-crop-bright-grokq-back.png</figcaption></figure><figure><img src="../../../../assets/9b2b3a7d4f354cd4.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/3c74b5eb8c353580.jpg" data-cap="treeman-r18-crop-bright-grokq-side2.png" alt="treeman-r18-crop-bright-grokq-side2.png"><figcaption>treeman-r18-crop-bright-grokq-side2.png</figcaption></figure></div></template>
+<template id="in-3"><h2>treeman-r20-clay-bright-grokq-m4-raw · treeman-r20-clay-bright-grokq-m4-raw-turnaround</h2><p class="gmeta">meshy-7 · 2026-08-12</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/ae8fee06c92130b9.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ffc50334f97bf386.jpg" data-cap="treeman-r18-crop-bright-grokq-front.png" alt="treeman-r18-crop-bright-grokq-front.png"><figcaption>treeman-r18-crop-bright-grokq-front.png</figcaption></figure><figure><img src="../../../../assets/b91d3c626db68a1d.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/db391e18e64be382.jpg" data-cap="treeman-r18-crop-bright-grokq-side1.png" alt="treeman-r18-crop-bright-grokq-side1.png"><figcaption>treeman-r18-crop-bright-grokq-side1.png</figcaption></figure><figure><img src="../../../../assets/af1aea919766411e.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/cd17032eccb2dc9d.jpg" data-cap="treeman-r18-crop-bright-grokq-back.png" alt="treeman-r18-crop-bright-grokq-back.png"><figcaption>treeman-r18-crop-bright-grokq-back.png</figcaption></figure><figure><img src="../../../../assets/9b2b3a7d4f354cd4.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/3c74b5eb8c353580.jpg" data-cap="treeman-r18-crop-bright-grokq-side2.png" alt="treeman-r18-crop-bright-grokq-side2.png"><figcaption>treeman-r18-crop-bright-grokq-side2.png</figcaption></figure></div></template>
+<template id="in-4"><h2>treeman-r19-a1-m12-clean-50mm · treeman-r19-a1-m12-clean-50mm-turnaround</h2><p class="gmeta">? · 2026-08-11</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-5"><h2>treeman-r21-a1-m2-clean-50mm · treeman-r21-a1-m2-clean-50mm-turnaround</h2><p class="gmeta">? · 2026-08-12</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-6"><h2>treeman-r20-clay-bright-flash31-m1-raw · treeman-r20-clay-bright-flash31-m1-raw-turnaround</h2><p class="gmeta">meshy-7 · 2026-08-12</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/3a68b974bd5b0941.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/e2f83d04c4401837.jpg" data-cap="treeman-r18-crop-bright-flash31-front.png" alt="treeman-r18-crop-bright-flash31-front.png"><figcaption>treeman-r18-crop-bright-flash31-front.png</figcaption></figure><figure><img src="../../../../assets/130ed55f5618c9f5.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/12b887cb023527c3.jpg" data-cap="treeman-r18-crop-bright-flash31-side1.png" alt="treeman-r18-crop-bright-flash31-side1.png"><figcaption>treeman-r18-crop-bright-flash31-side1.png</figcaption></figure><figure><img src="../../../../assets/aa39a13c830326a3.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/e3f332bae337ee8e.jpg" data-cap="treeman-r18-crop-bright-flash31-back.png" alt="treeman-r18-crop-bright-flash31-back.png"><figcaption>treeman-r18-crop-bright-flash31-back.png</figcaption></figure><figure><img src="../../../../assets/86d252a072a40205.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/f637729a5f67f69b.jpg" data-cap="treeman-r18-crop-bright-flash31-side2.png" alt="treeman-r18-crop-bright-flash31-side2.png"><figcaption>treeman-r18-crop-bright-flash31-side2.png</figcaption></figure></div></template>
+<template id="in-7"><h2>treeman-r20-clay-bright-flash31-m2-raw · treeman-r20-clay-bright-flash31-m2-raw-turnaround</h2><p class="gmeta">meshy-7 · 2026-08-12</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/3a68b974bd5b0941.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/e2f83d04c4401837.jpg" data-cap="treeman-r18-crop-bright-flash31-front.png" alt="treeman-r18-crop-bright-flash31-front.png"><figcaption>treeman-r18-crop-bright-flash31-front.png</figcaption></figure><figure><img src="../../../../assets/130ed55f5618c9f5.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/12b887cb023527c3.jpg" data-cap="treeman-r18-crop-bright-flash31-side1.png" alt="treeman-r18-crop-bright-flash31-side1.png"><figcaption>treeman-r18-crop-bright-flash31-side1.png</figcaption></figure><figure><img src="../../../../assets/aa39a13c830326a3.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/e3f332bae337ee8e.jpg" data-cap="treeman-r18-crop-bright-flash31-back.png" alt="treeman-r18-crop-bright-flash31-back.png"><figcaption>treeman-r18-crop-bright-flash31-back.png</figcaption></figure><figure><img src="../../../../assets/86d252a072a40205.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/f637729a5f67f69b.jpg" data-cap="treeman-r18-crop-bright-flash31-side2.png" alt="treeman-r18-crop-bright-flash31-side2.png"><figcaption>treeman-r18-crop-bright-flash31-side2.png</figcaption></figure></div></template>
+<template id="in-8"><h2>treeman-r20-clay-bright-flash31-m3-raw · treeman-r20-clay-bright-flash31-m3-raw-turnaround</h2><p class="gmeta">meshy-7 · 2026-08-12</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/3a68b974bd5b0941.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/e2f83d04c4401837.jpg" data-cap="treeman-r18-crop-bright-flash31-front.png" alt="treeman-r18-crop-bright-flash31-front.png"><figcaption>treeman-r18-crop-bright-flash31-front.png</figcaption></figure><figure><img src="../../../../assets/130ed55f5618c9f5.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/12b887cb023527c3.jpg" data-cap="treeman-r18-crop-bright-flash31-side1.png" alt="treeman-r18-crop-bright-flash31-side1.png"><figcaption>treeman-r18-crop-bright-flash31-side1.png</figcaption></figure><figure><img src="../../../../assets/aa39a13c830326a3.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/e3f332bae337ee8e.jpg" data-cap="treeman-r18-crop-bright-flash31-back.png" alt="treeman-r18-crop-bright-flash31-back.png"><figcaption>treeman-r18-crop-bright-flash31-back.png</figcaption></figure><figure><img src="../../../../assets/86d252a072a40205.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/f637729a5f67f69b.jpg" data-cap="treeman-r18-crop-bright-flash31-side2.png" alt="treeman-r18-crop-bright-flash31-side2.png"><figcaption>treeman-r18-crop-bright-flash31-side2.png</figcaption></figure></div></template>
+<template id="in-9"><h2>treeman-r20-clay-bright-flash31-m4-raw · treeman-r20-clay-bright-flash31-m4-raw-turnaround</h2><p class="gmeta">meshy-7 · 2026-08-12</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/3a68b974bd5b0941.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/e2f83d04c4401837.jpg" data-cap="treeman-r18-crop-bright-flash31-front.png" alt="treeman-r18-crop-bright-flash31-front.png"><figcaption>treeman-r18-crop-bright-flash31-front.png</figcaption></figure><figure><img src="../../../../assets/130ed55f5618c9f5.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/12b887cb023527c3.jpg" data-cap="treeman-r18-crop-bright-flash31-side1.png" alt="treeman-r18-crop-bright-flash31-side1.png"><figcaption>treeman-r18-crop-bright-flash31-side1.png</figcaption></figure><figure><img src="../../../../assets/aa39a13c830326a3.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/e3f332bae337ee8e.jpg" data-cap="treeman-r18-crop-bright-flash31-back.png" alt="treeman-r18-crop-bright-flash31-back.png"><figcaption>treeman-r18-crop-bright-flash31-back.png</figcaption></figure><figure><img src="../../../../assets/86d252a072a40205.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/f637729a5f67f69b.jpg" data-cap="treeman-r18-crop-bright-flash31-side2.png" alt="treeman-r18-crop-bright-flash31-side2.png"><figcaption>treeman-r18-crop-bright-flash31-side2.png</figcaption></figure></div></template>
+<template id="in-10"><h2>treeman-r21-a2-m8-clean-50mm · treeman-r21-a2-m8-clean-50mm-turnaround</h2><p class="gmeta">? · 2026-08-12</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-11"><h2>treeman-r20-clay-orig-grokq-m1-raw · treeman-r20-clay-orig-grokq-m1-raw-turnaround</h2><p class="gmeta">meshy-7 · 2026-08-12</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/50fddc93940dd6bd.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b4ab0156f4eb208d.jpg" data-cap="treeman-r18-crop-orig-grokq-front.png" alt="treeman-r18-crop-orig-grokq-front.png"><figcaption>treeman-r18-crop-orig-grokq-front.png</figcaption></figure><figure><img src="../../../../assets/b949c40ec4c245d9.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/9f916a0ebdf5cfa9.jpg" data-cap="treeman-r18-crop-orig-grokq-side1.png" alt="treeman-r18-crop-orig-grokq-side1.png"><figcaption>treeman-r18-crop-orig-grokq-side1.png</figcaption></figure><figure><img src="../../../../assets/e0d944f214e4c2ce.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/d251946c30f1432a.jpg" data-cap="treeman-r18-crop-orig-grokq-back.png" alt="treeman-r18-crop-orig-grokq-back.png"><figcaption>treeman-r18-crop-orig-grokq-back.png</figcaption></figure><figure><img src="../../../../assets/026a6dbabfdf7eeb.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/7a5856e59c4048a8.jpg" data-cap="treeman-r18-crop-orig-grokq-side2.png" alt="treeman-r18-crop-orig-grokq-side2.png"><figcaption>treeman-r18-crop-orig-grokq-side2.png</figcaption></figure></div></template>
+<template id="in-12"><h2>treeman-r20-clay-orig-grokq-m2-raw · treeman-r20-clay-orig-grokq-m2-raw-turnaround</h2><p class="gmeta">meshy-7 · 2026-08-12</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/50fddc93940dd6bd.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b4ab0156f4eb208d.jpg" data-cap="treeman-r18-crop-orig-grokq-front.png" alt="treeman-r18-crop-orig-grokq-front.png"><figcaption>treeman-r18-crop-orig-grokq-front.png</figcaption></figure><figure><img src="../../../../assets/b949c40ec4c245d9.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/9f916a0ebdf5cfa9.jpg" data-cap="treeman-r18-crop-orig-grokq-side1.png" alt="treeman-r18-crop-orig-grokq-side1.png"><figcaption>treeman-r18-crop-orig-grokq-side1.png</figcaption></figure><figure><img src="../../../../assets/e0d944f214e4c2ce.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/d251946c30f1432a.jpg" data-cap="treeman-r18-crop-orig-grokq-back.png" alt="treeman-r18-crop-orig-grokq-back.png"><figcaption>treeman-r18-crop-orig-grokq-back.png</figcaption></figure><figure><img src="../../../../assets/026a6dbabfdf7eeb.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/7a5856e59c4048a8.jpg" data-cap="treeman-r18-crop-orig-grokq-side2.png" alt="treeman-r18-crop-orig-grokq-side2.png"><figcaption>treeman-r18-crop-orig-grokq-side2.png</figcaption></figure></div></template>
+<template id="in-13"><h2>treeman-r20-clay-orig-grokq-m3-raw · treeman-r20-clay-orig-grokq-m3-raw-turnaround</h2><p class="gmeta">meshy-7 · 2026-08-12</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/50fddc93940dd6bd.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b4ab0156f4eb208d.jpg" data-cap="treeman-r18-crop-orig-grokq-front.png" alt="treeman-r18-crop-orig-grokq-front.png"><figcaption>treeman-r18-crop-orig-grokq-front.png</figcaption></figure><figure><img src="../../../../assets/b949c40ec4c245d9.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/9f916a0ebdf5cfa9.jpg" data-cap="treeman-r18-crop-orig-grokq-side1.png" alt="treeman-r18-crop-orig-grokq-side1.png"><figcaption>treeman-r18-crop-orig-grokq-side1.png</figcaption></figure><figure><img src="../../../../assets/e0d944f214e4c2ce.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/d251946c30f1432a.jpg" data-cap="treeman-r18-crop-orig-grokq-back.png" alt="treeman-r18-crop-orig-grokq-back.png"><figcaption>treeman-r18-crop-orig-grokq-back.png</figcaption></figure><figure><img src="../../../../assets/026a6dbabfdf7eeb.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/7a5856e59c4048a8.jpg" data-cap="treeman-r18-crop-orig-grokq-side2.png" alt="treeman-r18-crop-orig-grokq-side2.png"><figcaption>treeman-r18-crop-orig-grokq-side2.png</figcaption></figure></div></template>
+<template id="in-14"><h2>treeman-r20-clay-orig-grokq-m4-raw · treeman-r20-clay-orig-grokq-m4-raw-turnaround</h2><p class="gmeta">meshy-7 · 2026-08-12</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/50fddc93940dd6bd.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b4ab0156f4eb208d.jpg" data-cap="treeman-r18-crop-orig-grokq-front.png" alt="treeman-r18-crop-orig-grokq-front.png"><figcaption>treeman-r18-crop-orig-grokq-front.png</figcaption></figure><figure><img src="../../../../assets/b949c40ec4c245d9.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/9f916a0ebdf5cfa9.jpg" data-cap="treeman-r18-crop-orig-grokq-side1.png" alt="treeman-r18-crop-orig-grokq-side1.png"><figcaption>treeman-r18-crop-orig-grokq-side1.png</figcaption></figure><figure><img src="../../../../assets/e0d944f214e4c2ce.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/d251946c30f1432a.jpg" data-cap="treeman-r18-crop-orig-grokq-back.png" alt="treeman-r18-crop-orig-grokq-back.png"><figcaption>treeman-r18-crop-orig-grokq-back.png</figcaption></figure><figure><img src="../../../../assets/026a6dbabfdf7eeb.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/7a5856e59c4048a8.jpg" data-cap="treeman-r18-crop-orig-grokq-side2.png" alt="treeman-r18-crop-orig-grokq-side2.png"><figcaption>treeman-r18-crop-orig-grokq-side2.png</figcaption></figure></div></template>
+<template id="in-15"><h2>treeman-r19-a3-m6-clean-50mm · treeman-r19-a3-m6-clean-50mm-turnaround</h2><p class="gmeta">? · 2026-08-11</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbRefRow=document.getElementById('lb-refrow'),lbRef=document.getElementById('lb-ref'),
+      lbCopyId=document.getElementById('lb-copy-id'),lbCopyLink=document.getElementById('lb-copy-link'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body'),
+      developerMode=document.getElementById('developer-mode');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+function setDeveloperMode(enabled){
+  document.querySelectorAll('[data-developer]').forEach(function(node){node.hidden=!enabled;});
+  document.documentElement.dataset.developer=enabled?'true':'false';
+  if(developerMode)developerMode.setAttribute('aria-checked',enabled?'true':'false');
+}
+if(developerMode){
+  developerMode.addEventListener('change',function(){setDeveloperMode(developerMode.checked);});
+  setDeveloperMode(false);
+}
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  const ref=z.dataset.ref||'',anchor=z.dataset.anchor||'';
+  lbRefRow.hidden=!(ref&&anchor);
+  if(ref&&anchor){
+    lbRef.textContent='#'+ref;
+    lbCopyId.dataset.copyId='#'+ref;
+    lbCopyLink.dataset.copy=anchor;
+  }
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy a card's short display id, or copy/share its deep link. The URL is this
+// page plus the card's #id anchor, so a recipient lands scrolled to (and
+// highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  const ci=e.target.closest('[data-copy-id]');
+  if(ci){copyText(ci.dataset.copyId,ci);e.preventDefault();return;}
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+
+document.addEventListener('click', function (e) {
+  var b = e.target.closest('[data-copy]');
+  if (!b) return;
+  var pre = b.closest('details').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(function () {
+    var was = b.textContent;
+    b.textContent = 'Copied'; b.classList.add('done');
+    setTimeout(function () { b.textContent = was; b.classList.remove('done'); }, 1600);
+  });
+});
+</script>
+</body></html>
