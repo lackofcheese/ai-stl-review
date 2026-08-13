@@ -7,7 +7,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+REPO_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 from validate_site import validate  # noqa: E402
 
@@ -131,64 +132,38 @@ jobs:
 
     def test_only_fixed_main_push_discord_wakeup_may_access_its_token(self) -> None:
         workflow = self.root / ".github/workflows/discord-wakeup.yml"
-        workflow.write_text(
-            """name: Wake Discord reconciliation
-
-on:
-  push:
-    branches:
-      - main
-
-permissions:
-  contents: read
-
-jobs:
-  wake-worker:
-    steps:
-      - name: Dispatch and prove exact worker run
-        env:
-          AI_STL_DISCORD_ACTIONS_TOKEN: ${{ secrets.AI_STL_DISCORD_ACTIONS_TOKEN }}
-        run: python -B scripts/discord_wakeup.py
-""",
-            encoding="utf-8",
-        )
+        canonical = (REPO_ROOT / ".github/workflows/discord-wakeup.yml").read_text()
+        workflow.write_text(canonical, encoding="utf-8")
+        helper = self.root / "scripts/discord_wakeup.py"
+        helper.parent.mkdir()
+        helper.write_bytes((REPO_ROOT / "scripts/discord_wakeup.py").read_bytes())
         self.assertEqual(validate(self.root), [])
 
-        workflow.write_text(
-            workflow.read_text().replace("      - main", "      - feature"),
-            encoding="utf-8",
-        )
-        self.assertTrue(any("must not access secrets" in error for error in validate(self.root)))
-
-        workflow.write_text(
-            workflow.read_text()
-            .replace("      - feature", "      - main")
-            .replace("\npermissions:", "\n  workflow_dispatch:\n\npermissions:"),
-            encoding="utf-8",
-        )
-        self.assertTrue(any("must not access secrets" in error for error in validate(self.root)))
-
-        workflow.write_text(
-            workflow.read_text()
-            .replace("  workflow_dispatch:\n\n", "")
-            .replace(
-                "\npermissions:",
-                "\non:\n  pull_request:\n\npermissions:",
+        mutations = (
+            canonical.replace("      - main", "      - feature"),
+            canonical.replace("\npermissions:", "\n  workflow_dispatch:\n\npermissions:"),
+            canonical.replace(
+                "actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+                "attacker/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
             ),
-            encoding="utf-8",
-        )
-        self.assertTrue(any("must not access secrets" in error for error in validate(self.root)))
-
-        workflow.write_text(
-            workflow.read_text()
-            .replace("on:\n  pull_request:\n\n", "")
-            .replace(
+            canonical.replace(
+                "python -B scripts/discord_wakeup.py",
+                "python -B scripts/exfiltrate.py",
+            ),
+            canonical.replace(
                 "${{ secrets.AI_STL_DISCORD_ACTIONS_TOKEN }}",
                 "${{ secrets.UNRELATED_TOKEN }}",
             ),
-            encoding="utf-8",
         )
-        self.assertTrue(any("must not access secrets" in error for error in validate(self.root)))
+        for mutated in mutations:
+            workflow.write_text(mutated, encoding="utf-8")
+            self.assertTrue(any(
+                "must not access secrets" in error for error in validate(self.root)))
+
+        workflow.write_text(canonical, encoding="utf-8")
+        helper.write_bytes(helper.read_bytes() + b"# changed\n")
+        self.assertTrue(any(
+            "must not access secrets" in error for error in validate(self.root)))
 
     def test_cross_page_fragment_is_reported(self) -> None:
         page = self.root / "reviews/team/character/r1-runbook/index.html"

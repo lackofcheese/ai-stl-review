@@ -398,6 +398,14 @@ def parser():
     return result
 
 
+def public_success(wakeup, outcome):
+    """Return the public-log-safe proof of one successful worker wakeup."""
+    if (outcome.get('status') != 'success'
+            or outcome.get('request_id') != wakeup.request_id):
+        raise WakeupError('worker success does not match the exact wakeup request')
+    return {'request_id': wakeup.request_id, 'status': 'success'}
+
+
 def main(argv=None):
     args = parser().parse_args(argv)
     try:
@@ -416,7 +424,7 @@ def main(argv=None):
             wakeup, timeout=args.resolve_timeout)
         outcome = client.wait_for_success(
             wakeup, worker_run, timeout=args.completion_timeout)
-        json.dump({'request': wakeup.inputs(), 'worker_run': outcome}, sys.stdout,
+        json.dump(public_success(wakeup, outcome), sys.stdout,
                   ensure_ascii=False, indent=2, sort_keys=True)
         sys.stdout.write('\n')
         return 0

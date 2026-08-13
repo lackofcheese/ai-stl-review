@@ -1,3 +1,4 @@
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -57,6 +58,28 @@ class WakeupRequestTests(unittest.TestCase):
                 source_repository='lackofcheese/ai-stl-review',
                 source_commit=COMMIT, source_workflow_run_id=True,
                 requested_at=NOW)
+
+    def test_public_success_redacts_private_worker_identity(self):
+        request = discord_wakeup.WakeupRequest.create(
+            source_repository='lackofcheese/ai-stl-review',
+            source_commit=COMMIT, source_workflow_run_id=42,
+            requested_at=NOW)
+        outcome = {
+            'status': 'success', 'request_id': request.request_id,
+            'run_id': 123, 'run_attempt': 2, 'head_sha': HEAD,
+            'url': 'https://github.com/private/actions/runs/123',
+            'dispatched': True,
+        }
+        public = discord_wakeup.public_success(request, outcome)
+        self.assertEqual(public, {
+            'request_id': request.request_id, 'status': 'success'})
+        rendered = json.dumps(public)
+        for private in ('run_id', 'run_attempt', 'head_sha', 'url', 'dispatched'):
+            self.assertNotIn(private, rendered)
+
+        outcome['request_id'] = 'discord-wakeup-' + '0' * 64
+        with self.assertRaisesRegex(discord_wakeup.WakeupError, 'does not match'):
+            discord_wakeup.public_success(request, outcome)
 
 
 class ActionsClientTests(unittest.TestCase):
@@ -286,6 +309,18 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertNotIn('    paths:', workflow)
         self.assertNotIn('workflow_dispatch:', workflow)
         self.assertIn('permissions:\n  contents: read', workflow)
+        self.assertIn(
+            'uses: actions/checkout@'
+            'de0fac2e4500dabe0009e67214ff5f5447ce83dd', workflow)
+        helper_digest = hashlib.sha256(
+            (ROOT / 'scripts/discord_wakeup.py').read_bytes()).hexdigest()
+        verification = (
+            f'echo "{helper_digest}  scripts/discord_wakeup.py"\n'
+            '          | sha256sum --check --strict -')
+        self.assertIn(verification, workflow)
+        self.assertLess(
+            workflow.index('      - name: Verify fixed wakeup helper'),
+            workflow.index('      - name: Dispatch and prove exact worker run'))
         dispatch = workflow.split(
             '      - name: Dispatch and prove exact worker run\n', 1)[1]
         self.assertIn('        env:\n          AI_STL_DISCORD_ACTIONS_TOKEN:',
