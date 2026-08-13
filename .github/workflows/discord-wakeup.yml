@@ -1,0 +1,35 @@
+name: Wake Discord reconciliation
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  wake-worker:
+    name: Dispatch exact worker wakeup
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Verify fixed wakeup helper
+        run: >-
+          echo "4524677cff6a83640c36f4f5e08ac14c2b862f3f3100d2e0828f2f9ce52016d6  scripts/discord_wakeup.py"
+          | sha256sum --check --strict -
+
+      - name: Dispatch and prove exact worker run
+        env:
+          AI_STL_DISCORD_ACTIONS_TOKEN: ${{ secrets.AI_STL_DISCORD_ACTIONS_TOKEN }}
+        run: >-
+          python -I -B scripts/discord_wakeup.py
+          --source-repository "$GITHUB_REPOSITORY"
+          --source-commit "$GITHUB_SHA"
+          --source-workflow-run-id "$GITHUB_RUN_ID"
+          --requested-at "$(date +%s)"

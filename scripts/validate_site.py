@@ -39,6 +39,57 @@ ACTION_PERMISSION = re.compile(
     r"id-token|issues|models|packages|pages|pull-requests|security-events|statuses):\s*"
     r"([a-z-]+)\s*$"
 )
+SECRET_REFERENCE = re.compile(r"\bsecrets\b", re.IGNORECASE)
+DISCORD_WAKEUP_SCRIPT_SHA256 = (
+    "4524677cff6a83640c36f4f5e08ac14c2b862f3f3100d2e0828f2f9ce52016d6"
+)
+DISCORD_WAKEUP_WORKFLOW = """name: Wake Discord reconciliation
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  wake-worker:
+    name: Dispatch exact worker wakeup
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Verify fixed wakeup helper
+        run: >-
+          echo "4524677cff6a83640c36f4f5e08ac14c2b862f3f3100d2e0828f2f9ce52016d6  scripts/discord_wakeup.py"
+          | sha256sum --check --strict -
+
+      - name: Dispatch and prove exact worker run
+        env:
+          AI_STL_DISCORD_ACTIONS_TOKEN: ${{ secrets.AI_STL_DISCORD_ACTIONS_TOKEN }}
+        run: >-
+          python -I -B scripts/discord_wakeup.py
+          --source-repository "$GITHUB_REPOSITORY"
+          --source-commit "$GITHUB_SHA"
+          --source-workflow-run-id "$GITHUB_RUN_ID"
+          --requested-at "$(date +%s)"
+"""
+
+
+def _allows_discord_wakeup_secret(root: Path, path: Path, text: str) -> bool:
+    """Allow only the byte-exact workflow and helper that receive the token."""
+    if path.name != "discord-wakeup.yml" or text != DISCORD_WAKEUP_WORKFLOW:
+        return False
+    try:
+        helper = (root / "scripts" / "discord_wakeup.py").read_bytes()
+    except OSError:
+        return False
+    return hashlib.sha256(helper).hexdigest() == DISCORD_WAKEUP_SCRIPT_SHA256
 
 
 class DuplicateJsonKey(ValueError):
@@ -498,8 +549,18 @@ def _validate_workflows(root: Path, errors: list[str]) -> None:
         text = path.read_text(encoding="utf-8")
         if "pull_request_target:" in text:
             errors.append(f"{label}: pull_request_target is forbidden for public PR validation")
-        if re.search(r"\$\{\{[^}]*\bsecrets\s*(?:\.|\[)", text, re.IGNORECASE):
-            errors.append(f"{label}: pull-request workflows must not access secrets")
+        if "\\" in text:
+            errors.append(
+                f"{label}: workflows must not access secrets via YAML escape "
+                "or continuation forms"
+            )
+        if SECRET_REFERENCE.search(text) and not _allows_discord_wakeup_secret(
+            root, path, text
+        ):
+            errors.append(
+                f"{label}: workflows must not access secrets outside the fixed "
+                "main-push Discord wakeup"
+            )
         if AI_WORKFLOW.search(text):
             errors.append(f"{label}: automatic AI/LLM invocation is forbidden in this public repository")
         if not re.search(r"(?m)^permissions:\s*\n\s{2}contents:\s*read\s*$", text):
