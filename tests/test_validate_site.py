@@ -147,8 +147,8 @@ jobs:
                 "attacker/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd",
             ),
             canonical.replace(
-                "python -B scripts/discord_wakeup.py",
-                "python -B scripts/exfiltrate.py",
+                "python -I -B scripts/discord_wakeup.py",
+                "python -I -B scripts/exfiltrate.py",
             ),
             canonical.replace(
                 "${{ secrets.AI_STL_DISCORD_ACTIONS_TOKEN }}",
@@ -158,15 +158,22 @@ jobs:
                 "${{ secrets.AI_STL_DISCORD_ACTIONS_TOKEN }}",
                 "${{ toJSON(secrets) }}",
             ).replace(
-                "python -B scripts/discord_wakeup.py",
-                "python -B scripts/exfiltrate.py",
+                "python -I -B scripts/discord_wakeup.py",
+                "python -I -B scripts/exfiltrate.py",
             ),
             canonical.replace(
                 "${{ secrets.AI_STL_DISCORD_ACTIONS_TOKEN }}",
                 "${{ format('{0}', secrets.AI_STL_DISCORD_ACTIONS_TOKEN) }}",
             ).replace(
-                "python -B scripts/discord_wakeup.py",
-                "python -B scripts/exfiltrate.py",
+                "python -I -B scripts/discord_wakeup.py",
+                "python -I -B scripts/exfiltrate.py",
+            ),
+            canonical.replace(
+                "${{ secrets.AI_STL_DISCORD_ACTIONS_TOKEN }}",
+                '"${{ \\u0073ecrets.AI_STL_DISCORD_ACTIONS_TOKEN }}"',
+            ).replace(
+                "python -I -B scripts/discord_wakeup.py",
+                "python -I -B scripts/exfiltrate.py",
             ),
         )
         for mutated in mutations:

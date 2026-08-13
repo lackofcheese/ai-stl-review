@@ -28,7 +28,7 @@ jobs:
         env:
           AI_STL_DISCORD_ACTIONS_TOKEN: ${{ secrets.AI_STL_DISCORD_ACTIONS_TOKEN }}
         run: >-
-          python -B scripts/discord_wakeup.py
+          python -I -B scripts/discord_wakeup.py
           --source-repository "$GITHUB_REPOSITORY"
           --source-commit "$GITHUB_SHA"
           --source-workflow-run-id "$GITHUB_RUN_ID"

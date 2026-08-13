@@ -73,7 +73,7 @@ jobs:
         env:
           AI_STL_DISCORD_ACTIONS_TOKEN: ${{ secrets.AI_STL_DISCORD_ACTIONS_TOKEN }}
         run: >-
-          python -B scripts/discord_wakeup.py
+          python -I -B scripts/discord_wakeup.py
           --source-repository "$GITHUB_REPOSITORY"
           --source-commit "$GITHUB_SHA"
           --source-workflow-run-id "$GITHUB_RUN_ID"
@@ -549,6 +549,11 @@ def _validate_workflows(root: Path, errors: list[str]) -> None:
         text = path.read_text(encoding="utf-8")
         if "pull_request_target:" in text:
             errors.append(f"{label}: pull_request_target is forbidden for public PR validation")
+        if "\\" in text:
+            errors.append(
+                f"{label}: workflows must not access secrets via YAML escape "
+                "or continuation forms"
+            )
         if SECRET_REFERENCE.search(text) and not _allows_discord_wakeup_secret(
             root, path, text
         ):

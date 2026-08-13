@@ -1,7 +1,11 @@
 import hashlib
 import json
+import os
 from pathlib import Path
+import shutil
+import subprocess
 import sys
+import tempfile
 import unittest
 
 
@@ -34,6 +38,31 @@ def run_payload(request_id, *, run_id=123, run_attempt=1, status='queued',
 
 
 class WakeupRequestTests(unittest.TestCase):
+    def test_isolated_entrypoint_ignores_script_directory_imports(self):
+        with tempfile.TemporaryDirectory() as directory:
+            scripts = Path(directory) / 'scripts'
+            scripts.mkdir()
+            helper = scripts / 'discord_wakeup.py'
+            shutil.copy2(ROOT / 'scripts/discord_wakeup.py', helper)
+            marker = scripts / 'shadow-loaded'
+            (scripts / 'argparse.py').write_text(
+                "from pathlib import Path\n"
+                "Path(__file__).with_name('shadow-loaded').write_text('loaded')\n"
+                "raise RuntimeError('shadow module loaded')\n",
+                encoding='utf-8',
+            )
+            environment = os.environ.copy()
+            environment['AI_STL_DISCORD_ACTIONS_TOKEN'] = 'test-only-token'
+            result = subprocess.run(
+                [sys.executable, '-I', '-B', str(helper), '--help'],
+                capture_output=True,
+                check=False,
+                env=environment,
+                text=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertFalse(marker.exists())
+
     def test_request_id_matches_the_private_worker_contract_vector(self):
         request = discord_wakeup.WakeupRequest.create(
             source_repository='lackofcheese/ai-stl-review',
@@ -325,6 +354,7 @@ class WorkflowContractTests(unittest.TestCase):
             '      - name: Dispatch and prove exact worker run\n', 1)[1]
         self.assertIn('        env:\n          AI_STL_DISCORD_ACTIONS_TOKEN:',
                       dispatch)
+        self.assertIn('python -I -B scripts/discord_wakeup.py', dispatch)
         self.assertNotIn('    env:\n', workflow.split('    steps:\n', 1)[0])
         self.assertIn('--source-workflow-run-id "$GITHUB_RUN_ID"', workflow)
         self.assertNotIn('DISCORD_TOKEN', workflow)
