@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="9ad64cc73a59b289b9c6db988c22a0bf265edef78e541c60023393da9fb707ee">
+<meta name="ai-stl-plan-digest" content="2e09eab6afb869d20f3d5a14b1f83492c5b1d112a0d7cfd563deb1dd01c3e4b9">
 <title>Scythe Valkyrie — Round 4 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -707,6 +707,7 @@ while IFS=$&#x27;\t&#x27; read -r artifact image; do
   &quot;$PY&quot; tools/edit_diff.py --base &quot;$W1&quot; --edit &quot;$image&quot; \
     --canvas resize-edit --region removal=0,940,620,2320 --json &quot;$report&quot;
   test -s &quot;$report&quot;
+  jq -e &#x27;.canvas.anisotropy &lt;= 0.02&#x27; &quot;$report&quot; &gt; /dev/null
 done &lt; &quot;$EXPECTED_TSV&quot;
 
 # A fresh-context crop auditor separately appends one review record for each
@@ -723,9 +724,11 @@ diff -u &quot;$EXPECTED_IDS&quot; &lt;(jq -r &#x27;.items[].artifact&#x27; &quot
 # One description Batch wave, then one dependent comparison wave. Re-running
 # resumes the recorded caller run; it never submits a replacement run.
 DETECT_LOG=&quot;$T/notes/r4-blind-detect.log&quot;
-if [[ -s &quot;$DETECT_LOG&quot; ]]; then
+DETECT_RUN=&quot;&quot;
+if [[ -f &quot;$DETECT_LOG&quot; ]]; then
   DETECT_RUN=&quot;$(sed -n &#x27;s/^batch run: //p&#x27; &quot;$DETECT_LOG&quot; | head -n 1)&quot;
-  test -n &quot;$DETECT_RUN&quot;
+fi
+if [[ -n &quot;$DETECT_RUN&quot; ]]; then
   &quot;$PY&quot; tools/blind_detect_round.py --resume-run &quot;$DETECT_RUN&quot;
 else
   &quot;$PY&quot; tools/blind_detect_round.py \
