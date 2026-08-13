@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="2e09eab6afb869d20f3d5a14b1f83492c5b1d112a0d7cfd563deb1dd01c3e4b9">
+<meta name="ai-stl-plan-digest" content="cd1409bad645588826b68bc93fb059aac31546d2c6000ed808fd4159adb6952c">
 <title>Scythe Valkyrie — Round 4 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -456,46 +456,82 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
 <nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">BlueMneme</a><span class="sep">&rsaquo;</span><a href="../">Scythe Valkyrie</a></nav>
 <div class="eyebrow">Round 4 · concept refinement</div>
 <h1>Scythe Valkyrie — Round 4 runbook</h1>
-<div class="statusrow"><span class="pill s-await"><span class="dot"></span>Awaiting renewed sign-off</span><span class="fact">Opened <b>2026-08-12; narrowed 2026-08-13 after four review rounds exposed unsafe scope</b></span></div>
+<div class="statusrow"><span class="pill s-await"><span class="dot"></span>Awaiting renewed sign-off</span><span class="fact">Opened <b>2026-08-12; amended 2026-08-13 after review and stakeholder direction</b></span></div>
 <div class="statusrow sub"><span class="fact inert" title="Published at round close">&#128203; Review panel &mdash; at round close</span></div>
-<div class="ask"><p class="lbl"><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</p><p>Renewed sign-off on this narrower plan and its <strong>$1.00 cap</strong>. <a class="jump" href="#ask">Read the full ask &darr;</a></p></div>
-<div class="glance"><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Planned</span><span class="v">$0.69</span><span class="s">of a $1.00 cap</span></div><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg>Gemini mode</span><span class="v">Batch</span><span class="s">asynchronous, 50% price</span></div></div>
-<div class="meter"><p class="top"><span>Planned spend against the round cap</span><b>$0.69 / $1.00</b></p><div class="bar"><i class="spent" style="width:39%;"></i><i class="spent" style="width:30%;opacity:.45"></i></div><div class="legend"><span><i></i>images $0.39</span><span><i class=r></i>screening $0.30</span><span><i class="o"></i>Headroom $0.31</span></div></div>
+<div class="ask"><p class="lbl"><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</p><p>Renewed sign-off on this amended W1-focused plan and its <strong>$2.50 cap</strong>. <a class="jump" href="#ask">Read the full ask &darr;</a></p></div>
+<div class="glance"><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Planned</span><span class="v">$1.98</span><span class="s">of a $2.50 cap</span></div><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg>Gemini mode</span><span class="v">Batch</span><span class="s"></span></div></div>
+<div class="meter"><p class="top"><span>Planned spend against the round cap</span><b>$1.98 / $2.50</b></p><div class="bar"><i class="spent" style="width:59.2%;"></i><i class="spent" style="width:20%;opacity:.45"></i></div><div class="legend"><span><i></i>images $1.48</span><span><i class=r></i>screening $0.50</span><span><i class="o"></i>Headroom $0.52</span></div></div>
 <nav class="snav"><a href="#goal">Goal</a><a href="#choices">Choices</a><a href="#inputs">Inputs</a><a href="#deferred-mechanism-catalog">Deferred mechanism catalog</a><a href="#judged">Judging</a><a href="#ask">The ask</a><a href="#cost">Cost</a><a href="#facts">Round facts</a><a href="#tech">Technical plan</a></nav>
-<section class="s" id="goal"><h2><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg>Goal</h2><div class="md"><p>Choose a safe editing mechanism before attempting the remaining wallpaper repairs. Every paid arm makes the same W1 change: remove the third lower-left wing while preserving the correct upper wing and every pixel outside the smallest declared edit surface.</p>
-<p>The earlier twelve-choice proposal tried to finish both wallpapers while also testing three mechanisms and two models. Four review rounds found 33 issues, 15 blocking. The last gate found that the W1 wing and blade rectangles overlap by 620×270 pixels, so the second paste could silently undo the first. It also found native-extension assumptions and missing composite lineage records. This amendment removes the interacting edits instead of adding another safeguard.</p></div><div class="strips"><div class="stage"><span class="lbl">Default path</span><span class="st now">Concept</span><span class="arw">&rsaquo;</span><span class="st">Turnaround</span><span class="arw">&rsaquo;</span><span class="st">Meshy</span><span class="arw">&rsaquo;</span><span class="st">Mesh check</span><span class="arw">&rsaquo;</span><span class="st">Test print</span></div><div class="lineage"><span class="lbl">This round</span><span class="rn">r3</span><span class="arw">&rsaquo;</span><span class="rn this">r4</span><span class="arw">&rsaquo;</span><span class="rn next">r5 selects one coherent next repair from the deferred catalog and applies the R4-winning mechanism; no finished wallpaper is selected in r4</span></div></div></section>
-<section class="s" id="choices"><h2><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg>Choices on the table</h2><div class="md"><p>All paid arms use Gemini 3.1 Flash Image at 2K. The same W1 base and the same lower-wing-removal contract are held constant.</p></div><div class="choices"><article class="choice"><header><h3>Control — untouched W1</h3></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>The exact starting point, so every claimed improvement and every unrequested change has a visible baseline</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W1 base</p><p class="cx"><span class="ck">Rolls</span>—</p><a class="jump" href="#case-control-untouched-w1"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">A</span><h3>whole-picture edit</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether the standard editor can make the one requested removal without repainting the rest of the wallpaper</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W1 base + <code>r4-w1-ff</code> prompt</p><a class="jump" href="#case-a-whole-picture-edit"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">B</span><h3>steered regeneration</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether describing the desired whole picture works better than surgical correction wording when the model is likely to repaint the whole canvas anyway</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W1 base + <code>r4-w1-sr</code> prompt</p><a class="jump" href="#case-b-steered-regeneration"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">C</span><h3>crop and paste back</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether editing only the lower-wing crop and compositing it back gives the best locality while still removing the whole unwanted wing mass</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>lower-wing crop + <code>r4-w1-cropwing</code> prompt</p><a class="jump" href="#case-c-crop-and-paste-back"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article></div><div class="md"><p>That is <strong>six paid calls</strong> in three independent two-roll Batch cells. Choice C becomes full-frame review candidates through a deterministic paste-back into the untouched W1 base. No candidate is assembled from two model-edited rectangles, so no edit can overwrite another.</p></div></section>
+<section class="s" id="goal"><h2><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg>Goal</h2><div class="md"><p>Choose a safe W1 editing mechanism before attempting interacting wallpaper repairs, while preserving two stakeholder-requested escape hatches that answer different questions. The main bake-off keeps one complete target across three mechanisms: remove the third lower-left wing while preserving the correct upper wings. The blank-then-restore probe asks only whether a pre-painted gap can be filled convincingly; its existing mask deliberately covers the largest clean part of the unwanted wing, not all of it. The fresh-from-spec pair asks whether continuing to repair W1 is the wrong premise. Neither probe is mislabeled as an apples-to-apples full-wing-removal contender.</p>
+<p>The earlier twelve-choice proposal tried to finish both wallpapers while also testing three mechanisms and two models. Four review rounds found 33 issues, 15 blocking. The last gate found that the W1 wing and blade rectangles overlap by 620×270 pixels, so the second paste could silently undo the first. It also found native-extension assumptions and missing composite lineage records. This amendment keeps blade and W2 work out, and restores only the two requested non-interacting probes.</p></div><div class="strips"><div class="stage"><span class="lbl">Default path</span><span class="st now">Concept</span><span class="arw">&rsaquo;</span><span class="st">Turnaround</span><span class="arw">&rsaquo;</span><span class="st">Meshy</span><span class="arw">&rsaquo;</span><span class="st">Mesh check</span><span class="arw">&rsaquo;</span><span class="st">Test print</span></div><div class="lineage"><span class="lbl">This round</span><span class="rn">r3</span><span class="arw">&rsaquo;</span><span class="rn this">r4</span><span class="arw">&rsaquo;</span><span class="rn next">r5 follows one coherent result: apply the winning W1 repair mechanism, refine a fresh-from-spec challenger if it clearly wins, or select another deferred repair; no finished wallpaper is selected in r4</span></div></div></section>
+<section class="s" id="choices"><h2><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg>Choices on the table</h2><div class="md"><p>The W1 edit arms use Gemini 3.1 Flash Image at 2K. The fresh pair uses the two models that produced Scythe Valkyrie&#x27;s round-1 feature winners: one bounded text-only GPT Image 2 wallpaper and one text-only Riverflow 2.5 Pro wallpaper.</p></div><div class="choices"><article class="choice"><header><h3>Control — untouched W1</h3></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>The exact starting point, so every claimed improvement and every unrequested change has a visible baseline</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W1 base</p><p class="cx"><span class="ck">Rolls</span>—</p><a class="jump" href="#case-control-untouched-w1"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">A</span><h3>whole-picture edit</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether the standard editor can make the one requested removal without repainting the rest of the wallpaper</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W1 base + <code>r4-w1-ff</code> prompt</p><a class="jump" href="#case-a-whole-picture-edit"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">B</span><h3>steered regeneration</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether describing the desired whole picture works better than surgical correction wording when the model is likely to repaint the whole canvas anyway</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>W1 base + <code>r4-w1-sr</code> prompt</p><a class="jump" href="#case-b-steered-regeneration"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">C</span><h3>crop and paste back</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether editing only the lower-wing crop and compositing it back gives the best locality while still removing the whole unwanted wing mass</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>lower-wing crop + <code>r4-w1-cropwing</code> prompt</p><a class="jump" href="#case-c-crop-and-paste-back"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">D</span><h3>blank then restore (feasibility probe)</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether the pre-painted partial gap can be restored as convincing background without inventing wing or figure content</span></li><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>it does not claim complete wing removal</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>partial blanked wide W1 crop + <code>r4-w1-blank</code> prompt</p><a class="jump" href="#case-d-blank-then-restore-feasibility-probe"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">E</span><h3>fresh from spec (diversification probe)</h3><span class="rolls">2 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether a new spec-v0.6 wallpaper is promising enough to stop repairing W1</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span><code>r4-fresh</code> prompt, text only; one GPT Image 2 and one Riverflow 2.5 Pro</p><a class="jump" href="#case-e-fresh-from-spec-diversification-probe"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article></div><div class="md"><p>That is <strong>ten paid calls</strong>: eight Flash returns in four independent two-roll Batch cells, plus two independent one-roll fresh generations. Choices C and D become full-frame review candidates through deterministic paste-back into the untouched W1 base. No candidate combines two model-edited rectangles, so one edit cannot overwrite another.</p></div></section>
 <section class="rb-inputs" id="inputs">
 <h2><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>Inputs — what this round runs on</h2>
 <p class="blurb">Everything that goes in, grouped by the choice it belongs to. Click any image to zoom; open a prompt to read the exact text this round spends against. Crop sets show both the cut overview and every exact output crop.</p>
 <section class="rb-case" id="case-shared-evaluation-brief">
 <h3 class="rb-case-h">Shared evaluation brief<span class="rb-case-count">1 prompt</span></h3>
-<p class="rb-case-note">The exact one-edit contract used by the paid blind detector for all six candidates; the full character spec is deliberately not used for R4 scoring.</p>
+<p class="rb-case-note">The exact artifact-family contracts used by the paid blind detector for all ten candidates: complete W1 removal, partial blank-fill feasibility, and standalone fresh-from-spec wallpaper grading.</p>
 <p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
-<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Screening brief — applies to every paid candidate<span class="rb-size">1 kB · 217 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-wing-removal-review.txt</p><button class="copy" data-copy>Copy screening brief</button></div><pre>SCYTHE VALKYRIE R4 — ONE-EDIT COMPARISON BRIEF
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Screening brief — applies to every paid candidate<span class="rb-size">3 kB · 503 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-review-brief.txt</p><button class="copy" data-copy>Copy screening brief</button></div><pre>SCYTHE VALKYRIE R4 — ARTIFACT-FAMILY COMPARISON BRIEF
 
-Compare each candidate only with the untouched W1 control. The one requested
-content change is complete removal of the separate third lower-left wing: the
-wing mass rooted lower on her back and sweeping down and toward the VIEWER&#x27;S
-LEFT. Every feather, spar and hub belonging to that lower wing must be gone,
-and the smoky red-brown haze, ruins and cloth behind it must be restored
-convincingly.
+Apply exactly the contract selected by the artifact id. Do not grade one
+family against another family&#x27;s task.
+
+FAMILY 1 — COMPLETE W1 LOWER-WING REMOVAL
+Applies only to:
+- scythe-valkyrie-r4-w1-ff-1 and -2
+- scythe-valkyrie-r4-w1-sr-1 and -2
+- scythe-valkyrie-r4-w1-cropwing-comp-1 and -2
+
+Compare each candidate with the untouched W1 control. The requested change is
+complete removal of the separate third lower-left wing: the wing mass rooted
+lower on her back and sweeping down and toward the VIEWER&#x27;S LEFT. Every
+feather, spar and hub belonging to that lower wing must be gone, and the smoky
+red-brown haze, ruins and cloth behind it must be restored convincingly.
 
 The correct upper wings must remain: the same armoured hubs, jointed mechanical
 segments, feathers, pose and silhouette. The finished figure has exactly two
-wings and no replacement wing, limb, feather or new object.
+wings and no replacement wing, limb, feather or new object. Apart from that
+removal, preserve W1&#x27;s woman, face, expression, hair, halo crown, armour,
+ornament, pose, scythe and blade, hands, background, lighting, colour grading,
+texture, tall framing and composition. The scythe is deliberately unchanged
+in this family; do not grade it against a future blade target.
 
-Apart from that removal, preserve the W1 control&#x27;s woman, face, expression,
-hair, halo crown, armour, ornament, pose, scythe and blade, hands, background,
-lighting, colour grading, texture, tall framing and composition. The scythe is
-deliberately unchanged in R4; do not grade it against a future blade target.
+FAMILY 2 — PARTIAL BLANK-FILL FEASIBILITY
+Applies only to scythe-valkyrie-r4-w1-blank-comp-1 and -2.
 
-Mark the requested edit bad if the lower wing remains, the background fill is
-visibly broken, a retained upper wing is damaged, anatomy or an existing object
-is broken, or a new object appears. Report other unrequested changes neutrally
-and describe their location and extent; the human reviewers decide whether
-they are improvements. Do not grade the deferred mechanism catalog as part of
-this round.
+Compare each candidate with W1 only to judge the deliberately pre-painted gap.
+The blanked region must become convincing smoky red-brown background, ruins
+and continuing cloth, with no visible flat patch or seam and no invented wing,
+limb, feather or figure content. The retained upper wing and the material
+outside the wide context crop must remain undamaged. The input blank covered
+only the largest clean part of the unwanted lower wing; remnants outside that
+partial blank are expected and MUST NOT be marked as a failed complete wing
+removal. This family answers fill feasibility only.
+
+FAMILY 3 — FRESH WALLPAPER FROM SPEC V0.6
+Applies only to scythe-valkyrie-r4-fresh-gptimage2-1 and
+scythe-valkyrie-r4-fresh-riverflow25-1.
+
+Judge these as standalone wallpapers; there is no W1 preservation contract.
+The image should be a tall photorealistic phone wallpaper dominated by an
+original, mature East Asian angel-of-death valkyrie in dark gunmetal/black,
+silver and restrained red armour, with long dark hair, a spiky broken-arc
+death crown, no hood, and a poised floating S-curve above quiet smoky ruins.
+She has exactly two rooted bio-mechanical wings, one per side, built around
+visible articulated jointed top limbs with all feathers and blades hanging
+below; no third wing and nothing projecting above the top contour.
+
+Her only prop is one great scythe: a dead-straight cylindrical haft, one long
+shallow blade leaving the head roughly perpendicular and curving only about a
+quarter to a third circle, no second long blade, and visible background between
+blade and wings. Both hands make widely separated, anatomically complete grips.
+No copied franchise design or celebrity likeness, no support structure, no
+extra prop, no transparent material, and no text, logo or watermark.
+
+For every family, report other unrequested changes neutrally and describe
+their location and extent. Mark bad only against the selected family&#x27;s stated
+contract. The human reviewers decide whether a change is an improvement.
 </pre></details>
 </section>
 <section class="rb-case" id="case-control-untouched-w1">
@@ -553,31 +589,73 @@ PRESERVATION
 This crop contains part of the correct upper wing as well as the unwanted lower wing. Preserve the upper wing exactly: its armoured hub, jointed mechanical segments, feathers and silhouette must not change. Apart from removing the lower wing and restoring what sat behind it, reproduce IMAGE 1 exactly at the same framing and canvas shape. Do not zoom, crop further or extend the scene. Add no new object and no text, labels, logos or watermarks.
 </pre></details>
 </section>
+<section class="rb-case" id="case-d-blank-then-restore-feasibility-probe">
+<h3 class="rb-case-h">D — blank then restore (feasibility probe)<span class="rb-case-count">1 image · 1 prompt</span></h3>
+<p class="rb-case-note">Fills the existing partial blank inside a wide W1 context crop, then composites that context back into untouched W1. This is explicitly a background-fill feasibility probe, not complete lower-wing removal.</p>
+<div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Wide W1 context crop with the largest clean lower-wing region painted out</span><code class="rb-art-id">scythe-valkyrie-r4-w1-wing-context-blank</code><button class="ibtn" data-inputs="in-4">how it was made</button></div><div class="rb-strip">
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/55a9584a8addbdb2.png" data-cap="scythe-valkyrie-r4-w1-wing-context-blank"><img src="../../../../assets/b6fc5f57c2a42f59.jpg" alt="scythe-valkyrie-r4-w1-wing-context-blank" loading="lazy"></div></figure>
+</div></div>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — attaches the partial blanked context crop<span class="rb-size">1 kB · 224 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w1-blank.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a wide crop from the viewer&#x27;s-left side of a finished photorealistic wallpaper, showing wing, sky, cloth and ruins. Part of it has been painted out to a flat blank area. Fill only that blank; this arm deliberately tests gap-fill quality, not complete removal of every lower-wing remnant outside the blank.
+
+EDIT — FILL THE BLANK AREA
+Fill the blanked region with the background and scenery that belongs behind it — the same smoky red-brown haze, the ruins below, and any cloth that continues into it — matching the surrounding lighting, colour and grain so the join is invisible. Do NOT paint a wing, limb, feather or any part of a figure into that area. It should read as if nothing was ever there.
+
+PRESERVE — THE UPPER WING
+Change nothing on the upper wing. It is an articulated mechanical limb — an armoured shoulder hub, a chain of armoured segments linked by visible mechanical joints, and feathers hanging below and behind. Do not add a wing, limb or feather anywhere in this crop.
+
+PRESERVATION
+Outside the blanked area, reproduce IMAGE 1 EXACTLY: the same wing, sky, cloth, ruins, lighting, colour, grain, framing and canvas shape. Do not zoom, crop further or extend the scene. Add no new object and no text, labels, logos or watermarks.
+</pre></details>
 </section>
-<section class="s" id="deferred-mechanism-catalog"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Deferred mechanism catalog</h2><div class="md"><p>The wider draft contained useful experiments that do not fit this clean single-edit comparison. They are deferred, not rejected or forgotten:</p>
-<div class="tablewrap"><table><thead><tr><th>Mechanism</th><th>What it is meant to answer</th><th>Safe re-entry condition</th></tr></thead><tbody><tr><td><strong>Blank then restore</strong></td><td>Whether painting out unwanted geometry before generation produces a cleaner background fill</td><td>Give it a complete hand-reviewed mask and its own gap-fill contract; the old partial blank could not honestly be graded as complete wing removal</td></tr><tr><td><strong>Blade crop repair, W1 and W2</strong></td><td>Whether the chosen crop-local method can reshape the scythe to profile B without repainting either wallpaper</td><td>Run after R4 chooses a mechanism; keep blade and wing edits in separate ordered rounds because their W1 rectangles overlap</td></tr><tr><td><strong>W2 wing-top crop repair</strong></td><td>Whether spikes above W2&#x27;s retained wing can be removed locally</td><td>Carry it into the W2 repair round with the same exact-input and paste-back locality gates used here</td></tr><tr><td><strong>Riverflow editor challenger</strong></td><td>Whether W2&#x27;s originating editor preserves that image better than Flash</td><td>Compare it against the chosen Flash mechanism on one identical, complete edit contract</td></tr><tr><td><strong>Cleanup pass</strong></td><td>Whether a final full-frame pass can hide composite joins without undoing accepted repairs</td><td>Only after an exact composite input is pinned; never use a conditional “best assembled image” input</td></tr><tr><td><strong>Fresh generation from spec</strong></td><td>Whether starting over beats repairing either R3 pick</td><td>Give it a dedicated diversification round, since it discards the chosen compositions and cannot share repair grading</td></tr><tr><td><strong>W2 hand/dagger repair</strong></td><td>Whether the proven R3 patch recipe can remove the loose dagger cleanly</td><td>Run last on the selected W2 result so no later full-frame pass repaints the hand</td></tr><tr><td><strong>Sibling transplant and identity restore</strong></td><td>Whether existing registered R3 regions can avoid paid work or restore a rerendered face</td><td>Include them as explicit arms inside their own future approved runbook/round, with lineage and locality evidence</td></tr></tbody></table></div>
-<p>R5 should select a coherent subset from this table after R4 establishes the editing mechanism. Each later round still needs its own runbook, exact inputs, common grading contract and spend approval. <strong>This catalog grants no authority to run, generate, composite, promote or spend on any listed mechanism; even a free keeper-producing trial stays blocked until its future round is approved and started.</strong></p></div></section>
-<section class="s" id="judged"><h2><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>How the round is judged</h2><div class="md"><p>R4 chooses a mechanism, not a finished wallpaper. Jake&#x27;s and Dimitri&#x27;s eyes decide whether the removal/fill looks good; machine evidence establishes what changed and whether the files are safe to compare.</p>
+<section class="rb-case" id="case-e-fresh-from-spec-diversification-probe">
+<h3 class="rb-case-h">E — fresh from spec (diversification probe)<span class="rb-case-count">1 prompt</span></h3>
+<p class="rb-case-note">Two text-only challengers — one GPT Image 2 and one Riverflow 2.5 Pro — test whether a new spec-v0.6 wallpaper is more promising than continued W1 repair.</p>
+<p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — text only; no images<span class="rb-size">3 kB · 456 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-fresh.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>Photorealistic vertical wallpaper artwork of an original angel-of-death valkyrie, composed for a phone screen. Create a fresh picture from this specification.
+
+BUILD — WINGS
+Exactly two wing masses in total, one rooted on the viewer&#x27;s left and one rooted on the viewer&#x27;s right; never a third wing. Mix crow-like feathering with layered dark metal wing-blades, silver structural framing and restrained red accents. Each wing is an articulated mechanical limb: an armoured shoulder hub at the upper back, then three armoured segments linked by visible engineered joints. That jointed chain is the continuous top silhouette; all feathers, wing-blades and spikes hang below and behind it, with nothing projecting above it. The wings may leave the tall frame after their roots, segments and bends are legible.
+
+BUILD — SCYTHE
+One great scythe and no other prop. Its haft is one dead-straight cylindrical pole, never curved or kinked. One long blade leaves the ornate head roughly perpendicular to the haft, carries mostly outward, and curves upward only slightly so the tip finishes roughly horizontal: a shallow, smooth crescent on the order of a quarter to a third of a circle, never a hook or half-circle and never curling back into a wing. A short bounded counter-spike at the head is allowed, but never a second long blade. Visible background separates the blade from both wings along its whole length, and the blade passes in front of the character. Both hands grip the shaft, widely separated, each as a visible five-fingered wrap with a thumb and unbroken arm anatomy.
+
+BUILD — FIGURE, POSE AND SCENE
+A slender adult woman with mature East Asian features and a calm direct gaze, wearing original sleek dark death-valkyrie armour: dark gunmetal and black, silver structural framing, restrained red accents, a sectioned metal skirt/cloak over separate leg armour, and a modest gap between chestplate and throat. Long dark hair frames a spiky broken-arc death crown that is deliberately not a full circle. No hood.
+
+She floats with both feet clearly above the ground and no support, poised, statuesque and ominous in a near-frontal three-quarter portrait with a pronounced vertical S-curve — not a mid-swing action pose. The steep haft runs from upper viewer-left to lower viewer-right; the oversized crescent sweeps low across the foreground. One wing rises toward upper viewer-right and the other sweeps toward lower viewer-left. Quiet ruins and rubble sit low in smoky red-brown haze. Keep the background subdued and the woman dominant. Subtle restrained glow may edge the blade, halo and wings; no flashbang.
+
+FORMAT AND EXCLUSIONS
+Photorealistic vertical phone-wallpaper artwork. No copied franchise character, costume, halo or wing assembly; no celebrity likeness. No staff, firearm or loose hand prop. No transparent or see-through material. No text, labels, logos, signatures or watermarks.
+</pre></details>
+</section>
+</section>
+<section class="s" id="deferred-mechanism-catalog"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Deferred mechanism catalog</h2><div class="md"><p>The wider draft contained useful experiments. After the two restored probes, these remain deferred rather than rejected:</p>
+<div class="tablewrap"><table><thead><tr><th>Mechanism</th><th>What it is meant to answer</th><th>Safe re-entry condition</th></tr></thead><tbody><tr><td><strong>Complete-mask blank then restore</strong></td><td>Whether blanking the entire unwanted wing beats the deliberately partial R4 feasibility probe</td><td>Build and hand-review a complete mask as the next round&#x27;s exact input; do not reinterpret R4&#x27;s partial mask as complete</td></tr><tr><td><strong>Blade crop repair, W1 and W2</strong></td><td>Whether the chosen crop-local method can reshape the scythe to profile B without repainting either wallpaper</td><td>Run after R4 chooses a mechanism; keep blade and wing edits in separate ordered rounds because their W1 rectangles overlap</td></tr><tr><td><strong>W2 wing-top crop repair</strong></td><td>Whether spikes above W2&#x27;s retained wing can be removed locally</td><td>Carry it into the W2 repair round with the same exact-input and paste-back locality gates used here</td></tr><tr><td><strong>Riverflow editor challenger</strong></td><td>Whether W2&#x27;s originating editor preserves that image better than Flash</td><td>Compare it against the chosen Flash mechanism on one identical, complete edit contract</td></tr><tr><td><strong>Cleanup pass</strong></td><td>Whether a final full-frame pass can hide composite joins without undoing accepted repairs</td><td>Only after an exact composite input is pinned; never use a conditional “best assembled image” input</td></tr><tr><td><strong>W2 hand/dagger repair</strong></td><td>Whether the proven R3 patch recipe can remove the loose dagger cleanly</td><td>Run last on the selected W2 result so no later full-frame pass repaints the hand</td></tr><tr><td><strong>Sibling transplant and identity restore</strong></td><td>Whether existing registered R3 regions can avoid paid work or restore a rerendered face</td><td>Include them as explicit arms inside their own future approved runbook/round, with lineage and locality evidence</td></tr></tbody></table></div>
+<p>R5 should select one coherent next step after R4. Each later round still needs its own runbook, exact inputs, grading contract and spend approval. <strong>This catalog grants no authority to run, generate, composite, promote or spend on any listed mechanism; even a free keeper-producing trial stays blocked until its future round is approved and started.</strong></p></div></section>
+<section class="s" id="judged"><h2><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>How the round is judged</h2><div class="md"><p>R4 produces three separate decisions, not one false ranking. Jake&#x27;s and Dimitri&#x27;s eyes decide the art calls; machine evidence establishes what changed, whether files are safe to compare, and which contract applies.</p>
 <ul>
-<li>Judge every candidate against the untouched W1 control. Report unrequested changes neutrally; mark bad only a failed requested edit, broken anatomy, a damaged retained upper wing, or an invalid composite.</li>
-<li><strong>FAST (free):</strong> every returned image must decode and preserve the expected crop or full-frame aspect. <code>region_edit.py</code> must verify from the written PNG that each composite changes zero pixels outside its declared rectangle. <code>edit_diff.py</code> records pixel, perceptual, silhouette, and regional measures. A fresh-context crop audit compares the unwanted lower wing, the retained upper wing, the feather boundary, the face, hands, scythe, and background against the control. Once all six FAST records exist, publish a clearly labelled <strong>PROVISIONAL — slow checks pending</strong> review panel.</li>
-<li><strong>SLOW (paid):</strong> one <code>blind_detect_round.py</code> manifest covers the six full-frame candidates in two Batch waves. Its comparison brief is the round&#x27;s one-edit contract, not the whole character spec: the unchanged blade is deliberately outside R4. Append its records, reconcile any disagreement with the crop audit, then refresh the same panel as <strong>COMPLETE</strong>.</li>
-<li>The human decision is one of: adopt surgical whole-picture editing, adopt steered regeneration, adopt crop and paste-back, record a tie for a later deciding round, or reject all three. No R4 result is called a finished wallpaper and no blade/W2 work starts until the complete panel has a recorded human verdict.</li>
-</ul></div></section>
-<section class="s" id="ask"><h2><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</h2><div class="md cta"><p>Renewed sign-off on this narrower plan and its <strong>$1.00 cap</strong>. The old $5.00 proposal is superseded and authorizes nothing. After R4 answers which editing mechanism is trustworthy, R5 selects one coherent next repair from the deferred catalog; the catalog itself schedules or authorizes nothing.</p></div></section>
-<section class="s" id="cost"><h2><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Cost</h2><div class="md"><p>Six Flash 3.1 Batch edits at a conservative $0.065 each reserve <strong>$0.39</strong>. FAST evaluation is free. SLOW evaluation reserves <strong>$0.30</strong> ($0.05 × six reviewable outputs). Planned total is <strong>$0.69</strong> against a proposed <strong>$1.00 USD cap</strong>, with no Meshy credits. Live wrapper preflights remain authoritative.</p></div><div class="costgrid"><div class="costrow"><span class="n">images</span><span class="t" style="width:100%"></span><span class="a">$0.39</span></div><div class="costrow"><span class="n">screening</span><span class="t" style="width:76.92%"></span><span class="a">$0.30</span></div><div class="costrow total"><span class="n">planned</span><span></span><span class="a">$0.69</span></div></div></section>
-<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>concept refinement — W1 single-edit three-mechanism bake-off</dd><dt>Owner</dt><dd>Codex (local) → Dimitri + Jake review</dd><dt>Date opened</dt><dd>2026-08-12; narrowed 2026-08-13 after four review rounds exposed unsafe scope</dd><dt>Inputs</dt><dd><code>scythe-valkyrie-r3-w1-rem-2</code> (Dimitri&#x27;s W1 base) and its deterministic lower-wing crop <code>scythe-valkyrie-r4-w1-wing-crop</code></dd><dt>Produces</dt><dd>six paid model returns and six full-frame review candidates: two surgical whole-picture edits, two steered whole-picture regenerations, and two crop-and-paste-back composites; the untouched W1 base is the free control</dd><dt>Branch</dt><dd>PR #492</dd><dt>Published</dt><dd>the three-mechanism plan page was refreshed on 2026-08-13 at <code>https://lackofcheese.github.io/ai-stl-review/reviews/bluemneme/scythe-valkyrie/r4-runbook/</code>. Discord header <code>1537333040949239810</code>, original announcement reply <code>1537333150860972143</code>, narrowing reply <code>1537455777122619392</code>, three-mechanism amendment reply <code>1537460678703452303</code></dd><dt>Gemini mode</dt><dd>batch (asynchronous, 50% price; all three independent cells submit up front)</dd><dt>Evaluation lanes</dt><dd>FAST — deterministic locality/difference checks plus a fresh-context crop audit as each output lands; SLOW — one two-wave Batch blind detector across the six full-frame candidates</dd><dt>Models</dt><dd>flash31</dd><dt>Prior round</dt><dd>r3 closed with two wallpaper bases; W1 is the smaller, safer surface on which to choose an editing mechanism</dd><dt>Next</dt><dd>r5 selects one coherent next repair from the deferred catalog and applies the R4-winning mechanism; no finished wallpaper is selected in r4</dd><dt>Spend</dt><dd>images $0.39 · screening $0.30 · cap $1.00</dd></dl></section>
+<li><strong>Main W1 mechanism decision:</strong> compare A, B and C against the untouched W1 under the same complete lower-wing-removal contract. Adopt one, record a tie for a deciding round, or reject all three.</li>
+<li><strong>Blank feasibility decision:</strong> pass D only if the painted gap becomes convincing background without new wing/figure content or damage outside the intended region. Lower-wing remnants outside the partial blank are expected and are not scored as a failed complete removal.</li>
+<li><strong>Fresh-route decision:</strong> judge E as standalone spec-v0.6 wallpapers, not for W1 identity preservation. Record whether either is strong enough that R5 should refine a fresh lineage instead of continuing W1 repair.</li>
+<li><strong>FAST (free):</strong> every return must decode and preserve its planned aspect. <code>region_edit.py</code> verifies from the written PNG that each composite changes zero pixels outside its declared rectangle. <code>edit_diff.py</code> records pixel, perceptual, silhouette and regional measures for the eight W1-derived candidates; it is deliberately not run against the unrelated fresh images. A fresh-context crop audit applies the correct family contract to all ten candidates. Once all ten FAST records, eight difference reports and four locality reports exist, publish a clearly labelled <strong>PROVISIONAL — slow checks pending</strong> review panel.</li>
+<li><strong>SLOW (paid):</strong> one <code>blind_detect_round.py</code> manifest covers all ten full-frame candidates in two Batch waves. The committed brief dispatches explicitly between complete W1 removal, partial blank-fill feasibility and standalone spec-v0.6 wallpaper grading. Append its records, reconcile disagreement with the crop audit, then refresh the same panel as <strong>COMPLETE</strong>.</li>
+</ul>
+<p>No R4 result is called a finished wallpaper and no blade/W2 work starts until the complete panel has a recorded human verdict.</p></div></section>
+<section class="s" id="ask"><h2><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</h2><div class="md cta"><p>Renewed sign-off on this amended W1-focused plan and its <strong>$2.50 cap</strong>. The old $5.00 proposal and the later $1.00 narrowed proposal are both superseded and authorize nothing. Sign-off covers the three-way W1 bake-off, the candid partial blank feasibility probe, the two-model fresh-from-spec probe, and the artifact-family-specific judging contract above.</p></div></section>
+<section class="s" id="cost"><h2><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Cost</h2><div class="md"><p>Eight Flash 3.1 Batch edits at a conservative $0.065 each reserve <strong>$0.52</strong>. The bounded 1152×2560 GPT Image 2 call reserves at most <strong>$0.58</strong> and the Riverflow 4K 9:16 call reserves <strong>$0.38</strong> using its higher project-history ceiling, for <strong>$1.48 images</strong>. FAST evaluation is free. SLOW evaluation reserves <strong>$0.50</strong> ($0.05 × ten reviewable outputs). Planned total is <strong>$1.98</strong> against a proposed <strong>$2.50 USD cap</strong>, with no Meshy credits. Live wrapper preflights remain authoritative.</p></div><div class="costgrid"><div class="costrow"><span class="n">images</span><span class="t" style="width:100%"></span><span class="a">$1.48</span></div><div class="costrow"><span class="n">screening</span><span class="t" style="width:33.78%"></span><span class="a">$0.50</span></div><div class="costrow total"><span class="n">planned</span><span></span><span class="a">$1.98</span></div></div></section>
+<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>concept refinement — W1 editing bake-off plus two bounded escape hatches</dd><dt>Owner</dt><dd>Codex (local) → Dimitri + Jake review</dd><dt>Date opened</dt><dd>2026-08-12; amended 2026-08-13 after review and stakeholder direction</dd><dt>Inputs</dt><dd><code>scythe-valkyrie-r3-w1-rem-2</code> (Dimitri&#x27;s W1 base), its deterministic lower-wing crop <code>scythe-valkyrie-r4-w1-wing-crop</code>, the partial blank <code>scythe-valkyrie-r4-w1-wing-context-blank</code>, spec v0.6, and five committed R4 prompt files</dd><dt>Produces</dt><dd>ten paid model returns and ten full-frame review candidates: six complete W1 wing-removal candidates, two partial blank-then-restore composites, and two fresh-from-spec wallpapers; the untouched W1 base is the free control</dd><dt>Branch</dt><dd>PR #492</dd><dt>Published</dt><dd>the plan page is refreshed in place at <code>https://lackofcheese.github.io/ai-stl-review/reviews/bluemneme/scythe-valkyrie/r4-runbook/</code>; Discord header <code>1537333040949239810</code> and its append-only thread carry the amendment history</dd><dt>Gemini mode</dt><dd>batch for the four independent Flash cells; the one-roll GPT Image 2 and Riverflow fresh cells are synchronous; all six independent cells launch up front</dd><dt>Evaluation lanes</dt><dd>FAST — deterministic locality/difference/aspect checks plus a fresh-context crop audit as each output lands; SLOW — one two-wave Batch blind detector across the ten full-frame candidates, using artifact-family-specific contracts</dd><dt>Models</dt><dd>flash31 · gptimage2 · riverflow25</dd><dt>Prior round</dt><dd>r3 closed with two wallpaper bases; W1 is the smaller, safer surface on which to choose an editing mechanism</dd><dt>Next</dt><dd>r5 follows one coherent result: apply the winning W1 repair mechanism, refine a fresh-from-spec challenger if it clearly wins, or select another deferred repair; no finished wallpaper is selected in r4</dd><dt>Spend</dt><dd>images $1.48 · screening $0.50 · cap $2.50</dd></dl></section>
 <section class="s" id="tech"><h2><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>Technical plan</h2>
 <p class="intro">prompts, matrix, commands (pipeline detail)</p>
 <details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>Scope and plan deltas</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><ul>
-<li>R4 now tests one edit on one base across three mechanisms. Blank/fill, W2, blade reshaping, hand repair, cleanup, Riverflow, and fresh generation are explicitly catalogued above for R5 or later.</li>
+<li>R4 changes only W1. It tests the complete wing removal across three comparable mechanisms, plus a separately graded partial blank-fill probe and a separately graded two-model fresh-from-spec probe. W2, blade reshaping, hand repair, cleanup and transplants remain outside the round.</li>
 <li><code>spec.md</code> remains at v0.6 in this PR. The profile-B blade decision is durable in round 3 feedback, but R4 neither edits nor grades the blade; the spec amendment belongs with the later blade-application plan.</li>
-<li>Three prompt files are generated by <code>prompts/r4-compose.py</code>. The surgical whole-frame and crop prompts share one single-sourced physical description of the wing to remove. The steered prompt expresses the same complete target as a whole-picture redraw. The crop prompt separately protects the one retained upper wing. The committed <code>prompts/r4-wing-removal-review.txt</code> is the separate common brief for all six paid blind comparisons; the full character spec is deliberately not a scoring input.</li>
-<li>The deterministic plan input used here is already on Drive and registered in <code>lineage.json</code>: the lower-wing crop <code>(0,940)-(620,2320)</code>. Dimitri confirmed the W1 crop overlay on 2026-08-13. The overlay is explanatory evidence, not a provider input, so it is not listed as a case <code>base</code>.</li>
+<li>Five prompt files are generated by <code>prompts/r4-compose.py</code>. The surgical whole-frame and crop prompts share one single-sourced physical description of the wing to remove. The steered prompt expresses the same complete target as a whole-picture redraw. The crop prompt separately protects the one retained upper wing. The blank prompt names the partial-mask limitation; the fresh prompt is a concise model-visible rendering of spec v0.6 and remains below GPT Image 2&#x27;s 8192-byte prompt ceiling. The committed <code>prompts/r4-review-brief.txt</code> dispatches by artifact family for all ten paid blind comparisons.</li>
+<li>The deterministic plan input used here is already on Drive and registered in <code>lineage.json</code>: the lower-wing crop <code>(0,940)-(620,2320)</code> and the wide context blank, derived from context crop <code>(0,500)-(900,3058)</code> with only relative region <code>(20,1040)-(430,1790)</code> painted out. Dimitri confirmed the W1 crop overlay on 2026-08-13. The overlay is explanatory evidence, not a provider input, so it is not listed as a case <code>base</code>.</li>
 <li><code>tools/region_edit.py</code> and <code>tools/edit_diff.py</code> are on current <code>main</code> from PR #494. Native model return extensions are resolved after the calls land; commands never assume <code>.jpg</code>. Every derived composite is appended to <code>lineage.json</code> idempotently before screening or review.</li>
 </ul></div></details>
-<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg><span>Experiment matrix</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Prompt</th><th>Out stem (output)</th><th>Rolls</th><th>Wave</th></tr></thead><tbody><tr><td>1</td><td><code>r3-w1-rem-2</code> (one image)</td><td><code>prompts/r4-w1-ff.txt</code></td><td><code>scythe-valkyrie-r4-w1-ff</code></td><td>2</td><td>1</td></tr><tr><td>2</td><td><code>r3-w1-rem-2</code> (one image)</td><td><code>prompts/r4-w1-sr.txt</code></td><td><code>scythe-valkyrie-r4-w1-sr</code></td><td>2</td><td>1</td></tr><tr><td>3</td><td><code>r4-w1-wing-crop</code> (one image)</td><td><code>prompts/r4-w1-cropwing.txt</code></td><td><code>scythe-valkyrie-r4-w1-cropwing</code></td><td>2</td><td>1</td></tr></tbody></table></div>
-<p>All three rows are independent and submit in parallel. Each uses one grouped <code>gemini_gen.py --rolls 2</code> call, so the round deliberately stays outside <code>gen_round.py</code> coordinator v1. Record each printed Batch run id. After an interruption, resume that exact caller run; never submit a replacement job.</p></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg><span>Experiment matrix</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Model / prompt</th><th>Out stem (output)</th><th>Rolls</th><th>Wave</th></tr></thead><tbody><tr><td>1</td><td><code>r3-w1-rem-2</code> (one image)</td><td>flash31 · <code>prompts/r4-w1-ff.txt</code></td><td><code>scythe-valkyrie-r4-w1-ff</code></td><td>2</td><td>1</td></tr><tr><td>2</td><td><code>r3-w1-rem-2</code> (one image)</td><td>flash31 · <code>prompts/r4-w1-sr.txt</code></td><td><code>scythe-valkyrie-r4-w1-sr</code></td><td>2</td><td>1</td></tr><tr><td>3</td><td><code>r4-w1-wing-crop</code> (one image)</td><td>flash31 · <code>prompts/r4-w1-cropwing.txt</code></td><td><code>scythe-valkyrie-r4-w1-cropwing</code></td><td>2</td><td>1</td></tr><tr><td>4</td><td><code>r4-w1-wing-context-blank</code> (one image)</td><td>flash31 · <code>prompts/r4-w1-blank.txt</code></td><td><code>scythe-valkyrie-r4-w1-blank</code></td><td>2</td><td>1</td></tr><tr><td>5</td><td>text only; no images</td><td>gptimage2 · <code>prompts/r4-fresh.txt</code></td><td><code>scythe-valkyrie-r4-fresh-gptimage2</code></td><td>1</td><td>1</td></tr><tr><td>6</td><td>text only; no images</td><td>riverflow25 · <code>prompts/r4-fresh.txt</code></td><td><code>scythe-valkyrie-r4-fresh-riverflow25</code></td><td>1</td><td>1</td></tr></tbody></table></div>
+<p>All six rows are independent and submit in parallel. Rows 1–4 use grouped <code>gemini_gen.py --rolls 2</code> calls, so the round deliberately stays outside <code>gen_round.py</code> coordinator v1. Record each printed Gemini Batch run id and resume that exact caller run after interruption. Rows 5–6 are synchronous and non-resumable: a missing output after submission is an ambiguous manual stop requiring provider/spend reconciliation and a <code>rounds.md</code> record before an explicitly authorized retry.</p></div></details>
 <details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>Post-merge start gate</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>Run this before any paid command below:</p>
 <pre class="code"><code>set -euo pipefail
 git fetch origin main
@@ -599,8 +677,20 @@ bash tools/drive_sync.sh pull &quot;$G&quot;
 
 W1=&quot;$G/scythe-valkyrie-r3-w1-rem-2.jpg&quot;
 CROP=&quot;$G/scythe-valkyrie-r4-w1-wing-crop.png&quot;
+BLANK=&quot;$G/scythe-valkyrie-r4-w1-wing-context-blank.png&quot;
 test -f &quot;$W1&quot;
 test -f &quot;$CROP&quot;
+test -f &quot;$BLANK&quot;
+for stem in \
+  scythe-valkyrie-r4-w1-ff scythe-valkyrie-r4-w1-sr \
+  scythe-valkyrie-r4-w1-cropwing scythe-valkyrie-r4-w1-blank \
+  scythe-valkyrie-r4-fresh-gptimage2 \
+  scythe-valkyrie-r4-fresh-riverflow25; do
+  if find &quot;$G&quot; -maxdepth 1 -type f -name &quot;$stem-*&quot; -print -quit | grep -q .; then
+    echo &quot;$stem already has an output; use its cell-specific recovery path&quot; &gt;&amp;2
+    exit 1
+  fi
+done
 PIDS=()
 gen() { # gen &lt;stem&gt; &lt;prompt&gt; &lt;log&gt; &lt;image&gt;
   local stem=&quot;$1&quot; prompt=&quot;$2&quot; log=&quot;$3&quot; image=&quot;$4&quot;
@@ -618,14 +708,31 @@ gen scythe-valkyrie-r4-w1-sr \
 gen scythe-valkyrie-r4-w1-cropwing \
   &quot;$T/prompts/r4-w1-cropwing.txt&quot; r4-w1-cropwing.log \
   &quot;$CROP&quot;
+gen scythe-valkyrie-r4-w1-blank \
+  &quot;$T/prompts/r4-w1-blank.txt&quot; r4-w1-blank.log &quot;$BLANK&quot;
+( set -o pipefail
+  &quot;$PY&quot; tools/openai_image_gen.py \
+    --prompt-file &quot;$T/prompts/r4-fresh.txt&quot; \
+    --out-dir &quot;$G&quot; --out-stem scythe-valkyrie-r4-fresh-gptimage2 \
+    --size 1152x2560 --quality high --drive-sync \
+    2&gt;&amp;1 | tee -a &quot;$T/notes/r4-fresh-gptimage2.log&quot; ) &amp;
+PIDS+=(&quot;$!&quot;)
+( set -o pipefail
+  &quot;$PY&quot; tools/openrouter_gen.py \
+    --prompt-file &quot;$T/prompts/r4-fresh.txt&quot; \
+    --out-dir &quot;$G&quot; --out-stem scythe-valkyrie-r4-fresh-riverflow25 \
+    --model sourceful/riverflow-v2.5-pro --resolution 4K --aspect 9:16 \
+    --drive-sync 2&gt;&amp;1 | tee -a &quot;$T/notes/r4-fresh-riverflow25.log&quot; ) &amp;
+PIDS+=(&quot;$!&quot;)
 FAIL=0
 for pid in &quot;${PIDS[@]}&quot;; do wait &quot;$pid&quot; || FAIL=1; done
 bash tools/drive_sync.sh push &quot;$G&quot;
 (( FAIL == 0 )) || {
-  echo &quot;a cell failed — resume its recorded Batch run, never resubmit&quot; &gt;&amp;2
+  echo &quot;a cell failed — apply only its recorded recovery path&quot; &gt;&amp;2
   exit 1
 }</code></pre>
-<p>Resolve each provider-native extension, create two deterministic composites, and append their lineage records. The resolver requires exactly one supported image for each planned roll, so a missing or ambiguous output fails closed.</p>
+<p>For a Gemini interruption, recover that cell&#x27;s exact <code>batch run:</code> id from its log and call only <code>gemini_gen.py --resume-run RUN_ID</code>. For either synchronous fresh cell, do not retry this block: reconcile provider activity, balance, the spend ledger and Drive, record the resolution in <code>rounds.md</code>, then obtain explicit retry authorization if the planned <code>-1</code> artifact is still absent.</p>
+<p>Resolve each provider-native extension, create four deterministic composites, and append their lineage records. The resolver requires exactly one supported image for each planned roll, so a missing or ambiguous output fails closed.</p>
 <pre class="code"><code>set -euo pipefail
 T=projects/bluemneme/scythe-valkyrie
 G=&quot;$T/generated&quot;
@@ -670,14 +777,27 @@ for n in 1 2; do
     &quot;$T/prompts/r4-w1-cropwing.txt&quot; \
     &quot;R4 lower-wing crop roll $n feather-composited into the untouched W1 base at (0,940)-(620,2320); locality verified from written PNG.&quot;
 
+  raw=&quot;$(native_roll scythe-valkyrie-r4-w1-blank &quot;$n&quot;)&quot;
+  out=&quot;$G/scythe-valkyrie-r4-w1-blank-comp-$n.png&quot;
+  report=&quot;$T/notes/scythe-valkyrie-r4-w1-blank-comp-$n-locality.json&quot;
+  &quot;$PY&quot; tools/region_edit.py composite --base &quot;$W1&quot; --edit &quot;$raw&quot; \
+    --rect 0,500,900,3058 --out &quot;$out&quot; --json &quot;$report&quot;
+  test &quot;$(jq -r .changed_outside_rect &quot;$report&quot;)&quot; = 0
+  append_composite &quot;scythe-valkyrie-r4-w1-blank-comp-$n&quot; &quot;$out&quot; &quot;$raw&quot; \
+    &quot;$T/prompts/r4-w1-blank.txt&quot; \
+    &quot;R4 partial blank-fill roll $n feather-composited into untouched W1 at context rect (0,500)-(900,3058); locality verified. The input blank covers only relative (20,1040)-(430,1790), so this tests fill feasibility rather than complete wing removal.&quot;
 done
 bash tools/drive_sync.sh push &quot;$G&quot;
 
-# Independently enumerate the exact all-and-only-six review set. The expected
+# Independently enumerate the exact all-and-only-ten review set. The expected
 # ids are literal plan data; the TSV resolves each provider-native filename.
 EXPECTED_IDS=&quot;$T/notes/r4-review-expected-ids.txt&quot;
 EXPECTED_TSV=&quot;$T/notes/r4-review-expected.tsv&quot;
 cat &gt; &quot;$EXPECTED_IDS&quot; &lt;&lt;&#x27;EOF&#x27;
+scythe-valkyrie-r4-fresh-gptimage2-1
+scythe-valkyrie-r4-fresh-riverflow25-1
+scythe-valkyrie-r4-w1-blank-comp-1
+scythe-valkyrie-r4-w1-blank-comp-2
 scythe-valkyrie-r4-w1-cropwing-comp-1
 scythe-valkyrie-r4-w1-cropwing-comp-2
 scythe-valkyrie-r4-w1-ff-1
@@ -692,34 +812,55 @@ for stem in scythe-valkyrie-r4-w1-ff scythe-valkyrie-r4-w1-sr; do
     printf &#x27;%s\t%s\n&#x27; &quot;$stem-$n&quot; &quot;$image&quot; &gt;&gt; &quot;$EXPECTED_TSV&quot;
   done
 done
-for n in 1 2; do
-  artifact=&quot;scythe-valkyrie-r4-w1-cropwing-comp-$n&quot;
-  image=&quot;$G/$artifact.png&quot;
-  test -f &quot;$image&quot;
-  printf &#x27;%s\t%s\n&#x27; &quot;$artifact&quot; &quot;$image&quot; &gt;&gt; &quot;$EXPECTED_TSV&quot;
+for family in blank cropwing; do
+  for n in 1 2; do
+    artifact=&quot;scythe-valkyrie-r4-w1-$family-comp-$n&quot;
+    image=&quot;$G/$artifact.png&quot;
+    test -f &quot;$image&quot;
+    printf &#x27;%s\t%s\n&#x27; &quot;$artifact&quot; &quot;$image&quot; &gt;&gt; &quot;$EXPECTED_TSV&quot;
+  done
 done
-diff -u &quot;$EXPECTED_IDS&quot; &lt;(cut -f1 &quot;$EXPECTED_TSV&quot; | sort)
+for stem in scythe-valkyrie-r4-fresh-gptimage2 \
+            scythe-valkyrie-r4-fresh-riverflow25; do
+  image=&quot;$(native_roll &quot;$stem&quot; 1)&quot;
+  printf &#x27;%s\t%s\n&#x27; &quot;$stem-1&quot; &quot;$image&quot; &gt;&gt; &quot;$EXPECTED_TSV&quot;
+done
+diff -u &quot;$EXPECTED_IDS&quot; &lt;(cut -f1 &quot;$EXPECTED_TSV&quot; | LC_ALL=C sort)
 
-# FAST deterministic reports: one exact report per full-frame candidate,
-# always against the untouched W1 control and with the edit surface broken out.
+# FAST deterministic reports for the eight W1-derived candidates only.
+EDIT_TSV=&quot;$T/notes/r4-w1-edit-candidates.tsv&quot;
+awk -F &#x27;\t&#x27; &#x27;$1 ~ /r4-w1-/&#x27; &quot;$EXPECTED_TSV&quot; &gt; &quot;$EDIT_TSV&quot;
+test &quot;$(wc -l &lt; &quot;$EDIT_TSV&quot;)&quot; -eq 8
 while IFS=$&#x27;\t&#x27; read -r artifact image; do
   report=&quot;$T/notes/$artifact-edit-diff.json&quot;
   &quot;$PY&quot; tools/edit_diff.py --base &quot;$W1&quot; --edit &quot;$image&quot; \
     --canvas resize-edit --region removal=0,940,620,2320 --json &quot;$report&quot;
   test -s &quot;$report&quot;
   jq -e &#x27;.canvas.anisotropy &lt;= 0.02&#x27; &quot;$report&quot; &gt; /dev/null
-done &lt; &quot;$EXPECTED_TSV&quot;
+done &lt; &quot;$EDIT_TSV&quot;
+
+# Independently check the two planned fresh aspect contracts.
+GPT_FRESH=&quot;$(native_roll scythe-valkyrie-r4-fresh-gptimage2 1)&quot;
+RIVER_FRESH=&quot;$(native_roll scythe-valkyrie-r4-fresh-riverflow25 1)&quot;
+&quot;$PY&quot; - &quot;$GPT_FRESH&quot; &quot;$RIVER_FRESH&quot; &lt;&lt;&#x27;PY&#x27;
+import sys
+from PIL import Image
+gpt = Image.open(sys.argv[1]); river = Image.open(sys.argv[2])
+assert gpt.size == (1152, 2560), gpt.size
+target = 9 / 16
+assert abs((river.width / river.height) / target - 1) &lt;= 0.02, river.size
+PY
 
 # A fresh-context crop auditor separately appends one review record for each
 # literal id in EXPECTED_IDS. Do not publish the PROVISIONAL panel until those
-# six records, these six reports, and both locality reports are present.
+# ten records, eight edit reports, and all four locality reports are present.
 
 # SLOW paid lane: build the detector manifest from that independently checked
-# TSV and use only the committed one-edit comparison brief.
+# TSV and use only the committed artifact-family comparison brief.
 MANIFEST=&quot;$T/notes/r4-blind-manifest.json&quot;
 jq -Rn &#x27;[inputs | split(&quot;\t&quot;) | {artifact: .[0], image: .[1]}] | {items: .}&#x27; \
   &lt; &quot;$EXPECTED_TSV&quot; &gt; &quot;$MANIFEST&quot;
-diff -u &quot;$EXPECTED_IDS&quot; &lt;(jq -r &#x27;.items[].artifact&#x27; &quot;$MANIFEST&quot; | sort)
+diff -u &quot;$EXPECTED_IDS&quot; &lt;(jq -r &#x27;.items[].artifact&#x27; &quot;$MANIFEST&quot; | LC_ALL=C sort)
 
 # One description Batch wave, then one dependent comparison wave. Re-running
 # resumes the recorded caller run; it never submits a replacement run.
@@ -733,14 +874,14 @@ if [[ -n &quot;$DETECT_RUN&quot; ]]; then
 else
   &quot;$PY&quot; tools/blind_detect_round.py \
     --manifest &quot;$MANIFEST&quot; \
-    --spec-file &quot;$T/prompts/r4-wing-removal-review.txt&quot; \
+    --spec-file &quot;$T/prompts/r4-review-brief.txt&quot; \
     --reviews &quot;$T/reviews.jsonl&quot; 2&gt; &gt;(tee &quot;$DETECT_LOG&quot; &gt;&amp;2)
   DETECT_RUN=&quot;$(sed -n &#x27;s/^batch run: //p&#x27; &quot;$DETECT_LOG&quot; | head -n 1)&quot;
   test -n &quot;$DETECT_RUN&quot;
 fi
 
 # COMPLETE requires blind-detect records from this run for all and only the
-# literal six ids. Coordinator success or records from another run do not pass.
+# literal ten ids. Coordinator success or records from another run do not pass.
 jq -e -s --arg run &quot;$DETECT_RUN&quot; --rawfile expected &quot;$EXPECTED_IDS&quot; &#x27;
   ($expected | split(&quot;\n&quot;) | map(select(length &gt; 0)) | sort) as $want
   | ([.[] | select(.reviewer == &quot;blind-detect&quot;
@@ -791,6 +932,7 @@ PRESERVATION
 Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
 </pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/948beb12526dab79.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b7b7424d094f32c5.png" data-cap="scythe-valkyrie-r2-w1-gptimage2-2.png" alt="scythe-valkyrie-r2-w1-gptimage2-2.png"><figcaption>scythe-valkyrie-r2-w1-gptimage2-2.png</figcaption></figure></div></template>
 <template id="in-3"><h2>scythe-valkyrie-r4-w1-wing-crop</h2><p class="gmeta">? · 2026-08-13T03:30:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/d67edd32e52ed202.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5b86a1a1c0af7fd1.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2.jpg" alt="scythe-valkyrie-r3-w1-rem-2.jpg"><figcaption>scythe-valkyrie-r3-w1-rem-2.jpg</figcaption></figure></div></template>
+<template id="in-4"><h2>scythe-valkyrie-r4-w1-wing-context-blank</h2><p class="gmeta">? · 2026-08-13T06:10:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/25903ebd1222de1e.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/f197170306154ac9.png" data-cap="scythe-valkyrie-r4-w1-wing-context-crop.png" alt="scythe-valkyrie-r4-w1-wing-context-crop.png"><figcaption>scythe-valkyrie-r4-w1-wing-context-crop.png</figcaption></figure></div></template>
 <script>
 const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
       lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
