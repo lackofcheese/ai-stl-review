@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="4f8810549702b0089fa4f02fd809249a007a02fda555a1e3a37a0bf78986c158">
+<meta name="ai-stl-plan-digest" content="50911bd32c5662844e050add67f7a6f7201b5c6e2d7e9cdf375e4237bacd27ec">
 <title>Tiger — Round 4 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -455,10 +455,9 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
 <main>
 <div class="eyebrow">Round 4 · mesh validation</div>
 <h1>Tiger — Round 4 runbook</h1>
-<div class="statusrow"><span class="pill s-await"><span class="dot"></span>Awaiting sign-off</span><span class="fact">Opened <b>2026-08-14</b></span></div>
-<p class="statusnote">no keeper-producing work has started</p>
+<div class="statusrow"><span class="pill s-appr"><span class="dot"></span>Approved — not started</span><span class="fact">Dimitri · 2026-08-14</span><span class="fact">Opened <b>2026-08-14</b></span></div>
 <div class="statusrow sub"><span class="fact inert" title="Published at round close">&#128203; Review panel &mdash; at round close</span></div>
-<div class="ask"><p class="lbl"><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</p><p>Approve this exact placement-only plan, or change the 30.0 mm target before it freezes. <a class="jump" href="#ask">Read the full ask &darr;</a></p></div>
+<div class="ask"><p class="lbl"><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</p><p><strong>Approved by Dimitri on 2026-08-14 with “approve and start on merge.”</strong> The exact 30.0 mm placement-only plan is frozen. <a class="jump" href="#ask">Read the full ask &darr;</a></p></div>
 <div class="glance"><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg>Rolls</span><span class="v">1</span><span class="s">across 1 case</span></div></div>
 <nav class="snav"><a href="#goal">Goal</a><a href="#choices">Choices</a><a href="#inputs">Inputs</a><a href="#judged">Judging</a><a href="#ask">The ask</a><a href="#cost">Cost</a><a href="#facts">Round facts</a><a href="#tech">Technical plan</a></nav>
 <section class="s" id="goal"><h2><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg>Goal</h2><div class="md"><p>Turn Jawaknight&#x27;s preferred Round 3x mesh into a correctly dimensioned, print-reviewable STL without changing the sculpt he selected. Tiger is a big, heavy character in a low crouch, so this plan sets the crouched figure to <strong>exactly 30.0 mm top-to-bottom</strong>: his mass and broad stance carry the size read rather than making the posed silhouette artificially tall.</p>
@@ -541,7 +540,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
 <li>have a fresh-context reviewer compare the final eight-angle render, hands, feet, toggles and rear garment against the selected R3x mesh. Since placement is affine-only, any visual change is a hard failure.</li>
 </ul>
 <p>The mechanical report and fresh-context audit produce a <strong>PROVISIONAL</strong> private R4 review with a clearly labelled decimated display proxy in its interactive viewer. The exact STL is handed over separately through Drive. Dimitri and Jawaknight&#x27;s live-3D call on that exact file is the final print gate.</p></div></section>
-<section class="s" id="ask"><h2><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</h2><div class="md cta"><p>Approve this exact placement-only plan, or change the 30.0 mm target before it freezes. Approval alone leaves R4 <strong>Approved — not started</strong>; if you want the cleanup to begin as soon as the approval PR merges, say <strong>approve and start on merge</strong> explicitly.</p>
+<section class="s" id="ask"><h2><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</h2><div class="md cta"><p><strong>Approved by Dimitri on 2026-08-14 with “approve and start on merge.”</strong> The exact 30.0 mm placement-only plan is frozen. Keeper-producing work still waits for this approval/start PR to merge, followed by exact-current-main, durable-greenlight, and Discord start verification.</p>
 <p>At results, confirm the exact 30 mm STL survives live 3D inspection and is ready for a test print, or name the specific region that blocks it.</p></div></section>
 <section class="s" id="cost"><h2><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Cost</h2><div class="md"><p><strong>$0 and 0 Meshy credits.</strong> Placement, validation, rendering and the private review artifact are local. The exact STL and renders go to Drive immediately.</p></div></section>
 <section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>mesh validation — final-scale cleanup and printability check</dd><dt>Owner</dt><dd>Codex (local) → Dimitri + Jawaknight review</dd><dt>Date opened</dt><dd>2026-08-14</dd><dt>Inputs</dt><dd><code>tiger-r3x-min-gptimage2-m1</code>, the exact human-selected Round 3x raw STL</dd><dt>Produces</dt><dd><code>tiger-r3x-min-gptimage2-m1-clean-30mm</code> plus placement, topology, roughness, thin-part, handle, render and review evidence</dd><dt>Branch</dt><dd><code>codex/tiger-r4-cleanup-plan</code></dd><dt>Evaluation lanes</dt><dd>FAST only — deterministic placement, final-scale mechanical checks, eight-angle renders, fresh-context feature audit, and human live-3D review. No image generation or blind detector.</dd><dt>Prior round</dt><dd>r3x — Jawaknight prefers minimal-GPT roll 1; Dimitri asked to clean and scale that exact mesh to about 30 mm overall</dd></dl></section>
