@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="c1ba4f1c80aadd4b3c692d3ba14dc1ee16fbed7a52f5b3fb4b93fe35eee14c68">
+<meta name="ai-stl-plan-digest" content="6a298a7193a237dd1880397177cf444c519b343722ed7b2555665fa41e220733">
 <title>Tiger — Round 4 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -470,7 +470,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
 <h3 class="rb-case-h">Exact 30 mm placement<span class="rb-case-count">2 prompts</span></h3>
 <p class="rb-case-note">Preserve the exact selected STL named and hashed in the mesh plan apart from one uniform affine placement, then run the final-scale printability battery. The runbook renderer shows image inputs only, so the STL itself is represented by this verbatim manifest rather than a misleading source-image thumbnail.</p>
 <p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
-<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Mesh plan — Frozen cleanup and scale manifest<span class="rb-size">1 kB · 64 words</span></summary><div class="phead"><p class="path">projects/martial-frogs/tiger/runbooks/r4-cleanup.json</p><button class="copy" data-copy>Copy mesh plan</button></div><pre>{
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Mesh plan — Frozen cleanup and scale manifest<span class="rb-size">1 kB · 76 words</span></summary><div class="phead"><p class="path">projects/martial-frogs/tiger/runbooks/r4-cleanup.json</p><button class="copy" data-copy>Copy mesh plan</button></div><pre>{
   &quot;version&quot;: 1,
   &quot;source_artifact&quot;: &quot;tiger-r3x-min-gptimage2-m1&quot;,
   &quot;source_stl&quot;: &quot;projects/martial-frogs/tiger/models/round-3x/tiger-r3x-min-gptimage2-m1-raw.stl&quot;,
@@ -480,6 +480,16 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
   &quot;output_artifact&quot;: &quot;tiger-r3x-min-gptimage2-m1-clean-30mm&quot;,
   &quot;output_stl&quot;: &quot;projects/martial-frogs/tiger/models/round-4/tiger-r3x-min-gptimage2-m1-clean-30mm.stl&quot;,
   &quot;placement_report&quot;: &quot;projects/martial-frogs/tiger/notes/r4-min-gptimage2-m1-placement.json&quot;,
+  &quot;internal_void_report&quot;: &quot;projects/martial-frogs/tiger/notes/r4-min-gptimage2-m1-internal-void.json&quot;,
+  &quot;cross_section_fractions&quot;: [
+    0.125,
+    0.25,
+    0.375,
+    0.5,
+    0.625,
+    0.75,
+    0.875
+  ],
   &quot;allowed_operations&quot;: [
     &quot;uniform scale to exactly 30.0 mm on Z&quot;,
     &quot;translate XY bounds center to the origin&quot;,
@@ -496,7 +506,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
   ]
 }
 </pre></details>
-<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Lineage plan — Append-only output lineage template<span class="rb-size">2 kB · 78 words</span></summary><div class="phead"><p class="path">projects/martial-frogs/tiger/runbooks/r4-lineage-record.json</p><button class="copy" data-copy>Copy lineage plan</button></div><pre>{
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Lineage plan — Append-only output lineage template<span class="rb-size">3 kB · 86 words</span></summary><div class="phead"><p class="path">projects/martial-frogs/tiger/runbooks/r4-lineage-record.json</p><button class="copy" data-copy>Copy lineage plan</button></div><pre>{
   &quot;id&quot;: &quot;tiger-r3x-min-gptimage2-m1-clean-30mm&quot;,
   &quot;round&quot;: 4,
   &quot;kind&quot;: &quot;clean-mesh&quot;,
@@ -514,6 +524,14 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
     &quot;projects/martial-frogs/tiger/notes/r4-min-gptimage2-m1-roughness.txt&quot;,
     &quot;projects/martial-frogs/tiger/notes/r4-min-gptimage2-m1-thin-parts.txt&quot;,
     &quot;projects/martial-frogs/tiger/notes/r4-min-gptimage2-m1-handles.json&quot;,
+    &quot;projects/martial-frogs/tiger/notes/r4-min-gptimage2-m1-internal-void.json&quot;,
+    &quot;projects/martial-frogs/tiger/generated/r4-cross-sections/tiger-r3x-min-gptimage2-m1-clean-30mm/section-01.svg&quot;,
+    &quot;projects/martial-frogs/tiger/generated/r4-cross-sections/tiger-r3x-min-gptimage2-m1-clean-30mm/section-02.svg&quot;,
+    &quot;projects/martial-frogs/tiger/generated/r4-cross-sections/tiger-r3x-min-gptimage2-m1-clean-30mm/section-03.svg&quot;,
+    &quot;projects/martial-frogs/tiger/generated/r4-cross-sections/tiger-r3x-min-gptimage2-m1-clean-30mm/section-04.svg&quot;,
+    &quot;projects/martial-frogs/tiger/generated/r4-cross-sections/tiger-r3x-min-gptimage2-m1-clean-30mm/section-05.svg&quot;,
+    &quot;projects/martial-frogs/tiger/generated/r4-cross-sections/tiger-r3x-min-gptimage2-m1-clean-30mm/section-06.svg&quot;,
+    &quot;projects/martial-frogs/tiger/generated/r4-cross-sections/tiger-r3x-min-gptimage2-m1-clean-30mm/section-07.svg&quot;,
     &quot;projects/martial-frogs/tiger/generated/r4-renders/tiger-r3x-min-gptimage2-m1-clean-30mm/tiger-r3x-min-gptimage2-m1-clean-30mm-turnaround.png&quot;,
     &quot;projects/martial-frogs/tiger/generated/r4-renders/tiger-r3x-min-gptimage2-m1-clean-30mm/tiger-r3x-min-gptimage2-m1-clean-30mm-zoom-feet.png&quot;,
     &quot;projects/martial-frogs/tiger/generated/r4-renders/tiger-r3x-min-gptimage2-m1-clean-30mm/tiger-r3x-min-gptimage2-m1-clean-30mm-zoom-rear-garment.png&quot;,
@@ -535,7 +553,8 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
 <li>apply only one uniform affine transform: 30.0 mm Z height, XY bounds centered, minimum Z at 0.0 mm; independently prove triangle count, watertightness, winding and coordinates were preserved by that transform;</li>
 <li>require one component, zero open edges, zero non-manifold edges, zero degenerate faces and zero duplicate faces at final scale;</li>
 <li>record exact dimensions, volume and high-pass surface roughness in the new lineage artifact&#x27;s <code>clean</code> block;</li>
-<li>run the tight 0.28 mm thin-connection probe and inspect every reported neck; run the 0.10 mm handle spectrum because the raw shell&#x27;s Euler number is -2, then use eight-angle and close renders to distinguish intentional webbing or limb gaps from reconstruction noise;</li>
+<li>run the tight 0.28 mm thin-connection probe and inspect every reported neck; run the 0.10 mm handle spectrum because the raw shell&#x27;s Euler number is -2, require its enclosed-cavity count to remain zero, and inspect recorded <code>mesh.section</code> cross-sections at seven evenly spaced interior heights for nested contours, hidden shells or intersecting geometry; any unexplained internal contour stops the round before provisional review;</li>
+<li>use eight-angle and close renders to distinguish intentional webbing or limb gaps from reconstruction noise and to reconcile any intentional section contour with visible exterior geometry;</li>
 <li>inspect both sole patches against the Z=0 plane and confirm the occupied footprint fits a separate 32 mm round base; no base is fused in this round;</li>
 <li>have a fresh-context reviewer compare the final eight-angle render, hands, feet, toggles and rear garment against the selected R3x mesh. Since placement is affine-only, any visual change is a hard failure.</li>
 </ul>
@@ -543,7 +562,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
 <section class="s" id="ask"><h2><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</h2><div class="md cta"><p><strong>Approved by Dimitri on 2026-08-14 with “approve and start on merge.”</strong> The exact 30.0 mm placement-only plan is frozen. Keeper-producing work still waits for this approval/start PR to merge, followed by exact-current-main, durable-greenlight, and Discord start verification.</p>
 <p>At results, confirm the exact 30 mm STL survives live 3D inspection and is ready for a test print, or name the specific region that blocks it.</p></div></section>
 <section class="s" id="cost"><h2><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Cost</h2><div class="md"><p><strong>$0 and 0 Meshy credits.</strong> Placement, validation, rendering and the private review artifact are local. The exact STL and renders go to Drive immediately.</p></div></section>
-<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>mesh validation — final-scale cleanup and printability check</dd><dt>Owner</dt><dd>Codex (local) → Dimitri + Jawaknight review</dd><dt>Date opened</dt><dd>2026-08-14</dd><dt>Inputs</dt><dd><code>tiger-r3x-min-gptimage2-m1</code>, the exact human-selected Round 3x raw STL</dd><dt>Produces</dt><dd><code>tiger-r3x-min-gptimage2-m1-clean-30mm</code> plus placement, topology, roughness, thin-part, handle, render and review evidence</dd><dt>Branch</dt><dd><code>codex/tiger-r4-cleanup-plan</code></dd><dt>Evaluation lanes</dt><dd>FAST only — deterministic placement, final-scale mechanical checks, eight-angle renders, fresh-context feature audit, and human live-3D review. No image generation or blind detector.</dd><dt>Prior round</dt><dd>r3x — Jawaknight prefers minimal-GPT roll 1; Dimitri asked to clean and scale that exact mesh to about 30 mm overall</dd></dl></section>
+<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>mesh validation — final-scale cleanup and printability check</dd><dt>Owner</dt><dd>Codex (local) → Dimitri + Jawaknight review</dd><dt>Date opened</dt><dd>2026-08-14</dd><dt>Inputs</dt><dd><code>tiger-r3x-min-gptimage2-m1</code>, the exact human-selected Round 3x raw STL</dd><dt>Produces</dt><dd><code>tiger-r3x-min-gptimage2-m1-clean-30mm</code> plus placement, topology, roughness, thin-part, handle, internal-section, render and review evidence</dd><dt>Branch</dt><dd><code>codex/tiger-r4-cleanup-plan</code></dd><dt>Evaluation lanes</dt><dd>FAST only — deterministic placement, final-scale mechanical checks, eight-angle renders, fresh-context feature audit, and human live-3D review. No image generation or blind detector.</dd><dt>Prior round</dt><dd>r3x — Jawaknight prefers minimal-GPT roll 1; Dimitri asked to clean and scale that exact mesh to about 30 mm overall</dd></dl></section>
 <section class="s" id="tech"><h2><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>Technical plan</h2>
 <p class="intro">exact transform, validation and review commands</p>
 <details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>What changed going in</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><ul>
@@ -604,6 +623,92 @@ python3 tools/mesh_handles.py \
   --label tiger-r3x-min-gptimage2-m1-clean-30mm \
   --out &quot;$P/notes/r4-min-gptimage2-m1-handles.json&quot;
 
+# A cavity in the voxel solid is a hard stop; the section battery below is a
+# distinct visual/recorded inspection for hidden contours or intersections.
+jq -e &#x27;.grid_cavities == 0&#x27; \
+  &quot;$P/notes/r4-min-gptimage2-m1-handles.json&quot;
+
+SECTION_DIR=&quot;$P/generated/r4-cross-sections/tiger-r3x-min-gptimage2-m1-clean-30mm&quot;
+SECTION_REPORT=&quot;$P/notes/r4-min-gptimage2-m1-internal-void.json&quot;
+mkdir -p &quot;$SECTION_DIR&quot;
+python3 - &quot;$CLEAN&quot; &quot;$SECTION_DIR&quot; &quot;$SECTION_REPORT&quot; &lt;&lt;&#x27;PY&#x27;
+import json
+import pathlib
+import sys
+
+import numpy as np
+import trimesh
+from matplotlib.path import Path as MplPath
+
+mesh_path, section_dir, report_path = map(pathlib.Path, sys.argv[1:])
+mesh = trimesh.load_mesh(mesh_path, process=False)
+if not isinstance(mesh, trimesh.Trimesh):
+    raise TypeError(f&quot;expected one Trimesh, got {type(mesh).__name__}&quot;)
+
+section_dir.mkdir(parents=True, exist_ok=True)
+z_min, z_max = map(float, mesh.bounds[:, 2])
+fractions = np.linspace(0.125, 0.875, 7)
+rows = []
+for index, fraction in enumerate(fractions, 1):
+    z_mm = z_min + float(fraction) * (z_max - z_min)
+    section = mesh.section(
+        plane_origin=[0.0, 0.0, z_mm], plane_normal=[0.0, 0.0, 1.0]
+    )
+    if section is None:
+        raise RuntimeError(f&quot;no cross-section at z={z_mm:.6f} mm&quot;)
+    planar, _ = section.to_2D()
+    loops = [np.asarray(loop)[:, :2] for loop in planar.discrete]
+    closed = [
+        len(loop) &gt;= 4 and np.allclose(loop[0], loop[-1], atol=1e-7)
+        for loop in loops
+    ]
+    if not loops or not all(closed):
+        raise RuntimeError(f&quot;open or empty cross-section at z={z_mm:.6f} mm&quot;)
+
+    nested_pairs = []
+    for inner_index, inner in enumerate(loops):
+        for outer_index, outer in enumerate(loops):
+            if inner_index == outer_index:
+                continue
+            inside = MplPath(outer).contains_points(inner[:-1], radius=-1e-9)
+            if len(inside) and bool(inside.all()):
+                nested_pairs.append([inner_index, outer_index])
+
+    svg_name = f&quot;section-{index:02d}.svg&quot;
+    planar.export(file_obj=section_dir / svg_name, file_type=&quot;svg&quot;)
+    rows.append({
+        &quot;index&quot;: index,
+        &quot;fraction_of_height&quot;: round(float(fraction), 6),
+        &quot;z_mm&quot;: round(z_mm, 6),
+        &quot;closed_contours&quot;: len(loops),
+        &quot;all_contours_closed&quot;: True,
+        &quot;nested_contour_pairs&quot;: nested_pairs,
+        &quot;svg&quot;: str(section_dir / svg_name),
+    })
+
+report = {
+    &quot;schema_version&quot;: 1,
+    &quot;stl&quot;: str(mesh_path),
+    &quot;method&quot;: &quot;trimesh.mesh.section at seven interior Z heights&quot;,
+    &quot;sections&quot;: rows,
+    &quot;nested_contour_pairs_total&quot;: sum(
+        len(row[&quot;nested_contour_pairs&quot;]) for row in rows
+    ),
+    &quot;review_status&quot;: &quot;pending-human-section-inspection&quot;,
+}
+report_path.write_text(json.dumps(report, indent=2) + &quot;\n&quot;)
+print(json.dumps(report, indent=2))
+PY
+
+jq -e &#x27;.sections | length == 7 and all(.[]; .all_contours_closed == true)&#x27; \
+  &quot;$SECTION_REPORT&quot;
+
+# Inspect all seven SVGs before building the provisional panel. Every nested
+# contour pair must be reconciled to visible intentional exterior geometry in
+# the eight-angle renders; any unexplained pair, hidden shell, intersection or
+# trapped-resin cavity is a hard stop. Record the signed inspection outcome by
+# changing review_status in the report to pass or fail before provisional review.
+
 R=&quot;$P/generated/r4-renders/tiger-r3x-min-gptimage2-m1-clean-30mm&quot;
 python3 tools/stl_render.py --stl &quot;$CLEAN&quot; --out-dir &quot;$R&quot; \
   --stem tiger-r3x-min-gptimage2-m1-clean-30mm --mode turnaround
@@ -617,7 +722,8 @@ python3 tools/stl_render.py --stl &quot;$CLEAN&quot; --out-dir &quot;$R&quot; \
   --stem tiger-r3x-min-gptimage2-m1-clean-30mm --mode zoom \
   --zoom-name hands-toggles --z-min 13.5 --z-max 30
 
-tools/drive_sync.sh push &quot;$P/generated/r4-renders&quot;</code></pre>
+tools/drive_sync.sh push &quot;$P/generated/r4-renders&quot;
+tools/drive_sync.sh push &quot;$P/generated/r4-cross-sections&quot;</code></pre>
 <h4>Append-only lineage and canonical headline stats</h4>
 <p>The committed <code>r4-lineage-record.json</code> is the complete new-artifact template. Append it exactly once before <code>mesh_stats.py</code> (which refuses a missing artifact id), then merge the measured roughness before the execution commit:</p>
 <pre class="code"><code>LINEAGE=&quot;$P/lineage.json&quot;
