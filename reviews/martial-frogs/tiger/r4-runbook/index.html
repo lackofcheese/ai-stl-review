@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="50911bd32c5662844e050add67f7a6f7201b5c6e2d7e9cdf375e4237bacd27ec">
+<meta name="ai-stl-plan-digest" content="c1ba4f1c80aadd4b3c692d3ba14dc1ee16fbed7a52f5b3fb4b93fe35eee14c68">
 <title>Tiger — Round 4 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -562,8 +562,9 @@ python3 tools/round_gate.py verify \
   --published-html &quot;${AI_STL_REVIEW_DIR:-../ai-stl-review}/reviews/martial-frogs/tiger/r4-runbook/index.html&quot;
 test &quot;$(git rev-parse HEAD)&quot; = &quot;$(git rev-parse origin/main)&quot;
 
-# Append the R4 start reply in #tiger and advance its header from that event.
-# Only then begin the keeper-producing transform below.</code></pre>
+# Append the R4 approval reply in #tiger and advance its header from that event.
+# Then append the distinct R4 start reply and advance the header again.
+# Only after both events succeed begin the keeper-producing transform below.</code></pre>
 <h4>Exact input and placement</h4>
 <p>Use the repository environment documented in <code>docs/cloud-setup.md</code>, then:</p>
 <pre class="code"><code>P=projects/martial-frogs/tiger
