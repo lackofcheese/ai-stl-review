@@ -1,0 +1,872 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="ai-stl-plan-digest" content="4f8810549702b0089fa4f02fd809249a007a02fda555a1e3a37a0bf78986c158">
+<title>Tiger — Round 4 runbook</title>
+<style>
+:root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.reviewtools { display:flex; justify-content:flex-end; margin:.35rem 0 0 }
+.devmode { display:inline-flex; align-items:center; gap:.5rem; color:var(--dim);
+  font-size:.76rem; font-weight:650; cursor:pointer; user-select:none }
+.devmode input { appearance:none; position:relative; width:2.15rem; height:1.18rem;
+  margin:0; border:1px solid var(--dim); border-radius:99px;
+  background:var(--line); cursor:pointer; transition:background .15s,border-color .15s }
+.devmode input::after { content:""; position:absolute; width:.78rem; height:.78rem;
+  left:.14rem; top:.13rem; border-radius:50%; background:var(--ink);
+  transition:transform .15s }
+.devmode input:checked { background:var(--accent); border-color:var(--accent) }
+.devmode input:checked::after { transform:translateX(.95rem); background:#fff }
+.devmode input:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+.developer-only[hidden] { display:none !important }
+.developer-section { margin:2.4rem 0 0; padding:1rem;
+  border:1px dashed var(--line); border-radius:8px }
+.developer-section > h2:first-child { margin-top:0 }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.coreinputs { margin:1.2rem 0 .4rem }
+.coreinputs h2 { margin:0 0 .5rem }
+.coreinputs .hint { color:var(--dim); font-weight:400; font-size:.85rem }
+.inputrow { display:flex; flex-wrap:wrap; gap:12px }
+.coreinput { margin:0; width:210px; max-width:100%;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.coreinput .imgwrap { border-bottom:1px solid var(--line) }
+.coreinput .imgwrap img { max-height:230px }
+.coreinput figcaption { color:var(--dim); font-size:.7rem; padding:.35rem .5rem;
+  word-break:break-all; font-family:ui-monospace,SFMono-Regular,Menlo,monospace }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.recommendation { color:var(--ink) !important; font-size:.88rem !important;
+  padding:.55rem .65rem; border-left:3px solid var(--accent);
+  background:color-mix(in srgb,var(--accent) 8%,transparent); border-radius:4px }
+.recommendation strong { color:var(--accent); font-size:.7rem;
+  letter-spacing:.06em; text-transform:uppercase; margin-right:.3rem }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.statrow { display:flex; flex-wrap:wrap; gap:.15rem .5rem; margin:0 0 .1rem;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.72rem;
+  color:var(--dim) }
+.statrow span { white-space:nowrap }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.chip.unclear { color:var(--dim); border-color:var(--dim) }
+.detector-details { display:flex; flex-direction:column; gap:.45rem }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:calc(100vh - 7rem); object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-meta { display:flex; flex-direction:column; align-items:center; gap:.35rem;
+  min-height:2.2rem; position:relative; z-index:20 }
+.lb-refrow { display:flex; align-items:center; justify-content:center; gap:.35rem;
+  flex-wrap:wrap }
+.lb-refrow[hidden] { display:none }
+.lb-refrow .refid { background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn { color:#bbb; border-color:#55515d;
+  background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+
+/* Runbook chrome. The house tokens, lightbox and asset pipeline come from
+   review_page.py; everything here is the runbook page's own structure —
+   a decision-first header, the choices as cards, and the technical plan
+   behind per-subsection disclosures. */
+.md h2 { font-size:1.15rem; margin:2.2rem 0 .3rem }
+.md h3 { font-size:1rem; margin:1.6rem 0 .3rem }
+.md h4 { font-size:.9rem; margin:1.2rem 0 .3rem; color:var(--dim) }
+.md p { max-width:68ch; margin:.5rem 0 0 }
+.md ul, .md ol { max-width:68ch; padding-left:1.4rem }
+.md li { margin:.25rem 0 }
+.md a { color:var(--accent) }
+.md code, dl.facts code, .choice code { background:var(--pre);
+  border:1px solid var(--line); border-radius:4px; padding:.05rem .3rem;
+  font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
+.md pre.code { background:var(--pre); border:1px solid var(--line); border-radius:6px;
+  padding:.75rem 1rem; overflow-x:auto; font-size:.8rem; line-height:1.5 }
+.md pre.code code { background:none; border:0; padding:0 }
+.md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+.ico { width:1em; height:1em; flex:none; stroke:currentColor; fill:none;
+  stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; vertical-align:-.12em }
+
+/* --- header ------------------------------------------------------------- */
+h1 { font-size:1.55rem; margin:.25rem 0 0; letter-spacing:-.01em }
+.statusrow { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem .55rem;
+  margin:.7rem 0 0 }
+.statusrow.sub { margin:.4rem 0 0 }
+.statusnote { color:var(--dim); font-size:.82rem; margin:.5rem 0 0; max-width:70ch }
+.pill { display:inline-flex; align-items:center; gap:.35rem; font-size:.74rem;
+  font-weight:700; border:1px solid; border-radius:99px; padding:.16rem .6rem;
+  white-space:nowrap }
+.pill .dot { width:.45rem; height:.45rem; border-radius:50%; background:currentColor }
+.pill.s-await { color:var(--warn); border-color:var(--warn) }
+.pill.s-appr { color:var(--accent); border-color:var(--accent) }
+.pill.s-run { color:var(--ok); border-color:var(--ok) }
+.pill.s-done, .pill.s-hold { color:var(--dim); border-color:var(--line) }
+.fact { display:inline-flex; align-items:center; gap:.3rem; font-size:.75rem;
+  color:var(--dim); border:1px solid var(--line); border-radius:99px;
+  padding:.16rem .6rem; text-decoration:none }
+.fact b { color:var(--ink); font-weight:600 }
+a.fact.link { color:var(--accent); border-color:var(--accent) }
+.fact.inert { opacity:.55 }
+
+/* --- the ask, promoted -------------------------------------------------- */
+.ask { margin:1.1rem 0 0; border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); border-radius:8px; padding:.85rem 1rem }
+.ask .lbl { display:flex; align-items:center; gap:.4rem; font-size:.7rem; font-weight:700;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin:0 0 .3rem }
+.ask p { margin:0; max-width:70ch }
+a.jump { font-size:.8rem; font-weight:600; text-decoration:none; white-space:nowrap;
+  color:var(--accent) }
+
+/* --- at a glance + spend meter ------------------------------------------ */
+.glance { display:grid; gap:8px; margin:1rem 0 0;
+  grid-template-columns:repeat(auto-fit,minmax(132px,1fr)) }
+.tile { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.55rem .7rem; display:flex; flex-direction:column; gap:.12rem }
+.tile .k { display:flex; align-items:center; gap:.3rem; font-size:.66rem; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--dim) }
+.tile .v { font-size:1.05rem; font-weight:700; font-variant-numeric:tabular-nums }
+.tile .s { font-size:.72rem; color:var(--dim) }
+.meter { margin:.75rem 0 0; background:var(--card); border:1px solid var(--line);
+  border-radius:8px; padding:.7rem .85rem }
+.meter .top { display:flex; justify-content:space-between; align-items:baseline;
+  gap:.5rem; font-size:.74rem; color:var(--dim); margin:0 0 .4rem }
+.meter .top b { color:var(--ink); font-size:.9rem; font-variant-numeric:tabular-nums }
+.bar { height:9px; border-radius:99px; background:var(--well); border:1px solid var(--line);
+  overflow:hidden; display:flex }
+.bar i { display:block; height:100%; background:var(--accent) }
+.legend { display:flex; flex-wrap:wrap; gap:.2rem .9rem; margin:.45rem 0 0;
+  font-size:.7rem; color:var(--dim) }
+.legend span { display:inline-flex; align-items:center; gap:.32rem }
+.legend i { width:.6rem; height:.6rem; border-radius:2px; background:var(--accent); flex:none }
+.legend i.r { opacity:.45 }
+.legend i.o { background:var(--well); border:1px solid var(--line) }
+
+/* --- section nav + sections --------------------------------------------- */
+.snav { position:sticky; top:0; z-index:5; margin:1.4rem -16px 0; padding:.5rem 16px;
+  background:var(--bg); border-bottom:1px solid var(--line);
+  display:flex; gap:.35rem; overflow-x:auto; scrollbar-width:none }
+.snav::-webkit-scrollbar { display:none }
+.snav a { font-size:.72rem; font-weight:600; color:var(--dim); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .6rem; white-space:nowrap }
+.snav a:hover { color:var(--ink); border-color:var(--dim) }
+section.s { margin:2.1rem 0 0; scroll-margin-top:3.2rem }
+section.s > h2 { display:flex; align-items:center; gap:.5rem; font-size:1.02rem;
+  margin:0 0 .3rem }
+section.s > h2 .ico { color:var(--accent); width:1.05em; height:1.05em }
+section.s > h2::after { content:""; flex:1; height:1px; background:var(--line) }
+.md.cta { background:var(--card); border:1px solid var(--accent); border-radius:10px;
+  padding:.35rem 1.05rem .95rem; margin-top:.6rem }
+.md.cta ol li::marker, .md.cta ul li::marker { color:var(--accent); font-weight:700 }
+
+/* --- pipeline strip + round lineage ------------------------------------- */
+.strips { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.7rem .85rem; margin:.9rem 0 0 }
+.stage, .lineage { display:flex; flex-wrap:wrap; align-items:center; gap:.3rem }
+.lineage { margin-top:.55rem }
+.stage .lbl, .lineage .lbl { font-size:.64rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--dim); margin-right:.15rem }
+.stage .st { font-size:.71rem; font-weight:600; color:var(--dim);
+  border:1px solid var(--line); border-radius:99px; padding:.16rem .55rem; white-space:nowrap }
+.stage .st.now { color:var(--bg); background:var(--accent); border-color:var(--accent) }
+.stage .st.opt { border-style:dashed }
+.stage .arw, .lineage .arw { color:var(--line); font-size:.8rem }
+.lineage .rn { font-size:.72rem; color:var(--dim); border:1px solid var(--line);
+  border-radius:6px; padding:.16rem .5rem }
+.lineage .rn.this { color:var(--ink); border-color:var(--accent); font-weight:700 }
+.lineage .rn.next { border-style:dashed }
+
+/* --- choices as cards ---------------------------------------------------
+   The choices table is the round's comparison and the first thing a reviewer
+   reads. As a table its prose columns forced a 544px grid into a 343px phone
+   column, so the same cells render as one card per choice and simply stack. */
+.choices { display:grid; gap:12px; margin:.7rem 0 0;
+  grid-template-columns:repeat(auto-fit,minmax(255px,1fr)) }
+.choice { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.85rem .95rem; display:flex; flex-direction:column; gap:.5rem }
+.choice header { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap }
+.choice .key { font-size:.78rem; font-weight:800; color:var(--accent);
+  border:1px solid var(--accent); border-radius:6px; padding:.1rem .42rem }
+.choice h3 { margin:0; font-size:.97rem; font-weight:700 }
+.choice .rolls { margin-left:auto; font-size:.7rem; font-weight:700; color:var(--dim);
+  border:1px solid var(--line); border-radius:99px; padding:.1rem .5rem;
+  white-space:nowrap; font-variant-numeric:tabular-nums }
+.choice ul { margin:0; padding:0; list-style:none; display:flex; flex-direction:column;
+  gap:.32rem }
+.choice li { display:flex; gap:.45rem; font-size:.87rem; line-height:1.45 }
+.choice li .ico { color:var(--accent); margin-top:.28em; width:.5em; height:.5em }
+.choice .foot { display:flex; flex-direction:column; gap:.3rem; margin-top:auto;
+  padding-top:.15rem }
+.choice .cx { margin:0; font-size:.78rem; color:var(--dim) }
+.choice .ck { font-size:.62rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--dim); margin-right:.4rem }
+.choice a.jump { display:inline-flex; align-items:center; gap:.3rem; font-size:.71rem;
+  color:var(--dim); border:1px solid var(--line); border-radius:99px;
+  padding:.14rem .55rem; align-self:flex-start; margin-top:.15rem }
+.choice a.jump:hover { color:var(--accent); border-color:var(--accent) }
+
+/* --- roll matrix -------------------------------------------------------- */
+.shape { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.8rem .9rem; margin:12px 0 0; overflow-x:auto }
+.mx { display:grid; gap:6px; min-width:min(100%,320px) }
+.mx .hd { font-size:.63rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--dim); text-align:center; overflow-wrap:anywhere }
+.mx .rh { font-size:.74rem; font-weight:700; display:flex; align-items:center;
+  padding-right:.4rem; white-space:nowrap; max-width:9rem; overflow:hidden;
+  text-overflow:ellipsis }
+.mx .cell { background:var(--card); border:1px solid var(--line); border-radius:5px;
+  height:30px; display:flex; align-items:center; justify-content:center;
+  color:var(--accent) }
+.mx .cell.empty { opacity:.25; background:none }
+.shape .cap { font-size:.74rem; color:var(--dim); margin:.55rem 0 0 }
+.shape .cap b { color:var(--ink) }
+
+/* --- cost breakdown ----------------------------------------------------- */
+.costgrid { display:grid; gap:6px; margin:.7rem 0 0; max-width:34rem }
+.costrow { display:grid; grid-template-columns:8rem 1fr 5.5rem; align-items:center;
+  gap:.6rem; font-size:.8rem }
+.costrow .n { color:var(--dim); font-family:ui-monospace,Menlo,monospace; font-size:.76rem;
+  overflow-wrap:anywhere }
+.costrow .t { height:7px; border-radius:99px; background:var(--accent); opacity:.75 }
+.costrow .a { text-align:right; font-variant-numeric:tabular-nums; font-weight:600 }
+.costrow.total { border-top:1px solid var(--line); padding-top:.35rem; margin-top:.2rem }
+.costrow.total .n { color:var(--ink); font-weight:700 }
+
+/* --- round facts -------------------------------------------------------- */
+dl.facts { display:grid; grid-template-columns:auto 1fr; gap:.35rem 1.1rem; margin:.7rem 0 0;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.85rem 1rem; font-size:.86rem }
+dl.facts dt { color:var(--dim); font-weight:700; white-space:nowrap; font-size:.72rem;
+  letter-spacing:.06em; text-transform:uppercase; padding-top:.12rem }
+dl.facts dd { margin:0; max-width:66ch }
+@media (max-width:520px) {
+  dl.facts { grid-template-columns:1fr; gap:.1rem }
+  dl.facts dd { margin:0 0 .55rem }
+}
+
+/* --- technical plan ----------------------------------------------------- */
+details.tech { margin:.6rem 0 0; border:1px solid var(--line); border-radius:8px;
+  background:var(--card); padding:0 .95rem }
+details.tech > summary { cursor:pointer; padding:.7rem 0; font-weight:600; font-size:.88rem;
+  list-style:none; display:flex; align-items:center; gap:.45rem }
+details.tech > summary::-webkit-details-marker { display:none }
+details.tech > summary .ico { color:var(--accent) }
+details.tech > summary .chev { margin-left:auto; color:var(--dim); transition:transform .15s }
+details.tech[open] > summary .chev { transform:rotate(90deg) }
+details.tech .inner { padding:0 0 .8rem }
+details.tech .inner > :first-child { margin-top:0 }
+details.tech .md p, details.tech .md ul, details.tech .md ol { font-size:.87rem }
+
+/* --- tables (the experiment matrix and any prose table) -----------------
+   review_page.py pins cols 1-2 to nowrap+monospace for its short id columns;
+   a runbook table carries prose, so undo both and let auto layout balance. */
+.md .tablewrap { margin:.4rem 0 1.2rem }
+.md th, .md td { white-space:normal; overflow-wrap:break-word; font-family:inherit }
+.md td code { overflow-wrap:anywhere }
+.md table { min-width:30rem }
+
+/* --- inputs: one block per case, images grouped by artifact -------------- */
+.rb-inputs { margin:2.1rem 0 0; scroll-margin-top:3.2rem }
+.rb-inputs > h2 { display:flex; align-items:center; gap:.5rem; font-size:1.02rem;
+  margin:0 0 .3rem }
+.rb-inputs > h2 .ico { color:var(--accent); width:1.05em; height:1.05em }
+.rb-inputs > h2::after { content:""; flex:1; height:1px; background:var(--line) }
+.rb-case { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.8rem 1rem 1rem; margin:.9rem 0; scroll-margin-top:3.4rem }
+.rb-case:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.rb-case-h { display:flex; flex-wrap:wrap; align-items:baseline; gap:.2rem .6rem;
+  margin:0; font-size:1rem }
+.rb-case-count { color:var(--dim); font-size:.72rem; font-weight:400;
+  font-variant-numeric:tabular-nums }
+.rb-case-note { color:var(--dim); font-size:.88rem; margin:.3rem 0 0; max-width:70ch }
+.rb-art { margin:.85rem 0 0 }
+.rb-art-h { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; margin:0 0 .4rem }
+.rb-art-label { font-size:.7rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--accent) }
+.rb-art-id { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  color:var(--dim); overflow-wrap:anywhere }
+.rb-art .ibtn { padding:.08rem .5rem; font-size:.66rem }
+.rb-strip { display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)) }
+.rb-fig { margin:0; min-width:0; background:var(--well); border:1px solid var(--line);
+  border-radius:6px; overflow:hidden; display:flex; flex-direction:column }
+.rb-fig .imgwrap { border-bottom:1px solid var(--line) }
+.rb-fig .imgwrap img { max-height:300px }
+.rb-fig figcaption { color:var(--dim); font-size:.7rem; padding:.3rem .5rem }
+.rb-none { color:var(--dim); font-size:.86rem; margin:.6rem 0 0 }
+details.rb-prompt { margin:.85rem 0 0; background:var(--pre); border:1px solid var(--line);
+  border-radius:6px; padding:0 .9rem }
+details.rb-prompt > summary { cursor:pointer; padding:.55rem 0; font-size:.82rem;
+  font-weight:600; color:var(--accent); list-style:none; display:flex;
+  align-items:center; gap:.4rem }
+details.rb-prompt > summary::-webkit-details-marker { display:none }
+details.rb-prompt .chev { transition:transform .15s }
+details.rb-prompt[open] .chev { transform:rotate(90deg) }
+details.rb-prompt .rb-size { margin-left:auto; color:var(--dim); font-weight:400;
+  font-size:.72rem; font-variant-numeric:tabular-nums }
+details.rb-prompt .phead { display:flex; align-items:center; gap:.5rem; margin:0 0 .4rem }
+details.rb-prompt .path { color:var(--dim); font-size:.72rem; margin:0; flex:1; min-width:0;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+/* No inner max-height: the text is already behind a disclosure, and a nested
+   scroller inside a long page is miserable to use on a phone. */
+details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--bg);
+  border:1px solid var(--line); border-radius:6px; padding:.7rem .85rem; font-size:.78rem;
+  line-height:1.55; margin:0 0 .85rem }
+.copy { font:inherit; font-size:.68rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.12rem .55rem; cursor:pointer; white-space:nowrap }
+.copy:hover { color:var(--ink); border-color:var(--dim) }
+.copy.done { color:var(--ok); border-color:var(--ok) }
+:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+@media (prefers-reduced-motion:reduce) { * { transition:none !important } }
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/></symbol><symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 4v16M5 8h14M7.5 8l-2.5 5h5zM16.5 8l2.5 5h-5z"/></symbol><symbol id="i-in" viewBox="0 0 24 24"><path d="M12 3v11m0 0 4-4m-4 4-4-4M4 17v3h16v-3"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.6"/></symbol><symbol id="i-hand" viewBox="0 0 24 24"><path d="M9 11V5.6a1.6 1.6 0 0 1 3.2 0V11m0-1.2a1.6 1.6 0 0 1 3.2 0V12m0-1a1.6 1.6 0 0 1 3.2 0v4.4A5.6 5.6 0 0 1 12.8 21h-1.3a5 5 0 0 1-3.9-1.9L4.9 15a1.6 1.6 0 0 1 2.5-2L9 15"/></symbol><symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4v9.2M14.4 9.6a2.6 2.6 0 0 0-4.8 1.2c0 2.6 4.8 1 4.8 3.6a2.6 2.6 0 0 1-4.8 1.2"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M21.2 12h-2.4M5.2 12H2.8M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7M18.5 18.5l-1.7-1.7M7.2 7.2 5.5 5.5"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></symbol><symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/></symbol><symbol id="i-img" viewBox="0 0 24 24"><rect x="3.2" y="4.6" width="17.6" height="14.8" rx="2"/><circle cx="8.6" cy="9.8" r="1.5"/><path d="m3.9 17 5-4.6 4 3.4 3-2.4 4.2 3.6"/></symbol><symbol id="i-txt" viewBox="0 0 24 24"><path d="M6.5 3.6h7.2L18.5 8.4V20.4H6.5z"/><path d="M13.4 3.8v4.8h4.9M9.2 12.6h6M9.2 16h6"/></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="m9.5 5.5 7 6.5-7 6.5"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4V12l3 1.8"/></symbol><symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6.5" cy="5.5" r="2.2"/><circle cx="6.5" cy="18.5" r="2.2"/><circle cx="17.5" cy="8.5" r="2.2"/><path d="M6.5 7.7v8.6M17.5 10.7c0 3.4-2.6 4.6-5.4 5.1"/></symbol><symbol id="i-flask" viewBox="0 0 24 24"><path d="M10 3.5h4M10.8 3.5v6.2L5.6 18a2 2 0 0 0 1.7 3h9.4a2 2 0 0 0 1.7-3l-5.2-8.3V3.5"/><path d="M8 14.5h8"/></symbol><symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 3.2 20 7.6v8.8L12 20.8 4 16.4V7.6z"/><path d="M4 7.6l8 4.4 8-4.4M12 12v8.8"/></symbol></defs></svg>
+<main>
+<div class="eyebrow">Round 4 · mesh validation</div>
+<h1>Tiger — Round 4 runbook</h1>
+<div class="statusrow"><span class="pill s-await"><span class="dot"></span>Awaiting sign-off</span><span class="fact">Opened <b>2026-08-14</b></span></div>
+<p class="statusnote">no keeper-producing work has started</p>
+<div class="statusrow sub"><span class="fact inert" title="Published at round close">&#128203; Review panel &mdash; at round close</span></div>
+<div class="ask"><p class="lbl"><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</p><p>Approve this exact placement-only plan, or change the 30.0 mm target before it freezes. <a class="jump" href="#ask">Read the full ask &darr;</a></p></div>
+<div class="glance"><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg>Rolls</span><span class="v">1</span><span class="s">across 1 case</span></div></div>
+<nav class="snav"><a href="#goal">Goal</a><a href="#choices">Choices</a><a href="#inputs">Inputs</a><a href="#judged">Judging</a><a href="#ask">The ask</a><a href="#cost">Cost</a><a href="#facts">Round facts</a><a href="#tech">Technical plan</a></nav>
+<section class="s" id="goal"><h2><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg>Goal</h2><div class="md"><p>Turn Jawaknight&#x27;s preferred Round 3x mesh into a correctly dimensioned, print-reviewable STL without changing the sculpt he selected. Tiger is a big, heavy character in a low crouch, so this plan sets the crouched figure to <strong>exactly 30.0 mm top-to-bottom</strong>: his mass and broad stance carry the size read rather than making the posed silhouette artificially tall.</p>
+<p>The raw file is already one watertight shell with consistent winding, no open or non-manifold edges, and no detached debris. “Cleanup” is therefore bounded to verified uniform placement unless the final-scale checks expose a real failure. Any failure that would need remeshing, smoothing, deletion, or sculpt surgery stops the round for a separately approved amendment.</p></div><div class="strips"><div class="stage"><span class="lbl">Default path</span><span class="st">Concept</span><span class="arw">&rsaquo;</span><span class="st">Turnaround</span><span class="arw">&rsaquo;</span><span class="st">Meshy</span><span class="arw">&rsaquo;</span><span class="st now">Mesh check</span><span class="arw">&rsaquo;</span><span class="st">Test print</span></div></div></section>
+<section class="s" id="choices"><h2><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg>The choices on the table</h2><div class="md"><p>This is one deterministic finishing approach, not a candidate sweep.</p></div><div class="choices"><article class="choice"><header><h3>Exact 30 mm placement</h3><span class="rolls">1 roll</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether the selected sculpt is print-ready after scale, centering and flooring only</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span><code>tiger-r3x-min-gptimage2-m1</code> at its recorded SHA</p><a class="jump" href="#case-exact-30-mm-placement"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article></div><div class="md"><p>At 30.0 mm, the raw bounds predict an overall envelope of approximately <strong>25.10 × 24.90 × 30.00 mm</strong> and <strong>1.91 cm³</strong> solid volume. The lowest geometry from both feet differs by only about <strong>0.006 mm</strong> after scale, and the low footprint&#x27;s maximum radius is about <strong>14.32 mm</strong>, leaving roughly <strong>1.68 mm</strong> inside a 32 mm round base.</p></div></section>
+<section class="rb-inputs" id="inputs">
+<h2><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>Inputs — what this round runs on</h2>
+<p class="blurb">Everything that goes in, grouped by the choice it belongs to. Click any image to zoom; open a prompt to read the exact text this round spends against. Crop sets show both the cut overview and every exact output crop.</p>
+<section class="rb-case" id="case-exact-30-mm-placement">
+<h3 class="rb-case-h">Exact 30 mm placement<span class="rb-case-count">2 prompts</span></h3>
+<p class="rb-case-note">Preserve the exact selected STL named and hashed in the mesh plan apart from one uniform affine placement, then run the final-scale printability battery. The runbook renderer shows image inputs only, so the STL itself is represented by this verbatim manifest rather than a misleading source-image thumbnail.</p>
+<p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Mesh plan — Frozen cleanup and scale manifest<span class="rb-size">1 kB · 64 words</span></summary><div class="phead"><p class="path">projects/martial-frogs/tiger/runbooks/r4-cleanup.json</p><button class="copy" data-copy>Copy mesh plan</button></div><pre>{
+  &quot;version&quot;: 1,
+  &quot;source_artifact&quot;: &quot;tiger-r3x-min-gptimage2-m1&quot;,
+  &quot;source_stl&quot;: &quot;projects/martial-frogs/tiger/models/round-3x/tiger-r3x-min-gptimage2-m1-raw.stl&quot;,
+  &quot;source_sha256&quot;: &quot;a3e3e98c338e23dd85487fd5d7833ada12c70a4459a4d5804173851ac22a9300&quot;,
+  &quot;target_height_mm&quot;: 30.0,
+  &quot;axis&quot;: &quot;z&quot;,
+  &quot;output_artifact&quot;: &quot;tiger-r3x-min-gptimage2-m1-clean-30mm&quot;,
+  &quot;output_stl&quot;: &quot;projects/martial-frogs/tiger/models/round-4/tiger-r3x-min-gptimage2-m1-clean-30mm.stl&quot;,
+  &quot;placement_report&quot;: &quot;projects/martial-frogs/tiger/notes/r4-min-gptimage2-m1-placement.json&quot;,
+  &quot;allowed_operations&quot;: [
+    &quot;uniform scale to exactly 30.0 mm on Z&quot;,
+    &quot;translate XY bounds center to the origin&quot;,
+    &quot;translate minimum Z to 0.0 mm&quot;
+  ],
+  &quot;forbidden_operations&quot;: [
+    &quot;remeshing&quot;,
+    &quot;decimation&quot;,
+    &quot;smoothing&quot;,
+    &quot;voxelization of the deliverable&quot;,
+    &quot;boolean surgery&quot;,
+    &quot;deleting or adding sculpted features&quot;,
+    &quot;adding a base&quot;
+  ]
+}
+</pre></details>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Lineage plan — Append-only output lineage template<span class="rb-size">2 kB · 78 words</span></summary><div class="phead"><p class="path">projects/martial-frogs/tiger/runbooks/r4-lineage-record.json</p><button class="copy" data-copy>Copy lineage plan</button></div><pre>{
+  &quot;id&quot;: &quot;tiger-r3x-min-gptimage2-m1-clean-30mm&quot;,
+  &quot;round&quot;: 4,
+  &quot;kind&quot;: &quot;clean-mesh&quot;,
+  &quot;parents&quot;: [
+    &quot;tiger-r3x-min-gptimage2-m1&quot;
+  ],
+  &quot;status&quot;: &quot;finishing-review&quot;,
+  &quot;tool&quot;: &quot;mesh_place.py --target-height-mm 30&quot;,
+  &quot;generated&quot;: &quot;2026-08-14&quot;,
+  &quot;file&quot;: &quot;projects/martial-frogs/tiger/generated/r4-renders/tiger-r3x-min-gptimage2-m1-clean-30mm/tiger-r3x-min-gptimage2-m1-clean-30mm-turnaround.png&quot;,
+  &quot;files&quot;: [
+    &quot;projects/martial-frogs/tiger/models/round-4/tiger-r3x-min-gptimage2-m1-clean-30mm.stl&quot;,
+    &quot;projects/martial-frogs/tiger/notes/r4-min-gptimage2-m1-placement.json&quot;,
+    &quot;projects/martial-frogs/tiger/notes/r4-min-gptimage2-m1-validation.json&quot;,
+    &quot;projects/martial-frogs/tiger/notes/r4-min-gptimage2-m1-roughness.txt&quot;,
+    &quot;projects/martial-frogs/tiger/notes/r4-min-gptimage2-m1-thin-parts.txt&quot;,
+    &quot;projects/martial-frogs/tiger/notes/r4-min-gptimage2-m1-handles.json&quot;,
+    &quot;projects/martial-frogs/tiger/generated/r4-renders/tiger-r3x-min-gptimage2-m1-clean-30mm/tiger-r3x-min-gptimage2-m1-clean-30mm-turnaround.png&quot;,
+    &quot;projects/martial-frogs/tiger/generated/r4-renders/tiger-r3x-min-gptimage2-m1-clean-30mm/tiger-r3x-min-gptimage2-m1-clean-30mm-zoom-feet.png&quot;,
+    &quot;projects/martial-frogs/tiger/generated/r4-renders/tiger-r3x-min-gptimage2-m1-clean-30mm/tiger-r3x-min-gptimage2-m1-clean-30mm-zoom-rear-garment.png&quot;,
+    &quot;projects/martial-frogs/tiger/generated/r4-renders/tiger-r3x-min-gptimage2-m1-clean-30mm/tiger-r3x-min-gptimage2-m1-clean-30mm-zoom-hands-toggles.png&quot;
+  ],
+  &quot;notes&quot;: &quot;Geometry-preserving R4 placement of the exact human-selected R3x mesh: uniform scale to 30 mm overall Z, XY centered, minimum Z floored to zero; no filtering, cut, repair, smoothing, remesh or other sculpt change.&quot;,
+  &quot;clean&quot;: {
+    &quot;target_mm&quot;: 30.0,
+    &quot;axis&quot;: &quot;z&quot;,
+    &quot;floor_z0&quot;: true
+  }
+}
+</pre></details>
+</section>
+</section>
+<section class="s" id="judged"><h2><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>How the round is judged</h2><div class="md"><p>All checks are <strong>FAST</strong> and local:</p>
+<ul>
+<li>prove the input SHA matches the Round 3x lineage record and the frozen R4 manifest;</li>
+<li>apply only one uniform affine transform: 30.0 mm Z height, XY bounds centered, minimum Z at 0.0 mm; independently prove triangle count, watertightness, winding and coordinates were preserved by that transform;</li>
+<li>require one component, zero open edges, zero non-manifold edges, zero degenerate faces and zero duplicate faces at final scale;</li>
+<li>record exact dimensions, volume and high-pass surface roughness in the new lineage artifact&#x27;s <code>clean</code> block;</li>
+<li>run the tight 0.28 mm thin-connection probe and inspect every reported neck; run the 0.10 mm handle spectrum because the raw shell&#x27;s Euler number is -2, then use eight-angle and close renders to distinguish intentional webbing or limb gaps from reconstruction noise;</li>
+<li>inspect both sole patches against the Z=0 plane and confirm the occupied footprint fits a separate 32 mm round base; no base is fused in this round;</li>
+<li>have a fresh-context reviewer compare the final eight-angle render, hands, feet, toggles and rear garment against the selected R3x mesh. Since placement is affine-only, any visual change is a hard failure.</li>
+</ul>
+<p>The mechanical report and fresh-context audit produce a <strong>PROVISIONAL</strong> private R4 review with a clearly labelled decimated display proxy in its interactive viewer. The exact STL is handed over separately through Drive. Dimitri and Jawaknight&#x27;s live-3D call on that exact file is the final print gate.</p></div></section>
+<section class="s" id="ask"><h2><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</h2><div class="md cta"><p>Approve this exact placement-only plan, or change the 30.0 mm target before it freezes. Approval alone leaves R4 <strong>Approved — not started</strong>; if you want the cleanup to begin as soon as the approval PR merges, say <strong>approve and start on merge</strong> explicitly.</p>
+<p>At results, confirm the exact 30 mm STL survives live 3D inspection and is ready for a test print, or name the specific region that blocks it.</p></div></section>
+<section class="s" id="cost"><h2><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Cost</h2><div class="md"><p><strong>$0 and 0 Meshy credits.</strong> Placement, validation, rendering and the private review artifact are local. The exact STL and renders go to Drive immediately.</p></div></section>
+<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>mesh validation — final-scale cleanup and printability check</dd><dt>Owner</dt><dd>Codex (local) → Dimitri + Jawaknight review</dd><dt>Date opened</dt><dd>2026-08-14</dd><dt>Inputs</dt><dd><code>tiger-r3x-min-gptimage2-m1</code>, the exact human-selected Round 3x raw STL</dd><dt>Produces</dt><dd><code>tiger-r3x-min-gptimage2-m1-clean-30mm</code> plus placement, topology, roughness, thin-part, handle, render and review evidence</dd><dt>Branch</dt><dd><code>codex/tiger-r4-cleanup-plan</code></dd><dt>Evaluation lanes</dt><dd>FAST only — deterministic placement, final-scale mechanical checks, eight-angle renders, fresh-context feature audit, and human live-3D review. No image generation or blind detector.</dd><dt>Prior round</dt><dd>r3x — Jawaknight prefers minimal-GPT roll 1; Dimitri asked to clean and scale that exact mesh to about 30 mm overall</dd></dl></section>
+<section class="s" id="tech"><h2><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>Technical plan</h2>
+<p class="intro">exact transform, validation and review commands</p>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>What changed going in</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><ul>
+<li><code>runbooks/r4-cleanup.json</code> freezes the exact source path and SHA, the 30.0 mm Z target, output names, three allowed affine operations and every forbidden geometry-changing operation.</li>
+<li><code>spec.md</code> changes Tiger&#x27;s final target from the earlier provisional 35 mm to this exact 30.0 mm crouched-figure target. The team-wide 30–40 mm regular model range and separate 32 mm base remain unchanged.</li>
+<li>The human selection accepts the mesh as designed; it does not assert that the prior machine observations about its missing source toggle or inferred rear garment were factually wrong. No verdict-overturn record is created.</li>
+</ul></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg><span>Experiment matrix</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Variant axes</th><th>Plan</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>1</td><td><code>tiger-r3x-min-gptimage2-m1</code></td><td>exact 30.0 mm Z; XY-center; floor Z=0</td><td><code>r4-cleanup.json</code></td><td><code>tiger-r3x-min-gptimage2-m1-clean-30mm</code></td></tr></tbody></table></div></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-branch"/></svg><span>Commands</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><h4>Post-merge start gate</h4>
+<p>After Dimitri approves the published plan and the applicable approval/start PR merges, run from exact current canonical <code>main</code>:</p>
+<pre class="code"><code>set -euo pipefail
+git fetch origin main
+test &quot;$(git rev-parse HEAD)&quot; = &quot;$(git rev-parse origin/main)&quot;
+python3 tools/round_gate.py verify \
+  --file projects/martial-frogs/tiger/round-gates.jsonl --round r4 \
+  --published-html &quot;${AI_STL_REVIEW_DIR:-../ai-stl-review}/reviews/martial-frogs/tiger/r4-runbook/index.html&quot;
+test &quot;$(git rev-parse HEAD)&quot; = &quot;$(git rev-parse origin/main)&quot;
+
+# Append the R4 start reply in #tiger and advance its header from that event.
+# Only then begin the keeper-producing transform below.</code></pre>
+<h4>Exact input and placement</h4>
+<p>Use the repository environment documented in <code>docs/cloud-setup.md</code>, then:</p>
+<pre class="code"><code>P=projects/martial-frogs/tiger
+RAW=&quot;$P/models/round-3x/tiger-r3x-min-gptimage2-m1-raw.stl&quot;
+CLEAN=&quot;$P/models/round-4/tiger-r3x-min-gptimage2-m1-clean-30mm.stl&quot;
+PLAN=&quot;$P/runbooks/r4-cleanup.json&quot;
+
+tools/drive_sync.sh pull &quot;$P/models/round-3x&quot;
+test &quot;$(sha256sum &quot;$RAW&quot; | cut -d&#x27; &#x27; -f1)&quot; = \
+  &quot;$(jq -r .source_sha256 &quot;$PLAN&quot;)&quot;
+test &quot;$(jq -r .target_height_mm &quot;$PLAN&quot;)&quot; = &quot;30&quot;
+
+python3 tools/mesh_place.py \
+  --stl &quot;$RAW&quot; \
+  --out &quot;$CLEAN&quot; \
+  --target-height-mm 30 \
+  --report &quot;$P/notes/r4-min-gptimage2-m1-placement.json&quot;
+
+# Authored mesh durability is immediate, before the remaining checks.
+tools/drive_sync.sh push &quot;$P/models/round-4&quot;</code></pre>
+<p><code>mesh_place.py</code> independently refuses overwrite and proves exact height, centering, flooring, triangle-count/watertight/winding preservation, and the maximum coordinate error against the declared uniform affine transform.</p>
+<h4>Final-scale checks and evidence</h4>
+<pre class="code"><code>python3 tools/mesh_validate.py \
+  --stl &quot;$CLEAN&quot; --label tiger-r3x-min-gptimage2-m1-clean-30mm \
+  --out &quot;$P/notes/r4-min-gptimage2-m1-validation.json&quot;
+
+python3 tools/mesh_roughness.py --stl &quot;$CLEAN&quot; --bands | \
+  tee &quot;$P/notes/r4-min-gptimage2-m1-roughness.txt&quot;
+
+python3 tools/mesh_thin_parts.py \
+  --stl &quot;$CLEAN&quot; --pitch 0.28 --max-neck-mm 1.2 \
+  --min-mm3 0.3 --fragile-mm 0.8 | \
+  tee &quot;$P/notes/r4-min-gptimage2-m1-thin-parts.txt&quot;
+
+python3 tools/mesh_handles.py \
+  --stl &quot;$CLEAN&quot; --pitch 0.10 --close-mm 0.2,0.4,0.6,1.0,1.6 \
+  --label tiger-r3x-min-gptimage2-m1-clean-30mm \
+  --out &quot;$P/notes/r4-min-gptimage2-m1-handles.json&quot;
+
+R=&quot;$P/generated/r4-renders/tiger-r3x-min-gptimage2-m1-clean-30mm&quot;
+python3 tools/stl_render.py --stl &quot;$CLEAN&quot; --out-dir &quot;$R&quot; \
+  --stem tiger-r3x-min-gptimage2-m1-clean-30mm --mode turnaround
+python3 tools/stl_render.py --stl &quot;$CLEAN&quot; --out-dir &quot;$R&quot; \
+  --stem tiger-r3x-min-gptimage2-m1-clean-30mm --mode zoom \
+  --zoom-name feet --z-min 0 --z-max 9
+python3 tools/stl_render.py --stl &quot;$CLEAN&quot; --out-dir &quot;$R&quot; \
+  --stem tiger-r3x-min-gptimage2-m1-clean-30mm --mode zoom \
+  --zoom-name rear-garment --z-min 8.4 --z-max 17.4
+python3 tools/stl_render.py --stl &quot;$CLEAN&quot; --out-dir &quot;$R&quot; \
+  --stem tiger-r3x-min-gptimage2-m1-clean-30mm --mode zoom \
+  --zoom-name hands-toggles --z-min 13.5 --z-max 30
+
+tools/drive_sync.sh push &quot;$P/generated/r4-renders&quot;</code></pre>
+<h4>Append-only lineage and canonical headline stats</h4>
+<p>The committed <code>r4-lineage-record.json</code> is the complete new-artifact template. Append it exactly once before <code>mesh_stats.py</code> (which refuses a missing artifact id), then merge the measured roughness before the execution commit:</p>
+<pre class="code"><code>LINEAGE=&quot;$P/lineage.json&quot;
+ARTIFACT=tiger-r3x-min-gptimage2-m1-clean-30mm
+TEMPLATE=&quot;$P/runbooks/r4-lineage-record.json&quot;
+ROUGHNESS=&quot;$P/notes/r4-min-gptimage2-m1-roughness.txt&quot;
+
+python3 -c &#x27;import json, pathlib, sys; sys.path.insert(0, &quot;tools&quot;); import genlog; p = pathlib.Path(sys.argv[1]); r = json.loads(pathlib.Path(sys.argv[2]).read_text()); genlog.append_lineage_record(p, r, unique_by=(&quot;id&quot;,))&#x27; \
+  &quot;$LINEAGE&quot; &quot;$TEMPLATE&quot;
+
+python3 tools/mesh_stats.py --stl &quot;$CLEAN&quot; \
+  --lineage &quot;$LINEAGE&quot; --id &quot;$ARTIFACT&quot;
+
+HP_RMS_UM=&quot;$(sed -n &quot;s/.*&#x27;hp_rms_um&#x27;: \([0-9.]*\).*/\1/p&quot; &quot;$ROUGHNESS&quot; | head -1)&quot;
+test -n &quot;$HP_RMS_UM&quot;
+TMP_LINEAGE=&quot;$(mktemp &quot;$P/lineage.r4.XXXXXX&quot;)&quot;
+jq --arg id &quot;$ARTIFACT&quot; --argjson hp &quot;$HP_RMS_UM&quot; \
+  &#x27;(.artifacts[] | select(.id == $id) | .clean.hp_rms_um) = $hp&#x27; \
+  &quot;$LINEAGE&quot; &gt; &quot;$TMP_LINEAGE&quot;
+mv &quot;$TMP_LINEAGE&quot; &quot;$LINEAGE&quot;
+
+test &quot;$(jq --arg id &quot;$ARTIFACT&quot; \
+  &#x27;[.artifacts[] | select(.id == $id)] | length&#x27; &quot;$LINEAGE&quot;)&quot; = &quot;1&quot;
+jq -e --arg id &quot;$ARTIFACT&quot; &#x27;
+  .artifacts[] | select(.id == $id) |
+  .clean.target_mm == 30 and .clean.axis == &quot;z&quot; and
+  .clean.floor_z0 == true and .clean.hp_rms_um &gt; 0 and
+  .clean.dims_mm[2] == 30 and .clean.watertight == true and
+  .clean.non_manifold_edges == 0 and .clean.open_edges == 0
+&#x27; &quot;$LINEAGE&quot;</code></pre>
+<p>The template append, <code>mesh_stats.py</code> merge and measured-roughness merge all happen before the first execution commit containing this artifact; after that commit the lineage record is append-only. The R4 panel uses the exact STL and eight-angle render; build it privately with <code>review_page.py --inline</code>. Public R4 panel publication is outside this plan and still needs Dimitri&#x27;s per-review opt-in.</p></div></details>
+</section>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbRefRow=document.getElementById('lb-refrow'),lbRef=document.getElementById('lb-ref'),
+      lbCopyId=document.getElementById('lb-copy-id'),lbCopyLink=document.getElementById('lb-copy-link'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body'),
+      developerMode=document.getElementById('developer-mode');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+function setDeveloperMode(enabled){
+  document.querySelectorAll('[data-developer]').forEach(function(node){node.hidden=!enabled;});
+  document.documentElement.dataset.developer=enabled?'true':'false';
+  if(developerMode)developerMode.setAttribute('aria-checked',enabled?'true':'false');
+}
+if(developerMode){
+  developerMode.addEventListener('change',function(){setDeveloperMode(developerMode.checked);});
+  setDeveloperMode(false);
+}
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  const ref=z.dataset.ref||'',anchor=z.dataset.anchor||'';
+  lbRefRow.hidden=!(ref&&anchor);
+  if(ref&&anchor){
+    lbRef.textContent='#'+ref;
+    lbCopyId.dataset.copyId='#'+ref;
+    lbCopyLink.dataset.copy=anchor;
+  }
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy a card's short display id, or copy/share its deep link. The URL is this
+// page plus the card's #id anchor, so a recipient lands scrolled to (and
+// highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  const ci=e.target.closest('[data-copy-id]');
+  if(ci){copyText(ci.dataset.copyId,ci);e.preventDefault();return;}
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+
+document.addEventListener('click', function (e) {
+  var b = e.target.closest('[data-copy]');
+  if (!b) return;
+  var pre = b.closest('details').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(function () {
+    var was = b.textContent;
+    b.textContent = 'Copied'; b.classList.add('done');
+    setTimeout(function () { b.textContent = was; b.classList.remove('done'); }, 1600);
+  });
+});
+</script>
+</body></html>
