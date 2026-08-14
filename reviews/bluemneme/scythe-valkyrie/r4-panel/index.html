@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Scythe Valkyrie — W1 repair mechanism bake-off</title>
+<style>
+:root{color-scheme:dark light;--accent:#9f2d35;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.reviewtools { display:flex; justify-content:flex-end; margin:.35rem 0 0 }
+.devmode { display:inline-flex; align-items:center; gap:.5rem; color:var(--dim);
+  font-size:.76rem; font-weight:650; cursor:pointer; user-select:none }
+.devmode input { appearance:none; position:relative; width:2.15rem; height:1.18rem;
+  margin:0; border:1px solid var(--dim); border-radius:99px;
+  background:var(--line); cursor:pointer; transition:background .15s,border-color .15s }
+.devmode input::after { content:""; position:absolute; width:.78rem; height:.78rem;
+  left:.14rem; top:.13rem; border-radius:50%; background:var(--ink);
+  transition:transform .15s }
+.devmode input:checked { background:var(--accent); border-color:var(--accent) }
+.devmode input:checked::after { transform:translateX(.95rem); background:#fff }
+.devmode input:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+.developer-only[hidden] { display:none !important }
+.developer-section { margin:2.4rem 0 0; padding:1rem;
+  border:1px dashed var(--line); border-radius:8px }
+.developer-section > h2:first-child { margin-top:0 }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.coreinputs { margin:1.2rem 0 .4rem }
+.coreinputs h2 { margin:0 0 .5rem }
+.coreinputs .hint { color:var(--dim); font-weight:400; font-size:.85rem }
+.inputrow { display:flex; flex-wrap:wrap; gap:12px }
+.coreinput { margin:0; width:210px; max-width:100%;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.coreinput .imgwrap { border-bottom:1px solid var(--line) }
+.coreinput .imgwrap img { max-height:230px }
+.coreinput figcaption { color:var(--dim); font-size:.7rem; padding:.35rem .5rem;
+  word-break:break-all; font-family:ui-monospace,SFMono-Regular,Menlo,monospace }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.recommendation { color:var(--ink) !important; font-size:.88rem !important;
+  padding:.55rem .65rem; border-left:3px solid var(--accent);
+  background:color-mix(in srgb,var(--accent) 8%,transparent); border-radius:4px }
+.recommendation strong { color:var(--accent); font-size:.7rem;
+  letter-spacing:.06em; text-transform:uppercase; margin-right:.3rem }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.statrow { display:flex; flex-wrap:wrap; gap:.15rem .5rem; margin:0 0 .1rem;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.72rem;
+  color:var(--dim) }
+.statrow span { white-space:nowrap }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.chip.unclear { color:var(--dim); border-color:var(--dim) }
+.detector-details { display:flex; flex-direction:column; gap:.45rem }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:calc(100vh - 7rem); object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-meta { display:flex; flex-direction:column; align-items:center; gap:.35rem;
+  min-height:2.2rem; position:relative; z-index:20 }
+.lb-refrow { display:flex; align-items:center; justify-content:center; gap:.35rem;
+  flex-wrap:wrap }
+.lb-refrow[hidden] { display:none }
+.lb-refrow .refid { background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn { color:#bbb; border-color:#55515d;
+  background:rgba(20,20,26,.72) }
+.lb-refrow .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+</style></head><body><main>
+<nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">BlueMneme</a><span class="sep">&rsaquo;</span><a href="../">Scythe Valkyrie</a></nav>
+<div class="eyebrow">BlueMneme · Scythe Valkyrie · round 4 · COMPLETE — human verdict needed · 2026-08-14</div>
+<h1>Scythe Valkyrie — W1 repair mechanism bake-off</h1>
+<a class="crosslink" href="../r4-runbook/">&#128214; Round runbook &rarr;</a>
+<div class="reviewtools"><label class="devmode" title="Show detector chips and full reviewer notes"><input id="developer-mode" type="checkbox" role="switch" aria-checked="false">Developer Mode</label></div>
+<p class="sub">Round 4 compares three complete lower-wing-removal mechanisms on the same W1 base, separately tests whether a partial pre-painted gap can be restored cleanly, and asks whether either fresh-from-spec wallpaper is strong enough to leave the W1 lineage behind.</p>
+<div class="callout"><strong>COMPLETE machine evidence — human verdict needed.</strong> All ten paid images are on Drive. FAST evidence includes exact canvas/aspect checks, eight W1 difference reports, four composite-locality reports, and a fresh-context crop audit for every candidate. The shared two-wave blind detector completed all ten records and every disagreement was reconciled. Crop-local paste-back is the strongest machine-supported removal route; the blank-restore rolls failed; the GPT fresh image is promising but not a keeper; Riverflow failed. No mechanism, keeper, or next round is selected until Dimitri and Jake make the three eye-calls below.</div>
+<div class="callout asks"><p class="boxhead">Decisions needed</p><p class="intro">The machine lanes are complete and reconciled. The three human questions remain deliberately separate; answering them closes the round and determines the one coherent next plan.</p><ol><li><span class="q">Which complete W1 removal mechanism looks safest: whole-picture, steered regeneration, crop-local paste-back, a tie, or reject all?</span><span class="who">Dimitri + Jake</span><p class="d">Compare A, B and C against the untouched control. The target is complete removal of the third lower-left wing while keeping the two upper wings, face, crown, hands, scythe, body, background and overall art.</p></li><li><span class="q">Did either partial blank-then-restore roll fill its painted gap convincingly?</span><span class="who">Dimitri + Jake</span><p class="d">Judge only the actual partial blank. Existing wing remnants outside it are expected; invented content or damage to protected context is a failure.</p></li><li><span class="q">Is either fresh-from-spec image promising enough to refine instead of repairing W1?</span><span class="who">Dimitri + Jake</span><p class="d">GPT Image 2 is exact 9:20. Riverflow is a 9:16 composition probe whose essential content must fit the centered 9:20-safe band; either route would still need a later approved refinement round.</p></li></ol></div>
+<section class="coreinputs"><h2>Core inputs<span class="hint"> — the base image(s) these candidates were built from</span></h2><div class="inputrow"><figure class="coreinput"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5b86a1a1c0af7fd1.jpg" data-cap="Untouched W1 control — round 3 selected base"><img src="../../../../assets/d67edd32e52ed202.jpg" alt="Untouched W1 control — round 3 selected base" loading="lazy"></div><figcaption>Untouched W1 control — round 3 selected base</figcaption></figure></div></section>
+<h2>Control and complete W1 removal — A: whole-picture edit</h2>
+<p class="blurb">The standard Flash edit asks for one complete removal on the full wallpaper. Difference reports show substantial global redraw, so compare protected identity and scene detail carefully.</p>
+<div class="grid">
+<div class="card" id="scythe-valkyrie-r3-w1-rem-2"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5b86a1a1c0af7fd1.jpg" data-cap="Control · untouched W1" data-ref="W1-BASE" data-anchor="scythe-valkyrie-r3-w1-rem-2"><img src="../../../../assets/fede5343041faee9.jpg" alt="Control · untouched W1" loading="lazy"></div><div class="meta"><header><h3>Control · untouched W1</h3><span class="cost">~$0.05</span><span class="call other" title="BASE INPUT — exact round 3 selection">BASE INPUT</span></header><div class="cardref"><a class="refid" href="#scythe-valkyrie-r3-w1-rem-2" title="Deep link to this image">#W1-BASE</a><button class="refbtn" data-copy-id="#W1-BASE" title="Copy this image id">copy id</button><button class="refbtn" data-copy="scythe-valkyrie-r3-w1-rem-2" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="scythe-valkyrie-r3-w1-rem-2" data-title="Control · untouched W1" title="Share this image">share</button></div><p class="recommendation"><strong>Recommendation:</strong> BASE INPUT — exact round 3 selection</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="third wing — The lower-down left wing carried over from the r2 base must go; exactly two wing masses, one rooted per side.">third wing</span><span class="chip bad" title="blade — Still two nested crescents, and the arc curves far more than target profile B.">blade</span><span class="chip bad" title="blind cross-check — REJECT — Multiple critical deviations in scythe design and crown shape, which are core identity carriers and pose elements.">blind cross-check</span><span class="chip warn" title="haft — Straightening is wanted, bundled into the same pass rather than sequenced.">haft</span></div><details class="more"><summary>1 more detectors (5 total)</summary><div class="chips"><span class="chip ok" title="wing joints — The added upper-left wing reads as the mechanical joint construction we want, with feathers hanging below it, and is better than the original wing. The crop audit was right to flag it as an unrequested change; this is an aesthetic judgement that the change is an improvement, not a correction of that audit.">wing joints</span></div></details></div><p>The unedited 1376×3058 source used by every W1-derived candidate.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">Selected as the r4 W1 base. The r3 crop audit scored this artifact REJECT against the frozen surgical contract, where all three asked removals failed; that artifact-level call is not disputed. Dimitri selects it for an unasked-for change the fidelity-framed contract could only penalise: the regenerated upper-left wing shows the clear mechanical joint construction with feathers hanging below it. The audit was accurate that the wing was an unrequested divergence; this is a separate aesthetic judgement that the divergence is an improvement. Jake&#x27;s own W1 recipe had proposed r3-w1-all-1 as the base with the third wing removed as seen in r3-w1-critex-1; Dimitri&#x27;s selection of this artifact supersedes that, because the wings are one of the largest elements and are better inherited than reproduced.</p></details><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="scythe-valkyrie-r4-w1-ff-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/26b46dd43bfc75a1.jpg" data-cap="A · whole-picture · roll 1" data-ref="A1" data-anchor="scythe-valkyrie-r4-w1-ff-1"><img src="../../../../assets/81b841bd0762fe5f.jpg" alt="A · whole-picture · roll 1" loading="lazy"></div><div class="meta"><header><h3>A · whole-picture · roll 1</h3><span class="cost">~$0.05</span><span class="call keeper" title="KEEPER-CANDIDATE — clean removal with mild redraw">KEEPER-CANDIDATE</span></header><div class="cardref"><a class="refid" href="#scythe-valkyrie-r4-w1-ff-1" title="Deep link to this image">#A1</a><button class="refbtn" data-copy-id="#A1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="scythe-valkyrie-r4-w1-ff-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="scythe-valkyrie-r4-w1-ff-1" data-title="A · whole-picture · roll 1" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> KEEPER-CANDIDATE — clean removal with mild redraw</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip warn" title="face and crown fidelity — Identity and construction hold, but face, hair, crown spikes and highlights are visibly re-rendered.">face and crown fi…</span><span class="chip warn" title="body and background fidelity — Armor, skirt, skyline and lighting retain design/layout with mild global texture and highlight repainting.">body and backgrou…</span><span class="chip ok" title="canvas and layout — 1376x3058, matching base aspect, pose and framing.">canvas and layout</span><span class="chip ok" title="third lower-left wing removed — Unwanted lower joint, armored wing mass and feathers are gone; plausible smoke, embers, city and scythe arc fill the area.">third lower-left…</span></div><details class="more"><summary>4 more detectors (8 total)</summary><div class="chips"><span class="chip ok" title="exactly two upper wings — Both intended wings retain circular joints, articulated spines, feather fields and top contours.">exactly two upper…</span><span class="chip ok" title="hands and scythe — Grip anatomy, shaft path, free hand, skull housing and blades remain structurally complete.">hands and scythe</span><span class="chip ok" title="new wing or figure content — No replacement wing, extra figure, limb or unrelated object.">new wing or figur…</span><span class="chip ok" title="blind cross-check — KEEPER-CANDIDATE — All specified attributes for lower-wing removal and preservation are clearly supported by the objective description.">blind cross-check</span></div></details></div><p>Cleanly removes W1 and preserves the two intended wings; mild global redraw remains.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">Complete removal passes without residual third-wing geometry or new content. Protected anatomy, weapon, wings and composition remain convincing, although crop comparison confirms mild full-frame repainting.</p></details><button class="ibtn" data-inputs="in-1">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="scythe-valkyrie-r4-w1-ff-2"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/6774b8c8b322188e.jpg" data-cap="A · whole-picture · roll 2" data-ref="A2" data-anchor="scythe-valkyrie-r4-w1-ff-2"><img src="../../../../assets/805d73d5a61218be.jpg" alt="A · whole-picture · roll 2" loading="lazy"></div><div class="meta"><header><h3>A · whole-picture · roll 2</h3><span class="cost">~$0.05</span><span class="call other" title="HUMAN-LOOK — FAST passes removal; blind leaves background unclear">HUMAN-LOOK</span></header><div class="cardref"><a class="refid" href="#scythe-valkyrie-r4-w1-ff-2" title="Deep link to this image">#A2</a><button class="refbtn" data-copy-id="#A2" title="Copy this image id">copy id</button><button class="refbtn" data-copy="scythe-valkyrie-r4-w1-ff-2" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="scythe-valkyrie-r4-w1-ff-2" data-title="A · whole-picture · roll 2" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> HUMAN-LOOK — FAST passes removal; blind leaves background unclear</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip warn" title="blind evidence — Blind comparison confirms removal but its neutral description omitted background, lighting and framing; this is missing evidence, not a contradiction.">blind evidence</span><span class="chip warn" title="preservation drift — Difference report and crop audit show mild-to-moderate full-frame repainting that remains a human art call.">preservation drift</span><span class="chip warn" title="blind cross-check — FIXABLE — Background restoration and other preservation aspects are not described, making their status unclear.">blind cross-check</span><span class="chip ok" title="FAST direct crop evidence — Fresh 2x audit directly sees complete removal and plausible smoky background, with protected geometry intact.">FAST direct crop…</span></div></div><p>Removal passes; human should weigh mild redraw because blind background evidence is incomplete.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">The lanes agree that the unwanted wing is gone. FAST directly confirms plausible background; SLOW cannot grade what its description omitted. Keep as a human-look contender because whole-picture redraw remains visible.</p></details><button class="ibtn" data-inputs="in-2">inputs — prompt &amp; refs</button></div></div>
+</div>
+<h2>Complete W1 removal — B: steered regeneration</h2>
+<p class="blurb">The same full removal contract, phrased as the desired complete picture rather than a surgical correction.</p>
+<div class="grid">
+<div class="card" id="scythe-valkyrie-r4-w1-sr-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/1f960e86ec2d1789.jpg" data-cap="B · steered regeneration · roll 1" data-ref="B1" data-anchor="scythe-valkyrie-r4-w1-sr-1"><img src="../../../../assets/91ce19b71b7acefc.jpg" alt="B · steered regeneration · roll 1" loading="lazy"></div><div class="meta"><header><h3>B · steered regeneration · roll 1</h3><span class="cost">~$0.05</span><span class="call reject" title="REJECT — direct preservation evidence outweighs blind presence-only pass">REJECT</span></header><div class="cardref"><a class="refid" href="#scythe-valkyrie-r4-w1-sr-1" title="Deep link to this image">#B1</a><button class="refbtn" data-copy-id="#B1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="scythe-valkyrie-r4-w1-sr-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="scythe-valkyrie-r4-w1-sr-1" data-title="B · steered regeneration · roll 1" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> REJECT — direct preservation evidence outweighs blind presence-only pass</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="protected-region preservation — Fresh crops and edit_diff show the strongest unrelated drift: brighter/warmer background plus changed garment, grip, scythe and torso detail.">protected-region…</span><span class="chip warn" title="blind limitation — Blind description confirms expected objects are present but cannot compare their pixels/design fidelity to W1.">blind limitation</span><span class="chip ok" title="wing removal — Both lanes confirm complete removal and two retained wings.">wing removal</span><span class="chip ok" title="blind cross-check — KEEPER-CANDIDATE — Primary wing removal task is successful, and all other preserved elements are present.">blind cross-check</span></div></div><p>Wing removal succeeds, but direct comparison proves broad protected-region drift.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">The blind pass is compatible with the figure still containing required elements, but it cannot test whether they were preserved. Direct comparison proves material repaint drift, so SR1 remains rejected under the shared preservation contract.</p></details><button class="ibtn" data-inputs="in-3">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="scythe-valkyrie-r4-w1-sr-2"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5386e0e4db97f1ae.jpg" data-cap="B · steered regeneration · roll 2" data-ref="B2" data-anchor="scythe-valkyrie-r4-w1-sr-2"><img src="../../../../assets/62a8352098dc3fbd.jpg" alt="B · steered regeneration · roll 2" loading="lazy"></div><div class="meta"><header><h3>B · steered regeneration · roll 2</h3><span class="cost">~$0.05</span><span class="call keeper" title="KEEPER-CANDIDATE — clean removal with mild redraw">KEEPER-CANDIDATE</span></header><div class="cardref"><a class="refid" href="#scythe-valkyrie-r4-w1-sr-2" title="Deep link to this image">#B2</a><button class="refbtn" data-copy-id="#B2" title="Copy this image id">copy id</button><button class="refbtn" data-copy="scythe-valkyrie-r4-w1-sr-2" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="scythe-valkyrie-r4-w1-sr-2" data-title="B · steered regeneration · roll 2" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> KEEPER-CANDIDATE — clean removal with mild redraw</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip warn" title="face and crown fidelity — Identity and crown structure hold though face, hair, spike details and highlights show mild redraw.">face and crown fi…</span><span class="chip warn" title="body and background fidelity — Armor/skirt construction remains close to base; small highlight, texture, cloth-edge and ember changes reveal mild repainting.">body and backgrou…</span><span class="chip ok" title="canvas and layout — 1376x3058, preserving source aspect, pose, framing and principal silhouettes.">canvas and layout</span><span class="chip ok" title="third lower-left wing removed — Unwanted circular joint, armored wing body and lower feather mass are absent; smoke and embers replace them naturally.">third lower-left…</span></div><details class="more"><summary>4 more detectors (8 total)</summary><div class="chips"><span class="chip ok" title="exactly two upper wings — Both correct upper wings retain joint assemblies, metal spars, layered feathers and top contours.">exactly two upper…</span><span class="chip ok" title="hands and scythe — Grip, fingers, free hand, continuous shaft, skull housing and blades remain complete and compositionally faithful.">hands and scythe</span><span class="chip ok" title="new wing or figure content — No extra wing, figure, limb or unrelated object.">new wing or figur…</span><span class="chip ok" title="blind cross-check — KEEPER-CANDIDATE — Primary objectives (wing removal, background restoration, two wings) are met, and no contradictions found for preservation clauses.">blind cross-check</span></div></details></div><p>Clean W1 removal with intact upper wings and composition; only mild full-frame redraw remains.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">SR2 satisfies removal and structural preservation without residual or replacement wing content. Fine facial, armor, cloth and lighting details are re-rendered, but protected design and layout remain strong.</p></details><button class="ibtn" data-inputs="in-4">inputs — prompt &amp; refs</button></div></div>
+</div>
+<h2>Complete W1 removal — C: crop-local edit and paste-back</h2>
+<p class="blurb">Only the exact lower-wing crop was generated, then composited into untouched W1. Both written PNGs changed zero pixels outside (0,940)-(620,2320); the eye-call still judges the edited content and feathered seams.</p>
+<div class="grid">
+<div class="card" id="scythe-valkyrie-r4-w1-cropwing-comp-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b7829095ffe48b97.png" data-cap="C · crop-local composite · roll 1" data-ref="C1" data-anchor="scythe-valkyrie-r4-w1-cropwing-comp-1"><img src="../../../../assets/32e877d8b3d6cbe1.jpg" alt="C · crop-local composite · roll 1" loading="lazy"></div><div class="meta"><header><h3>C · crop-local composite · roll 1</h3><span class="call keeper" title="KEEPER-CANDIDATE — complete crop-local removal with clean joins">KEEPER-CANDIDATE</span></header><div class="cardref"><a class="refid" href="#scythe-valkyrie-r4-w1-cropwing-comp-1" title="Deep link to this image">#C1</a><button class="refbtn" data-copy-id="#C1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="scythe-valkyrie-r4-w1-cropwing-comp-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="scythe-valkyrie-r4-w1-cropwing-comp-1" data-title="C · crop-local composite · roll 1" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> KEEPER-CANDIDATE — complete crop-local removal with clean joins</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip ok" title="1376x3058 decode — RGB PNG matching W1 base canvas.">1376x3058 decode</span><span class="chip ok" title="(0,940)-(620,2320) at 2x · third lower-left wing wholly absent — Unwanted lower joint, armored body and descending feather mass are gone; smoke, embers and a distant ruin plausibly fill the area.">third lower-left…</span><span class="chip ok" title="exactly two upper wings — Only intended left/right upper wings remain with joints, articulated spars, top contours and feather fields intact.">exactly two upper…</span><span class="chip ok" title="protected face and crown — Face identity, hair and broken spiked crown match base without redraw/damage.">protected face an…</span></div><details class="more"><summary>6 more detectors (10 total)</summary><div class="chips"><span class="chip ok" title="protected hands and scythe — Grip, fingers, shaft, free hand and lower scythe assembly remain faithful and complete.">protected hands a…</span><span class="chip ok" title="protected torso and skirt — Armor, skirt panels, leg treatment and red cloth retain base construction/silhouettes.">protected torso a…</span><span class="chip ok" title="feathered composite joins — Top/right/bottom borders blend without hard line, halo, repeated edge or tonal band.">feathered composi…</span><span class="chip ok" title="mechanical locality — Zero changed pixels outside exact composite rectangle.">mechanical locali…</span><span class="chip ok" title="no invented content — No new wing, figure, limb or unrelated foreground object.">no invented conte…</span><span class="chip ok" title="blind cross-check — KEEPER-CANDIDATE — Primary wing removal and background restoration objectives appear met.">blind cross-check</span></div></details></div><p>Passes complete-removal contract: exactly two wings remain, protected art holds, and joins are clean.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">Focused inspection confirms complete lower-left-wing removal, natural ruined background, intact intended wings and protected art, and no visible composite seam or invented subject matter.</p></details><button class="ibtn" data-inputs="in-5">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="scythe-valkyrie-r4-w1-cropwing-comp-2"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/f79e4df51e8e8123.png" data-cap="C · crop-local composite · roll 2" data-ref="C2" data-anchor="scythe-valkyrie-r4-w1-cropwing-comp-2"><img src="../../../../assets/007d29bb9edbe1ff.jpg" alt="C · crop-local composite · roll 2" loading="lazy"></div><div class="meta"><header><h3>C · crop-local composite · roll 2</h3><span class="call keeper" title="KEEPER-CANDIDATE — direct crop/locality evidence resolves blind omission">KEEPER-CANDIDATE</span></header><div class="cardref"><a class="refid" href="#scythe-valkyrie-r4-w1-cropwing-comp-2" title="Deep link to this image">#C2</a><button class="refbtn" data-copy-id="#C2" title="Copy this image id">copy id</button><button class="refbtn" data-copy="scythe-valkyrie-r4-w1-cropwing-comp-2" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="scythe-valkyrie-r4-w1-cropwing-comp-2" data-title="C · crop-local composite · roll 2" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> KEEPER-CANDIDATE — direct crop/locality evidence resolves blind omission</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="blind cross-check — REJECT — Primary brief objectives (wing removal, background restoration) are unconfirmed by the description.">blind cross-check</span><span class="chip warn" title="blind evidence — Neutral description omitted wing count/edited field, so SLOW called the core task unclear rather than observing a contradiction.">blind evidence</span><span class="chip ok" title="complete removal — Fresh 2x target crops directly confirm the third wing is wholly absent and plausible ruins/smoke replace it.">complete removal</span><span class="chip ok" title="joins and protected art — All feather seams are visually clean; written-file evidence is pixel-identical outside the exact rectangle.">joins and protect…</span></div></div><p>Direct visual and pixel evidence pass; blind did not describe the edited field.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">The blind rejection is an omission case. Direct image inspection and independent locality evidence test the actual contract and pass it, so this remains a keeper candidate for human comparison.</p></details><button class="ibtn" data-inputs="in-6">inputs — prompt &amp; refs</button></div></div>
+</div>
+<h2>D: partial blank-then-restore feasibility probe</h2>
+<p class="blurb">These are not complete wing-removal contenders. The provider saw a wider context crop, but success requires convincing background only inside the actual blank and preservation of every protected pixel around it.</p>
+<div class="grid">
+<div class="card" id="scythe-valkyrie-r4-w1-blank-comp-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/8b6997290c71346a.png" data-cap="D · partial blank restore · roll 1" data-ref="D1" data-anchor="scythe-valkyrie-r4-w1-blank-comp-1"><img src="../../../../assets/d3d2539baa251d53.jpg" alt="D · partial blank restore · roll 1" loading="lazy"></div><div class="meta"><header><h3>D · partial blank restore · roll 1</h3><span class="call reject" title="REJECT — direct blank-region evidence; blind rationale is non-diagnostic">REJECT</span></header><div class="cardref"><a class="refid" href="#scythe-valkyrie-r4-w1-blank-comp-1" title="Deep link to this image">#D1</a><button class="refbtn" data-copy-id="#D1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="scythe-valkyrie-r4-w1-blank-comp-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="scythe-valkyrie-r4-w1-blank-comp-1" data-title="D · partial blank restore · roll 1" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> REJECT — direct blank-region evidence; blind rationale is non-diagnostic</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="FAST direct evidence — Fresh crops show feather/cloth regrowth and 98.9250% protected-context change outside the actual blank.">FAST direct evide…</span><span class="chip bad" title="blind cross-check — REJECT — Expected lower-wing remnants are not described, implying unrequested removal.">blind cross-check</span><span class="chip warn" title="blind rationale — Blind inferred missing expected remnants from description silence; direct comparison instead shows regrowth and broad rerender.">blind rationale</span><span class="chip ok" title="lane outcome — Both lanes reject, so there is no outcome conflict.">lane outcome</span></div></div><p>Reject on direct regrowth and protected-context drift, not blind description silence.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">The rejection stands on direct region/context evidence. The blind rationale is not used because absence from a neutral description does not prove absence from the image.</p></details><button class="ibtn" data-inputs="in-7">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="scythe-valkyrie-r4-w1-blank-comp-2"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/7000c4434429dd86.png" data-cap="D · partial blank restore · roll 2" data-ref="D2" data-anchor="scythe-valkyrie-r4-w1-blank-comp-2"><img src="../../../../assets/6ca34af8acd23f92.jpg" alt="D · partial blank restore · roll 2" loading="lazy"></div><div class="meta"><header><h3>D · partial blank restore · roll 2</h3><span class="call reject" title="REJECT — direct blank-region evidence; blind rationale is only partial">REJECT</span></header><div class="cardref"><a class="refid" href="#scythe-valkyrie-r4-w1-blank-comp-2" title="Deep link to this image">#D2</a><button class="refbtn" data-copy-id="#D2" title="Copy this image id">copy id</button><button class="refbtn" data-copy="scythe-valkyrie-r4-w1-blank-comp-2" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="scythe-valkyrie-r4-w1-blank-comp-2" data-title="D · partial blank restore · roll 2" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> REJECT — direct blank-region evidence; blind rationale is only partial</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="FAST direct evidence — Fresh crops show a broad wing-like mass in the gap and 98.8297% protected-context change outside the blank.">FAST direct evide…</span><span class="chip bad" title="blind cross-check — REJECT — Missing expected lower-wing remnants and unrequested two-bladed scythe contradict Family 2 brief.">blind cross-check</span><span class="chip warn" title="blind rationale — Blind also flags a two-bladed scythe but infers missing remnants from description silence; direct comparison supplies the reliable failure reason.">blind rationale</span><span class="chip ok" title="lane outcome — Both lanes reject, so there is no outcome conflict.">lane outcome</span></div></div><p>Reject: wing-like regrowth and broad protected-context rerender are directly proven.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">The candidate fails the approved blank-fill contract on direct visual and pixel evidence. Blind observations remain advisory and do not replace the region-specific proof.</p></details><button class="ibtn" data-inputs="in-8">inputs — prompt &amp; refs</button></div></div>
+</div>
+<h2>E: fresh from spec — diversification probe</h2>
+<p class="blurb">Standalone spec-v0.6 wallpapers, not W1 preservation edits. GPT Image 2 targets exact 9:20; Riverflow is shown in native 9:16 and must survive a centered 80%-width 9:20-safe composition test.</p>
+<div class="grid">
+<div class="card" id="scythe-valkyrie-r4-fresh-gptimage2-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/9784f43b624e7f15.png" data-cap="E · fresh GPT Image 2" data-ref="E-GPT" data-anchor="scythe-valkyrie-r4-fresh-gptimage2-1"><img src="../../../../assets/874c1968abac912c.jpg" alt="E · fresh GPT Image 2" loading="lazy"></div><div class="meta"><header><h3>E · fresh GPT Image 2</h3><span class="cost">$0.16</span><span class="call other" title="HUMAN-LOOK — promising fresh lineage, current candidate fails weapon/pose contract">HUMAN-LOOK</span></header><div class="cardref"><a class="refid" href="#scythe-valkyrie-r4-fresh-gptimage2-1" title="Deep link to this image">#E-GPT</a><button class="refbtn" data-copy-id="#E-GPT" title="Copy this image id">copy id</button><button class="refbtn" data-copy="scythe-valkyrie-r4-fresh-gptimage2-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="scythe-valkyrie-r4-fresh-gptimage2-1" data-title="E · fresh GPT Image 2" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> HUMAN-LOOK — promising fresh lineage, current candidate fails weapon/pose contract</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="required grip and haft plane — Both lanes find the lower grip absent; FAST also sees the haft crossing in front of the lower body.">required grip and…</span><span class="chip bad" title="additional blind contradictions — Blind comparison also flags leg-side and blade-sweep mismatches.">additional blind…</span><span class="chip bad" title="blind cross-check — REJECT — Significant contradictions in pose, weapon handling, and blade direction.">blind cross-check</span><span class="chip ok" title="fresh-route promise — FAST finds strong face, crown, two-wing construction, palette, levitating mood and exact 9:20 canvas.">fresh-route promi…</span></div></div><p>Not a keeper now; visually strong enough that the fresh-route decision remains a human call.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">The candidate is not a current keeper, but R4 asks a separate route question: its strong identity and wing construction may still justify a focused fresh-lineage refinement. Dimitri/Jake must make that tradeoff.</p></details><button class="ibtn" data-inputs="in-9">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="scythe-valkyrie-r4-fresh-riverflow25-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/6eb0c85787a39e10.webp" data-cap="E · fresh Riverflow 2.5 Pro" data-ref="E-RF" data-anchor="scythe-valkyrie-r4-fresh-riverflow25-1"><img src="../../../../assets/27e762bcb8e20904.jpg" alt="E · fresh Riverflow 2.5 Pro" loading="lazy"></div><div class="meta"><header><h3>E · fresh Riverflow 2.5 Pro</h3><span class="cost">$0.48</span><span class="call reject" title="REJECT — structural/spec misses">REJECT</span></header><div class="cardref"><a class="refid" href="#scythe-valkyrie-r4-fresh-riverflow25-1" title="Deep link to this image">#E-RF</a><button class="refbtn" data-copy-id="#E-RF" title="Copy this image id">copy id</button><button class="refbtn" data-copy="scythe-valkyrie-r4-fresh-riverflow25-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="scythe-valkyrie-r4-fresh-riverflow25-1" data-title="E · fresh Riverflow 2.5 Pro" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> REJECT — structural/spec misses</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="centered 9:20 crop-safe band — The centered 80%-width band is x=[216,1944), 1728×3840. The upper counterweight and long blade tip cross the left boundary, while essential outer structure of the raised viewer-right wing crosses the right boundary; a clean approved crop cannot retain every essential element.">centered 9:20 cro…</span><span class="chip bad" title="grip/body crop · straight cylindrical diagonal haft — The haft is straight, cylindrical, and steeply diagonal, but it visibly overlays the torso, skirt, and leg instead of passing behind or immediately alongside the body.">straight cylindri…</span><span class="chip bad" title="grip/body crop · two widely separated five-finger grips — Only the viewer-left hand grips the haft; the other hand hangs open beside the thigh, so there is no lower grip and the required two-hand proof fails.">two widely separa…</span><span class="chip bad" title="full frame/lower crop · poised levitating S-curve — Both feet levitate with no support and the mood is poised, but the required leg program is mirrored: the viewer-left leg is the long straight leg while the viewer-right leg bends back; the intended vertical S-curve is also weak.">poised levitating…</span><span class="chip bad" title="blind cross-check — REJECT — Multiple critical deviations in pose, scythe handling, and wing contour.">blind cross-check</span><span class="chip warn" title="wing crops · articulated wing construction — Both wings show armored multi-span chains with large pivot housings and feathers hanging beneath their structural contours, but the exact three-segment construction is not fully provable: the raised wing&#x27;s outer span exits the safe band and the lowered wing&#x27;s root reads somewhat low/side-on.">articulated wing…</span></div><details class="more"><summary>9 more detectors (15 total)</summary><div class="chips"><span class="chip ok" title="9:16 source aspect — PIL records 2160×3840, exactly 9:16.">9:16 source aspect</span><span class="chip ok" title="head crop · original adult identity — Bare-headed adult woman with mature East Asian-featured face and long dark hair; no specific person, source character, or copied franchise likeness is apparent.">original adult id…</span><span class="chip ok" title="head crop · partial spiky crown — Dark radiating spikes form a visibly broken halo-like arc rather than a closed circle.">partial spiky cro…</span><span class="chip ok" title="exactly two wings — One distinct wing mass occupies each side and no third wing is visible.">exactly two wings</span><span class="chip ok" title="wing crops · clear wing-top contour — No clear feather tuft or separate spar rises above the armored upper contour; feather and blade masses fan below/behind the jointed frames.">clear wing-top co…</span><span class="chip ok" title="lower crop · single bounded blade arc — One long shallow blade leaves the low head approximately perpendicular to the haft, sweeps roughly a quarter-to-third circle, and remains visually clear of the wings; nearby head spikes are short bounded ornament rather than a second long blade.">single bounded bl…</span><span class="chip ok" title="armor language — Black/gunmetal armor with silver framing and restrained red accents includes decolletage, a sectioned skirt/cloak hybrid, and separate leg armor.">armor language</span><span class="chip ok" title="quiet ruined ember background — Smoky ruined silhouettes, low fires, and sparse embers stay subordinate to the figure with restrained warm edge glow.">quiet ruined embe…</span><span class="chip ok" title="no text or extra props — One figure and one scythe only; no hood, support, logo, text, watermark, firearm, or loose prop is visible.">no text or extra…</span></div></details></div><p>Striking standalone render, but not a keeper: the safe band, second grip, haft plane, and required leg/pose chirality all fail.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">The crop-and-look audit used the 2160×3840 full frame, an overlaid x=[216,1944) safe band, and 2× crops of the head/crown, both wing assemblies, grips/haft/body, and lower blade/legs. The candidate has strong original death-valkyrie styling, two convincing jointed wings, a good single shallow blade, and suitable armor/background treatment. It is not a viable R4 Riverflow keeper because essential scythe and raised-wing structure escape the exact 9:20 safe band, only one hand grips the haft, the haft crosses in front of the body, and the specified straight-versus-bent leg sides are reversed. These are structural composition misses requiring a fresh reroll or substantial later reconstruction, not the separately approved crop/extension alone.</p></details><button class="ibtn" data-inputs="in-10">inputs — prompt &amp; refs</button></div></div>
+</div>
+<div class="callout steps"><p class="boxhead">What happens after the human verdict</p><p class="intro">The shared blind detector completed the exact ten-candidate set, and its records were reconciled with the crop audits. The remaining gate is the human eye-call.</p><ol><li><span class="t">Finish and reconcile the unbiased lane</span><span class="when">complete</span><p class="d">All ten records came from one two-wave Batch run; every FAST/SLOW disagreement is reconciled in the durable review log.</p></li><li><span class="t">Record three separate human decisions</span><span class="when">now</span><p class="d">Choose/tie/reject the W1 mechanism, pass/fail the blank feasibility probe, and decide whether a fresh lineage merits its own refinement round.</p></li><li><span class="t">Open one coherent round 5 plan</span><span class="when">only after the R4 verdict</span><p class="d">R5 may apply the winning W1 mechanism, refine a fresh challenger, or select one other deferred repair. R4 itself does not authorize blade, W2, cleanup or transplant work.</p></li></ol></div>
+<div class="callout"><strong>Ready for the human verdict.</strong> Please answer the three decisions independently. You may reject every W1 mechanism and both probes with fresh feedback if none is good enough.</div>
+<footer>COMPLETE machine evidence · ten paid images on Drive · usage-derived accounted generation $1.043278 · SLOW Batch screening $0.117536 · accounted total $1.160814 of $2.50 · blind run a20d0073cfef4154b9d0a55a6cdfbfe7 · eight W1 edit reports · four composite locality reports · no Meshy</footer>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="lb-meta"><div class="cap" id="lb-cap"></div><div class="lb-refrow" id="lb-refrow" hidden><span class="refid" id="lb-ref"></span><button class="refbtn" id="lb-copy-id" title="Copy this image id">copy id</button><button class="refbtn" id="lb-copy-link" title="Copy a link to this image">copy link</button></div></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+
+<template id="in-0"><h2>Control · untouched W1</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-09T23:38:32</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w1-rem.txt</p><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
+
+EDIT — BLADE COUNT
+The scythe must have exactly ONE blade. In IMAGE 1 a second, parallel blade arc splits off below the main blade as it rises toward the ornate skull head on the lower VIEWER&#x27;S RIGHT. Remove the extra arc and close the gap so the weapon carries ONE single continuous blade, with the surrounding background restored where the extra arc was.
+
+EDIT — WING TOPS
+Feather tufts stick UP above the mechanical wing joints at the top of the wings. Remove every feather ABOVE the mechanical joints on both wings, restoring clean background sky above each joint. Feathers belong only BELOW and BEHIND the mechanical joint line; the joints themselves and the wings below them stay exactly as they are.
+
+PRESERVATION
+Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/948beb12526dab79.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b7b7424d094f32c5.png" data-cap="scythe-valkyrie-r2-w1-gptimage2-2.png" alt="scythe-valkyrie-r2-w1-gptimage2-2.png"><figcaption>scythe-valkyrie-r2-w1-gptimage2-2.png</figcaption></figure></div></template>
+<template id="in-1"><h2>A · whole-picture · roll 1</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-14T08:02:55</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w1-ff.txt</p><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic vertical wallpaper of an angel-of-death valkyrie. Make one surgical edit only.
+
+EDIT — REMOVE THE LOWER WING
+The artwork currently has three wing masses. On the VIEWER&#x27;S LEFT, below and behind the correct upper wing, a separate third wing is rooted lower on her back and sweeps down and left. Remove that entire lower wing mass — every feather, spar and hub belonging to it — and restore the smoky red-brown haze, ruins and cloth behind it. Leave the correct upper wing exactly as it is. Add no replacement wing, limb, feather or new object.
+
+PRESERVATION
+Apart from that one removal, reproduce IMAGE 1 EXACTLY: the same woman, face, expression, hair, halo crown, armour, ornament, pose, scythe, hands, correct upper wings, background, lighting, colour grading, texture and framing on the same tall canvas. Do not restyle, re-light, sharpen, crop, extend or reinterpret anything. Add no text, labels, logos or watermarks.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/d67edd32e52ed202.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5b86a1a1c0af7fd1.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2.jpg" alt="scythe-valkyrie-r3-w1-rem-2.jpg"><figcaption>scythe-valkyrie-r3-w1-rem-2.jpg</figcaption></figure></div></template>
+<template id="in-2"><h2>A · whole-picture · roll 2</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-14T08:02:55</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w1-ff.txt</p><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic vertical wallpaper of an angel-of-death valkyrie. Make one surgical edit only.
+
+EDIT — REMOVE THE LOWER WING
+The artwork currently has three wing masses. On the VIEWER&#x27;S LEFT, below and behind the correct upper wing, a separate third wing is rooted lower on her back and sweeps down and left. Remove that entire lower wing mass — every feather, spar and hub belonging to it — and restore the smoky red-brown haze, ruins and cloth behind it. Leave the correct upper wing exactly as it is. Add no replacement wing, limb, feather or new object.
+
+PRESERVATION
+Apart from that one removal, reproduce IMAGE 1 EXACTLY: the same woman, face, expression, hair, halo crown, armour, ornament, pose, scythe, hands, correct upper wings, background, lighting, colour grading, texture and framing on the same tall canvas. Do not restyle, re-light, sharpen, crop, extend or reinterpret anything. Add no text, labels, logos or watermarks.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/d67edd32e52ed202.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5b86a1a1c0af7fd1.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2.jpg" alt="scythe-valkyrie-r3-w1-rem-2.jpg"><figcaption>scythe-valkyrie-r3-w1-rem-2.jpg</figcaption></figure></div></template>
+<template id="in-3"><h2>B · steered regeneration · roll 1</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-14T08:02:07</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w1-sr.txt</p><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic vertical wallpaper of an angel-of-death valkyrie. Redraw this same picture at the same quality and framing. This arm deliberately describes the desired whole picture rather than asking for a light retouch, but the only requested content change is the lower-wing removal below.
+
+BUILD — WINGS
+The finished picture has exactly two wings, one on the viewer&#x27;s left and one on the viewer&#x27;s right, and no third wing anywhere. Preserve the correct upper wings from IMAGE 1: each keeps the same armoured hub, jointed mechanical segments, feathers, pose and silhouette. Remove only the separate lower wing mass on the VIEWER&#x27;S LEFT and restore the smoky red-brown haze, ruins and cloth behind it. Add no replacement wing, limb, feather or new object.
+
+PRESERVATION
+Apart from that one removal, reproduce IMAGE 1 EXACTLY: the same woman, face, expression, hair, halo crown, armour, ornament, pose, scythe, hands, correct upper wings, background, lighting, colour grading, texture and framing on the same tall canvas. Do not restyle, re-light, sharpen, crop, extend or reinterpret anything. Add no text, labels, logos or watermarks.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/d67edd32e52ed202.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5b86a1a1c0af7fd1.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2.jpg" alt="scythe-valkyrie-r3-w1-rem-2.jpg"><figcaption>scythe-valkyrie-r3-w1-rem-2.jpg</figcaption></figure></div></template>
+<template id="in-4"><h2>B · steered regeneration · roll 2</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-14T08:02:07</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w1-sr.txt</p><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a finished photorealistic vertical wallpaper of an angel-of-death valkyrie. Redraw this same picture at the same quality and framing. This arm deliberately describes the desired whole picture rather than asking for a light retouch, but the only requested content change is the lower-wing removal below.
+
+BUILD — WINGS
+The finished picture has exactly two wings, one on the viewer&#x27;s left and one on the viewer&#x27;s right, and no third wing anywhere. Preserve the correct upper wings from IMAGE 1: each keeps the same armoured hub, jointed mechanical segments, feathers, pose and silhouette. Remove only the separate lower wing mass on the VIEWER&#x27;S LEFT and restore the smoky red-brown haze, ruins and cloth behind it. Add no replacement wing, limb, feather or new object.
+
+PRESERVATION
+Apart from that one removal, reproduce IMAGE 1 EXACTLY: the same woman, face, expression, hair, halo crown, armour, ornament, pose, scythe, hands, correct upper wings, background, lighting, colour grading, texture and framing on the same tall canvas. Do not restyle, re-light, sharpen, crop, extend or reinterpret anything. Add no text, labels, logos or watermarks.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/d67edd32e52ed202.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5b86a1a1c0af7fd1.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2.jpg" alt="scythe-valkyrie-r3-w1-rem-2.jpg"><figcaption>scythe-valkyrie-r3-w1-rem-2.jpg</figcaption></figure></div></template>
+<template id="in-5"><h2>C · crop-local composite · roll 1</h2><p class="gmeta">? · 2026-08-14T08:14:40</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w1-cropwing.txt</p><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a crop from the viewer&#x27;s-left side of a finished photorealistic wallpaper, against smoky red-brown haze with ruins and cloth below. Make one surgical edit only and return the same crop framing.
+
+EDIT — REMOVE THE LOWER WING
+The artwork currently has three wing masses. On the VIEWER&#x27;S LEFT, below and behind the correct upper wing, a separate third wing is rooted lower on her back and sweeps down and left. Remove that entire lower wing mass — every feather, spar and hub belonging to it — and restore the smoky red-brown haze, ruins and cloth behind it. Leave the correct upper wing exactly as it is. Add no replacement wing, limb, feather or new object.
+
+PRESERVATION
+This crop contains part of the correct upper wing as well as the unwanted lower wing. Preserve the upper wing exactly: its armoured hub, jointed mechanical segments, feathers and silhouette must not change. Apart from removing the lower wing and restoring what sat behind it, reproduce IMAGE 1 exactly at the same framing and canvas shape. Do not zoom, crop further or extend the scene. Add no new object and no text, labels, logos or watermarks.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/e93107e56ff39872.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/673211d1b0ca8dda.jpg" data-cap="scythe-valkyrie-r4-w1-cropwing-1.jpg" alt="scythe-valkyrie-r4-w1-cropwing-1.jpg"><figcaption>scythe-valkyrie-r4-w1-cropwing-1.jpg</figcaption></figure><figure><img src="../../../../assets/d67edd32e52ed202.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5b86a1a1c0af7fd1.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2.jpg" alt="scythe-valkyrie-r3-w1-rem-2.jpg"><figcaption>scythe-valkyrie-r3-w1-rem-2.jpg</figcaption></figure></div></template>
+<template id="in-6"><h2>C · crop-local composite · roll 2</h2><p class="gmeta">? · 2026-08-14T08:14:40</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w1-cropwing.txt</p><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a crop from the viewer&#x27;s-left side of a finished photorealistic wallpaper, against smoky red-brown haze with ruins and cloth below. Make one surgical edit only and return the same crop framing.
+
+EDIT — REMOVE THE LOWER WING
+The artwork currently has three wing masses. On the VIEWER&#x27;S LEFT, below and behind the correct upper wing, a separate third wing is rooted lower on her back and sweeps down and left. Remove that entire lower wing mass — every feather, spar and hub belonging to it — and restore the smoky red-brown haze, ruins and cloth behind it. Leave the correct upper wing exactly as it is. Add no replacement wing, limb, feather or new object.
+
+PRESERVATION
+This crop contains part of the correct upper wing as well as the unwanted lower wing. Preserve the upper wing exactly: its armoured hub, jointed mechanical segments, feathers and silhouette must not change. Apart from removing the lower wing and restoring what sat behind it, reproduce IMAGE 1 exactly at the same framing and canvas shape. Do not zoom, crop further or extend the scene. Add no new object and no text, labels, logos or watermarks.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/4df7e4d9fc330c16.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/44e032605c3854db.jpg" data-cap="scythe-valkyrie-r4-w1-cropwing-2.jpg" alt="scythe-valkyrie-r4-w1-cropwing-2.jpg"><figcaption>scythe-valkyrie-r4-w1-cropwing-2.jpg</figcaption></figure><figure><img src="../../../../assets/d67edd32e52ed202.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5b86a1a1c0af7fd1.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2.jpg" alt="scythe-valkyrie-r3-w1-rem-2.jpg"><figcaption>scythe-valkyrie-r3-w1-rem-2.jpg</figcaption></figure></div></template>
+<template id="in-7"><h2>D · partial blank restore · roll 1</h2><p class="gmeta">? · 2026-08-14T08:03:01</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w1-blank.txt</p><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a wide crop from the viewer&#x27;s-left side of a finished photorealistic wallpaper, showing wing, sky, cloth and ruins. Part of it has been painted out to a flat blank area. Fill only that blank; this arm deliberately tests gap-fill quality, not complete removal of every lower-wing remnant outside the blank.
+
+EDIT — FILL THE BLANK AREA
+Fill the blanked region with the background and scenery that belongs behind it — the same smoky red-brown haze, the ruins below, and any cloth that continues into it — matching the surrounding lighting, colour and grain so the join is invisible. Do NOT paint a wing, limb, feather or any part of a figure into that area. It should read as if nothing was ever there.
+
+PRESERVE — THE UPPER WING
+Change nothing on the upper wing. It is an articulated mechanical limb — an armoured shoulder hub, a chain of armoured segments linked by visible mechanical joints, and feathers hanging below and behind. Do not add a wing, limb or feather anywhere in this crop.
+
+PRESERVATION
+Outside the blanked area, reproduce IMAGE 1 EXACTLY: the same wing, sky, cloth, ruins, lighting, colour, grain, framing and canvas shape. Do not zoom, crop further or extend the scene. Add no new object and no text, labels, logos or watermarks.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/c7a69c6665806cb4.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b7551df78d680cb2.jpg" data-cap="scythe-valkyrie-r4-w1-blank-1.jpg" alt="scythe-valkyrie-r4-w1-blank-1.jpg"><figcaption>scythe-valkyrie-r4-w1-blank-1.jpg</figcaption></figure><figure><img src="../../../../assets/d67edd32e52ed202.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5b86a1a1c0af7fd1.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2.jpg" alt="scythe-valkyrie-r3-w1-rem-2.jpg"><figcaption>scythe-valkyrie-r3-w1-rem-2.jpg</figcaption></figure></div></template>
+<template id="in-8"><h2>D · partial blank restore · roll 2</h2><p class="gmeta">? · 2026-08-14T08:03:01</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w1-blank.txt</p><pre>ATTACHED IMAGE
+One image is attached. IMAGE 1 is a wide crop from the viewer&#x27;s-left side of a finished photorealistic wallpaper, showing wing, sky, cloth and ruins. Part of it has been painted out to a flat blank area. Fill only that blank; this arm deliberately tests gap-fill quality, not complete removal of every lower-wing remnant outside the blank.
+
+EDIT — FILL THE BLANK AREA
+Fill the blanked region with the background and scenery that belongs behind it — the same smoky red-brown haze, the ruins below, and any cloth that continues into it — matching the surrounding lighting, colour and grain so the join is invisible. Do NOT paint a wing, limb, feather or any part of a figure into that area. It should read as if nothing was ever there.
+
+PRESERVE — THE UPPER WING
+Change nothing on the upper wing. It is an articulated mechanical limb — an armoured shoulder hub, a chain of armoured segments linked by visible mechanical joints, and feathers hanging below and behind. Do not add a wing, limb or feather anywhere in this crop.
+
+PRESERVATION
+Outside the blanked area, reproduce IMAGE 1 EXACTLY: the same wing, sky, cloth, ruins, lighting, colour, grain, framing and canvas shape. Do not zoom, crop further or extend the scene. Add no new object and no text, labels, logos or watermarks.
+</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/6f1ff3b2957b8c66.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/de0b12e4c8fcbbe1.jpg" data-cap="scythe-valkyrie-r4-w1-blank-2.jpg" alt="scythe-valkyrie-r4-w1-blank-2.jpg"><figcaption>scythe-valkyrie-r4-w1-blank-2.jpg</figcaption></figure><figure><img src="../../../../assets/d67edd32e52ed202.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5b86a1a1c0af7fd1.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2.jpg" alt="scythe-valkyrie-r3-w1-rem-2.jpg"><figcaption>scythe-valkyrie-r3-w1-rem-2.jpg</figcaption></figure></div></template>
+<template id="in-9"><h2>E · fresh GPT Image 2</h2><p class="gmeta">gpt-image-2-2026-04-21 via openai · size=1152x2560 quality=high output_format=png · $0.16 · 2026-08-14T07:58:48</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-fresh.txt</p><pre>OUTPUT AND CAMERA
+A photorealistic full-body cinematic character render of an original character, composed as a premium PHONE WALLPAPER in exact tall 9:20 portrait orientation for a 1080x2400 screen. Show ONE figure only, in a NEAR-FRONTAL THREE-QUARTER view, large in frame: she fills most of the frame height and is the unambiguous subject, with softly dramatic lighting and crisp character detail over a quieter background. Keep the complete scythe from spear counterweight to blade tip inside the 9:20 composition-safe area; the wings may leave the outer frame after their roots, segments and bends are legible rather than shrinking her. This is character concept art, not a photograph of a toy.
+
+BUILD — CHARACTER, ARMOUR AND CROWN
+An original angel-of-death valkyrie: elegant, ominous and ceremonial. She has a slender adult feminine build with realistic proportions, mature East Asian features, a calm direct gaze and a softly angular oval face. Her long dark hair is elegant and sculptural. Use an original face, never a real person&#x27;s likeness.
+
+Her sleek solid death-valkyrie armour uses dark gunmetal and black primary surfaces, silver structural framing and edge highlights, and restrained deep-red accents. The lower body has a sectioned metal skirt/cloak hybrid over separate shaped leg armour and armoured boots. Leave a modest gap between chestplate and throat. Make panel lines bold and sculptural and express the skull-and-death motif through original forms, never printed graphics.
+
+She wears NO hood or mantle. Behind her head, build a solidly mounted spiky death crown: radiating dark blades in a deliberately BROKEN, PARTIAL arc, never a full circle and never an existing franchise halo.
+
+BUILD — WINGS
+Exactly two wing masses in total, one rooted on the viewer&#x27;s left and one rooted on the viewer&#x27;s right; never a third wing and never both wings on one side. Each has an explicit solid root at the upper back. Mix crow-like feathering with layered dark metal wing-blades, silver structural framing and restrained red accents.
+
+Construct each wing as an articulated mechanical limb, a machined bird-wing skeleton rather than one spar: an armoured shoulder hub followed by three armoured segments linked by visible engineered hub, pivot or knuckle joints. The continuous upper edge of that jointed limb chain is the wing&#x27;s top silhouette, with a legible bend at every joint. All feathers, wing-blades and spikes hang below and behind it; no feather tuft, spar or spike projects above that top contour. One wing rises toward upper viewer-right and the other sweeps down and out toward lower viewer-left. The wings may leave the outer frame only after their roots, segments and bends are legible.
+
+BUILD — SCYTHE
+One great scythe and no other prop. Its haft is one perfectly straight cylindrical pole, never curved, kinked or faceted, armoured in the suit&#x27;s design language, with a spear-like counterweight projecting beyond the upper grip. One long blade leaves the ornate mechanical head roughly perpendicular to the haft, carries mostly outward and curves upward only slightly so its tip finishes roughly horizontal: one smooth, consistently curved shallow sweep on the order of a quarter to a third of a circle, never a hook or half-circle and never curling back toward a wing. A short counter-spike no longer than the head is wide is allowed, but never a second long blade. Visible background separates the blade from both wings along its whole length.
+
+The upper hand grips around waist level on the viewer&#x27;s left and the lower hand grips beside the upper thigh on the viewer&#x27;s right. Both grips are widely separated, unmistakable five-fingered wraps with visible thumbs and unbroken shoulder-to-hand anatomy.
+
+POSE AND COMPOSITION
+She levitates with both feet clearly above the ground and no visible support, poised, statuesque and ominous in a controlled near-frontal three-quarter portrait, never a mid-swing action frame. Hold a pronounced vertical S-curve: pelvis under a lifted backward-arched chest, head tilted back and sideways while her eyes turn toward the viewer. The viewer-right leg is long and nearly straight; the viewer-left leg is relaxed and slightly bent with its pointed foot visibly lifted. Hair and cloth remain mostly still.
+
+The haft cuts steeply from upper viewer-left to lower viewer-right, passing BEHIND or immediately alongside the body, never in front of it and never through the torso. Its spear counterweight is visible beyond the upper grip. The ornate blade head sits low on viewer-right, and only the single shallow crescent sweeps low across IN FRONT OF the legs toward lower viewer-left with a visible background gap proving clearance from the body. Keep the complete counterweight, head and blade tip within the central 9:20 composition-safe area.
+
+BACKGROUND AND GLOW — EMBER AFTERMATH
+Far below and behind her, show a ruined city reduced to low broken silhouettes and rubble, with drifting smoke, sparse rising embers and deep warm ember light low under a dark sky. Keep the background soft, low-contrast and uncluttered so the woman dominates. A subtle ember-orange radiance may trace blade edge, crown spikes and wings; keep it restrained and dim, with no lens flare, bright beam or explosion of light.
+
+EXCLUSIONS
+No copied franchise character, costume, halo or wing assembly; no celebrity likeness. No support structure, staff, firearm or loose hand prop. No transparent or see-through material. No presentation card, text, labels, logos, signatures or watermarks.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<template id="in-10"><h2>E · fresh Riverflow 2.5 Pro</h2><p class="gmeta">sourceful/riverflow-v2.5-pro via openrouter · resolution=4K aspect_ratio=9:16 · $0.48 · 2026-08-14T07:59:35</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-fresh-riverflow.txt</p><pre>OUTPUT AND CAMERA
+A photorealistic full-body cinematic character render of an original character, composed as a premium PHONE WALLPAPER in exact tall 9:16 portrait orientation. Reserve the CENTERED 80% OF THE CANVAS WIDTH as the exact 9:20 crop-safe area: keep the entire figure, crown, both wing roots and articulated segments and bends, the complete scythe, and every other essential character feature inside that central band. Only nonessential distal wing feathers may enter the outer 10% margin on either side, after the roots, segments and bends are fully legible; never place essential content there. Show ONE figure only, in a NEAR-FRONTAL THREE-QUARTER view, large in frame: she fills most of the frame height and is the unambiguous subject, with softly dramatic lighting and crisp character detail over a quieter background. This is character concept art, not a photograph of a toy.
+
+BUILD — CHARACTER, ARMOUR AND CROWN
+An original angel-of-death valkyrie: elegant, ominous and ceremonial. She has a slender adult feminine build with realistic proportions, mature East Asian features, a calm direct gaze and a softly angular oval face. Her long dark hair is elegant and sculptural. Use an original face, never a real person&#x27;s likeness.
+
+Her sleek solid death-valkyrie armour uses dark gunmetal and black primary surfaces, silver structural framing and edge highlights, and restrained deep-red accents. The lower body has a sectioned metal skirt/cloak hybrid over separate shaped leg armour and armoured boots. Leave a modest gap between chestplate and throat. Make panel lines bold and sculptural and express the skull-and-death motif through original forms, never printed graphics.
+
+She wears NO hood or mantle. Behind her head, build a solidly mounted spiky death crown: radiating dark blades in a deliberately BROKEN, PARTIAL arc, never a full circle and never an existing franchise halo.
+
+BUILD — WINGS
+Exactly two wing masses in total, one rooted on the viewer&#x27;s left and one rooted on the viewer&#x27;s right; never a third wing and never both wings on one side. Each has an explicit solid root at the upper back. Mix crow-like feathering with layered dark metal wing-blades, silver structural framing and restrained red accents.
+
+Construct each wing as an articulated mechanical limb, a machined bird-wing skeleton rather than one spar: an armoured shoulder hub followed by three armoured segments linked by visible engineered hub, pivot or knuckle joints. The continuous upper edge of that jointed limb chain is the wing&#x27;s top silhouette, with a legible bend at every joint. All feathers, wing-blades and spikes hang below and behind it; no feather tuft, spar or spike projects above that top contour. One wing rises toward upper viewer-right and the other sweeps down and out toward lower viewer-left. The wings may leave the outer frame only after their roots, segments and bends are legible.
+
+BUILD — SCYTHE
+One great scythe and no other prop. Its haft is one perfectly straight cylindrical pole, never curved, kinked or faceted, armoured in the suit&#x27;s design language, with a spear-like counterweight projecting beyond the upper grip. One long blade leaves the ornate mechanical head roughly perpendicular to the haft, carries mostly outward and curves upward only slightly so its tip finishes roughly horizontal: one smooth, consistently curved shallow sweep on the order of a quarter to a third of a circle, never a hook or half-circle and never curling back toward a wing. A short counter-spike no longer than the head is wide is allowed, but never a second long blade. Visible background separates the blade from both wings along its whole length.
+
+The upper hand grips around waist level on the viewer&#x27;s left and the lower hand grips beside the upper thigh on the viewer&#x27;s right. Both grips are widely separated, unmistakable five-fingered wraps with visible thumbs and unbroken shoulder-to-hand anatomy.
+
+POSE AND COMPOSITION
+She levitates with both feet clearly above the ground and no visible support, poised, statuesque and ominous in a controlled near-frontal three-quarter portrait, never a mid-swing action frame. Hold a pronounced vertical S-curve: pelvis under a lifted backward-arched chest, head tilted back and sideways while her eyes turn toward the viewer. The viewer-right leg is long and nearly straight; the viewer-left leg is relaxed and slightly bent with its pointed foot visibly lifted. Hair and cloth remain mostly still.
+
+The haft cuts steeply from upper viewer-left to lower viewer-right, passing BEHIND or immediately alongside the body, never in front of it and never through the torso. Its spear counterweight is visible beyond the upper grip. The ornate blade head sits low on viewer-right, and only the single shallow crescent sweeps low across IN FRONT OF the legs toward lower viewer-left with a visible background gap proving clearance from the body. Keep the complete counterweight, head and blade tip inside the centered 80%-width 9:20 crop-safe area of the 9:16 canvas.
+
+BACKGROUND AND GLOW — EMBER AFTERMATH
+Far below and behind her, show a ruined city reduced to low broken silhouettes and rubble, with drifting smoke, sparse rising embers and deep warm ember light low under a dark sky. Keep the background soft, low-contrast and uncluttered so the woman dominates. A subtle ember-orange radiance may trace blade edge, crown spikes and wings; keep it restrained and dim, with no lens flare, bright beam or explosion of light.
+
+EXCLUSIONS
+No copied franchise character, costume, halo or wing assembly; no celebrity likeness. No support structure, staff, firearm or loose hand prop. No transparent or see-through material. No presentation card, text, labels, logos, signatures or watermarks.
+</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbRefRow=document.getElementById('lb-refrow'),lbRef=document.getElementById('lb-ref'),
+      lbCopyId=document.getElementById('lb-copy-id'),lbCopyLink=document.getElementById('lb-copy-link'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body'),
+      developerMode=document.getElementById('developer-mode');
+let gal=[],idx=-1;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+function setDeveloperMode(enabled){
+  document.querySelectorAll('[data-developer]').forEach(function(node){node.hidden=!enabled;});
+  document.documentElement.dataset.developer=enabled?'true':'false';
+  if(developerMode)developerMode.setAttribute('aria-checked',enabled?'true':'false');
+}
+if(developerMode){
+  developerMode.addEventListener('change',function(){setDeveloperMode(developerMode.checked);});
+  setDeveloperMode(false);
+}
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves; every other [data-full]
+// (the review's card images) forms the main gallery.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
+  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+  const ref=z.dataset.ref||'',anchor=z.dataset.anchor||'';
+  lbRefRow.hidden=!(ref&&anchor);
+  if(ref&&anchor){
+    lbRef.textContent='#'+ref;
+    lbCopyId.dataset.copyId='#'+ref;
+    lbCopyLink.dataset.copy=anchor;
+  }
+  applyT();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy a card's short display id, or copy/share its deep link. The URL is this
+// page plus the card's #id anchor, so a recipient lands scrolled to (and
+// highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  const ci=e.target.closest('[data-copy-id]');
+  if(ci){copyText(ci.dataset.copyId,ci);e.preventDefault();return;}
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  if(!lb.hidden){
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+</script>
+
+</body></html>
