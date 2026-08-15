@@ -160,9 +160,12 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
   flex-wrap:wrap }
 .lb-refrow[hidden] { display:none }
 .lb-refrow .refid { background:rgba(20,20,26,.72) }
-.lb-refrow .refbtn { color:#bbb; border-color:#55515d;
+.lb-meta .refbtn { color:#bbb; border-color:#55515d;
   background:rgba(20,20,26,.72) }
-.lb-refrow .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-meta .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-control[hidden] { display:none }
+.lb-control[aria-pressed="true"] { color:#fff; border-color:var(--accent);
+  background:color-mix(in srgb,var(--accent) 24%,rgba(20,20,26,.72)) }
 .lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
   border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
   line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
@@ -458,7 +461,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
 <h1>Trumbert — Round 10 runbook</h1>
 <div class="statusrow"><span class="pill s-appr"><span class="dot"></span>Approved — not started</span><span class="fact">Dimitri · 2026-08-15</span><span class="fact">Opened <b>2026-08-15</b></span></div>
 <p class="statusnote">combined approval-and-start: Dimitri&#x27;s formal approval of PR #525 (head b2051088), his in-session start instruction (&quot;get rolling on a straightforward cleanup for R10&quot;) and his in-session #434 pilot naming (&quot;OK; let&#x27;s do the #434 pilot for R10&quot;); the start transition rides the PR carrying this stamp and the greenlight, and becomes effective on its merge</p>
-<div class="statusrow sub"><span class="fact inert" title="Published at round close">&#128203; Review panel &mdash; at round close</span></div>
+<div class="statusrow sub"><a class="fact link" href="../r10-panel/">&#128203; Review panel &rarr;</a></div>
 <div class="ask"><p class="lbl"><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</p><p><strong>Sign-off on this zero-spend plan</strong> — given there is nothing to spend, approve-and-start-on-merge is proposed so the cleanup gets rolling immediately; say if you want a separate start instead. <a class="jump" href="#ask">Read the full ask &darr;</a></p></div>
 <div class="glance"><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Planned</span><span class="v">0 credits</span><span class="s"></span></div></div>
 <nav class="snav"><a href="#goal">Goal</a><a href="#choices">Choices</a><a href="#inputs">Inputs</a><a href="#judged">Judging</a><a href="#ask">The ask</a><a href="#cost">Cost</a><a href="#facts">Round facts</a><a href="#tech">Technical plan</a></nav>
@@ -526,16 +529,17 @@ test &quot;$(git rev-parse HEAD)&quot; = &quot;$(git rev-parse origin/main)&quot
 <div id="ilb" hidden><div class="panel">
 <button class="x" data-close aria-label="close">&times;</button>
 <div id="ilb-body"></div></div></div>
-<template id="in-0"><h2>trumbert-r9-g14-m2-raw · trumbert-r9-g14-m2-raw-turnaround</h2><p class="gmeta">meshy-6 · 2026-08-07T08:10:34+00:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/da2ea0333f2812cc.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/c82c6d1d6ed3a95b.jpg" data-cap="trumbert-r9-g14-in-front.png" alt="trumbert-r9-g14-in-front.png"><figcaption>trumbert-r9-g14-in-front.png</figcaption></figure><figure><img src="../../../../assets/8494e2b369da5784.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/71e5b315b79f1d07.jpg" data-cap="trumbert-r9-g14-in-shield-side.png" alt="trumbert-r9-g14-in-shield-side.png"><figcaption>trumbert-r9-g14-in-shield-side.png</figcaption></figure><figure><img src="../../../../assets/1fe13c45647dbe58.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/37c0f8f0cb9bc515.jpg" data-cap="trumbert-r9-g14-in-back.png" alt="trumbert-r9-g14-in-back.png"><figcaption>trumbert-r9-g14-in-back.png</figcaption></figure><figure><img src="../../../../assets/15273c7cf40b9211.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ad237bc32460a744.jpg" data-cap="trumbert-r9-g14-in-sword-side.png" alt="trumbert-r9-g14-in-sword-side.png"><figcaption>trumbert-r9-g14-in-sword-side.png</figcaption></figure></div></template>
+<template id="in-0"><h2>trumbert-r9-g14-m2-raw · trumbert-r9-g14-m2-raw-turnaround</h2><p class="gmeta">meshy-6 · 2026-08-07T08:10:34+00:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Inputs</h3><div class="refs"><figure><img src="../../../../assets/da2ea0333f2812cc.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/c82c6d1d6ed3a95b.jpg" data-cap="trumbert-r9-g14-in-front.png" alt="trumbert-r9-g14-in-front.png"><figcaption>trumbert-r9-g14-in-front.png</figcaption></figure><figure><img src="../../../../assets/8494e2b369da5784.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/71e5b315b79f1d07.jpg" data-cap="trumbert-r9-g14-in-shield-side.png" alt="trumbert-r9-g14-in-shield-side.png"><figcaption>trumbert-r9-g14-in-shield-side.png</figcaption></figure><figure><img src="../../../../assets/1fe13c45647dbe58.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/37c0f8f0cb9bc515.jpg" data-cap="trumbert-r9-g14-in-back.png" alt="trumbert-r9-g14-in-back.png"><figcaption>trumbert-r9-g14-in-back.png</figcaption></figure><figure><img src="../../../../assets/15273c7cf40b9211.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/ad237bc32460a744.jpg" data-cap="trumbert-r9-g14-in-sword-side.png" alt="trumbert-r9-g14-in-sword-side.png"><figcaption>trumbert-r9-g14-in-sword-side.png</figcaption></figure></div></template>
 <script>
 const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
       lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
       lbRefRow=document.getElementById('lb-refrow'),lbRef=document.getElementById('lb-ref'),
       lbCopyId=document.getElementById('lb-copy-id'),lbCopyLink=document.getElementById('lb-copy-link'),
+      lbControl=document.getElementById('lb-control'),
       lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
       ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body'),
       developerMode=document.getElementById('developer-mode');
-let gal=[],idx=-1;
+let gal=[],idx=-1,showingControl=false;
 const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
 let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
 const pts=new Map();                 // active pointers, for pan + pinch
@@ -550,12 +554,16 @@ if(developerMode){
   setDeveloperMode(false);
 }
 // The gallery is scoped to where the opened image lives: reference thumbs
-// inside an inputs panel cycle among themselves; every other [data-full]
-// (the review's card images) forms the main gallery.
+// inside an inputs panel cycle among themselves, Core inputs form their own
+// small gallery, and review cards form the candidate gallery. Keeping Core
+// inputs out of candidate arrow navigation makes C a true temporary compare.
 function galleryFor(el){
   const inInputs=el.closest('#ilb');
-  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
-  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  const inCore=el.closest('.coreinputs');
+  let list=Array.prototype.slice.call((inInputs||inCore||document).querySelectorAll('[data-full]'));
+  if(!inInputs&&!inCore) list=list.filter(function(n){
+    return !n.closest('#ilb')&&!n.closest('.coreinputs');
+  });
   return list;
 }
 function clampPan(){
@@ -588,14 +596,15 @@ function updateNav(){
   lbPrev.style.display=multi?'':'none';
   lbNext.style.display=multi?'':'none';
   let t=multi?(idx+1)+' / '+gal.length:'';
+  if(showingControl)t='CONTROL'+(t?'  \u00b7  '+t:'');
   if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
   lbCount.textContent=t;
 }
-function showAt(i){
-  if(i<0||i>=gal.length)return;
-  idx=i;const z=gal[i];
-  scale=1;tx=0;ty=0;                 // fit each freshly shown image
-  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+function controlFor(z){
+  return z&&z.dataset.controlRef?document.getElementById(z.dataset.controlRef):null;
+}
+function setCandidateMeta(z){
+  lbCap.textContent=z.dataset.cap||'';
   const ref=z.dataset.ref||'',anchor=z.dataset.anchor||'';
   lbRefRow.hidden=!(ref&&anchor);
   if(ref&&anchor){
@@ -603,7 +612,37 @@ function showAt(i){
     lbCopyId.dataset.copyId='#'+ref;
     lbCopyLink.dataset.copy=anchor;
   }
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  showingControl=false;
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;setCandidateMeta(z);
+  lbControl.hidden=!controlFor(z);
+  lbControl.textContent='control [C]';
+  lbControl.setAttribute('aria-pressed','false');
   applyT();
+}
+function toggleControl(){
+  if(lb.hidden||idx<0)return;
+  const z=gal[idx],control=controlFor(z);
+  if(!control)return;
+  showingControl=!showingControl;
+  if(showingControl){
+    lbImg.src=control.dataset.full;
+    lbCap.textContent='CONTROL \u00b7 '+(control.dataset.cap||'core input');
+    lbRefRow.hidden=true;
+    lbControl.textContent='back to candidate [C]';
+  }else{
+    lbImg.src=z.dataset.full;
+    setCandidateMeta(z);
+    lbControl.textContent='control [C]';
+  }
+  lbControl.setAttribute('aria-pressed',showingControl?'true':'false');
+  // Retain scale/tx/ty: same-framing flicker comparison is the point of this
+  // control. The image load hook reclamps for a different aspect ratio.
+  updateNav();
 }
 function nav(d){
   if(lb.hidden||gal.length<2)return;
@@ -615,7 +654,8 @@ function openFrom(z){
 }
 function closeTop(){
   if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
-                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+                 gal=[];idx=-1;showingControl=false;scale=1;tx=0;ty=0;pts.clear();
+                 lbControl.hidden=true;lbControl.setAttribute('aria-pressed','false');}
   else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
 }
 // Copy a card's short display id, or copy/share its deep link. The URL is this
@@ -647,6 +687,7 @@ document.addEventListener('click',function(e){
   const cp=e.target.closest('[data-copy]');
   if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
   if(!lb.hidden){
+    if(e.target.closest('#lb-control')){toggleControl();e.preventDefault();return;}
     const nb=e.target.closest('[data-nav]');
     if(nb){nav(parseInt(nb.dataset.nav,10));return;}
     if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
@@ -675,6 +716,8 @@ document.addEventListener('keydown',function(e){
   if(lb.hidden)return;
   if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
   else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if((e.key==='c'||e.key==='C')&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
+    toggleControl();e.preventDefault();}
   else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
   else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
   else if(e.key==='0'){resetZoom();e.preventDefault();}
@@ -685,6 +728,9 @@ lb.addEventListener('wheel',function(e){
   e.preventDefault();
   zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
 },{passive:false});
+// A different control aspect can change the fitted element dimensions. Keep
+// the requested framing and clamp it once the replacement image has loaded.
+lbImg.addEventListener('load',function(){if(!lb.hidden)applyT();});
 // Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
 // or, if it barely moved, counts as a tap that toggles zoom / swipes; two
 // pointers pinch-zoom.
