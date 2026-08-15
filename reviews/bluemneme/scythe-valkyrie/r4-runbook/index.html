@@ -2,10 +2,10 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="e5c1e1683efbef7709773aedeb757c660b1cb9ebfd7284fb037948f61e745578">
+<meta name="ai-stl-plan-digest" content="294562f0dc788c201d0763c7a0f895a724ca379c81429e52ca47b47d2aa00b8b">
 <title>Scythe Valkyrie — Round 4 runbook</title>
 <style>
-:root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+:root{color-scheme:dark light;--accent:#9f2d35;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
 @media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
 :root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
 :root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -160,9 +160,12 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
   flex-wrap:wrap }
 .lb-refrow[hidden] { display:none }
 .lb-refrow .refid { background:rgba(20,20,26,.72) }
-.lb-refrow .refbtn { color:#bbb; border-color:#55515d;
+.lb-meta .refbtn { color:#bbb; border-color:#55515d;
   background:rgba(20,20,26,.72) }
-.lb-refrow .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-meta .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-control[hidden] { display:none }
+.lb-control[aria-pressed="true"] { color:#fff; border-color:var(--accent);
+  background:color-mix(in srgb,var(--accent) 24%,rgba(20,20,26,.72)) }
 .lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
   border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
   line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
@@ -557,14 +560,14 @@ contract. The human reviewers decide whether a change is an improvement.
 <h3 class="rb-case-h">Control — untouched W1<span class="rb-case-count">1 image</span></h3>
 <p class="rb-case-note">The exact starting point. It costs nothing and anchors every locality and human comparison.</p>
 <div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Untouched W1 control — chosen for its upper-wing construction</span><code class="rb-art-id">scythe-valkyrie-r3-w1-rem-2</code><button class="ibtn" data-inputs="in-0">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5b86a1a1c0af7fd1.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2"><img src="../../../../assets/fede5343041faee9.jpg" alt="scythe-valkyrie-r3-w1-rem-2" loading="lazy"></div></figure>
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5b86a1a1c0af7fd1.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2 · scythe-valkyrie-r3-w1-rem-2"><img src="../../../../assets/fede5343041faee9.jpg" alt="scythe-valkyrie-r3-w1-rem-2 · scythe-valkyrie-r3-w1-rem-2" loading="lazy"></div><figcaption>scythe-valkyrie-r3-w1-rem-2</figcaption></figure>
 </div></div>
 </section>
 <section class="rb-case" id="case-a-whole-picture-edit">
 <h3 class="rb-case-h">A — whole-picture edit<span class="rb-case-count">1 image · 1 prompt</span></h3>
 <p class="rb-case-note">Removes the lower-left third wing on the full wallpaper. This is the standard editor control, judged as heavily on what stays unchanged as on the removal.</p>
 <div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">W1 starting image</span><code class="rb-art-id">scythe-valkyrie-r3-w1-rem-2</code><button class="ibtn" data-inputs="in-1">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5b86a1a1c0af7fd1.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2"><img src="../../../../assets/fede5343041faee9.jpg" alt="scythe-valkyrie-r3-w1-rem-2" loading="lazy"></div></figure>
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5b86a1a1c0af7fd1.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2 · scythe-valkyrie-r3-w1-rem-2"><img src="../../../../assets/fede5343041faee9.jpg" alt="scythe-valkyrie-r3-w1-rem-2 · scythe-valkyrie-r3-w1-rem-2" loading="lazy"></div><figcaption>scythe-valkyrie-r3-w1-rem-2</figcaption></figure>
 </div></div>
 <details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — attaches the W1 starting image<span class="rb-size">1 kB · 162 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w1-ff.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
 One image is attached. IMAGE 1 is a finished photorealistic vertical wallpaper of an angel-of-death valkyrie. Make one surgical edit only.
@@ -580,7 +583,7 @@ Apart from that one removal, reproduce IMAGE 1 EXACTLY: the same woman, face, ex
 <h3 class="rb-case-h">B — steered regeneration<span class="rb-case-count">1 image · 1 prompt</span></h3>
 <p class="rb-case-note">Redraws the whole wallpaper from the same W1 reference while describing the desired two-wing result. It tests whether whole-picture guidance works better than surgical correction wording.</p>
 <div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">W1 starting image</span><code class="rb-art-id">scythe-valkyrie-r3-w1-rem-2</code><button class="ibtn" data-inputs="in-2">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5b86a1a1c0af7fd1.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2"><img src="../../../../assets/fede5343041faee9.jpg" alt="scythe-valkyrie-r3-w1-rem-2" loading="lazy"></div></figure>
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5b86a1a1c0af7fd1.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2 · scythe-valkyrie-r3-w1-rem-2"><img src="../../../../assets/fede5343041faee9.jpg" alt="scythe-valkyrie-r3-w1-rem-2 · scythe-valkyrie-r3-w1-rem-2" loading="lazy"></div><figcaption>scythe-valkyrie-r3-w1-rem-2</figcaption></figure>
 </div></div>
 <details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — attaches the W1 starting image<span class="rb-size">1 kB · 187 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w1-sr.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
 One image is attached. IMAGE 1 is a finished photorealistic vertical wallpaper of an angel-of-death valkyrie. Redraw this same picture at the same quality and framing. This arm deliberately describes the desired whole picture rather than asking for a light retouch, but the only requested content change is the lower-wing removal below.
@@ -596,7 +599,7 @@ Apart from that one removal, reproduce IMAGE 1 EXACTLY: the same woman, face, ex
 <h3 class="rb-case-h">C — crop and paste back<span class="rb-case-count">1 image · 1 prompt</span></h3>
 <p class="rb-case-note">Edits only the lower-wing crop, then feather-composites it into the untouched W1 base. No other region can change.</p>
 <div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Lower-wing edit crop</span><code class="rb-art-id">scythe-valkyrie-r4-w1-wing-crop</code><button class="ibtn" data-inputs="in-3">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/f9ec747cbc4090b3.png" data-cap="scythe-valkyrie-r4-w1-wing-crop"><img src="../../../../assets/b4a9ebd3199010ea.jpg" alt="scythe-valkyrie-r4-w1-wing-crop" loading="lazy"></div></figure>
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/f9ec747cbc4090b3.png" data-cap="scythe-valkyrie-r4-w1-wing-crop · scythe-valkyrie-r4-w1-wing-crop"><img src="../../../../assets/b4a9ebd3199010ea.jpg" alt="scythe-valkyrie-r4-w1-wing-crop · scythe-valkyrie-r4-w1-wing-crop" loading="lazy"></div><figcaption>scythe-valkyrie-r4-w1-wing-crop</figcaption></figure>
 </div></div>
 <details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — attaches the lower-wing crop<span class="rb-size">1 kB · 201 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w1-cropwing.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
 One image is attached. IMAGE 1 is a crop from the viewer&#x27;s-left side of a finished photorealistic wallpaper, against smoky red-brown haze with ruins and cloth below. Make one surgical edit only and return the same crop framing.
@@ -612,7 +615,7 @@ This crop contains part of the correct upper wing as well as the unwanted lower 
 <h3 class="rb-case-h">D — blank then restore (feasibility probe)<span class="rb-case-count">1 image · 1 prompt</span></h3>
 <p class="rb-case-note">Fills the existing partial blank inside a wide W1 context crop, then composites that context back into untouched W1. Everything outside the actual blank is protected, including material inside the wider crop. This is explicitly a background-fill feasibility probe, not complete lower-wing removal.</p>
 <div class="rb-art"><div class="rb-art-h"><span class="rb-art-label">Wide W1 context crop with the largest clean lower-wing region painted out</span><code class="rb-art-id">scythe-valkyrie-r4-w1-wing-context-blank</code><button class="ibtn" data-inputs="in-4">how it was made</button></div><div class="rb-strip">
-<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/55a9584a8addbdb2.png" data-cap="scythe-valkyrie-r4-w1-wing-context-blank"><img src="../../../../assets/b6fc5f57c2a42f59.jpg" alt="scythe-valkyrie-r4-w1-wing-context-blank" loading="lazy"></div></figure>
+<figure class="rb-fig"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/55a9584a8addbdb2.png" data-cap="scythe-valkyrie-r4-w1-wing-context-blank · scythe-valkyrie-r4-w1-wing-context-blank"><img src="../../../../assets/b6fc5f57c2a42f59.jpg" alt="scythe-valkyrie-r4-w1-wing-context-blank · scythe-valkyrie-r4-w1-wing-context-blank" loading="lazy"></div><figcaption>scythe-valkyrie-r4-w1-wing-context-blank</figcaption></figure>
 </div></div>
 <details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — attaches the partial blanked context crop<span class="rb-size">1 kB · 224 words</span></summary><div class="phead"><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r4-w1-blank.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>ATTACHED IMAGE
 One image is attached. IMAGE 1 is a wide crop from the viewer&#x27;s-left side of a finished photorealistic wallpaper, showing wing, sky, cloth and ruins. Part of it has been painted out to a flat blank area. Fill only that blank; this arm deliberately tests gap-fill quality, not complete removal of every lower-wing remnant outside the blank.
@@ -1012,7 +1015,7 @@ fast_audits_exact</code></pre>
 <div id="ilb" hidden><div class="panel">
 <button class="x" data-close aria-label="close">&times;</button>
 <div id="ilb-body"></div></div></div>
-<template id="in-0"><h2>scythe-valkyrie-r3-w1-rem-2</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-09T23:38:32</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w1-rem.txt</p><pre>ATTACHED IMAGE
+<template id="in-0"><h2>scythe-valkyrie-r3-w1-rem-2 · scythe-valkyrie-r3-w1-rem-2</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-09T23:38:32</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w1-rem.txt</p><pre>ATTACHED IMAGE
 One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
 
 EDIT — BLADE COUNT
@@ -1023,8 +1026,8 @@ Feather tufts stick UP above the mechanical wing joints at the top of the wings.
 
 PRESERVATION
 Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
-</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/948beb12526dab79.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b7b7424d094f32c5.png" data-cap="scythe-valkyrie-r2-w1-gptimage2-2.png" alt="scythe-valkyrie-r2-w1-gptimage2-2.png"><figcaption>scythe-valkyrie-r2-w1-gptimage2-2.png</figcaption></figure></div></template>
-<template id="in-1"><h2>scythe-valkyrie-r3-w1-rem-2</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-09T23:38:32</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w1-rem.txt</p><pre>ATTACHED IMAGE
+</pre><h3>Inputs</h3><div class="refs"><figure><img src="../../../../assets/948beb12526dab79.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b7b7424d094f32c5.png" data-cap="scythe-valkyrie-r2-w1-gptimage2-2.png" alt="scythe-valkyrie-r2-w1-gptimage2-2.png"><figcaption>scythe-valkyrie-r2-w1-gptimage2-2.png</figcaption></figure></div></template>
+<template id="in-1"><h2>scythe-valkyrie-r3-w1-rem-2 · scythe-valkyrie-r3-w1-rem-2</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-09T23:38:32</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w1-rem.txt</p><pre>ATTACHED IMAGE
 One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
 
 EDIT — BLADE COUNT
@@ -1035,8 +1038,8 @@ Feather tufts stick UP above the mechanical wing joints at the top of the wings.
 
 PRESERVATION
 Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
-</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/948beb12526dab79.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b7b7424d094f32c5.png" data-cap="scythe-valkyrie-r2-w1-gptimage2-2.png" alt="scythe-valkyrie-r2-w1-gptimage2-2.png"><figcaption>scythe-valkyrie-r2-w1-gptimage2-2.png</figcaption></figure></div></template>
-<template id="in-2"><h2>scythe-valkyrie-r3-w1-rem-2</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-09T23:38:32</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w1-rem.txt</p><pre>ATTACHED IMAGE
+</pre><h3>Inputs</h3><div class="refs"><figure><img src="../../../../assets/948beb12526dab79.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b7b7424d094f32c5.png" data-cap="scythe-valkyrie-r2-w1-gptimage2-2.png" alt="scythe-valkyrie-r2-w1-gptimage2-2.png"><figcaption>scythe-valkyrie-r2-w1-gptimage2-2.png</figcaption></figure></div></template>
+<template id="in-2"><h2>scythe-valkyrie-r3-w1-rem-2 · scythe-valkyrie-r3-w1-rem-2</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-09T23:38:32</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r3-w1-rem.txt</p><pre>ATTACHED IMAGE
 One image is attached. IMAGE 1 is a finished photorealistic wallpaper artwork of an angel-of-death valkyrie. Your task is a SURGICAL EDIT: apply ONLY the corrections listed below and leave everything else untouched.
 
 EDIT — BLADE COUNT
@@ -1047,18 +1050,19 @@ Feather tufts stick UP above the mechanical wing joints at the top of the wings.
 
 PRESERVATION
 Apart from the edits listed above, reproduce IMAGE 1 EXACTLY: the same character, face, expression, hair, halo crown, armour and ornament detail, pose, wings, scythe, background, lighting, colour grading, and level of detail, at the same framing on the same tall canvas shape as IMAGE 1. Do not restyle, re-light, sharpen, or reinterpret anything. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
-</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/948beb12526dab79.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b7b7424d094f32c5.png" data-cap="scythe-valkyrie-r2-w1-gptimage2-2.png" alt="scythe-valkyrie-r2-w1-gptimage2-2.png"><figcaption>scythe-valkyrie-r2-w1-gptimage2-2.png</figcaption></figure></div></template>
-<template id="in-3"><h2>scythe-valkyrie-r4-w1-wing-crop</h2><p class="gmeta">? · 2026-08-13T03:30:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/d67edd32e52ed202.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5b86a1a1c0af7fd1.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2.jpg" alt="scythe-valkyrie-r3-w1-rem-2.jpg"><figcaption>scythe-valkyrie-r3-w1-rem-2.jpg</figcaption></figure></div></template>
-<template id="in-4"><h2>scythe-valkyrie-r4-w1-wing-context-blank</h2><p class="gmeta">? · 2026-08-13T06:10:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/25903ebd1222de1e.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/f197170306154ac9.png" data-cap="scythe-valkyrie-r4-w1-wing-context-crop.png" alt="scythe-valkyrie-r4-w1-wing-context-crop.png"><figcaption>scythe-valkyrie-r4-w1-wing-context-crop.png</figcaption></figure></div></template>
+</pre><h3>Inputs</h3><div class="refs"><figure><img src="../../../../assets/948beb12526dab79.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/b7b7424d094f32c5.png" data-cap="scythe-valkyrie-r2-w1-gptimage2-2.png" alt="scythe-valkyrie-r2-w1-gptimage2-2.png"><figcaption>scythe-valkyrie-r2-w1-gptimage2-2.png</figcaption></figure></div></template>
+<template id="in-3"><h2>scythe-valkyrie-r4-w1-wing-crop · scythe-valkyrie-r4-w1-wing-crop</h2><p class="gmeta">? · 2026-08-13T03:30:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Inputs</h3><div class="refs"><figure><img src="../../../../assets/d67edd32e52ed202.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5b86a1a1c0af7fd1.jpg" data-cap="scythe-valkyrie-r3-w1-rem-2.jpg" alt="scythe-valkyrie-r3-w1-rem-2.jpg"><figcaption>scythe-valkyrie-r3-w1-rem-2.jpg</figcaption></figure></div></template>
+<template id="in-4"><h2>scythe-valkyrie-r4-w1-wing-context-blank · scythe-valkyrie-r4-w1-wing-context-blank</h2><p class="gmeta">? · 2026-08-13T06:10:00</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Inputs</h3><div class="refs"><figure><img src="../../../../assets/25903ebd1222de1e.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/f197170306154ac9.png" data-cap="scythe-valkyrie-r4-w1-wing-context-crop.png" alt="scythe-valkyrie-r4-w1-wing-context-crop.png"><figcaption>scythe-valkyrie-r4-w1-wing-context-crop.png</figcaption></figure></div></template>
 <script>
 const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
       lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
       lbRefRow=document.getElementById('lb-refrow'),lbRef=document.getElementById('lb-ref'),
       lbCopyId=document.getElementById('lb-copy-id'),lbCopyLink=document.getElementById('lb-copy-link'),
+      lbControl=document.getElementById('lb-control'),
       lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
       ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body'),
       developerMode=document.getElementById('developer-mode');
-let gal=[],idx=-1;
+let gal=[],idx=-1,showingControl=false;
 const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
 let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
 const pts=new Map();                 // active pointers, for pan + pinch
@@ -1073,12 +1077,16 @@ if(developerMode){
   setDeveloperMode(false);
 }
 // The gallery is scoped to where the opened image lives: reference thumbs
-// inside an inputs panel cycle among themselves; every other [data-full]
-// (the review's card images) forms the main gallery.
+// inside an inputs panel cycle among themselves, Core inputs form their own
+// small gallery, and review cards form the candidate gallery. Keeping Core
+// inputs out of candidate arrow navigation makes C a true temporary compare.
 function galleryFor(el){
   const inInputs=el.closest('#ilb');
-  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
-  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  const inCore=el.closest('.coreinputs');
+  let list=Array.prototype.slice.call((inInputs||inCore||document).querySelectorAll('[data-full]'));
+  if(!inInputs&&!inCore) list=list.filter(function(n){
+    return !n.closest('#ilb')&&!n.closest('.coreinputs');
+  });
   return list;
 }
 function clampPan(){
@@ -1111,14 +1119,15 @@ function updateNav(){
   lbPrev.style.display=multi?'':'none';
   lbNext.style.display=multi?'':'none';
   let t=multi?(idx+1)+' / '+gal.length:'';
+  if(showingControl)t='CONTROL'+(t?'  \u00b7  '+t:'');
   if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
   lbCount.textContent=t;
 }
-function showAt(i){
-  if(i<0||i>=gal.length)return;
-  idx=i;const z=gal[i];
-  scale=1;tx=0;ty=0;                 // fit each freshly shown image
-  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+function controlFor(z){
+  return z&&z.dataset.controlRef?document.getElementById(z.dataset.controlRef):null;
+}
+function setCandidateMeta(z){
+  lbCap.textContent=z.dataset.cap||'';
   const ref=z.dataset.ref||'',anchor=z.dataset.anchor||'';
   lbRefRow.hidden=!(ref&&anchor);
   if(ref&&anchor){
@@ -1126,7 +1135,37 @@ function showAt(i){
     lbCopyId.dataset.copyId='#'+ref;
     lbCopyLink.dataset.copy=anchor;
   }
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  showingControl=false;
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;setCandidateMeta(z);
+  lbControl.hidden=!controlFor(z);
+  lbControl.textContent='control [C]';
+  lbControl.setAttribute('aria-pressed','false');
   applyT();
+}
+function toggleControl(){
+  if(lb.hidden||idx<0)return;
+  const z=gal[idx],control=controlFor(z);
+  if(!control)return;
+  showingControl=!showingControl;
+  if(showingControl){
+    lbImg.src=control.dataset.full;
+    lbCap.textContent='CONTROL \u00b7 '+(control.dataset.cap||'core input');
+    lbRefRow.hidden=true;
+    lbControl.textContent='back to candidate [C]';
+  }else{
+    lbImg.src=z.dataset.full;
+    setCandidateMeta(z);
+    lbControl.textContent='control [C]';
+  }
+  lbControl.setAttribute('aria-pressed',showingControl?'true':'false');
+  // Retain scale/tx/ty: same-framing flicker comparison is the point of this
+  // control. The image load hook reclamps for a different aspect ratio.
+  updateNav();
 }
 function nav(d){
   if(lb.hidden||gal.length<2)return;
@@ -1138,7 +1177,8 @@ function openFrom(z){
 }
 function closeTop(){
   if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
-                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+                 gal=[];idx=-1;showingControl=false;scale=1;tx=0;ty=0;pts.clear();
+                 lbControl.hidden=true;lbControl.setAttribute('aria-pressed','false');}
   else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
 }
 // Copy a card's short display id, or copy/share its deep link. The URL is this
@@ -1170,6 +1210,7 @@ document.addEventListener('click',function(e){
   const cp=e.target.closest('[data-copy]');
   if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
   if(!lb.hidden){
+    if(e.target.closest('#lb-control')){toggleControl();e.preventDefault();return;}
     const nb=e.target.closest('[data-nav]');
     if(nb){nav(parseInt(nb.dataset.nav,10));return;}
     if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
@@ -1198,6 +1239,8 @@ document.addEventListener('keydown',function(e){
   if(lb.hidden)return;
   if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
   else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if((e.key==='c'||e.key==='C')&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
+    toggleControl();e.preventDefault();}
   else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
   else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
   else if(e.key==='0'){resetZoom();e.preventDefault();}
@@ -1208,6 +1251,9 @@ lb.addEventListener('wheel',function(e){
   e.preventDefault();
   zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
 },{passive:false});
+// A different control aspect can change the fitted element dimensions. Keep
+// the requested framing and clamp it once the replacement image has loaded.
+lbImg.addEventListener('load',function(){if(!lb.hidden)applyT();});
 // Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
 // or, if it barely moved, counts as a tap that toggles zoom / swipes; two
 // pointers pinch-zoom.
