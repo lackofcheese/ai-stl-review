@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="2fa0dbc9e2c29db00f2e72cba3dab612f763d3304db4312bee75fc18ac186895">
+<meta name="ai-stl-plan-digest" content="036d7685a32894f8a64d0e7566a82b720908b27aad4cc62aa55cd54f12c213f6">
 <title>Scythe Valkyrie — Round 5 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -748,7 +748,7 @@ Apart from that blade correction, reproduce IMAGE 1 EXACTLY: the same woman, fac
 <li>Confirmation that bundling W1&#x27;s haft straightening into its full-frame arms (while the crop/blank arms stay blade-only) is the intended reading of the r3 &quot;same pass&quot; ruling.</li>
 </ol></div></section>
 <section class="s" id="cost"><h2><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Cost</h2><div class="md"><p>Twenty Flash 3.1 Batch edits at a conservative $0.065 each reserve <strong>$1.30</strong> (r4&#x27;s identical cells accounted ~$0.051 each). The two Riverflow image-input edits reserve <strong>$0.60 each</strong> — img2img pricing is input-heavy and the live schema gate below must confirm a finite wrapper ceiling at or under that reserve before either call, else the challenger cells are recorded as blocked and do not run. That is <strong>$2.50 images</strong>. FAST evaluation is free. SLOW evaluation reserves <strong>$1.10</strong> ($0.05 × 22 candidates; r4 accounted ~$0.012 each). Planned total <strong>$3.60</strong> against a proposed <strong>$4.00 USD cap</strong>, no Meshy credits. Live wrapper preflights remain authoritative.</p></div><div class="costgrid"><div class="costrow"><span class="n">images</span><span class="t" style="width:100%"></span><span class="a">$2.50</span></div><div class="costrow"><span class="n">screening</span><span class="t" style="width:44%"></span><span class="a">$1.10</span></div><div class="costrow total"><span class="n">planned</span><span></span><span class="a">$3.60</span></div></div></section>
-<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>base fix — profile-B scythe repair on both wallpaper golds, five mechanisms plus one cross-model challenger</dd><dt>Owner</dt><dd>Claude (local) → Dimitri + Jake review</dd><dt>Date opened</dt><dd>2026-08-15</dd><dt>Inputs</dt><dd><code>scythe-valkyrie-r4-w1-ff-1</code> (the W1 gold, A1), <code>scythe-valkyrie-r3-w2-all-2</code> (the W2 gold), six deterministic derived inputs built by <code>runbooks/r5-plan-inputs.py</code> (per wallpaper: a scythe context crop, a blanked scythe crop, and a profile-B guide overlay), the two registered profile-B target diagrams (<code>r4-arc-B-w1</code>/<code>-w2</code>), spec v0.7, and ten committed R5 prompt files</dd><dt>Produces</dt><dd>22 paid image-generation returns and 22 full-frame review candidates: per wallpaper, four whole-canvas edits and two two-roll crop-arm returns that become full-frame candidates through deterministic paste-back; plus two Riverflow challenger edits on W2; the two untouched golds are free controls</dd><dt>Branch</dt><dd>PR #549 (<code>claude/scythe-valkyrie-r5-runbook</code>)</dd><dt>Gemini mode</dt><dd>batch for the ten independent two-roll Flash cells, all submitted in parallel up front; the two same-stem Riverflow challenger rolls are synchronous and sequential</dd><dt>Evaluation lanes</dt><dd>FAST — decode/aspect and locality checks, deterministic guide-residue screen on the guide-arm outputs, <code>edit_diff</code> reports, and a fresh-context crop audit as each candidate lands; SLOW — one two-wave Batch blind detector across all 22 candidates with the committed family-dispatched brief</dd><dt>Models</dt><dd>flash31 · riverflow25</dd><dt>Prior round</dt><dd>r4 — mechanism A (whole-picture edit) adopted and A1 ratified as the W1 gold; B a close second; C and D judged retryable with cleaner execution (crop-contextualised prompts and careful crop selection; a blank that actually covers the target); the fresh route rejected; the scythe named the remaining fix for both wallpapers, with the improved fresh-prompt scythe language carried into these edit prompts</dd><dt>Spend</dt><dd>images $2.50 · screening $1.10 · cap $4.00</dd></dl></section>
+<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>base fix — profile-B scythe repair on both wallpaper golds, five mechanisms plus one cross-model challenger</dd><dt>Owner</dt><dd>Claude (local) → Dimitri + Jake review</dd><dt>Date opened</dt><dd>2026-08-15</dd><dt>Inputs</dt><dd><code>scythe-valkyrie-r4-w1-ff-1</code> (the W1 gold, A1), <code>scythe-valkyrie-r3-w2-all-2</code> (the W2 gold), six deterministic derived inputs built by <code>runbooks/r5-plan-inputs.py</code> (per wallpaper: a scythe context crop, a blanked scythe crop, and a profile-B guide overlay), the two registered profile-B target diagrams (<code>r4-arc-B-w1</code>/<code>-w2</code>), spec v0.7, and ten committed R5 prompt files</dd><dt>Produces</dt><dd>22 paid image-generation returns and 22 full-frame review candidates: per wallpaper, six whole-canvas edits (A, B and G at two rolls each) and four crop-arm returns (C′ and D′ at two rolls each) that become full-frame candidates through deterministic paste-back, plus two Riverflow challenger edits on W2; the two untouched golds are free controls</dd><dt>Branch</dt><dd>PR #549 (<code>claude/scythe-valkyrie-r5-runbook</code>)</dd><dt>Published</dt><dd><code>https://lackofcheese.github.io/ai-stl-review/reviews/bluemneme/scythe-valkyrie/r5-runbook/</code> (proposed plan page, refreshed in place through review)</dd><dt>Gemini mode</dt><dd>batch for the ten independent two-roll Flash cells, all submitted in parallel up front; the two same-stem Riverflow challenger rolls are synchronous and sequential</dd><dt>Evaluation lanes</dt><dd>FAST — decode/aspect and locality checks, deterministic guide-residue screen on the guide-arm outputs, <code>edit_diff</code> reports, and a fresh-context crop audit as each candidate lands; SLOW — one two-wave Batch blind detector across all 22 candidates with the committed family-dispatched brief</dd><dt>Models</dt><dd>flash31 · riverflow25</dd><dt>Prior round</dt><dd>r4 — mechanism A (whole-picture edit) adopted and A1 ratified as the W1 gold; B a close second; C and D judged retryable with cleaner execution (crop-contextualised prompts and careful crop selection; a blank that actually covers the target); the fresh route rejected; the scythe named the remaining fix for both wallpapers, with the improved fresh-prompt scythe language carried into these edit prompts</dd><dt>Spend</dt><dd>images $2.50 · screening $1.10 · cap $4.00</dd></dl></section>
 <section class="s" id="tech"><h2><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>Technical plan</h2>
 <p class="intro">inputs, prompts, matrix, commands (pipeline detail)</p>
 <details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>What changed going in (spec / prompt / process deltas)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><ul>
@@ -756,7 +756,7 @@ Apart from that blade correction, reproduce IMAGE 1 EXACTLY: the same woman, fac
 <li>The two profile-B diagrams (rendered and human-approved at r3 close-out, previously name-only on Drive) are now registered in <code>lineage.json</code>, per the r3 note &quot;register the selected one when the runbook adopts it&quot;.</li>
 <li>Six deterministic plan inputs were built by the committed <code>runbooks/r5-plan-inputs.py</code> (free, local) and are on Drive and registered in <code>lineage.json</code>: per wallpaper, a scythe context crop (W1 rect <code>(0,1900)-(1376,3058)</code>, W2 rect <code>(0,1450)-(1536,2730)</code>), a blanked copy of that crop (current blade + profile-B target band filled with the sampled background tone through an 18px-feathered mask, with the boots, hanging fringes and ornate head cores protected — W1 tone (64,39,41), W2 tone (49,53,65)), and a guide overlay (the gold with the diagram&#x27;s cyan/white/red marks composited on, banner text dropped). Blank/protect geometry is data at the top of that script; the <code>*-blank-evidence</code> renders on Drive are the review surface for it.</li>
 <li>The W1 diagram was drawn on the r3 frame; before adoption the launch anchor was verified to land on the A1 gold&#x27;s unchanged head collar (the r4 A-pass preserved the scythe), so the marks transfer with no shift.</li>
-<li>Ten prompt files are generated by <code>prompts/r5-compose.py</code>. The profile-B TARGET BLADE GEOMETRY block is byte-identical across all ten (verified by hash in review); headers, per-wallpaper edit statements and preservation blocks diverge deliberately per arm as the matrix rows name. The blade language carries the r4 fresh-prompt scythe wording Dimitri credited for the improved angles. Every prompt states its one attached image and its role; W2 prompts explicitly preserve the lower hand&#x27;s dagger (its repair is deferred to run last) and the detached halo spike (Jake&#x27;s open question). All are far below the wrappers&#x27; 8192-byte ceiling.</li>
+<li>Ten prompt files are generated by <code>prompts/r5-compose.py</code>. The profile-B TARGET BLADE GEOMETRY block is byte-identical across all ten (verified by hash in review); headers, per-wallpaper edit statements and preservation blocks diverge deliberately per arm as the matrix rows name. The blade language carries the r4 fresh-prompt scythe wording Dimitri credited for the improved angles. Every prompt states its one attached image and its role; W2 prompts explicitly preserve the lower hand&#x27;s dagger (its repair is deferred to run last) and the detached halo spike (Jake&#x27;s open question). All are far below the wrappers&#x27; 8192-byte ceiling. One deliberate residual: the shared block&#x27;s &quot;clear of both wings&quot; clause travels into the crop/blank prompts even though the wings sit above those crops — the in-crop feather fringes are its referent there, and keeping the contract byte-identical was judged worth that slight looseness (the crop preambles already state the wings are above the crop).</li>
 <li>The challenger row R deliberately reuses <code>prompts/r5-w2-ff.txt</code> byte-for-byte so mechanism and model are the only variables against W2-A.</li>
 <li><code>tools/region_edit.py</code> and <code>tools/edit_diff.py</code> are unchanged from r4 (on <code>main</code> since PR #494). No tooling change ships with this round.</li>
 </ul></div></details>
@@ -866,7 +866,7 @@ W2=&quot;$G/scythe-valkyrie-r3-w2-all-2.jpg&quot;
 W1RECT=0,1900,1376,3058
 W2RECT=0,1450,1536,2730
 
-native_roll() { # native_roll &lt;stem&gt; &lt;roll&gt;
+native_roll() { # native_roll &lt;bare-stem&gt; &lt;roll&gt; — stem WITHOUT any directory
   local hits=()
   mapfile -t hits &lt; &lt;(find &quot;$G&quot; -maxdepth 1 -type f \
     \( -name &quot;$1-$2.png&quot; -o -name &quot;$1-$2.jpg&quot; -o -name &quot;$1-$2.jpeg&quot; \
@@ -890,7 +890,7 @@ for w in w1 w2; do
   if [ &quot;$w&quot; = w1 ]; then BASE=&quot;$W1&quot;; RECT=&quot;$W1RECT&quot;; else BASE=&quot;$W2&quot;; RECT=&quot;$W2RECT&quot;; fi
   for fam in crop blank; do
     for n in 1 2; do
-      raw=&quot;$(native_roll &quot;$G/scythe-valkyrie-r5-$w-$fam&quot; &quot;$n&quot;)&quot;
+      raw=&quot;$(native_roll &quot;scythe-valkyrie-r5-$w-$fam&quot; &quot;$n&quot;)&quot;
       out=&quot;$G/scythe-valkyrie-r5-$w-$fam-comp-$n.png&quot;
       report=&quot;$T/notes/scythe-valkyrie-r5-$w-$fam-comp-$n-locality.json&quot;
       &quot;$PY&quot; tools/region_edit.py composite --base &quot;$BASE&quot; --edit &quot;$raw&quot; \
@@ -939,7 +939,7 @@ for stem in r5-w1-ff r5-w1-sr r5-w1-guide-ff r5-w2-ff r5-w2-sr \
   for n in 1 2; do
     if grep -q &quot;scythe-valkyrie-$stem-$n\$&quot; &quot;$EXPECTED_IDS&quot;; then
       printf &#x27;%s\t%s\n&#x27; &quot;scythe-valkyrie-$stem-$n&quot; \
-        &quot;$(native_roll &quot;$G/scythe-valkyrie-$stem&quot; &quot;$n&quot;)&quot; &gt;&gt; &quot;$EXPECTED_TSV&quot;
+        &quot;$(native_roll &quot;scythe-valkyrie-$stem&quot; &quot;$n&quot;)&quot; &gt;&gt; &quot;$EXPECTED_TSV&quot;
     fi
   done
 done
@@ -965,25 +965,40 @@ done &lt; &quot;$EXPECTED_TSV&quot;
 # W1 full-frame arms legitimately change pixels above the region where the
 # haft straightens; those outside-region numbers are diagnostics, not gates.
 
-# FAST: deterministic guide-residue screen — a guide-arm output keeping any
-# synthetic guide color fails closed (same detector as r5-plan-inputs.py).
-grep -- &#x27;-guide-ff-&#x27; &quot;$EXPECTED_TSV&quot; | while IFS=$&#x27;\t&#x27; read -r artifact image; do
-  PYTHONPATH=. &quot;$PY&quot; - &quot;$image&quot; &quot;$artifact&quot; &lt;&lt;&#x27;PY&#x27;
+# FAST: deterministic guide-residue screen — a guide-arm output keeping drawn
+# guide marks fails (same color detector as r5-plan-inputs.py), measured
+# RELATIVE to its own gold so legitimate bright content (W2&#x27;s moon, W1&#x27;s
+# glows) cannot false-positive. All four outputs are screened and reported
+# before the step fails, so a FAIL is recorded against its artifact rather
+# than aborting the survey.
+grep -- &#x27;-guide-ff-&#x27; &quot;$EXPECTED_TSV&quot; &gt; /tmp/r5-guide-outputs.tsv
+&quot;$PY&quot; - &quot;$W1&quot; &quot;$W2&quot; /tmp/r5-guide-outputs.tsv &lt;&lt;&#x27;PY&#x27;
 import sys, numpy as np
 from PIL import Image
-a = np.asarray(Image.open(sys.argv[1]).convert(&#x27;RGB&#x27;)).astype(int)
-r, g, b = a[..., 0], a[..., 1], a[..., 2]
-marks = ((b - r &gt; 50) &amp; (g - r &gt; 25) &amp; (b &gt; 90)) \
+def marks(path):
+    a = np.asarray(Image.open(path).convert(&#x27;RGB&#x27;)).astype(int)
+    r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    m = ((b - r &gt; 50) &amp; (g - r &gt; 25) &amp; (b &gt; 90)) \
       | ((r &gt; 195) &amp; (g &gt; 195) &amp; (b &gt; 195)) \
       | ((r - g &gt; 80) &amp; (r - b &gt; 80) &amp; (r &gt; 140))
-count = int(marks.sum())
-print(f&quot;{sys.argv[2]}: {count} synthetic-color pixels&quot;)
-assert count &lt; 2000, f&quot;{sys.argv[2]} likely retains guide markings&quot;
+    return int(m.sum())
+base = {&#x27;w1&#x27;: marks(sys.argv[1]), &#x27;w2&#x27;: marks(sys.argv[2])}
+print(f&quot;gold baselines: {base}&quot;)
+failed = []
+for line in open(sys.argv[3]):
+    artifact, image = line.rstrip(&#x27;\n&#x27;).split(&#x27;\t&#x27;)
+    w = &#x27;w1&#x27; if &#x27;-w1-&#x27; in artifact else &#x27;w2&#x27;
+    excess = marks(image) - base[w]
+    verdict = &#x27;PASS&#x27; if excess &lt; 2000 else &#x27;FAIL&#x27;
+    print(f&quot;{artifact}: {excess} synthetic-color pixels over gold -&gt; {verdict}&quot;)
+    if verdict == &#x27;FAIL&#x27;:
+        failed.append(artifact)
+assert not failed, f&quot;guide-residue FAIL (likely retained guide marks): {failed}&quot;
 PY
-done
-# The 2000-px allowance covers incidental speculars; a retained guide line or
-# circle is tens of thousands of pixels. Screen failures are FAST-lane FAILs
-# recorded against the artifact, not silent exclusions.
+# A retained guide line or circle is tens of thousands of pixels over
+# baseline; the 2000-px excess allowance absorbs roll-to-roll speculars. Each
+# printed FAIL is recorded as that artifact&#x27;s FAST screen verdict in
+# reviews.jsonl before the round proceeds.
 
 # FAST: the fresh-context crop auditor appends one review record per expected
 # id (reviewer id ending &quot;-crop-audit&quot;); exact-set predicate:
