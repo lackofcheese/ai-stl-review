@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="e9415798a34cb381225bcca69a8550a1a17a0575f48f9ca299dd28a0f09d7e22">
+<meta name="ai-stl-plan-digest" content="aed7fa0d2deb33e333b10cb5beff11dd29be4668ec037017a39632433c63094a">
 <title>Trumbert — Round 10 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -480,7 +480,7 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
 <li><strong>Bounded cleanup, declared here:</strong> remove exactly the two one-face satellite components (component faces 855,386 + 1 + 1; the main shell is independently watertight with zero open and zero non-manifold edges) after the standard position/size look confirms they are debris, and weld coincident vertices. Nothing else: no bridging, cutting, boolean work, sculpting, or repositioning. Anything more stops for a separately approved mesh-surgery round.</li>
 <li><strong>Finishing:</strong> scale to 24 mm figure height (top of head), XY-center, floor z=0; the raw provider file stays untouched and the clean mesh is a new <code>trumbert-r9-g14-m2-clean</code> lineage artifact (append-only; the frozen raw record is not rewritten).</li>
 <li><strong>Full final-scale battery:</strong> watertightness/Euler/winding on the clean mesh, dimensions/volume sanity, surface roughness, <code>mesh_thin_parts.py</code> at the tight resin setting (pitch ~0.28, erode 1) with the ankh, scimitar blade/tip and ears as named risk regions, internal-void cross-sections, base-contact check, and <code>clean</code> stats recorded via <code>mesh_stats.py</code>. Meshy&#x27;s free Analyze Printability endpoint runs as a non-gating calibration cross-check (experiments-backlog item).</li>
-<li><strong>Renders + audit:</strong> default eight-view montage plus ankh/hands/ground zooms; a fresh-context subagent runs the standard per-feature comparison against the g14 source sheet (ankh first, then scimitar shape/grip, digit count, shield, sunburst, cloak, ears, feet/ground contact, phantom geometry).</li>
+<li><strong>Renders + audit:</strong> default eight-view montage plus ankh, shield-strap, hands and ground zooms; a fresh-context subagent runs the standard per-feature comparison against the g14 source sheet (ankh and shield straps first — Dimitri&#x27;s two pin-down features from the R9 feedback — then scimitar shape/grip, digit count, shield, sunburst, cloak, ears, feet/ground contact, phantom geometry).</li>
 <li><strong>Human gate:</strong> Dimitri&#x27;s live-3D look at the finished mesh via the r10-panel viewer decides whether it is a print candidate or the baseline r11 must beat.</li>
 </ul>
 <p><strong>Process riders (records-only, no spend, no Discord posting — details in the technical block):</strong> R10 is proposed as the #434 repository-only lifecycle pilot, and its gate/lifecycle store merges will produce the pipeline-source Discord wakeup runtime proof issue #287 is waiting on. Neither rider enables any Discord route or changes what this round publishes.</p></div></section>
