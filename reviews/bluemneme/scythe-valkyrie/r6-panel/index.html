@@ -159,12 +159,14 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
   min-height:2.2rem; position:relative; z-index:20 }
 .lb-refrow { display:flex; align-items:center; justify-content:center; gap:.35rem;
   flex-wrap:wrap }
-.lb-refrow[hidden] { display:none }
+/* Keep both pill rows in the centered lightbox's layout while hidden. If a
+   comparison removes either row, the stack height changes and the image jumps. */
+.lb-refrow[hidden] { display:flex; visibility:hidden }
 .lb-refrow .refid { background:rgba(20,20,26,.72) }
 .lb-meta .refbtn { color:#bbb; border-color:#55515d;
   background:rgba(20,20,26,.72) }
 .lb-meta .refbtn:hover { color:#fff; border-color:#aaa }
-.lb-control[hidden] { display:none }
+.lb-control[hidden] { display:inline-block; visibility:hidden }
 .lb-control[aria-pressed="true"] { color:#fff; border-color:var(--accent);
   background:color-mix(in srgb,var(--accent) 24%,rgba(20,20,26,.72)) }
 .lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
@@ -233,7 +235,7 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 <button class="x" data-close aria-label="close">&times;</button>
 <div id="ilb-body"></div></div></div>
 
-<template id="in-0"><h2>C′ · crop edit · roll 1</h2><p class="gmeta">? · 2026-08-22T16:01:16</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r6-w2-hand.txt</p><pre>ATTACHED IMAGE
+<template id="in-0"><h2>C′ · crop edit · roll 1</h2><p class="gmeta">? · 2026-08-22T16:01:16</p><h3>Prompt</h3><p class="path">r6-w2-hand.txt</p><pre>ATTACHED IMAGE
 One image is attached. IMAGE 1 is a CROP from a larger finished photorealistic artwork: a woman&#x27;s bare hand emerging from an armoured vambrace, beside dark layered drapery with deep-red lining on the viewer&#x27;s left; pale fog and a ruined gothic tower fill the background on the viewer&#x27;s right; black feathers and dark curved metal wing-blades enter from the top and the upper right. Your task is a SURGICAL EDIT: apply ONLY the correction listed below and leave everything else untouched.
 
 EDIT — REMOVE THE BLADE
@@ -242,7 +244,7 @@ A slender dagger-like blade is threaded between the fingers of the hand — it h
 PRESERVATION
 Apart from that edit, reproduce IMAGE 1 EXACTLY: the same hand position and skin, the same vambrace and drapery, the same feathers and wing-blades, the same fog and ruins, the same lighting and colour grading, at the same framing on the same canvas shape as IMAGE 1 — do not zoom, crop further, or extend the scene. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
 </pre><h3>Inputs</h3><div class="refs"><figure><img src="../../../../assets/99161a53fe7c2f7b.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/cd1370ee119ebfa1.png" data-cap="scythe-valkyrie-r5-w2-blankboxg-comp-1.png" alt="scythe-valkyrie-r5-w2-blankboxg-comp-1.png"><figcaption>scythe-valkyrie-r5-w2-blankboxg-comp-1.png</figcaption></figure></div><h3>Intermediate stage — produced in this round</h3><div class="refs"><figure><img src="../../../../assets/9cd49eb64f6c573c.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/1f517c5a7902c643.png" data-cap="scythe-valkyrie-r6-w2-hand-crop.png — output of scythe-valkyrie-r6-w2-hand-crop" alt="scythe-valkyrie-r6-w2-hand-crop.png — output of scythe-valkyrie-r6-w2-hand-crop"><figcaption>scythe-valkyrie-r6-w2-hand-crop.png — output of scythe-valkyrie-r6-w2-hand-crop</figcaption></figure><figure><img src="../../../../assets/a197cf9ac7cd3a08.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/1bb534ef7ba27db9.jpg" data-cap="scythe-valkyrie-r6-w2-hand-1.jpg — output of scythe-valkyrie-r6-w2-hand-1" alt="scythe-valkyrie-r6-w2-hand-1.jpg — output of scythe-valkyrie-r6-w2-hand-1"><figcaption>scythe-valkyrie-r6-w2-hand-1.jpg — output of scythe-valkyrie-r6-w2-hand-1</figcaption></figure></div></template>
-<template id="in-1"><h2>C′ · crop edit · roll 2</h2><p class="gmeta">? · 2026-08-22T16:01:18</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r6-w2-hand.txt</p><pre>ATTACHED IMAGE
+<template id="in-1"><h2>C′ · crop edit · roll 2</h2><p class="gmeta">? · 2026-08-22T16:01:18</p><h3>Prompt</h3><p class="path">r6-w2-hand.txt</p><pre>ATTACHED IMAGE
 One image is attached. IMAGE 1 is a CROP from a larger finished photorealistic artwork: a woman&#x27;s bare hand emerging from an armoured vambrace, beside dark layered drapery with deep-red lining on the viewer&#x27;s left; pale fog and a ruined gothic tower fill the background on the viewer&#x27;s right; black feathers and dark curved metal wing-blades enter from the top and the upper right. Your task is a SURGICAL EDIT: apply ONLY the correction listed below and leave everything else untouched.
 
 EDIT — REMOVE THE BLADE
@@ -251,7 +253,7 @@ A slender dagger-like blade is threaded between the fingers of the hand — it h
 PRESERVATION
 Apart from that edit, reproduce IMAGE 1 EXACTLY: the same hand position and skin, the same vambrace and drapery, the same feathers and wing-blades, the same fog and ruins, the same lighting and colour grading, at the same framing on the same canvas shape as IMAGE 1 — do not zoom, crop further, or extend the scene. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
 </pre><h3>Inputs</h3><div class="refs"><figure><img src="../../../../assets/99161a53fe7c2f7b.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/cd1370ee119ebfa1.png" data-cap="scythe-valkyrie-r5-w2-blankboxg-comp-1.png" alt="scythe-valkyrie-r5-w2-blankboxg-comp-1.png"><figcaption>scythe-valkyrie-r5-w2-blankboxg-comp-1.png</figcaption></figure></div><h3>Intermediate stage — produced in this round</h3><div class="refs"><figure><img src="../../../../assets/9cd49eb64f6c573c.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/1f517c5a7902c643.png" data-cap="scythe-valkyrie-r6-w2-hand-crop.png — output of scythe-valkyrie-r6-w2-hand-crop" alt="scythe-valkyrie-r6-w2-hand-crop.png — output of scythe-valkyrie-r6-w2-hand-crop"><figcaption>scythe-valkyrie-r6-w2-hand-crop.png — output of scythe-valkyrie-r6-w2-hand-crop</figcaption></figure><figure><img src="../../../../assets/d7925ab3104e8571.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/6ca44d3fe5a41cc5.jpg" data-cap="scythe-valkyrie-r6-w2-hand-2.jpg — output of scythe-valkyrie-r6-w2-hand-2" alt="scythe-valkyrie-r6-w2-hand-2.jpg — output of scythe-valkyrie-r6-w2-hand-2"><figcaption>scythe-valkyrie-r6-w2-hand-2.jpg — output of scythe-valkyrie-r6-w2-hand-2</figcaption></figure></div></template>
-<template id="in-2"><h2>D′x · blank then restore · roll 1</h2><p class="gmeta">? · 2026-08-22T16:01:19</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r6-w2-hand-blank.txt</p><pre>ATTACHED IMAGE
+<template id="in-2"><h2>D′x · blank then restore · roll 1</h2><p class="gmeta">? · 2026-08-22T16:01:19</p><h3>Prompt</h3><p class="path">r6-w2-hand-blank.txt</p><pre>ATTACHED IMAGE
 One image is attached. IMAGE 1 is a CROP from a larger finished photorealistic artwork, in which one region has been deliberately PAINTED OUT with a flat dark grey-blue tone. The visible scene: an armoured vambrace on a woman&#x27;s forearm reaches down from the top edge and ends at the painted-out region; dark layered drapery with deep-red lining fills the viewer&#x27;s left; pale fog and a ruined gothic tower fill the background on the viewer&#x27;s right; black feathers and dark curved metal wing-blades enter from the top and the upper right.
 
 RESTORE THE PAINTED-OUT REGION
@@ -262,7 +264,7 @@ Fill the painted-out region so the artwork reads as always having been complete:
 PRESERVATION
 Everything OUTSIDE the painted-out region must be reproduced EXACTLY as shown: the same vambrace, drapery, feathers, wing-blades, fog, ruins, lighting and colour grading, at the same framing on the same canvas shape as IMAGE 1 — do not zoom, crop further, or extend the scene. Add no new objects, no extra glow, and no text, labels, logos, or watermarks.
 </pre><h3>Inputs</h3><div class="refs"><figure><img src="../../../../assets/99161a53fe7c2f7b.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/cd1370ee119ebfa1.png" data-cap="scythe-valkyrie-r5-w2-blankboxg-comp-1.png" alt="scythe-valkyrie-r5-w2-blankboxg-comp-1.png"><figcaption>scythe-valkyrie-r5-w2-blankboxg-comp-1.png</figcaption></figure></div><h3>Intermediate stage — produced in this round</h3><div class="refs"><figure><img src="../../../../assets/dc874b90eb11571b.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/a5c64e39c9d72ce1.png" data-cap="scythe-valkyrie-r6-w2-hand-crop-blank.png — output of scythe-valkyrie-r6-w2-hand-crop-blank" alt="scythe-valkyrie-r6-w2-hand-crop-blank.png — output of scythe-valkyrie-r6-w2-hand-crop-blank"><figcaption>scythe-valkyrie-r6-w2-hand-crop-blank.png — output of scythe-valkyrie-r6-w2-hand-crop-blank</figcaption></figure><figure><img src="../../../../assets/7078f3612c887bdd.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/2a0ea4a429e6aa84.jpg" data-cap="scythe-valkyrie-r6-w2-handblank-1.jpg — output of scythe-valkyrie-r6-w2-handblank-1" alt="scythe-valkyrie-r6-w2-handblank-1.jpg — output of scythe-valkyrie-r6-w2-handblank-1"><figcaption>scythe-valkyrie-r6-w2-handblank-1.jpg — output of scythe-valkyrie-r6-w2-handblank-1</figcaption></figure></div></template>
-<template id="in-3"><h2>D′x · blank then restore · roll 2</h2><p class="gmeta">? · 2026-08-22T16:01:21</p><h3>Prompt</h3><p class="path">projects/bluemneme/scythe-valkyrie/prompts/r6-w2-hand-blank.txt</p><pre>ATTACHED IMAGE
+<template id="in-3"><h2>D′x · blank then restore · roll 2</h2><p class="gmeta">? · 2026-08-22T16:01:21</p><h3>Prompt</h3><p class="path">r6-w2-hand-blank.txt</p><pre>ATTACHED IMAGE
 One image is attached. IMAGE 1 is a CROP from a larger finished photorealistic artwork, in which one region has been deliberately PAINTED OUT with a flat dark grey-blue tone. The visible scene: an armoured vambrace on a woman&#x27;s forearm reaches down from the top edge and ends at the painted-out region; dark layered drapery with deep-red lining fills the viewer&#x27;s left; pale fog and a ruined gothic tower fill the background on the viewer&#x27;s right; black feathers and dark curved metal wing-blades enter from the top and the upper right.
 
 RESTORE THE PAINTED-OUT REGION
