@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="246e4e7ada7754d2f80f71bddd7852bcc0738f009dd1d4c7e75e771ceb41ee30">
+<meta name="ai-stl-plan-digest" content="19ebae80e15606e020680a23c7ea2ed807beea74f3aa59229692c1fdb6582ef4">
 <title>Scythe Valkyrie — Round 6 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -536,7 +536,7 @@ Everything OUTSIDE the painted-out region must be reproduced EXACTLY as shown: t
 <section class="s" id="judged"><h2><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>How the round is judged</h2><div class="md"><p>Humans decide the art; machines establish what changed. R4&#x27;s overturn lesson still binds: <strong>no machine verdict promotes a keeper</strong>, and any blind-versus- crop-audit disagreement is a mandatory human look. More broadly (Dimitri, 2026-08-22): <strong>every machine lane in this round — deterministic screens, crop audits, and the blind detector — is advisory evidence for the human eye-call, which remains the overwhelmingly predominant source of truth on image judgements.</strong> Screens without a validated fire/stay-silent record are labelled EXPERIMENTAL and gate nothing.</p>
 <ul>
 <li><strong>The decision:</strong> Jake and Dimitri pick the dagger-free W2 candidate (or reject all four). A keeper here completes W2; the wallpaper&#x27;s remaining step would be the free 9:20 delivery crop preview Jake already accepted in principle (r3), which is out of this round&#x27;s scope.</li>
-<li><strong>FAST (free):</strong> every return must decode and preserve its planned canvas aspect (anisotropy ≤ 2%). <code>region_edit.py</code> verifies from the written PNG that each composite changes zero pixels outside <code>(820,1020)-(1320,1640)</code>. <code>edit_diff.py</code> records pixel/perceptual measures for every candidate against the keeper. A deterministic <strong>no-op screen</strong> (r5&#x27;s W2 lesson: every Flash prompt-only arm was a no-op, and the blind lane cannot detect that) counts changed pixels (per-pixel |ΔRGB| sum &gt; 30) inside the dagger/hand region — the union of rects <code>(920,1225)-(1195,1510)</code> and <code>(1150,1420)-(1220,1520)</code>. A C′ candidate changing fewer than 5% of those pixels is recorded as that artifact&#x27;s <strong>NO-OP observation</strong> in <code>reviews.jsonl</code> — advisory like every machine lane: it tells the reviewers that candidate is near-pixel-identical to the keeper, and the human eye-call remains free to confirm or override it. D′x fractions are reported for context only (its input was blanked, so a prompt no-op is impossible by construction). The screen classifies candidates and never aborts or disqualifies: all four candidates receive their full FAST and SLOW evaluation and all four reach the panel, so the COMPLETE panel covers the exact planned set. An <strong>EXPERIMENTAL edge-band seam diagnostic</strong> reports each composite&#x27;s changed-pixel fraction in a thin band just inside the paste rectangle (past the 48 px feather) against its interior — a seam at the paste boundary would show as band change disproportionate to the edit. It is uncalibrated and gates nothing: per r5&#x27;s retired-screen lesson, a deterministic screen must be shown to fire on a bad case and stay silent on a good one before it may gate, and this one has no such record yet (its numbers inform the human eye-call and can be calibrated later against r5&#x27;s twenty crop composites). A fresh-context crop audit applies the removal contract to all 4 composites, each auditor using a per-artifact scratch directory (r5&#x27;s parallel-auditor lesson). No guide-residue screen runs: r5 retired it as fundamentally flawed, and this round draws no guides. When every FAST record exists, publish the panel as <strong>PROVISIONAL — slow checks pending</strong>.</li>
+<li><strong>FAST (free):</strong> every return must decode and preserve its planned canvas aspect (anisotropy ≤ 2%). <code>region_edit.py</code> verifies from the written PNG that each composite changes zero pixels outside <code>(820,1020)-(1320,1640)</code>. <code>edit_diff.py</code> records pixel/perceptual measures for every candidate against the keeper. A deterministic <strong>no-op screen</strong> (r5&#x27;s W2 lesson: every Flash prompt-only arm was a no-op, and the blind lane cannot detect that) counts changed pixels (per-pixel |ΔRGB| sum &gt; 30) inside the dagger/hand region — the union of rects <code>(920,1225)-(1195,1510)</code> and <code>(1150,1420)-(1220,1520)</code>. A C′ candidate changing fewer than 5% of those pixels is recorded as that artifact&#x27;s <strong>NO-OP observation</strong> in <code>reviews.jsonl</code> — advisory like every machine lane: it tells the reviewers that candidate is near-pixel-identical to the keeper, and the human eye-call remains free to confirm or override it. D′x fractions are reported for context only (its input was blanked, so a prompt no-op is impossible by construction). The screen classifies candidates and never aborts or disqualifies: all four candidates receive their full FAST and SLOW evaluation and all four reach the panel, so the COMPLETE panel covers the exact planned set. An <strong>EXPERIMENTAL edge-band seam diagnostic</strong> reports each composite&#x27;s changed-pixel fraction in a thin band just inside the paste rectangle (past the 48 px feather) against its interior — a seam at the paste boundary would show as band change disproportionate to the edit. It is uncalibrated and gates nothing: per r5&#x27;s retired-screen lesson, a deterministic screen must be shown to fire on a bad case and stay silent on a good one before it may gate, and this one has no such record yet (its numbers inform the human eye-call and can be calibrated later against r5&#x27;s twenty crop composites). Both screens&#x27; numbers are recorded per candidate in <code>reviews.jsonl</code> (machine reviewer <code>claude-advisory-screens</code>, no call of its own) and — because the later crop-audit record takes the card&#x27;s machine-chip slot by merge design — are also quoted in each candidate card&#x27;s panel-config note, the merge-proof surface that guarantees they render. A fresh-context crop audit applies the removal contract to all 4 composites, each auditor using a per-artifact scratch directory (r5&#x27;s parallel-auditor lesson). No guide-residue screen runs: r5 retired it as fundamentally flawed, and this round draws no guides. When every FAST record exists, publish the panel as <strong>PROVISIONAL — slow checks pending</strong>.</li>
 <li><strong>SLOW (paid):</strong> one <code>blind_detect_round.py</code> manifest covers all 4 candidates in two Batch waves against <code>prompts/r6-review-brief.txt</code>. Append its records, reconcile every disagreement with the crop audits, then refresh the same panel as <strong>COMPLETE</strong>. A provider-truncated INCOMPLETE record satisfies completeness but carries no verdict: it must be named in reconciliation, and a mattering artifact is re-verified with a fresh sync <code>blind_detect.py</code> record.</li>
 </ul>
 <p>No candidate is promoted, and no delivery work starts, before the COMPLETE panel has recorded human verdicts.</p></div></section>
@@ -740,24 +740,32 @@ for line in open(sys.argv[2]):
           f&#x27;(ratio {ratio:.2f}) — advisory, uncalibrated&#x27;)
 PY
 
-# Surface both advisory screens on the panel: one reviews.jsonl record per
-# candidate (reviewer advisory-screens; free-form ADVISORY call per the
-# established screen-record precedent). review_page.py renders detector
-# chips and Developer-Mode detail from these records, so the PROVISIONAL
-# and COMPLETE panels actually show the numbers the humans are promised.
-# The reviewer id deliberately does not end &quot;-crop-audit&quot; and is not
-# &quot;blind-detect&quot;, so neither exact-set lane predicate counts these records.
+# Record both advisory screens per candidate, BEFORE the crop audits run.
+# Reviewer id claude-advisory-screens: &quot;claude&quot; is a registered
+# MACHINE_REVIEWER_PREFIXES entry (review_log.machine_reviewer), matching
+# the r5 claude-guide-residue-screen precedent, so these chips class as
+# machine diagnostics and are never attributed as a human&#x27;s priorities.
+# The record deliberately carries NO --call: merge_reviews folds call/
+# summary/tldr later-wins, so a screen call could otherwise surface as the
+# card&#x27;s latest recommendation. Both screens&#x27; numbers ride in the CHIP
+# text; because detector arrays keep one winner per reviewer class, the
+# later crop-audit record takes the machine-chip slot on the card by
+# design — the merge-proof render surface for these numbers is therefore
+# the PANEL CONFIG: each candidate card&#x27;s note in r6-panel.json MUST quote
+# its no-op and edge-band lines from the two notes files (checked by eye
+# against them at panel build). The reviewer id does not end &quot;-crop-audit&quot;
+# and is not &quot;blind-detect&quot;, so neither exact-set lane predicate counts
+# these records.
 while IFS=$&#x27;\t&#x27; read -r artifact image; do
   noop_line=&quot;$(grep &quot;^$artifact:&quot; &quot;$T/notes/r6-noop-screen.txt&quot;)&quot;
   edge_line=&quot;$(grep &quot;^$artifact:&quot; &quot;$T/notes/r6-edge-band.txt&quot;)&quot;
   test -n &quot;$noop_line&quot; &amp;&amp; test -n &quot;$edge_line&quot;
   case &quot;$noop_line&quot; in
-    *&#x27;NO-OP&#x27;*) CHIP=&#x27;warn:possible no-op — near-identical to the keeper (advisory)&#x27; ;;
-    *)         CHIP=&#x27;ok:changed vs keeper&#x27; ;;
+    *&#x27;NO-OP&#x27;*) CHIP=&quot;warn:no-op screen (advisory): ${noop_line#*: }&quot; ;;
+    *)         CHIP=&quot;ok:no-op screen (advisory): ${noop_line#*: }&quot; ;;
   esac
   &quot;$PY&quot; tools/review_log.py --file &quot;$T/reviews.jsonl&quot; \
-    --artifact &quot;$artifact&quot; --reviewer advisory-screens \
-    --call &quot;ADVISORY — experimental screens; human eye-call decides&quot; \
+    --artifact &quot;$artifact&quot; --reviewer claude-advisory-screens \
     --detector &quot;$CHIP&quot; \
     --detector &quot;ok:edge band (uncalibrated): ${edge_line#*: }&quot; \
     --tldr &quot;EXPERIMENTAL advisory screens, gate nothing: ${edge_line#*: }&quot; \
