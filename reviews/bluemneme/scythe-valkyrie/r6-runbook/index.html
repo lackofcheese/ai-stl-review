@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="f63a3f99ae2cbe64817d75a15461c4ecef7f5960e266d5c9e8904cff1d7a6e31">
+<meta name="ai-stl-plan-digest" content="fed3c120e002394f3831ac3f997e89e162dd3a6dd3db333acc9377f95b5a794f">
 <title>Scythe Valkyrie — Round 6 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -533,10 +533,10 @@ Everything OUTSIDE the painted-out region must be reproduced EXACTLY as shown: t
 </pre></details>
 </section>
 </section>
-<section class="s" id="judged"><h2><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>How the round is judged</h2><div class="md"><p>Humans decide the art; machines establish what changed. R4&#x27;s overturn lesson still binds: <strong>no machine verdict promotes a keeper</strong>, and any blind-versus- crop-audit disagreement is a mandatory human look.</p>
+<section class="s" id="judged"><h2><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>How the round is judged</h2><div class="md"><p>Humans decide the art; machines establish what changed. R4&#x27;s overturn lesson still binds: <strong>no machine verdict promotes a keeper</strong>, and any blind-versus- crop-audit disagreement is a mandatory human look. More broadly (Dimitri, 2026-08-22): <strong>every machine lane in this round — deterministic screens, crop audits, and the blind detector — is advisory evidence for the human eye-call, which remains the overwhelmingly predominant source of truth on image judgements.</strong> Screens without a validated fire/stay-silent record are labelled EXPERIMENTAL and gate nothing.</p>
 <ul>
 <li><strong>The decision:</strong> Jake and Dimitri pick the dagger-free W2 candidate (or reject all four). A keeper here completes W2; the wallpaper&#x27;s remaining step would be the free 9:20 delivery crop preview Jake already accepted in principle (r3), which is out of this round&#x27;s scope.</li>
-<li><strong>FAST (free):</strong> every return must decode and preserve its planned canvas aspect (anisotropy ≤ 2%). <code>region_edit.py</code> verifies from the written PNG that each composite changes zero pixels outside <code>(820,1020)-(1320,1640)</code>. <code>edit_diff.py</code> records pixel/perceptual measures for every candidate against the keeper. A deterministic <strong>no-op screen</strong> (r5&#x27;s W2 lesson: every Flash prompt-only arm was a no-op, and the blind lane cannot detect that) counts changed pixels (per-pixel |ΔRGB| sum &gt; 30) inside the dagger/hand region — the union of rects <code>(920,1225)-(1195,1510)</code> and <code>(1150,1420)-(1220,1520)</code>. A C′ candidate changing fewer than 5% of those pixels is recorded as that artifact&#x27;s NO-OP FAIL in <code>reviews.jsonl</code>; D′x fractions are reported for context only (its input was blanked, so a prompt no-op is impossible by construction). The screen classifies candidates and never aborts the round: a NO-OP FAIL rejects that candidate, while all four still receive their full FAST and SLOW evaluation so the COMPLETE panel covers the exact planned set. A fresh-context crop audit applies the removal contract to all 4 composites, each auditor using a per-artifact scratch directory (r5&#x27;s parallel-auditor lesson). No guide-residue screen runs: r5 retired it as fundamentally flawed, and this round draws no guides. When every FAST record exists, publish the panel as <strong>PROVISIONAL — slow checks pending</strong>.</li>
+<li><strong>FAST (free):</strong> every return must decode and preserve its planned canvas aspect (anisotropy ≤ 2%). <code>region_edit.py</code> verifies from the written PNG that each composite changes zero pixels outside <code>(820,1020)-(1320,1640)</code>. <code>edit_diff.py</code> records pixel/perceptual measures for every candidate against the keeper. A deterministic <strong>no-op screen</strong> (r5&#x27;s W2 lesson: every Flash prompt-only arm was a no-op, and the blind lane cannot detect that) counts changed pixels (per-pixel |ΔRGB| sum &gt; 30) inside the dagger/hand region — the union of rects <code>(920,1225)-(1195,1510)</code> and <code>(1150,1420)-(1220,1520)</code>. A C′ candidate changing fewer than 5% of those pixels is recorded as that artifact&#x27;s NO-OP FAIL in <code>reviews.jsonl</code>; D′x fractions are reported for context only (its input was blanked, so a prompt no-op is impossible by construction). The screen classifies candidates and never aborts the round: a NO-OP FAIL rejects that candidate, while all four still receive their full FAST and SLOW evaluation so the COMPLETE panel covers the exact planned set. An <strong>EXPERIMENTAL edge-band seam diagnostic</strong> reports each composite&#x27;s changed-pixel fraction in a thin band just inside the paste rectangle (past the 48 px feather) against its interior — a seam at the paste boundary would show as band change disproportionate to the edit. It is uncalibrated and gates nothing: per r5&#x27;s retired-screen lesson, a deterministic screen must be shown to fire on a bad case and stay silent on a good one before it may gate, and this one has no such record yet (its numbers inform the human eye-call and can be calibrated later against r5&#x27;s twenty crop composites). A fresh-context crop audit applies the removal contract to all 4 composites, each auditor using a per-artifact scratch directory (r5&#x27;s parallel-auditor lesson). No guide-residue screen runs: r5 retired it as fundamentally flawed, and this round draws no guides. When every FAST record exists, publish the panel as <strong>PROVISIONAL — slow checks pending</strong>.</li>
 <li><strong>SLOW (paid):</strong> one <code>blind_detect_round.py</code> manifest covers all 4 candidates in two Batch waves against <code>prompts/r6-review-brief.txt</code>. Append its records, reconcile every disagreement with the crop audits, then refresh the same panel as <strong>COMPLETE</strong>. A provider-truncated INCOMPLETE record satisfies completeness but carries no verdict: it must be named in reconciliation, and a mattering artifact is re-verified with a fresh sync <code>blind_detect.py</code> record.</li>
 </ul>
 <p>No candidate is promoted, and no delivery work starts, before the COMPLETE panel has recorded human verdicts.</p></div></section>
@@ -710,6 +710,39 @@ PY
 # Append every printed NO-OP FAIL to reviews.jsonl via tools/review_log.py
 # as that artifact&#x27;s FAST screen verdict before building the panel; the
 # saved r6-noop-screen.txt is the durable screen output.
+
+# FAST (EXPERIMENTAL, advisory-only): edge-band seam diagnostic. Reports each
+# composite&#x27;s changed-pixel fraction in a thin band just inside the paste
+# rectangle (past region_edit&#x27;s 48px feather) against its interior; a seam at
+# the paste boundary shows as band change disproportionate to the edit. It is
+# UNCALIBRATED and gates nothing (r5&#x27;s screen lesson: fire/stay-silent
+# validation before any screen may gate); the numbers inform the human
+# eye-call only and are surfaced on the panel.
+&quot;$PY&quot; - &quot;$KEEPER&quot; &quot;$EXPECTED_TSV&quot; &lt;&lt;&#x27;PY&#x27; | tee &quot;$T/notes/r6-edge-band.txt&quot;
+import sys, numpy as np
+from PIL import Image
+RECT = (820, 1020, 1320, 1640)
+FEATHER, BAND = 48, 32
+base = np.asarray(Image.open(sys.argv[1]).convert(&#x27;RGB&#x27;)).astype(int)
+x0, y0, x1, y1 = RECT
+
+def shrink(depth):
+    m = np.zeros(base.shape[:2], bool)
+    m[y0 + depth:y1 - depth, x0 + depth:x1 - depth] = True
+    return m
+
+band = shrink(FEATHER) &amp; ~shrink(FEATHER + BAND)
+interior = shrink(FEATHER + BAND)
+for line in open(sys.argv[2]):
+    artifact, image = line.rstrip(&#x27;\n&#x27;).split(&#x27;\t&#x27;)
+    a = np.asarray(Image.open(image).convert(&#x27;RGB&#x27;)).astype(int)
+    changed = np.abs(a - base).sum(axis=2) &gt; 30
+    bf = changed[band].mean()
+    inf = changed[interior].mean()
+    ratio = bf / inf if inf &gt; 0 else float(&#x27;inf&#x27;)
+    print(f&#x27;{artifact}: band {bf:.1%} vs interior {inf:.1%} changed &#x27;
+          f&#x27;(ratio {ratio:.2f}) — advisory, uncalibrated&#x27;)
+PY
 
 # FAST: the fresh-context crop auditor appends one review record per expected
 # id (reviewer id ending &quot;-crop-audit&quot;), each using a per-artifact scratch
