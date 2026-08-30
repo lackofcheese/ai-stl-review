@@ -112,6 +112,8 @@ footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
 .chip.warn { color:var(--warn); border-color:var(--warn) }
 .chip.unclear { color:var(--dim); border-color:var(--dim) }
 .detector-details { display:flex; flex-direction:column; gap:.45rem }
+.chip-group-label { margin:0; color:var(--dim); font-size:.68rem;
+  font-weight:600; letter-spacing:.06em; text-transform:uppercase }
 .meta p { margin:0; color:var(--dim); font-size:.86rem }
 details.more { margin:0 }
 details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
@@ -157,11 +159,16 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
   min-height:2.2rem; position:relative; z-index:20 }
 .lb-refrow { display:flex; align-items:center; justify-content:center; gap:.35rem;
   flex-wrap:wrap }
-.lb-refrow[hidden] { display:none }
+/* Keep both pill rows in the centered lightbox's layout while hidden. If a
+   comparison removes either row, the stack height changes and the image jumps. */
+.lb-refrow[hidden] { display:flex; visibility:hidden }
 .lb-refrow .refid { background:rgba(20,20,26,.72) }
-.lb-refrow .refbtn { color:#bbb; border-color:#55515d;
+.lb-meta .refbtn { color:#bbb; border-color:#55515d;
   background:rgba(20,20,26,.72) }
-.lb-refrow .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-meta .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-control[hidden] { display:inline-block; visibility:hidden }
+.lb-control[aria-pressed="true"] { color:#fff; border-color:var(--accent);
+  background:color-mix(in srgb,var(--accent) 24%,rgba(20,20,26,.72)) }
 .lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
   border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
   line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
@@ -241,24 +248,24 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 }
 </style></head><body><main>
 <nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Martial Frogs</a><span class="sep">&rsaquo;</span><a href="../">Tiger</a></nav>
-<div class="eyebrow">Toadal Kombat · Tiger · round 4 · PROVISIONAL — human section and live-3D gates open · 2026-08-14</div>
+<div class="eyebrow">Toadal Kombat · Tiger · round 4 · COMPLETE — closed 2026-08-30, test prints confirmed</div>
 <h1>TIGER — exact 30 mm finishing review</h1>
 <a class="crosslink" href="../r4-runbook/">&#128214; Round runbook &rarr;</a>
 <div class="reviewtools"><label class="devmode" title="Show detector chips and full reviewer notes"><input id="developer-mode" type="checkbox" role="switch" aria-checked="false">Developer Mode</label></div>
 <p class="sub">One watertight component · 25.098 × 24.895 × 30.000 mm · 1,909.06 mm³ · zero open, non-manifold, degenerate or duplicate faces · no resolved cavity ≥0.1 mm³ in cavity-preserving sweeps.</p>
-<div class="callout"><strong>Mechanical result: PASS.</strong> The output preserves all 689,278 source triangles under one uniform affine transform, with maximum coordinate error below 0.001 mm. The independently recorded sole/footprint check finds two contact patches and 1.679 mm radial clearance inside a 32 mm base.</div>
-<div class="callout asks"><p class="boxhead">Verdicts / info needed</p><p class="intro">The selected Round 3x sculpt has received only the approved uniform placement: exactly 30.0 mm high, centered in XY and floored at Z=0. Mechanical checks and the AI visual precheck pass; the exact STL is now embedded for public live-3D review and download, but remains provisional until the section evidence and geometry are reviewed by a human.</p><ol><li><span class="q">Do the seven horizontal sections show any unexplained internal void or intersection?</span><span class="who">Dimitri</span><p class="d">All seven contours close. A cavity-preserving probe on unfilled surface voxelizations at 0.10, 0.15 and 0.20 mm finds no resolved exterior-parity cavity at or above 0.1 mm³; the same method detects its 59.319 mm³ sealed-void positive control. Eleven nested contour relationships were reconciled by the AI precheck to exterior garment, limb, head, hand or tangent surface detail; inspect the <a href="https://drive.google.com/drive/folders/1HFzvu5C984uoAi8idAqN1j8GVXDum-ZP">seven-section evidence folder</a> before changing the section report from pending.</p></li><li><span class="q">Does the exact 30 mm STL pass live-3D inspection for a test print?</span><span class="who">Dimitri + Jawaknight</span><p class="d">Rotate and zoom the exact 689,278-face STL in the viewer below, or use its download action. Check both sole contacts, hands and toes, chest toggles, rear garment, silhouette and any thin-looking webbing. Approve a test print or name the exact blocking region.</p></li></ol></div>
+<div class="callout"><strong>Round closed COMPLETE (2026-08-30).</strong> Mechanical result: PASS — all 689,278 source triangles preserved under one uniform affine transform, maximum coordinate error below 0.001 mm, two sole contact patches with 1.679 mm radial clearance inside a 32 mm base. Human gates closed by Dimitri's test-print confirmation.</div>
+<div class="callout asks"><p class="boxhead">Verdicts / info needed</p><p class="intro">Round closed. Dimitri confirmed the test prints on 2026-08-30 (“the Tiger 3D prints worked pretty well”), which closed the human section-inspection, live-3D and test-print gates as a basic pass. No verdicts are outstanding; more detailed print notes, if any arrive later, will be appended as new dated records against this closed round.</p><ol><li><span class="q">More detailed print notes, if any (optional)</span><span class="who">Dimitri / Jawaknight</span><p class="d">The confirmation was a basic pass without per-feature print notes. If later inspection surfaces anything — thin-feature survival, support scarring, base fit — it will be appended as new dated records against this closed round and carried into Daimyo's rounds where actionable.</p></li></ol></div>
 <h2>Exact selected sculpt — 30 mm placement</h2>
 <p class="blurb">Compare the eight-angle render with the selected Round 3x sculpt. No smoothing, remeshing, decimation, deletion, boolean surgery or base was applied to the exact STL.</p>
 <div class="grid">
-<div class="card" id="tiger-r3x-min-gptimage2-m1-clean-30mm"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/5ad25927594652ec.png" data-cap="PROVISIONAL · mechanical PASS · human gates pending" data-ref="30mm" data-anchor="tiger-r3x-min-gptimage2-m1-clean-30mm"><img src="../../../../assets/718b3824d8e512b3.jpg" alt="PROVISIONAL · mechanical PASS · human gates pending" loading="lazy"></div><div class="meta"><header><h3>PROVISIONAL · mechanical PASS · human gates pending</h3><span class="call keeper" title="PASS AT RESOLVED THRESHOLD">PASS AT RESOLVED THRE…</span></header><div class="cardref"><a class="refid" href="#tiger-r3x-min-gptimage2-m1-clean-30mm" title="Deep link to this image">#30mm</a><button class="refbtn" data-copy-id="#30mm" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r3x-min-gptimage2-m1-clean-30mm" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r3x-min-gptimage2-m1-clean-30mm" data-title="PROVISIONAL · mechanical PASS · human gates pending" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> PASS AT RESOLVED THRESHOLD</p><div class="statrow"><span>689k tris</span> · <span>345k verts</span> · <span>25.1×24.9×30.0 mm</span> · <span>1.91 cm³</span> · <span>watertight ✓</span> · <span>13.2 µm rms</span></div><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip warn" title="aggregate_handles — The filled-grid handle value is an aggregate diagnostic only; its non-monotonic closing sweep and topology-creation warning prohibit interpreting nine as a passage count or size distribution.">aggregate_handles</span><span class="chip warn" title="human_gate — Sub-threshold voxel regions are preserved in the report, and human inspection of the seven section images plus live 3D/slicer review remains required.">human_gate</span><span class="chip ok" title="unfilled_surface_voxels — Unfilled surface grids at 0.10, 0.15 and 0.20 mm contain no exterior-parity enclosed region at or above 0.1 mm3; the largest candidate is 0.024 mm3 / three voxels.">unfilled_surface_…</span><span class="chip ok" title="positive_control — The identical method detects one 59.319 mm3 sealed cavity in a concentric-box positive control.">positive_control</span></div></div><p>PASS at ≥0.1 mm3 resolution; tiny voxel candidates and human section/live-3D gates remain.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">A cavity-preserving unfilled-grid sweep replaces the invalid post-fill zero-cavity inference and finds no resolved trapped-resin cavity at or above 0.1 mm3, with a successful sealed-void positive control.</p></details><div class="mesh-actions"><button class="meshbtn" data-mesh-open="mesh-0">open full 3D</button><a class="meshbtn meshdownload" href="#mesh-0" data-mesh-download="mesh-0">download full STL</a></div><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="tiger-r3x-min-gptimage2-m1-clean-30mm"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/c3a2071deaf61ce9.jpg" data-cap="COMPLETE · mechanical PASS · test prints confirmed" data-ref="30mm" data-anchor="tiger-r3x-min-gptimage2-m1-clean-30mm"><img src="../../../../assets/718b3824d8e512b3.jpg" alt="COMPLETE · mechanical PASS · test prints confirmed" loading="lazy"></div><div class="meta"><header><h3>COMPLETE · mechanical PASS · test prints confirmed</h3><span class="call keeper" title="PASS — TEST PRINTS CONFIRMED">PASS</span></header><div class="cardref"><a class="refid" href="#tiger-r3x-min-gptimage2-m1-clean-30mm" title="Deep link to this image">#30mm</a><button class="refbtn" data-copy-id="#30mm" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r3x-min-gptimage2-m1-clean-30mm" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r3x-min-gptimage2-m1-clean-30mm" data-title="COMPLETE · mechanical PASS · test prints confirmed" title="Share this image">share</button></div><p class="recommendation"><strong>Dimitri recommendation:</strong> PASS — TEST PRINTS CONFIRMED</p><div class="statrow"><span>689k tris</span> · <span>345k verts</span> · <span>25.1×24.9×30.0 mm</span> · <span>1.91 cm³</span> · <span>watertight ✓</span> · <span>13.2 µm rms</span></div><div class="detector-details"><p class="chip-group-label">Review priorities</p><div class="chips"><span class="chip warn" title="later notes — Dimitri flagged that more detailed print notes may follow later; any will be appended as new dated records.">later notes</span><span class="chip ok" title="test print — Dimitri, in-session 2026-08-30: &quot;the Tiger 3D prints worked pretty well.&quot;">test print</span><span class="chip ok" title="human gates — Printing and accepting the exact STL closes the open human section-inspection, live-3D and test-print gates; no blocking region was named.">human gates</span></div></div><div class="developer-only detector-details" data-developer hidden><p class="chip-group-label">Machine diagnostics</p><div class="chips"><span class="chip warn" title="aggregate_handles — The filled-grid handle value is an aggregate diagnostic only; its non-monotonic closing sweep and topology-creation warning prohibit interpreting nine as a passage count or size distribution.">aggregate_handles</span><span class="chip warn" title="human_gate — Sub-threshold voxel regions are preserved in the report, and human inspection of the seven section images plus live 3D/slicer review remains required.">human_gate</span><span class="chip ok" title="unfilled_surface_voxels — Unfilled surface grids at 0.10, 0.15 and 0.20 mm contain no exterior-parity enclosed region at or above 0.1 mm3; the largest candidate is 0.024 mm3 / three voxels.">unfilled_surface_…</span><span class="chip ok" title="positive_control — The identical method detects one 59.319 mm3 sealed cavity in a concentric-box positive control.">positive_control</span></div></div><p>Test prints confirmed good by Dimitri; the open human gates close and R4 completes.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">Dimitri confirms the exact 30.0 mm STL printed successfully and is accepted, closing the human section-inspection, live-3D and test-print gates that kept R4 provisional. The confirmation is a basic pass without per-feature print notes; Dimitri may append more detailed observations later, which would arrive as new dated records rather than reopening this verdict.</p></details><div class="mesh-actions"><button class="meshbtn" data-mesh-open="mesh-0">open full 3D</button><a class="meshbtn meshdownload" href="#mesh-0" data-mesh-download="mesh-0">download full STL</a></div><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
 </div>
-<section class="developer-only developer-section" data-developer hidden><h2>Developer diagnostics — internal and print checks</h2><div class="tablewrap"><table><tr><th>Check</th><th>Result</th></tr><tr><td>Topology</td><td>PASS · one watertight, consistently wound component; zero open/non-manifold/degenerate/duplicate faces</td></tr><tr><td>Thin connection probe</td><td>PASS · no qualifying fragile necks at 0.28 mm pitch / 0.8 mm fragile threshold</td></tr><tr><td>Aggregate handle spectrum</td><td>Diagnostic only · filled 0.10 mm grid reports aggregate handles=9; non-monotonic sweep and topology-creation warning prevent any passage-count or size interpretation</td></tr><tr><td>Cavity-preserving sweep</td><td>PASS at resolved threshold · unfilled 0.10/0.15/0.20 mm surface grids find no exterior-parity cavity ≥0.1 mm³; largest candidate is 0.024 mm³; sealed-void positive control detected at 59.319 mm³</td></tr><tr><td>Seven horizontal sections</td><td>AI precheck PASS · all closed; 11 nested relations reconciled; <a href="https://drive.google.com/drive/folders/1HFzvu5C984uoAi8idAqN1j8GVXDum-ZP">human sign-off pending</a></td></tr><tr><td>Soles / 32 mm footprint</td><td>PASS · independently checked from exact STL vertices: two contact patches; minima differ by 0.006247 mm; 14.320783 mm max radius; 1.679217 mm clearance</td></tr></table></div></section>
-<div class="callout steps"><p class="boxhead">Proposed next steps</p><p class="intro">No further mesh change is authorized or currently indicated.</p><ol><li><span class="t">Complete the human section inspection</span><span class="when">now</span><p class="d">Review all seven SVG/PNG sections in the <a href="https://drive.google.com/drive/folders/1HFzvu5C984uoAi8idAqN1j8GVXDum-ZP">section evidence folder</a> and record pass or fail; any unexplained hidden shell, intersection or trapped-resin cavity stops the round.</p></li><li><span class="t">Inspect the exact STL in live 3D</span><span class="when">after section sign-off</span><p class="d">Use the embedded public viewer or download the exact STL from this panel; this is the canonical 689,278-face file, not a display proxy.</p></li><li><span class="t">Test print before duplication</span><span class="when">after live-3D approval</span><p class="d">A physical print remains the final confirmation for supports, sole contact and small-feature survival.</p></li></ol></div>
-<div class="callout"><strong>Your eye-call:</strong> inspect the <a href="https://drive.google.com/drive/folders/1HFzvu5C984uoAi8idAqN1j8GVXDum-ZP">section evidence</a> and rotate or download the exact STL below. Approve it for a test print, or reject it with the exact internal or exterior region that blocks printing.</div>
-<footer>PROVISIONAL · $0 / 0 Meshy credits · exact STL publicly viewable/downloadable · human section and live-3D gates open</footer>
+<section class="developer-only developer-section" data-developer hidden><h2>Developer diagnostics — internal and print checks</h2><div class="tablewrap"><table><tr><th>Check</th><th>Result</th></tr><tr><td>Topology</td><td>PASS · one watertight, consistently wound component; zero open/non-manifold/degenerate/duplicate faces</td></tr><tr><td>Thin connection probe</td><td>PASS · no qualifying fragile necks at 0.28 mm pitch / 0.8 mm fragile threshold</td></tr><tr><td>Aggregate handle spectrum</td><td>Diagnostic only · filled 0.10 mm grid reports aggregate handles=9; non-monotonic sweep and topology-creation warning prevent any passage-count or size interpretation</td></tr><tr><td>Cavity-preserving sweep</td><td>PASS at resolved threshold · unfilled 0.10/0.15/0.20 mm surface grids find no exterior-parity cavity ≥0.1 mm³; largest candidate is 0.024 mm³; sealed-void positive control detected at 59.319 mm³</td></tr><tr><td>Seven horizontal sections</td><td>AI precheck PASS · all closed; 11 nested relations reconciled; <a href="https://drive.google.com/drive/folders/1HFzvu5C984uoAi8idAqN1j8GVXDum-ZP">human gate closed 2026-08-30 via test-print confirmation</a></td></tr><tr><td>Soles / 32 mm footprint</td><td>PASS · independently checked from exact STL vertices: two contact patches; minima differ by 0.006247 mm; 14.320783 mm max radius; 1.679217 mm clearance</td></tr></table></div></section>
+<div class="callout steps"><p class="boxhead">Proposed next steps</p><p class="intro">Tiger is COMPLETE and stands as the team-wide frog anatomy exemplar. No further Tiger round is planned.</p><ol><li><span class="t">Daimyo — Blitzer #1 — opens next</span><span class="when">now</span><p class="d">Agreed between Dimitri and Jawaknight (2026-08-30). Per team-brief §9, a dedicated kabuto-built-around-eye-domes head-construction exemplar round precedes his concept round.</p></li></ol></div>
+<div class="callout"><strong>Closed.</strong> The embedded viewer and download carry the exact 689,278-face STL — not a display proxy. Drive stays the canonical store.</div>
+<footer>COMPLETE · closed 2026-08-30 · $0 / 0 Meshy credits · exact STL publicly viewable/downloadable · test prints confirmed</footer>
 </main>
-<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="lb-meta"><div class="cap" id="lb-cap"></div><div class="lb-refrow" id="lb-refrow" hidden><span class="refid" id="lb-ref"></span><button class="refbtn" id="lb-copy-id" title="Copy this image id">copy id</button><button class="refbtn" id="lb-copy-link" title="Copy a link to this image">copy link</button></div></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="lb-meta"><div class="cap" id="lb-cap"></div><div class="lb-refrow" id="lb-refrow" hidden><span class="refid" id="lb-ref"></span><button class="refbtn" id="lb-copy-id" title="Copy this image id">copy id</button><button class="refbtn" id="lb-copy-link" title="Copy a link to this image">copy link</button></div><button class="refbtn lb-control" id="lb-control" type="button" aria-pressed="false" title="Toggle control image (C)" hidden>control [C]</button></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
 <div id="ilb" hidden><div class="panel">
 <button class="x" data-close aria-label="close">&times;</button>
 <div id="ilb-body"></div></div></div>
@@ -279,18 +286,19 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
   </div>
 </div>
 
-<template id="in-0"><h2>PROVISIONAL · mechanical PASS · human gates pending</h2><p class="gmeta">? · 2026-08-14</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Reference images</h3><p class="none">none — text-only generation</p></template>
-<template id="mesh-0"><span data-source="mesh-data-fab3b1748baa74c0" data-name="PROVISIONAL · mechanical PASS · human gates pending" data-filename="tiger-r3x-min-gptimage2-m1-clean-30mm.stl" data-bytes="34463984" data-meta="tiger-r3x-min-gptimage2-m1-clean-30mm.stl · binary STL · 689,278 triangles · 25.10 × 24.90 × 30.00 units · 32.9 MiB · SHA-256 fab3b1748baa74c0cd6a0ba10583d27dc4a4a685ef979bdce9d9d57c8f2b9117"></span></template>
+<template id="in-0"><h2>COMPLETE · mechanical PASS · test prints confirmed</h2><p class="gmeta">? · 2026-08-14</p><h3>Prompt</h3><pre>(no prompt recorded)</pre><h3>Inputs</h3><p class="none">none — text-only generation</p></template>
+<template id="mesh-0"><span data-source="mesh-data-fab3b1748baa74c0" data-name="COMPLETE · mechanical PASS · test prints confirmed" data-filename="tiger-r3x-min-gptimage2-m1-clean-30mm.stl" data-bytes="34463984" data-meta="tiger-r3x-min-gptimage2-m1-clean-30mm.stl · binary STL · 689,278 triangles · 25.10 × 24.90 × 30.00 units · 32.9 MiB · SHA-256 fab3b1748baa74c0cd6a0ba10583d27dc4a4a685ef979bdce9d9d57c8f2b9117"></span></template>
 <template id="mesh-data-fab3b1748baa74c0"><span data-src="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/fab3b1748baa74c0.stl"></span></template>
 <script>
 const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
       lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
       lbRefRow=document.getElementById('lb-refrow'),lbRef=document.getElementById('lb-ref'),
       lbCopyId=document.getElementById('lb-copy-id'),lbCopyLink=document.getElementById('lb-copy-link'),
+      lbControl=document.getElementById('lb-control'),
       lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
       ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body'),
       developerMode=document.getElementById('developer-mode');
-let gal=[],idx=-1;
+let gal=[],idx=-1,showingControl=false;
 const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
 let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
 const pts=new Map();                 // active pointers, for pan + pinch
@@ -305,12 +313,16 @@ if(developerMode){
   setDeveloperMode(false);
 }
 // The gallery is scoped to where the opened image lives: reference thumbs
-// inside an inputs panel cycle among themselves; every other [data-full]
-// (the review's card images) forms the main gallery.
+// inside an inputs panel cycle among themselves, Core inputs form their own
+// small gallery, and review cards form the candidate gallery. Keeping Core
+// inputs out of candidate arrow navigation makes C a true temporary compare.
 function galleryFor(el){
   const inInputs=el.closest('#ilb');
-  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
-  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  const inCore=el.closest('.coreinputs');
+  let list=Array.prototype.slice.call((inInputs||inCore||document).querySelectorAll('[data-full]'));
+  if(!inInputs&&!inCore) list=list.filter(function(n){
+    return !n.closest('#ilb')&&!n.closest('.coreinputs');
+  });
   return list;
 }
 function clampPan(){
@@ -343,14 +355,15 @@ function updateNav(){
   lbPrev.style.display=multi?'':'none';
   lbNext.style.display=multi?'':'none';
   let t=multi?(idx+1)+' / '+gal.length:'';
+  if(showingControl)t='CONTROL'+(t?'  \u00b7  '+t:'');
   if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
   lbCount.textContent=t;
 }
-function showAt(i){
-  if(i<0||i>=gal.length)return;
-  idx=i;const z=gal[i];
-  scale=1;tx=0;ty=0;                 // fit each freshly shown image
-  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+function controlFor(z){
+  return z&&z.dataset.controlRef?document.getElementById(z.dataset.controlRef):null;
+}
+function setCandidateMeta(z){
+  lbCap.textContent=z.dataset.cap||'';
   const ref=z.dataset.ref||'',anchor=z.dataset.anchor||'';
   lbRefRow.hidden=!(ref&&anchor);
   if(ref&&anchor){
@@ -358,7 +371,37 @@ function showAt(i){
     lbCopyId.dataset.copyId='#'+ref;
     lbCopyLink.dataset.copy=anchor;
   }
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  showingControl=false;
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;setCandidateMeta(z);
+  lbControl.hidden=!controlFor(z);
+  lbControl.textContent='control [C]';
+  lbControl.setAttribute('aria-pressed','false');
   applyT();
+}
+function toggleControl(){
+  if(lb.hidden||idx<0)return;
+  const z=gal[idx],control=controlFor(z);
+  if(!control)return;
+  showingControl=!showingControl;
+  if(showingControl){
+    lbImg.src=control.dataset.full;
+    lbCap.textContent='CONTROL \u00b7 '+(control.dataset.cap||'core input');
+    lbRefRow.hidden=true;
+    lbControl.textContent='back to candidate [C]';
+  }else{
+    lbImg.src=z.dataset.full;
+    setCandidateMeta(z);
+    lbControl.textContent='control [C]';
+  }
+  lbControl.setAttribute('aria-pressed',showingControl?'true':'false');
+  // Retain scale/tx/ty: same-framing flicker comparison is the point of this
+  // control. The image load hook reclamps for a different aspect ratio.
+  updateNav();
 }
 function nav(d){
   if(lb.hidden||gal.length<2)return;
@@ -370,7 +413,8 @@ function openFrom(z){
 }
 function closeTop(){
   if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
-                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+                 gal=[];idx=-1;showingControl=false;scale=1;tx=0;ty=0;pts.clear();
+                 lbControl.hidden=true;lbControl.setAttribute('aria-pressed','false');}
   else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
 }
 // Copy a card's short display id, or copy/share its deep link. The URL is this
@@ -402,6 +446,7 @@ document.addEventListener('click',function(e){
   const cp=e.target.closest('[data-copy]');
   if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
   if(!lb.hidden){
+    if(e.target.closest('#lb-control')){toggleControl();e.preventDefault();return;}
     const nb=e.target.closest('[data-nav]');
     if(nb){nav(parseInt(nb.dataset.nav,10));return;}
     if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
@@ -430,6 +475,8 @@ document.addEventListener('keydown',function(e){
   if(lb.hidden)return;
   if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
   else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if((e.key==='c'||e.key==='C')&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
+    toggleControl();e.preventDefault();}
   else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
   else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
   else if(e.key==='0'){resetZoom();e.preventDefault();}
@@ -440,6 +487,9 @@ lb.addEventListener('wheel',function(e){
   e.preventDefault();
   zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
 },{passive:false});
+// A different control aspect can change the fitted element dimensions. Keep
+// the requested framing and clamp it once the replacement image has loaded.
+lbImg.addEventListener('load',function(){if(!lb.hidden)applyT();});
 // Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
 // or, if it barely moved, counts as a tap that toggles zoom / swipes; two
 // pointers pinch-zoom.
