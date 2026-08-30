@@ -112,6 +112,8 @@ footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
 .chip.warn { color:var(--warn); border-color:var(--warn) }
 .chip.unclear { color:var(--dim); border-color:var(--dim) }
 .detector-details { display:flex; flex-direction:column; gap:.45rem }
+.chip-group-label { margin:0; color:var(--dim); font-size:.68rem;
+  font-weight:600; letter-spacing:.06em; text-transform:uppercase }
 .meta p { margin:0; color:var(--dim); font-size:.86rem }
 details.more { margin:0 }
 details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
@@ -157,11 +159,16 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
   min-height:2.2rem; position:relative; z-index:20 }
 .lb-refrow { display:flex; align-items:center; justify-content:center; gap:.35rem;
   flex-wrap:wrap }
-.lb-refrow[hidden] { display:none }
+/* Keep both pill rows in the centered lightbox's layout while hidden. If a
+   comparison removes either row, the stack height changes and the image jumps. */
+.lb-refrow[hidden] { display:flex; visibility:hidden }
 .lb-refrow .refid { background:rgba(20,20,26,.72) }
-.lb-refrow .refbtn { color:#bbb; border-color:#55515d;
+.lb-meta .refbtn { color:#bbb; border-color:#55515d;
   background:rgba(20,20,26,.72) }
-.lb-refrow .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-meta .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-control[hidden] { display:inline-block; visibility:hidden }
+.lb-control[aria-pressed="true"] { color:#fff; border-color:var(--accent);
+  background:color-mix(in srgb,var(--accent) 24%,rgba(20,20,26,.72)) }
 .lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
   border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
   line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
@@ -199,26 +206,26 @@ details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
 .x:hover { color:var(--ink) }
 </style></head><body><main>
 <nav class="breadcrumb"><a href="../../../../">All reviews</a><span class="sep">&rsaquo;</span><a href="../../">Martial Frogs</a><span class="sep">&rsaquo;</span><a href="../">Tiger</a></nav>
-<div class="eyebrow">Toadal Kombat · Tiger · round 3 · PROVISIONAL — human eye-call pending · 2026-08-07</div>
+<div class="eyebrow">Toadal Kombat · Tiger · round 3 · CLOSED 2026-08-30 — 2/2 machine REJECT stands; eye-call retired</div>
 <h1>TIGER — clay turnaround sweep</h1>
 <a class="crosslink" href="../r3-runbook/">&#128214; Round runbook &rarr;</a>
-<div class="reviewtools"><label class="devmode" title="Show detector chips and full AI audit notes"><input id="developer-mode" type="checkbox" role="switch" aria-checked="false">Developer Mode</label></div>
+<div class="reviewtools"><label class="devmode" title="Show detector chips and full reviewer notes"><input id="developer-mode" type="checkbox" role="switch" aria-checked="false">Developer Mode</label></div>
 <p class="sub">Two independent Gemini 3.1 Flash 2K Batch rolls used the Jawaknight-selected Round 2 winner and the frozen 2×2 template. Both are durable on Drive.</p>
 <div class="callout"><strong>Machine agreement: 0 PASS / 0 FIXABLE / 2 REJECT in both lanes.</strong> Roll 1 contains seven depictions and severe scale/layout failure. Roll 2 invents a long biological-looking tail and misses the exact opposite-side profile.</div>
-<div class="callout asks"><p class="boxhead">Verdicts / info needed</p><p class="intro">Both approved-plan sheets and both machine lanes are complete. Crop audit and blind detection agree that neither sheet is Meshy-ready; the human gate decides whether to reject both or name a tightly scoped repair.</p><ol><li><span class="q">Reject both sheets, or salvage a named panel set?</span><span class="who">Jawaknight + Dimitri</span><p class="d">Roll 1 broke the 2×2 layout into seven depictions. Roll 2 has four slots, but the opposite side is three-quarter and the short sash tail becomes a biological-looking tail across three panels. Reject-all is the machine recommendation.</p></li><li><span class="q">If repairing, which exact roll and panels should survive?</span><span class="who">Jawaknight + Dimitri</span><p class="d">A repair must name the retained ancestor and the exact camera/tail defects; no sheet advances to production Meshy while these failures remain.</p></li></ol></div>
-<section class="coreinputs"><h2>Core inputs<span class="hint"> — the base image(s) these candidates were built from</span></h2><div class="inputrow"><figure class="coreinput"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/03366b392039b3e9.webp" data-cap="tiger-r2-comp-riverflow25-2"><img src="../../../../assets/0488376c977eb56e.jpg" alt="tiger-r2-comp-riverflow25-2" loading="lazy"></div><figcaption>tiger-r2-comp-riverflow25-2</figcaption></figure><figure class="coreinput"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/97b80e39a928b902.png" data-cap="tiger-r3-template-2x2"><img src="../../../../assets/ca3f3acc5382f9c2.jpg" alt="tiger-r3-template-2x2" loading="lazy"></div><figcaption>tiger-r3-template-2x2</figcaption></figure></div></section>
+<div class="callout asks"><p class="boxhead">Verdicts / info needed</p><p class="intro">Round closed 2026-08-30 under Dimitri's Tiger close-out instruction. No verdicts are requested: both machine lanes' REJECT stands, neither sheet advanced, and the pending human eye-call was retired without adjudication — mooted by the round 3x single-image Meshy path that produced the printed keeper. No overturn is claimed.</p><ol><li><span class="q">Nothing required — optional late notes only</span><span class="who">Dimitri / Jawaknight</span><p class="d">The round is closed; no verdict is requested. Any later observations are appended as new dated records against the closed round and carried into Daimyo's rounds where actionable.</p></li></ol></div>
+<section class="coreinputs"><h2>Core inputs<span class="hint"> — the base image(s) these candidates were built from</span></h2><div class="inputrow"><figure class="coreinput"><div class="imgwrap" id="control-image-0" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/85205a03bdc91fe7.jpg" data-cap="tiger-r2-comp-riverflow25-2"><img src="../../../../assets/0488376c977eb56e.jpg" alt="tiger-r2-comp-riverflow25-2" loading="lazy"></div><figcaption>tiger-r2-comp-riverflow25-2</figcaption></figure></div></section>
 <section class="developer-only developer-section" data-developer hidden><h2>Developer diagnostics — lane agreement</h2><div class="tablewrap"><table><tr><th>Roll</th><th>Crop audit</th><th>Blind detector</th><th>Primary failure</th></tr><tr><td>Flash 3.1 · 1</td><td>REJECT</td><td>REJECT</td><td>Seven depictions; clipped front; duplicated slots</td></tr><tr><td>Flash 3.1 · 2</td><td>REJECT</td><td>REJECT</td><td>Long biological tail; opposite-side camera missing</td></tr></table></div></section>
 <h2>Approved two-roll matrix</h2>
 <p class="blurb">Same exact winner, template, prompt, model, and settings; only provider stochasticity varies.</p>
 <div class="grid">
-<div class="card" id="tiger-r3-turnaround-flash31-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/91fc6a7264bb7367.jpg" data-cap="Flash 3.1 · roll 1" data-ref="1" data-anchor="tiger-r3-turnaround-flash31-1"><img src="../../../../assets/ffd227219ad412db.jpg" alt="Flash 3.1 · roll 1" loading="lazy"></div><div class="meta"><header><h3>Flash 3.1 · roll 1</h3><span class="cost">~$0.05</span><span class="call reject" title="REJECT — seven depictions, duplicated slots, clipped front, and inconsistent scale">REJECT</span></header><div class="cardref"><a class="refid" href="#tiger-r3-turnaround-flash31-1" title="Deep link to this image">#1</a><button class="refbtn" data-copy-id="#1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r3-turnaround-flash31-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r3-turnaround-flash31-1" data-title="Flash 3.1 · roll 1" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> REJECT — seven depictions, duplicated slots, clipped front, and inconsistent scale</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="whole sheet · seven depictions in four slots — One front, two side depictions, two backs, and two opposite-side profiles: seven figures and three extras instead of exactly four.">seven depictions…</span><span class="chip bad" title="P1 front · front lower geometry clipped — The oversized front loses the sash tail, shorts, legs, both feet, and part of the low hand at the slot boundary.">front lower geome…</span><span class="chip bad" title="P2-P4 · duplicated slots — P2 contains two side views; P3 contains two near-duplicate backs; P4 contains two near-duplicate opposite-side profiles.">duplicated slots</span><span class="chip bad" title="all panels · camera scale and pose consistency — P1 is a cropped half-body close-up while the remaining depictions are half-slot full bodies; hand and foot visibility changes materially.">camera scale and…</span><span class="chip bad" title="waist, hands, feet · single short sash tail and four-digit anatomy — Duplicated figures multiply the tail; P1 has no visible feet and multiple profile digits cannot be proved as four rounded webbed terminals.">single short sash…</span><span class="chip bad" title="blind cross-check — REJECT — Significant deviations in key character construction elements (sash, frog closures) and printability concerns directly contradict the brief&#x27;s requirements for setting the team standard.">blind cross-check</span></div><details class="more"><summary>2 more detectors (8 total)</summary><div class="chips"><span class="chip ok" title="visible figure regions · identity, costume, material, forbidden content — Heavyweight non-feline frog identity, tangzhuang, sash, shorts, wraps, visible three-toggle construction, opaque grey clay, and forbidden-content negatives are broadly preserved.">identity, costume…</span><span class="chip ok" title="all deterministic crops · pixel-exact crop provenance — All four 1362x754 crops exactly match source pixels at the expected 7 px divider inset; no repainting or crop-created halos occurred.">pixel-exact crop…</span></div></details></div><p>Seven figures occupy four slots; the front is clipped and the other slots contain divided duplicates, so this is not Meshy-ready.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">The 2752x1536 output ignored the approved 2752x3008 2x2 geometry and painted seven depictions into four quadrants: a clipped front, two side views, two backs, and two opposite-side profiles. The deterministic crops preserve exact source pixels, but P2-P4 retain internal dividers and duplicates while P1 loses the entire lower body. This is structurally unusable as a four-view turnaround.</p></details><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
-<div class="card" id="tiger-r3-turnaround-flash31-2"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/21d58c13492d92f3.jpg" data-cap="Flash 3.1 · roll 2" data-ref="2" data-anchor="tiger-r3-turnaround-flash31-2"><img src="../../../../assets/fc2baaff0baf1894.jpg" alt="Flash 3.1 · roll 2" loading="lazy"></div><div class="meta"><header><h3>Flash 3.1 · roll 2</h3><span class="cost">~$0.05</span><span class="call reject" title="REJECT — opposite-side slot is three-quarter and the short sash tail mutates into duplicated cloth ends plus a long animal-like tail">REJECT</span></header><div class="cardref"><a class="refid" href="#tiger-r3-turnaround-flash31-2" title="Deep link to this image">#2</a><button class="refbtn" data-copy-id="#2" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r3-turnaround-flash31-2" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r3-turnaround-flash31-2" data-title="Flash 3.1 · roll 2" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> REJECT — opposite-side slot is three-quarter and the short sash tail mutates into duplicated cloth ends plus a long animal-like tail</p><div class="developer-only detector-details" data-developer hidden><div class="chips"><span class="chip bad" title="whole sheet · view count and order — Four distinct figures occupy the four slots, but P4 is a front three-quarter rather than the required exact opposite-tail-side profile.">view count and or…</span><span class="chip bad" title="P4 · rotation and camera — P4 exposes the face, chest placket, and all three toggles, under-covering the opposite side instead of completing a strict 90-degree turntable.">rotation and came…</span><span class="chip bad" title="P2-P4 waist/rear · sash-tail consistency — The front has one short flap, but P2-P4 invent duplicated cloth ends and a large curved animal-like tail rather than one short attached character-right sash tail.">sash-tail consist…</span><span class="chip bad" title="blind cross-check — REJECT — Multiple critical contradictions including a biological tail, small frog buttons, and two sash tails.">blind cross-check</span><span class="chip warn" title="whole sheet · hands and feet — Visible digits are thick, rounded, and clawless, but P2 far anatomy is occluded, P3 hides the low hand, and rear foot counts are not provable.">hands and feet</span><span class="chip warn" title="all four crops · crop integrity — Each 980x1072 PNG is an exact decoded-pixel extraction with no repaint, halo, clipping, or meaningful detail loss; dark outer template-frame remnants remain.">crop integrity</span></div><details class="more"><summary>2 more detectors (8 total)</summary><div class="chips"><span class="chip ok" title="whole sheet · identity and scale — Heavyweight anthropomorphic frog identity, broad chest, thick limbs, figure scale, and overall body proportions remain broadly stable.">identity and scale</span><span class="chip ok" title="whole sheet · material and forbidden features — Opaque neutral-grey matte clay throughout; no colour, gloss, translucency, feline traits, claws, headwear, weapon, ball, text, or base.">material and forb…</span></div></details></div><p>Reject: P2-P4 invent duplicated/long tail geometry, and P4 is not the required opposite-side profile.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">The sheet preserves a strong Tiger identity and usable front/back posing, but it is not Meshy-ready. The required single short sash tail systematically becomes multiple hanging ends and a large animal-like tail in three panels, while the fourth camera is a front three-quarter rather than the missing opposite-side profile. These are multi-panel structural failures, not a small repair.</p></details><button class="ibtn" data-inputs="in-1">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="tiger-r3-turnaround-flash31-1"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/4df939ea9c8d2d68.jpg" data-cap="Flash 3.1 · roll 1" data-ref="1" data-anchor="tiger-r3-turnaround-flash31-1" data-control-ref="control-image-0"><img src="../../../../assets/ffd227219ad412db.jpg" alt="Flash 3.1 · roll 1" loading="lazy"></div><div class="meta"><header><h3>Flash 3.1 · roll 1</h3><span class="cost">~$0.05</span><span class="call reject" title="REJECT — seven depictions, duplicated slots, clipped front, and inconsistent scale">REJECT</span></header><div class="cardref"><a class="refid" href="#tiger-r3-turnaround-flash31-1" title="Deep link to this image">#1</a><button class="refbtn" data-copy-id="#1" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r3-turnaround-flash31-1" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r3-turnaround-flash31-1" data-title="Flash 3.1 · roll 1" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> REJECT — seven depictions, duplicated slots, clipped front, and inconsistent scale</p><div class="developer-only detector-details" data-developer hidden><p class="chip-group-label">Machine diagnostics</p><div class="chips"><span class="chip bad" title="whole sheet · seven depictions in four slots — One front, two side depictions, two backs, and two opposite-side profiles: seven figures and three extras instead of exactly four.">seven depictions…</span><span class="chip bad" title="P1 front · front lower geometry clipped — The oversized front loses the sash tail, shorts, legs, both feet, and part of the low hand at the slot boundary.">front lower geome…</span><span class="chip bad" title="P2-P4 · duplicated slots — P2 contains two side views; P3 contains two near-duplicate backs; P4 contains two near-duplicate opposite-side profiles.">duplicated slots</span><span class="chip bad" title="all panels · camera scale and pose consistency — P1 is a cropped half-body close-up while the remaining depictions are half-slot full bodies; hand and foot visibility changes materially.">camera scale and…</span><span class="chip bad" title="waist, hands, feet · single short sash tail and four-digit anatomy — Duplicated figures multiply the tail; P1 has no visible feet and multiple profile digits cannot be proved as four rounded webbed terminals.">single short sash…</span><span class="chip bad" title="blind cross-check — REJECT — Significant deviations in key character construction elements (sash, frog closures) and printability concerns directly contradict the brief&#x27;s requirements for setting the team standard.">blind cross-check</span></div><details class="more"><summary>2 more detectors (8 total)</summary><div class="chips"><span class="chip ok" title="visible figure regions · identity, costume, material, forbidden content — Heavyweight non-feline frog identity, tangzhuang, sash, shorts, wraps, visible three-toggle construction, opaque grey clay, and forbidden-content negatives are broadly preserved.">identity, costume…</span><span class="chip ok" title="all deterministic crops · pixel-exact crop provenance — All four 1362x754 crops exactly match source pixels at the expected 7 px divider inset; no repainting or crop-created halos occurred.">pixel-exact crop…</span></div></details></div><p>Seven figures occupy four slots; the front is clipped and the other slots contain divided duplicates, so this is not Meshy-ready.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">The 2752x1536 output ignored the approved 2752x3008 2x2 geometry and painted seven depictions into four quadrants: a clipped front, two side views, two backs, and two opposite-side profiles. The deterministic crops preserve exact source pixels, but P2-P4 retain internal dividers and duplicates while P1 loses the entire lower body. This is structurally unusable as a four-view turnaround.</p></details><button class="ibtn" data-inputs="in-0">inputs — prompt &amp; refs</button></div></div>
+<div class="card" id="tiger-r3-turnaround-flash31-2"><div class="imgwrap" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/d74121c0200d1b66.jpg" data-cap="Flash 3.1 · roll 2" data-ref="2" data-anchor="tiger-r3-turnaround-flash31-2" data-control-ref="control-image-0"><img src="../../../../assets/fc2baaff0baf1894.jpg" alt="Flash 3.1 · roll 2" loading="lazy"></div><div class="meta"><header><h3>Flash 3.1 · roll 2</h3><span class="cost">~$0.05</span><span class="call reject" title="REJECT — opposite-side slot is three-quarter and the short sash tail mutates into duplicated cloth ends plus a long animal-like tail">REJECT</span></header><div class="cardref"><a class="refid" href="#tiger-r3-turnaround-flash31-2" title="Deep link to this image">#2</a><button class="refbtn" data-copy-id="#2" title="Copy this image id">copy id</button><button class="refbtn" data-copy="tiger-r3-turnaround-flash31-2" title="Copy a link to this image">copy link</button><button class="refbtn" data-share="tiger-r3-turnaround-flash31-2" data-title="Flash 3.1 · roll 2" title="Share this image">share</button></div><p class="recommendation"><strong>AI recommendation:</strong> REJECT — opposite-side slot is three-quarter and the short sash tail mutates into duplicated cloth ends plus a long animal-like tail</p><div class="developer-only detector-details" data-developer hidden><p class="chip-group-label">Machine diagnostics</p><div class="chips"><span class="chip bad" title="whole sheet · view count and order — Four distinct figures occupy the four slots, but P4 is a front three-quarter rather than the required exact opposite-tail-side profile.">view count and or…</span><span class="chip bad" title="P4 · rotation and camera — P4 exposes the face, chest placket, and all three toggles, under-covering the opposite side instead of completing a strict 90-degree turntable.">rotation and came…</span><span class="chip bad" title="P2-P4 waist/rear · sash-tail consistency — The front has one short flap, but P2-P4 invent duplicated cloth ends and a large curved animal-like tail rather than one short attached character-right sash tail.">sash-tail consist…</span><span class="chip bad" title="blind cross-check — REJECT — Multiple critical contradictions including a biological tail, small frog buttons, and two sash tails.">blind cross-check</span><span class="chip warn" title="whole sheet · hands and feet — Visible digits are thick, rounded, and clawless, but P2 far anatomy is occluded, P3 hides the low hand, and rear foot counts are not provable.">hands and feet</span><span class="chip warn" title="all four crops · crop integrity — Each 980x1072 PNG is an exact decoded-pixel extraction with no repaint, halo, clipping, or meaningful detail loss; dark outer template-frame remnants remain.">crop integrity</span></div><details class="more"><summary>2 more detectors (8 total)</summary><div class="chips"><span class="chip ok" title="whole sheet · identity and scale — Heavyweight anthropomorphic frog identity, broad chest, thick limbs, figure scale, and overall body proportions remain broadly stable.">identity and scale</span><span class="chip ok" title="whole sheet · material and forbidden features — Opaque neutral-grey matte clay throughout; no colour, gloss, translucency, feline traits, claws, headwear, weapon, ball, text, or base.">material and forb…</span></div></details></div><p>Reject: P2-P4 invent duplicated/long tail geometry, and P4 is not the required opposite-side profile.</p><details class="more developer-only" data-developer hidden><summary>full note</summary><p class="chipnote">The sheet preserves a strong Tiger identity and usable front/back posing, but it is not Meshy-ready. The required single short sash tail systematically becomes multiple hanging ends and a large animal-like tail in three panels, while the fourth camera is a front three-quarter rather than the missing opposite-side profile. These are multi-panel structural failures, not a small repair.</p></details><button class="ibtn" data-inputs="in-1">inputs — prompt &amp; refs</button></div></div>
 </div>
-<div class="callout steps"><p class="boxhead">Proposed next steps</p><p class="intro">The production path remains blocked until one complete four-view sheet passes the human gate.</p><ol><li><span class="t">Record the human verdict</span><span class="when">now</span><p class="d">Choose reject-both or identify one exact repair target and the panels to preserve.</p></li><li><span class="t">Repair or reroll only under a new approved plan</span><span class="when">after verdict</span><p class="d">No extra generation is authorized by this round's exhausted two-roll matrix. A further call needs a separately reviewed amendment or next round.</p></li><li><span class="t">Keep r3x diagnostic-only</span><span class="when">in parallel</span><p class="d">The single-image Meshy survey may inform prototype quality but does not replace the missing passing turnaround.</p></li></ol></div>
-<div class="callout"><strong>Your eye-call:</strong> reject both sheets, or name one exact repair target and the panels worth preserving. Reject-all is fully valid; no production multi-view Meshy starts from either sheet as shown.</div>
-<footer>PROVISIONAL · ledger estimates: $0.103211 image generation + $0.030478 blind Batch · 2 sheets · no Meshy in this track</footer>
+<div class="callout steps"><p class="boxhead">Proposed next steps</p><p class="intro">Tiger is COMPLETE via the r3x → r4 path — the 30 mm model printed successfully.</p><ol><li><span class="t">Daimyo — Blitzer #1 — opens next</span><span class="when">now</span><p class="d">Agreed between Dimitri and Jawaknight (2026-08-30). Per team-brief §9, a dedicated kabuto-built-around-eye-domes head-construction exemplar round precedes his concept round.</p></li></ol></div>
+<div class="callout"><strong>Closed.</strong> Both sheets remain rejected as shown; the round is retained as the clay-turnaround historical record.</div>
+<footer>CLOSED 2026-08-30 · ledger estimates: $0.103211 image generation + $0.030478 blind Batch · 2 sheets · no Meshy in this track</footer>
 </main>
-<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="lb-meta"><div class="cap" id="lb-cap"></div><div class="lb-refrow" id="lb-refrow" hidden><span class="refid" id="lb-ref"></span><button class="refbtn" id="lb-copy-id" title="Copy this image id">copy id</button><button class="refbtn" id="lb-copy-link" title="Copy a link to this image">copy link</button></div></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="lb-meta"><div class="cap" id="lb-cap"></div><div class="lb-refrow" id="lb-refrow" hidden><span class="refid" id="lb-ref"></span><button class="refbtn" id="lb-copy-id" title="Copy this image id">copy id</button><button class="refbtn" id="lb-copy-link" title="Copy a link to this image">copy link</button></div><button class="refbtn lb-control" id="lb-control" type="button" aria-pressed="false" title="Toggle control image (C)" hidden>control [C]</button></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
 <div id="ilb" hidden><div class="panel">
 <button class="x" data-close aria-label="close">&times;</button>
 <div id="ilb-body"></div></div></div>
@@ -280,7 +287,7 @@ anatomy: no feline face, fur, stripes, whiskers, cat ears, animal claws, talons,
 nails, or pointed digits. Keep all hand and foot digits thick, rounded, webbed,
 and printable. No headband, hat, hood, helmet, weapon, ball, footwear, loose
 strap, floating cloth, or fragile spike.
-</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/0488376c977eb56e.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/03366b392039b3e9.webp" data-cap="tiger-r2-comp-riverflow25-2.webp" alt="tiger-r2-comp-riverflow25-2.webp"><figcaption>tiger-r2-comp-riverflow25-2.webp</figcaption></figure><figure><img src="../../../../assets/ca3f3acc5382f9c2.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/97b80e39a928b902.png" data-cap="tiger-r3-template-2x2.png" alt="tiger-r3-template-2x2.png"><figcaption>tiger-r3-template-2x2.png</figcaption></figure></div></template>
+</pre><h3>Inputs</h3><div class="refs"><figure><img src="../../../../assets/0488376c977eb56e.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/85205a03bdc91fe7.jpg" data-cap="tiger-r2-comp-riverflow25-2.webp" alt="tiger-r2-comp-riverflow25-2.webp"><figcaption>tiger-r2-comp-riverflow25-2.webp</figcaption></figure></div><h3>Intermediate stage — produced in this round</h3><div class="refs"><figure><img src="../../../../assets/ca3f3acc5382f9c2.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/d5397a93854346a4.jpg" data-cap="tiger-r3-template-2x2.png — output of tiger-r3-template-2x2" alt="tiger-r3-template-2x2.png — output of tiger-r3-template-2x2"><figcaption>tiger-r3-template-2x2.png — output of tiger-r3-template-2x2</figcaption></figure></div></template>
 <template id="in-1"><h2>Flash 3.1 · roll 2</h2><p class="gmeta">gemini-3.1-flash-image · size=2K · ~$0.05 · 2026-08-07T11:55:45</p><h3>Prompt</h3><p class="path">projects/martial-frogs/tiger/prompts/r3-clay-turnaround.txt</p><pre>You receive exactly TWO input images.
 
 IMAGE 1 is the approved Tiger character concept and is the identity, anatomy,
@@ -338,16 +345,17 @@ anatomy: no feline face, fur, stripes, whiskers, cat ears, animal claws, talons,
 nails, or pointed digits. Keep all hand and foot digits thick, rounded, webbed,
 and printable. No headband, hat, hood, helmet, weapon, ball, footwear, loose
 strap, floating cloth, or fragile spike.
-</pre><h3>Reference images</h3><div class="refs"><figure><img src="../../../../assets/0488376c977eb56e.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/03366b392039b3e9.webp" data-cap="tiger-r2-comp-riverflow25-2.webp" alt="tiger-r2-comp-riverflow25-2.webp"><figcaption>tiger-r2-comp-riverflow25-2.webp</figcaption></figure><figure><img src="../../../../assets/ca3f3acc5382f9c2.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/97b80e39a928b902.png" data-cap="tiger-r3-template-2x2.png" alt="tiger-r3-template-2x2.png"><figcaption>tiger-r3-template-2x2.png</figcaption></figure></div></template>
+</pre><h3>Inputs</h3><div class="refs"><figure><img src="../../../../assets/0488376c977eb56e.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/85205a03bdc91fe7.jpg" data-cap="tiger-r2-comp-riverflow25-2.webp" alt="tiger-r2-comp-riverflow25-2.webp"><figcaption>tiger-r2-comp-riverflow25-2.webp</figcaption></figure></div><h3>Intermediate stage — produced in this round</h3><div class="refs"><figure><img src="../../../../assets/ca3f3acc5382f9c2.jpg" data-full="https://pub-d707d73d42f64295a2b9e08b72c33e54.r2.dev/d5397a93854346a4.jpg" data-cap="tiger-r3-template-2x2.png — output of tiger-r3-template-2x2" alt="tiger-r3-template-2x2.png — output of tiger-r3-template-2x2"><figcaption>tiger-r3-template-2x2.png — output of tiger-r3-template-2x2</figcaption></figure></div></template>
 <script>
 const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
       lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
       lbRefRow=document.getElementById('lb-refrow'),lbRef=document.getElementById('lb-ref'),
       lbCopyId=document.getElementById('lb-copy-id'),lbCopyLink=document.getElementById('lb-copy-link'),
+      lbControl=document.getElementById('lb-control'),
       lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
       ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body'),
       developerMode=document.getElementById('developer-mode');
-let gal=[],idx=-1;
+let gal=[],idx=-1,showingControl=false;
 const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
 let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
 const pts=new Map();                 // active pointers, for pan + pinch
@@ -362,12 +370,16 @@ if(developerMode){
   setDeveloperMode(false);
 }
 // The gallery is scoped to where the opened image lives: reference thumbs
-// inside an inputs panel cycle among themselves; every other [data-full]
-// (the review's card images) forms the main gallery.
+// inside an inputs panel cycle among themselves, Core inputs form their own
+// small gallery, and review cards form the candidate gallery. Keeping Core
+// inputs out of candidate arrow navigation makes C a true temporary compare.
 function galleryFor(el){
   const inInputs=el.closest('#ilb');
-  let list=Array.prototype.slice.call((inInputs||document).querySelectorAll('[data-full]'));
-  if(!inInputs) list=list.filter(function(n){return !n.closest('#ilb');});
+  const inCore=el.closest('.coreinputs');
+  let list=Array.prototype.slice.call((inInputs||inCore||document).querySelectorAll('[data-full]'));
+  if(!inInputs&&!inCore) list=list.filter(function(n){
+    return !n.closest('#ilb')&&!n.closest('.coreinputs');
+  });
   return list;
 }
 function clampPan(){
@@ -400,14 +412,15 @@ function updateNav(){
   lbPrev.style.display=multi?'':'none';
   lbNext.style.display=multi?'':'none';
   let t=multi?(idx+1)+' / '+gal.length:'';
+  if(showingControl)t='CONTROL'+(t?'  \u00b7  '+t:'');
   if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
   lbCount.textContent=t;
 }
-function showAt(i){
-  if(i<0||i>=gal.length)return;
-  idx=i;const z=gal[i];
-  scale=1;tx=0;ty=0;                 // fit each freshly shown image
-  lbImg.src=z.dataset.full;lbCap.textContent=z.dataset.cap||'';
+function controlFor(z){
+  return z&&z.dataset.controlRef?document.getElementById(z.dataset.controlRef):null;
+}
+function setCandidateMeta(z){
+  lbCap.textContent=z.dataset.cap||'';
   const ref=z.dataset.ref||'',anchor=z.dataset.anchor||'';
   lbRefRow.hidden=!(ref&&anchor);
   if(ref&&anchor){
@@ -415,7 +428,37 @@ function showAt(i){
     lbCopyId.dataset.copyId='#'+ref;
     lbCopyLink.dataset.copy=anchor;
   }
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  showingControl=false;
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;setCandidateMeta(z);
+  lbControl.hidden=!controlFor(z);
+  lbControl.textContent='control [C]';
+  lbControl.setAttribute('aria-pressed','false');
   applyT();
+}
+function toggleControl(){
+  if(lb.hidden||idx<0)return;
+  const z=gal[idx],control=controlFor(z);
+  if(!control)return;
+  showingControl=!showingControl;
+  if(showingControl){
+    lbImg.src=control.dataset.full;
+    lbCap.textContent='CONTROL \u00b7 '+(control.dataset.cap||'core input');
+    lbRefRow.hidden=true;
+    lbControl.textContent='back to candidate [C]';
+  }else{
+    lbImg.src=z.dataset.full;
+    setCandidateMeta(z);
+    lbControl.textContent='control [C]';
+  }
+  lbControl.setAttribute('aria-pressed',showingControl?'true':'false');
+  // Retain scale/tx/ty: same-framing flicker comparison is the point of this
+  // control. The image load hook reclamps for a different aspect ratio.
+  updateNav();
 }
 function nav(d){
   if(lb.hidden||gal.length<2)return;
@@ -427,7 +470,8 @@ function openFrom(z){
 }
 function closeTop(){
   if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
-                 gal=[];idx=-1;scale=1;tx=0;ty=0;pts.clear();}
+                 gal=[];idx=-1;showingControl=false;scale=1;tx=0;ty=0;pts.clear();
+                 lbControl.hidden=true;lbControl.setAttribute('aria-pressed','false');}
   else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
 }
 // Copy a card's short display id, or copy/share its deep link. The URL is this
@@ -459,6 +503,7 @@ document.addEventListener('click',function(e){
   const cp=e.target.closest('[data-copy]');
   if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
   if(!lb.hidden){
+    if(e.target.closest('#lb-control')){toggleControl();e.preventDefault();return;}
     const nb=e.target.closest('[data-nav]');
     if(nb){nav(parseInt(nb.dataset.nav,10));return;}
     if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
@@ -487,6 +532,8 @@ document.addEventListener('keydown',function(e){
   if(lb.hidden)return;
   if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
   else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if((e.key==='c'||e.key==='C')&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
+    toggleControl();e.preventDefault();}
   else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
   else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
   else if(e.key==='0'){resetZoom();e.preventDefault();}
@@ -497,6 +544,9 @@ lb.addEventListener('wheel',function(e){
   e.preventDefault();
   zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
 },{passive:false});
+// A different control aspect can change the fitted element dimensions. Keep
+// the requested framing and clamp it once the replacement image has loaded.
+lbImg.addEventListener('load',function(){if(!lb.hidden)applyT();});
 // Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
 // or, if it barely moved, counts as a tap that toggles zoom / swipes; two
 // pointers pinch-zoom.
