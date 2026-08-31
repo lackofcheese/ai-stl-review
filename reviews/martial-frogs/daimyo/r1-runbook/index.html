@@ -1,0 +1,860 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="ai-stl-plan-digest" content="316705787995cef132e59b3142f3c37314c5ca0f07465a73ac13a7836e28c315">
+<title>DAIMYO — Round 1 runbook</title>
+<style>
+:root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+@media (prefers-color-scheme: light){:root{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}}
+:root[data-theme=light]{--bg:#f6f5f7;--card:#ffffff;--line:#e2dfe6;--ink:#221f26;--dim:#6d6876;--ok:#237a48;--bad:#b13238;--warn:#96650f;--pre:#f2f1f4;--well:#eceaef}
+:root[data-theme=dark]{--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
+
+* { box-sizing:border-box }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 64px; }
+h1 { font-size:1.5rem; margin:.2rem 0 0; text-wrap:balance }
+h2 { font-size:1.15rem; margin:2.4rem 0 .3rem; }
+.eyebrow { color:var(--accent); font-size:.72rem; letter-spacing:.14em;
+  text-transform:uppercase; font-weight:600 }
+.crosslink { display:inline-flex; align-items:center; gap:.35rem; margin:.6rem 0 0;
+  font-size:.8rem; font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--accent); border-radius:99px; padding:.2rem .7rem }
+.crosslink:hover { background:var(--accent); color:#fff }
+.reviewtools { display:flex; justify-content:flex-end; margin:.35rem 0 0 }
+.devmode { display:inline-flex; align-items:center; gap:.5rem; color:var(--dim);
+  font-size:.76rem; font-weight:650; cursor:pointer; user-select:none }
+.devmode input { appearance:none; position:relative; width:2.15rem; height:1.18rem;
+  margin:0; border:1px solid var(--dim); border-radius:99px;
+  background:var(--line); cursor:pointer; transition:background .15s,border-color .15s }
+.devmode input::after { content:""; position:absolute; width:.78rem; height:.78rem;
+  left:.14rem; top:.13rem; border-radius:50%; background:var(--ink);
+  transition:transform .15s }
+.devmode input:checked { background:var(--accent); border-color:var(--accent) }
+.devmode input:checked::after { transform:translateX(.95rem); background:#fff }
+.devmode input:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+.developer-only[hidden] { display:none !important }
+.developer-section { margin:2.4rem 0 0; padding:1rem;
+  border:1px dashed var(--line); border-radius:8px }
+.developer-section > h2:first-child { margin-top:0 }
+.breadcrumb { font-size:.8rem; color:var(--dim); margin:0 0 1rem }
+.breadcrumb a { color:var(--dim); text-decoration:none }
+.breadcrumb a:hover { color:var(--accent) }
+.breadcrumb .sep { opacity:.5; margin:0 .15rem }
+.sub { color:var(--dim); margin:.35rem 0 0; max-width:70ch }
+.blurb { color:var(--dim); margin:.2rem 0 1rem; max-width:75ch; font-size:.92rem }
+.callout { border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); padding:.8rem 1rem; border-radius:6px;
+  margin:1.2rem 0; max-width:75ch }
+.grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
+.card { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column; scroll-margin-top:1rem }
+.card:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.imgwrap { background:var(--well); display:flex; justify-content:center; cursor:zoom-in }
+.imgwrap img { max-width:100%; height:auto; max-height:440px; object-fit:contain }
+.coreinputs { margin:1.2rem 0 .4rem }
+.coreinputs h2 { margin:0 0 .5rem }
+.coreinputs .hint { color:var(--dim); font-weight:400; font-size:.85rem }
+.inputrow { display:flex; flex-wrap:wrap; gap:12px }
+.coreinput { margin:0; width:210px; max-width:100%;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  overflow:hidden; display:flex; flex-direction:column }
+.coreinput .imgwrap { border-bottom:1px solid var(--line) }
+.coreinput .imgwrap img { max-height:230px }
+.coreinput figcaption { color:var(--dim); font-size:.7rem; padding:.35rem .5rem;
+  word-break:break-all; font-family:ui-monospace,SFMono-Regular,Menlo,monospace }
+.meta { padding:.7rem .9rem 1rem; display:flex; flex-direction:column; gap:.55rem }
+.meta header { display:flex; align-items:baseline; gap:.6rem }
+.meta h3 { margin:0; font-size:.98rem; font-family:ui-monospace,Menlo,Consolas,monospace }
+.cost { color:var(--dim); font-size:.8rem; font-variant-numeric:tabular-nums }
+.call { margin-left:auto; font-size:.7rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase }
+.call.keeper { color:var(--ok) } .call.fixable { color:var(--warn) }
+.call.reject { color:var(--bad) } .call.other { color:var(--dim) }
+.call.pick { color:var(--accent) }
+.call { cursor:help }
+.recommendation { color:var(--ink) !important; font-size:.88rem !important;
+  padding:.55rem .65rem; border-left:3px solid var(--accent);
+  background:color-mix(in srgb,var(--accent) 8%,transparent); border-radius:4px }
+.recommendation strong { color:var(--accent); font-size:.7rem;
+  letter-spacing:.06em; text-transform:uppercase; margin-right:.3rem }
+.cardref { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem;
+  margin:-.15rem 0 .05rem }
+.refid { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  font-weight:600; color:var(--accent); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.08rem .5rem;
+  overflow-wrap:anywhere }
+.refid:hover { border-color:var(--accent) }
+.refbtn { font:inherit; font-size:.66rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.08rem .5rem; cursor:pointer; white-space:nowrap }
+.refbtn:hover { color:var(--ink); border-color:var(--dim) }
+.refbtn.ok { color:var(--ok); border-color:var(--ok) }
+table { border-collapse:collapse; width:100%; font-size:.86rem }
+.tablewrap { overflow-x:auto }
+th,td { text-align:left; padding:.45rem .6rem; border-bottom:1px solid var(--line);
+  vertical-align:top }
+th { color:var(--dim); font-weight:600; font-size:.72rem; letter-spacing:.1em;
+  text-transform:uppercase }
+td:first-child, td:nth-child(2) { white-space:nowrap }
+td:nth-child(2) { font-family:ui-monospace,Menlo,Consolas,monospace }
+footer { color:var(--dim); font-size:.8rem; margin-top:3rem;
+  border-top:1px solid var(--line); padding-top:1rem }
+.statrow { display:flex; flex-wrap:wrap; gap:.15rem .5rem; margin:0 0 .1rem;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.72rem;
+  color:var(--dim) }
+.statrow span { white-space:nowrap }
+.chips { display:flex; flex-wrap:wrap; gap:5px }
+.chip { font-size:.68rem; font-weight:600; padding:.14rem .5rem; border-radius:99px;
+  border:1px solid; letter-spacing:.02em; cursor:default }
+.chip.ok { color:var(--ok); border-color:var(--ok) }
+.chip.bad { color:var(--bad); border-color:var(--bad) }
+.chip.warn { color:var(--warn); border-color:var(--warn) }
+.chip.unclear { color:var(--dim); border-color:var(--dim) }
+.detector-details { display:flex; flex-direction:column; gap:.45rem }
+.chip-group-label { margin:0; color:var(--dim); font-size:.68rem;
+  font-weight:600; letter-spacing:.06em; text-transform:uppercase }
+.meta p { margin:0; color:var(--dim); font-size:.86rem }
+details.more { margin:0 }
+details.more > summary { list-style:none; cursor:pointer; color:var(--dim);
+  font-size:.72rem; font-weight:600; display:inline-block;
+  border:1px dashed var(--line); border-radius:99px; padding:.14rem .55rem }
+details.more > summary::-webkit-details-marker { display:none }
+details.more > summary:hover { color:var(--ink); border-color:var(--dim) }
+details.more[open] > summary { margin-bottom:.45rem }
+details.more .chips { margin-top:.1rem }
+details.more .chipnote { margin:.25rem 0 0; font-size:.78rem }
+.asks ol, .steps ol { margin:.5rem 0 0; padding-left:1.3rem;
+  display:flex; flex-direction:column; gap:.7rem }
+.asks li, .steps li { padding-left:.2rem }
+.asks li::marker, .steps li::marker { color:var(--accent); font-weight:700 }
+.asks .q, .steps .t { font-weight:700 }
+.who { font-size:.66rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); border:1px solid var(--accent);
+  border-radius:99px; padding:.05rem .45rem; margin-left:.45rem;
+  vertical-align:middle; white-space:nowrap }
+.when { font-size:.72rem; font-weight:600; color:var(--dim);
+  margin-left:.45rem; font-style:italic }
+.asks .d, .steps .d { color:var(--dim); font-size:.88rem; margin:.15rem 0 0 }
+.asks ul, .steps ul { margin:.3rem 0 0; padding-left:1.1rem; color:var(--dim);
+  font-size:.86rem; display:flex; flex-direction:column; gap:.25rem }
+.boxhead { font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:700; color:var(--accent); margin:0 }
+.intro { color:var(--dim); font-size:.9rem; margin:.3rem 0 0 }
+.ibtn { align-self:flex-start; font:inherit; font-size:.72rem; font-weight:600;
+  letter-spacing:.02em; color:var(--dim); background:transparent;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .65rem;
+  cursor:pointer }
+.ibtn:hover { color:var(--ink); border-color:var(--dim) }
+#lb, #ilb { position:fixed; inset:0; background:rgba(5,5,8,.93); display:flex;
+  justify-content:center; align-items:center; z-index:9; padding:12px }
+#lb { z-index:19; cursor:zoom-out; flex-direction:column; gap:.5rem;
+  touch-action:pan-y }
+#lb[hidden], #ilb[hidden] { display:none }
+#lb img { max-width:100%; max-height:calc(100vh - 7rem); object-fit:contain;
+  transform-origin:center center; will-change:transform; touch-action:none;
+  user-select:none; -webkit-user-drag:none; -webkit-user-select:none }
+#lb .cap { color:var(--dim); font-size:.85rem }
+.lb-meta { display:flex; flex-direction:column; align-items:center; gap:.35rem;
+  min-height:2.2rem; position:relative; z-index:20 }
+.lb-refrow { display:flex; align-items:center; justify-content:center; gap:.35rem;
+  flex-wrap:wrap }
+/* Keep both pill rows in the centered lightbox's layout while hidden. If a
+   comparison removes either row, the stack height changes and the image jumps. */
+.lb-refrow[hidden] { display:flex; visibility:hidden }
+.lb-refrow .refid { background:rgba(20,20,26,.72) }
+.lb-meta .refbtn { color:#bbb; border-color:#55515d;
+  background:rgba(20,20,26,.72) }
+.lb-meta .refbtn:hover { color:#fff; border-color:#aaa }
+.lb-control[hidden] { display:inline-block; visibility:hidden }
+.lb-control[aria-pressed="true"] { color:#fff; border-color:var(--accent);
+  background:color-mix(in srgb,var(--accent) 24%,rgba(20,20,26,.72)) }
+.lb-nav { position:fixed; top:50%; transform:translateY(-50%); z-index:20;
+  border:0; background:rgba(20,20,26,.55); color:#fff; font-size:2rem;
+  line-height:1; width:3rem; height:4rem; border-radius:.5rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  -webkit-tap-highlight-color:transparent }
+.lb-nav:hover { background:rgba(45,45,56,.8) }
+.lb-prev { left:max(.5rem, env(safe-area-inset-left)) }
+.lb-next { right:max(.5rem, env(safe-area-inset-right)) }
+.lb-count { position:fixed; left:0; right:0; z-index:20; text-align:center;
+  bottom:max(.7rem, env(safe-area-inset-bottom)); color:var(--dim);
+  font-size:.8rem; pointer-events:none }
+.panel { position:relative; background:var(--card); color:var(--ink);
+  border:1px solid var(--line); border-radius:8px; max-width:46rem;
+  width:calc(100vw - 2rem); max-height:88vh; overflow:auto;
+  padding:1.1rem 1.3rem 1.3rem }
+.panel h2 { margin:0 1.5rem .1rem 0; font-size:1rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace }
+.panel h3 { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--accent); margin:1.2rem 0 .4rem; font-weight:600 }
+.panel .gmeta { color:var(--dim); font-size:.82rem; margin:.15rem 0 0;
+  font-variant-numeric:tabular-nums }
+.panel .path { color:var(--dim); font-size:.78rem; margin:0 0 .35rem;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+.panel pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--pre);
+  border:1px solid var(--line); border-radius:6px; padding:.75rem;
+  font-size:.78rem; line-height:1.5; margin:0 }
+.refs { display:flex; flex-wrap:wrap; gap:.75rem }
+.refs figure { margin:0; width:130px; font-size:.72rem }
+.refs img { width:100%; border:1px solid var(--line); border-radius:4px;
+  cursor:zoom-in }
+.refs figcaption { overflow-wrap:anywhere; color:var(--dim); margin-top:.2rem }
+.none { color:var(--dim); font-size:.85rem; margin:0 }
+.x { position:absolute; top:.45rem; right:.6rem; font:inherit; font-size:1.25rem;
+  border:0; background:transparent; cursor:pointer; color:var(--dim); line-height:1 }
+.x:hover { color:var(--ink) }
+
+/* Runbook chrome. The house tokens, lightbox and asset pipeline come from
+   review_page.py; everything here is the runbook page's own structure —
+   a decision-first header, the choices as cards, and the technical plan
+   behind per-subsection disclosures. */
+.md h2 { font-size:1.15rem; margin:2.2rem 0 .3rem }
+.md h3 { font-size:1rem; margin:1.6rem 0 .3rem }
+.md h4 { font-size:.9rem; margin:1.2rem 0 .3rem; color:var(--dim) }
+.md p { max-width:68ch; margin:.5rem 0 0 }
+.md ul, .md ol { max-width:68ch; padding-left:1.4rem }
+.md li { margin:.25rem 0 }
+.md a { color:var(--accent) }
+.md code, dl.facts code, .choice code { background:var(--pre);
+  border:1px solid var(--line); border-radius:4px; padding:.05rem .3rem;
+  font-size:.85em; font-family:ui-monospace,Menlo,Consolas,monospace }
+.md pre.code { background:var(--pre); border:1px solid var(--line); border-radius:6px;
+  padding:.75rem 1rem; overflow-x:auto; font-size:.8rem; line-height:1.5 }
+.md pre.code code { background:none; border:0; padding:0 }
+.md hr { border:0; border-top:1px solid var(--line); margin:2rem 0 }
+.ico { width:1em; height:1em; flex:none; stroke:currentColor; fill:none;
+  stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; vertical-align:-.12em }
+
+/* --- header ------------------------------------------------------------- */
+h1 { font-size:1.55rem; margin:.25rem 0 0; letter-spacing:-.01em }
+.statusrow { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem .55rem;
+  margin:.7rem 0 0 }
+.statusrow.sub { margin:.4rem 0 0 }
+.statusnote { color:var(--dim); font-size:.82rem; margin:.5rem 0 0; max-width:70ch }
+.pill { display:inline-flex; align-items:center; gap:.35rem; font-size:.74rem;
+  font-weight:700; border:1px solid; border-radius:99px; padding:.16rem .6rem;
+  white-space:nowrap }
+.pill .dot { width:.45rem; height:.45rem; border-radius:50%; background:currentColor }
+.pill.s-await { color:var(--warn); border-color:var(--warn) }
+.pill.s-appr { color:var(--accent); border-color:var(--accent) }
+.pill.s-run { color:var(--ok); border-color:var(--ok) }
+.pill.s-done, .pill.s-hold { color:var(--dim); border-color:var(--line) }
+.fact { display:inline-flex; align-items:center; gap:.3rem; font-size:.75rem;
+  color:var(--dim); border:1px solid var(--line); border-radius:99px;
+  padding:.16rem .6rem; text-decoration:none }
+.fact b { color:var(--ink); font-weight:600 }
+a.fact.link { color:var(--accent); border-color:var(--accent) }
+.fact.inert { opacity:.55 }
+
+/* --- the ask, promoted -------------------------------------------------- */
+.ask { margin:1.1rem 0 0; border:1px solid var(--line); border-left:3px solid var(--accent);
+  background:var(--card); border-radius:8px; padding:.85rem 1rem }
+.ask .lbl { display:flex; align-items:center; gap:.4rem; font-size:.7rem; font-weight:700;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin:0 0 .3rem }
+.ask p { margin:0; max-width:70ch }
+a.jump { font-size:.8rem; font-weight:600; text-decoration:none; white-space:nowrap;
+  color:var(--accent) }
+
+/* --- at a glance + spend meter ------------------------------------------ */
+.glance { display:grid; gap:8px; margin:1rem 0 0;
+  grid-template-columns:repeat(auto-fit,minmax(132px,1fr)) }
+.tile { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.55rem .7rem; display:flex; flex-direction:column; gap:.12rem }
+.tile .k { display:flex; align-items:center; gap:.3rem; font-size:.66rem; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--dim) }
+.tile .v { font-size:1.05rem; font-weight:700; font-variant-numeric:tabular-nums }
+.tile .s { font-size:.72rem; color:var(--dim) }
+.meter { margin:.75rem 0 0; background:var(--card); border:1px solid var(--line);
+  border-radius:8px; padding:.7rem .85rem }
+.meter .top { display:flex; justify-content:space-between; align-items:baseline;
+  gap:.5rem; font-size:.74rem; color:var(--dim); margin:0 0 .4rem }
+.meter .top b { color:var(--ink); font-size:.9rem; font-variant-numeric:tabular-nums }
+.bar { height:9px; border-radius:99px; background:var(--well); border:1px solid var(--line);
+  overflow:hidden; display:flex }
+.bar i { display:block; height:100%; background:var(--accent) }
+.legend { display:flex; flex-wrap:wrap; gap:.2rem .9rem; margin:.45rem 0 0;
+  font-size:.7rem; color:var(--dim) }
+.legend span { display:inline-flex; align-items:center; gap:.32rem }
+.legend i { width:.6rem; height:.6rem; border-radius:2px; background:var(--accent); flex:none }
+.legend i.r { opacity:.45 }
+.legend i.o { background:var(--well); border:1px solid var(--line) }
+
+/* --- section nav + sections --------------------------------------------- */
+.snav { position:sticky; top:0; z-index:5; margin:1.4rem -16px 0; padding:.5rem 16px;
+  background:var(--bg); border-bottom:1px solid var(--line);
+  display:flex; gap:.35rem; overflow-x:auto; scrollbar-width:none }
+.snav::-webkit-scrollbar { display:none }
+.snav a { font-size:.72rem; font-weight:600; color:var(--dim); text-decoration:none;
+  border:1px solid var(--line); border-radius:99px; padding:.18rem .6rem; white-space:nowrap }
+.snav a:hover { color:var(--ink); border-color:var(--dim) }
+section.s { margin:2.1rem 0 0; scroll-margin-top:3.2rem }
+section.s > h2 { display:flex; align-items:center; gap:.5rem; font-size:1.02rem;
+  margin:0 0 .3rem }
+section.s > h2 .ico { color:var(--accent); width:1.05em; height:1.05em }
+section.s > h2::after { content:""; flex:1; height:1px; background:var(--line) }
+.md.cta { background:var(--card); border:1px solid var(--accent); border-radius:10px;
+  padding:.35rem 1.05rem .95rem; margin-top:.6rem }
+.md.cta ol li::marker, .md.cta ul li::marker { color:var(--accent); font-weight:700 }
+
+/* --- pipeline strip + round lineage ------------------------------------- */
+.strips { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.7rem .85rem; margin:.9rem 0 0 }
+.stage, .lineage { display:flex; flex-wrap:wrap; align-items:center; gap:.3rem }
+.lineage { margin-top:.55rem }
+.stage .lbl, .lineage .lbl { font-size:.64rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--dim); margin-right:.15rem }
+.stage .st { font-size:.71rem; font-weight:600; color:var(--dim);
+  border:1px solid var(--line); border-radius:99px; padding:.16rem .55rem; white-space:nowrap }
+.stage .st.now { color:var(--bg); background:var(--accent); border-color:var(--accent) }
+.stage .st.opt { border-style:dashed }
+.stage .arw, .lineage .arw { color:var(--line); font-size:.8rem }
+.lineage .rn { font-size:.72rem; color:var(--dim); border:1px solid var(--line);
+  border-radius:6px; padding:.16rem .5rem }
+.lineage .rn.this { color:var(--ink); border-color:var(--accent); font-weight:700 }
+.lineage .rn.next { border-style:dashed }
+
+/* --- choices as cards ---------------------------------------------------
+   The choices table is the round's comparison and the first thing a reviewer
+   reads. As a table its prose columns forced a 544px grid into a 343px phone
+   column, so the same cells render as one card per choice and simply stack. */
+.choices { display:grid; gap:12px; margin:.7rem 0 0;
+  grid-template-columns:repeat(auto-fit,minmax(255px,1fr)) }
+.choice { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.85rem .95rem; display:flex; flex-direction:column; gap:.5rem }
+.choice header { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap }
+.choice .key { font-size:.78rem; font-weight:800; color:var(--accent);
+  border:1px solid var(--accent); border-radius:6px; padding:.1rem .42rem }
+.choice h3 { margin:0; font-size:.97rem; font-weight:700 }
+.choice .rolls { margin-left:auto; font-size:.7rem; font-weight:700; color:var(--dim);
+  border:1px solid var(--line); border-radius:99px; padding:.1rem .5rem;
+  white-space:nowrap; font-variant-numeric:tabular-nums }
+.choice ul { margin:0; padding:0; list-style:none; display:flex; flex-direction:column;
+  gap:.32rem }
+.choice li { display:flex; gap:.45rem; font-size:.87rem; line-height:1.45 }
+.choice li .ico { color:var(--accent); margin-top:.28em; width:.5em; height:.5em }
+.choice .foot { display:flex; flex-direction:column; gap:.3rem; margin-top:auto;
+  padding-top:.15rem }
+.choice .cx { margin:0; font-size:.78rem; color:var(--dim) }
+.choice .ck { font-size:.62rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--dim); margin-right:.4rem }
+.choice a.jump { display:inline-flex; align-items:center; gap:.3rem; font-size:.71rem;
+  color:var(--dim); border:1px solid var(--line); border-radius:99px;
+  padding:.14rem .55rem; align-self:flex-start; margin-top:.15rem }
+.choice a.jump:hover { color:var(--accent); border-color:var(--accent) }
+
+/* --- roll matrix -------------------------------------------------------- */
+.shape { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.8rem .9rem; margin:12px 0 0; overflow-x:auto }
+.mx { display:grid; gap:6px; min-width:min(100%,320px) }
+.mx .hd { font-size:.63rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--dim); text-align:center; overflow-wrap:anywhere }
+.mx .rh { font-size:.74rem; font-weight:700; display:flex; align-items:center;
+  padding-right:.4rem; white-space:nowrap; max-width:9rem; overflow:hidden;
+  text-overflow:ellipsis }
+.mx .cell { background:var(--card); border:1px solid var(--line); border-radius:5px;
+  height:30px; display:flex; align-items:center; justify-content:center;
+  color:var(--accent) }
+.mx .cell.empty { opacity:.25; background:none }
+.shape .cap { font-size:.74rem; color:var(--dim); margin:.55rem 0 0 }
+.shape .cap b { color:var(--ink) }
+
+/* --- cost breakdown ----------------------------------------------------- */
+.costgrid { display:grid; gap:6px; margin:.7rem 0 0; max-width:34rem }
+.costrow { display:grid; grid-template-columns:8rem 1fr 5.5rem; align-items:center;
+  gap:.6rem; font-size:.8rem }
+.costrow .n { color:var(--dim); font-family:ui-monospace,Menlo,monospace; font-size:.76rem;
+  overflow-wrap:anywhere }
+.costrow .t { height:7px; border-radius:99px; background:var(--accent); opacity:.75 }
+.costrow .a { text-align:right; font-variant-numeric:tabular-nums; font-weight:600 }
+.costrow.total { border-top:1px solid var(--line); padding-top:.35rem; margin-top:.2rem }
+.costrow.total .n { color:var(--ink); font-weight:700 }
+
+/* --- round facts -------------------------------------------------------- */
+dl.facts { display:grid; grid-template-columns:auto 1fr; gap:.35rem 1.1rem; margin:.7rem 0 0;
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.85rem 1rem; font-size:.86rem }
+dl.facts dt { color:var(--dim); font-weight:700; white-space:nowrap; font-size:.72rem;
+  letter-spacing:.06em; text-transform:uppercase; padding-top:.12rem }
+dl.facts dd { margin:0; max-width:66ch }
+@media (max-width:520px) {
+  dl.facts { grid-template-columns:1fr; gap:.1rem }
+  dl.facts dd { margin:0 0 .55rem }
+}
+
+/* --- technical plan ----------------------------------------------------- */
+details.tech { margin:.6rem 0 0; border:1px solid var(--line); border-radius:8px;
+  background:var(--card); padding:0 .95rem }
+details.tech > summary { cursor:pointer; padding:.7rem 0; font-weight:600; font-size:.88rem;
+  list-style:none; display:flex; align-items:center; gap:.45rem }
+details.tech > summary::-webkit-details-marker { display:none }
+details.tech > summary .ico { color:var(--accent) }
+details.tech > summary .chev { margin-left:auto; color:var(--dim); transition:transform .15s }
+details.tech[open] > summary .chev { transform:rotate(90deg) }
+details.tech .inner { padding:0 0 .8rem }
+details.tech .inner > :first-child { margin-top:0 }
+details.tech .md p, details.tech .md ul, details.tech .md ol { font-size:.87rem }
+
+/* --- tables (the experiment matrix and any prose table) -----------------
+   review_page.py pins cols 1-2 to nowrap+monospace for its short id columns;
+   a runbook table carries prose, so undo both and let auto layout balance. */
+.md .tablewrap { margin:.4rem 0 1.2rem }
+.md th, .md td { white-space:normal; overflow-wrap:break-word; font-family:inherit }
+.md td code { overflow-wrap:anywhere }
+.md table { min-width:30rem }
+
+/* --- inputs: one block per case, images grouped by artifact -------------- */
+.rb-inputs { margin:2.1rem 0 0; scroll-margin-top:3.2rem }
+.rb-inputs > h2 { display:flex; align-items:center; gap:.5rem; font-size:1.02rem;
+  margin:0 0 .3rem }
+.rb-inputs > h2 .ico { color:var(--accent); width:1.05em; height:1.05em }
+.rb-inputs > h2::after { content:""; flex:1; height:1px; background:var(--line) }
+.rb-case { background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:.8rem 1rem 1rem; margin:.9rem 0; scroll-margin-top:3.4rem }
+.rb-case:target { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) }
+.rb-case-h { display:flex; flex-wrap:wrap; align-items:baseline; gap:.2rem .6rem;
+  margin:0; font-size:1rem }
+.rb-case-count { color:var(--dim); font-size:.72rem; font-weight:400;
+  font-variant-numeric:tabular-nums }
+.rb-case-note { color:var(--dim); font-size:.88rem; margin:.3rem 0 0; max-width:70ch }
+.rb-art { margin:.85rem 0 0 }
+.rb-art-h { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; margin:0 0 .4rem }
+.rb-art-label { font-size:.7rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--accent) }
+.rb-art-id { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:.72rem;
+  color:var(--dim); overflow-wrap:anywhere }
+.rb-art .ibtn { padding:.08rem .5rem; font-size:.66rem }
+.rb-strip { display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)) }
+.rb-fig { margin:0; min-width:0; background:var(--well); border:1px solid var(--line);
+  border-radius:6px; overflow:hidden; display:flex; flex-direction:column }
+.rb-fig .imgwrap { border-bottom:1px solid var(--line) }
+.rb-fig .imgwrap img { max-height:300px }
+.rb-fig figcaption { color:var(--dim); font-size:.7rem; padding:.3rem .5rem }
+.rb-none { color:var(--dim); font-size:.86rem; margin:.6rem 0 0 }
+details.rb-prompt { margin:.85rem 0 0; background:var(--pre); border:1px solid var(--line);
+  border-radius:6px; padding:0 .9rem }
+details.rb-prompt > summary { cursor:pointer; padding:.55rem 0; font-size:.82rem;
+  font-weight:600; color:var(--accent); list-style:none; display:flex;
+  align-items:center; gap:.4rem }
+details.rb-prompt > summary::-webkit-details-marker { display:none }
+details.rb-prompt .chev { transition:transform .15s }
+details.rb-prompt[open] .chev { transform:rotate(90deg) }
+details.rb-prompt .rb-size { margin-left:auto; color:var(--dim); font-weight:400;
+  font-size:.72rem; font-variant-numeric:tabular-nums }
+details.rb-prompt .phead { display:flex; align-items:center; gap:.5rem; margin:0 0 .4rem }
+details.rb-prompt .path { color:var(--dim); font-size:.72rem; margin:0; flex:1; min-width:0;
+  font-family:ui-monospace,Menlo,Consolas,monospace; overflow-wrap:anywhere }
+/* No inner max-height: the text is already behind a disclosure, and a nested
+   scroller inside a long page is miserable to use on a phone. */
+details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--bg);
+  border:1px solid var(--line); border-radius:6px; padding:.7rem .85rem; font-size:.78rem;
+  line-height:1.55; margin:0 0 .85rem }
+.copy { font:inherit; font-size:.68rem; font-weight:600; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:99px;
+  padding:.12rem .55rem; cursor:pointer; white-space:nowrap }
+.copy:hover { color:var(--ink); border-color:var(--dim) }
+.copy.done { color:var(--ok); border-color:var(--ok) }
+:focus-visible { outline:2px solid var(--accent); outline-offset:2px }
+@media (prefers-reduced-motion:reduce) { * { transition:none !important } }
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/></symbol><symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 4v16M5 8h14M7.5 8l-2.5 5h5zM16.5 8l2.5 5h-5z"/></symbol><symbol id="i-in" viewBox="0 0 24 24"><path d="M12 3v11m0 0 4-4m-4 4-4-4M4 17v3h16v-3"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.8 12 5.8 21.5 12 21.5 12 18 18.2 12 18.2 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.6"/></symbol><symbol id="i-hand" viewBox="0 0 24 24"><path d="M9 11V5.6a1.6 1.6 0 0 1 3.2 0V11m0-1.2a1.6 1.6 0 0 1 3.2 0V12m0-1a1.6 1.6 0 0 1 3.2 0v4.4A5.6 5.6 0 0 1 12.8 21h-1.3a5 5 0 0 1-3.9-1.9L4.9 15a1.6 1.6 0 0 1 2.5-2L9 15"/></symbol><symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4v9.2M14.4 9.6a2.6 2.6 0 0 0-4.8 1.2c0 2.6 4.8 1 4.8 3.6a2.6 2.6 0 0 1-4.8 1.2"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M21.2 12h-2.4M5.2 12H2.8M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7M18.5 18.5l-1.7-1.7M7.2 7.2 5.5 5.5"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></symbol><symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/></symbol><symbol id="i-img" viewBox="0 0 24 24"><rect x="3.2" y="4.6" width="17.6" height="14.8" rx="2"/><circle cx="8.6" cy="9.8" r="1.5"/><path d="m3.9 17 5-4.6 4 3.4 3-2.4 4.2 3.6"/></symbol><symbol id="i-txt" viewBox="0 0 24 24"><path d="M6.5 3.6h7.2L18.5 8.4V20.4H6.5z"/><path d="M13.4 3.8v4.8h4.9M9.2 12.6h6M9.2 16h6"/></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="m9.5 5.5 7 6.5-7 6.5"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.4V12l3 1.8"/></symbol><symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6.5" cy="5.5" r="2.2"/><circle cx="6.5" cy="18.5" r="2.2"/><circle cx="17.5" cy="8.5" r="2.2"/><path d="M6.5 7.7v8.6M17.5 10.7c0 3.4-2.6 4.6-5.4 5.1"/></symbol><symbol id="i-flask" viewBox="0 0 24 24"><path d="M10 3.5h4M10.8 3.5v6.2L5.6 18a2 2 0 0 0 1.7 3h9.4a2 2 0 0 0 1.7-3l-5.2-8.3V3.5"/><path d="M8 14.5h8"/></symbol><symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 3.2 20 7.6v8.8L12 20.8 4 16.4V7.6z"/><path d="M4 7.6l8 4.4 8-4.4M12 12v8.8"/></symbol></defs></svg>
+<main>
+<div class="eyebrow">Round 1 · concept sweep</div>
+<h1>DAIMYO — Round 1 runbook</h1>
+<div class="statusrow"><span class="pill s-await"><span class="dot"></span>Awaiting sign-off</span><span class="fact">Opened <b>2026-08-31</b></span></div>
+<div class="statusrow sub"><span class="fact inert" title="Published at round close">&#128203; Review panel &mdash; at round close</span></div>
+<div class="ask"><p class="lbl"><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</p><p>Sign-off on this plan (models, two arms, cap). <a class="jump" href="#ask">Read the full ask &darr;</a></p></div>
+<div class="glance"><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg>Rolls</span><span class="v">10</span><span class="s">across 2 cases</span></div><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg>Shape</span><span class="v">2 &times; 5</span><span class="s">cases × models</span></div><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Planned</span><span class="v">$1.55</span><span class="s">of a $2.50 cap</span></div><div class="tile"><span class="k"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg>Gemini mode</span><span class="v">Batch</span><span class="s">the two flash31 cells, and the SLOW blind-detect lane&#x27;s two Batch waves</span></div></div>
+<div class="meter"><p class="top"><span>Planned spend against the round cap</span><b>$1.55 / $2.50</b></p><div class="bar"><i class="spent" style="width:42%;"></i><i class="spent" style="width:20%;opacity:.45"></i></div><div class="legend"><span><i></i>images $1.05</span><span><i class=r></i>blind detect $0.50</span><span><i class="o"></i>Headroom $0.95</span></div></div>
+<nav class="snav"><a href="#goal">Goal</a><a href="#choices">Choices</a><a href="#inputs">Inputs</a><a href="#judged">Judging</a><a href="#ask">The ask</a><a href="#cost">Cost</a><a href="#facts">Round facts</a><a href="#tech">Technical plan</a></nav>
+<section class="s" id="goal"><h2><svg class="ico" aria-hidden="true"><use href="#i-target"/></svg>Goal</h2><div class="md"><p>Daimyo&#x27;s kabuto must be built around his frog&#x27;s dome eyes — a construction no image model has a training prior for, and one that changes head geometry, so it has to be right in the base image of his lineage before any concept or turnaround work can proceed (team brief §9&#x27;s exemplar plan). This round generates that construction two ways and lets the human pick the winning geometry, which becomes the reference asset every later Daimyo round conditions on. It also settles, with data, whether isolating a hard head construction beats hunting it inside full-character rolls — a question Kage&#x27;s hood (the other prior-less head construction) will reuse.</p></div><div class="strips"><div class="stage"><span class="lbl">Default path</span><span class="st now">Concept</span><span class="arw">&rsaquo;</span><span class="st">Turnaround</span><span class="arw">&rsaquo;</span><span class="st">Meshy</span><span class="arw">&rsaquo;</span><span class="st">Mesh check</span><span class="arw">&rsaquo;</span><span class="st">Test print</span></div><div class="lineage"><span class="lbl">This round</span><span class="rn this">r1</span><span class="arw">&rsaquo;</span><span class="rn next">r2 — Daimyo concept/turnaround work conditioned on the selected kabuto exemplar</span></div></div></section>
+<section class="s" id="choices"><h2><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg>The choices on the table</h2><div class="md"><p>Both arms run the same five fresh-concept models — the four ratified defaults (<code>flash31</code>, <code>gptimage2</code>, <code>seedream45</code>, <code>grokq</code>) plus <code>riverflow25</code> as the named Supported specialist (it produced Tiger&#x27;s winning r2 base) — one roll each, text-only, judged on one primary criterion: the kabuto-over-eye-domes construction.</p></div><div class="choices"><article class="choice"><header><span class="key">A</span><h3>Bust isolation (5 models, 1 roll each)</h3><span class="rolls">5 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether maximum pixel density on head + shoulders yields a cleaner, more readable kabuto-over-eye-domes construction</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>text only (<code>prompts/r1-bust.txt</code>)</p><a class="jump" href="#case-a-bust-isolation-5-models-1-roll-each"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article><article class="choice"><header><span class="key">B</span><h3>Full character (5 models, 1 roll each)</h3><span class="rolls">5 rolls</span></header><ul><li><svg class="ico" aria-hidden="true"><use href="#i-dot"/></svg><span>Whether the construction lands inside a complete command-advance figure — a clean winner here doubles as the concept lineage base and saves a round</span></li></ul><div class="foot"><p class="cx"><span class="ck">Input(s)</span>text only (<code>prompts/r1-full.txt</code>)</p><a class="jump" href="#case-b-full-character-5-models-1-roll-each"><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>See this case&rsquo;s inputs</a></div></article></div><div class="shape"><div class="mx" style="grid-template-columns:auto repeat(5,minmax(46px,1fr))"><span></span><span class="hd">flash31</span><span class="hd">gptimage2</span><span class="hd">seedream45</span><span class="hd">grokq</span><span class="hd">riverflow25</span><span class="rh">A</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="rh">B</span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span><span class="cell"><svg class="ico" aria-hidden="true"><use href="#i-img"/></svg></span></div><p class="cap"><b>10 rolls total</b> — 2 choices × 5 models</p></div><div class="md"><p>Ten calls total, one per (arm × model) cell, under the $2.50 cap below.</p></div></section>
+<section class="rb-inputs" id="inputs">
+<h2><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>Inputs — what this round runs on</h2>
+<p class="blurb">Everything that goes in, grouped by the choice it belongs to. Click any image to zoom; open a prompt to read the exact text this round spends against. Crop sets show both the cut overview and every exact output crop.</p>
+<section class="rb-case" id="case-a-bust-isolation-5-models-1-roll-each">
+<h3 class="rb-case-h">A — Bust isolation (5 models, 1 roll each)<span class="rb-case-count">1 prompt</span></h3>
+<p class="rb-case-note">Head-and-shoulders bust, front three-quarter view: maximum pixel density on the kabuto-over-eye-domes construction. Text-only; no image inputs.</p>
+<p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — r1-bust.txt<span class="rb-size">3 kB · 495 words</span></summary><div class="phead"><p class="path">projects/martial-frogs/daimyo/prompts/r1-bust.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>A head-and-shoulders BUST portrait of one character, seen in a front three-quarter view (the head turned about 30 degrees from straight-on), the head and helmet filling most of the frame, cropped from the top of the helmet crest to just below the shoulder plates. This image exists to show ONE thing perfectly: how his samurai helmet is built around his frog eyes — every part of that helmet-to-eye construction must be sharp, unoccluded and readable, and BOTH dome eyes stay fully visible despite the head turn.
+
+THE CHARACTER — DAIMYO, the frog samurai captain:
+An anthropomorphic FROG samurai — a frog playing straight samurai, cool and dignified, never comedic, never cartoon-turtle. Tall, athletic-heavy martial-artist frame, roughly five to five-and-a-half heads, torso vertical: broad shoulders and a deep chest under the armor — powerfully built, but an athlete. Unmistakable frog head: two large hemispherical DOME EYES on top of the skull, a wide lipless frog mouth, a short thick neck, smooth moss-green skin with a lighter throat. NO human ears, NO nose, NO hair, NO warts. His expression is calm authority.
+
+THE CRITICAL CONSTRUCTION — the kabuto forged around the dome eyes:
+He wears a samurai KABUTO (helmet) FORGED AROUND his frog anatomy. The helmet bowl is shaped to accommodate his two large dome eyes: the eyes remain fully visible and clearly readable as frog eyes, integrated into the helmet&#x27;s engineered design — molded eye housings, shaped brim cutouts, or a bowl profile that rises over each eye. Both dome eyes are fully visible — neither eye is occluded by the helmet. It must look like armor a master armorer built FOR a frog. It is NOT a human-proportioned kabuto perched on top of the head, NOT a helmet with eye slits, and the dome eyes are NEVER hidden inside the bowl. His face below the brim is bare — NO menpō, NO face mask of any kind.
+The kabuto carries a MAEDATE front crest: one bold FLAT sunburst-fan shape — a single solid flat fan of thick geometric rays. No thin spikes, no wires, no antlers, no horns.
+
+THE ARMOR:
+Ornate lamellar DO-MARU body armor in a deep matte tone, wrapped high on his squat frog torso; PAIRED SODE shoulder plates, one on each shoulder; a short JINBAORI over-vest worn open over the armor, giving the upper body extra mass. Armor lames and plates are chunky, bold and geometric; every edge is thick; nothing floats off the body. The do-maru, sode and jinbaori plates are CLEAN — no heraldic emblem, no mon, no lettering anywhere on the body armor; the kabuto&#x27;s maedate crest above is the one deliberate crest.
+
+MATERIALS AND RENDER:
+High-detail photorealistic character concept render. Every surface is solid and opaque with a matte finish — no gloss, no lacquer sheen, no mirror polish, no translucency, no glow (lacquer is a paint-stage effect; render everything matte). Plain light neutral studio background. No text, no labels, no logos, no display base, no other figures.
+</pre></details>
+</section>
+<section class="rb-case" id="case-b-full-character-5-models-1-roll-each">
+<h3 class="rb-case-h">B — Full character (5 models, 1 roll each)<span class="rb-case-count">1 prompt</span></h3>
+<p class="rb-case-note">Full-body straight-on front view in the command-advance pose, judged primarily on the kabuto construction; a clean winner can double as the concept lineage base. Text-only; no image inputs.</p>
+<p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Prompt — r1-full.txt<span class="rb-size">4 kB · 703 words</span></summary><div class="phead"><p class="path">projects/martial-frogs/daimyo/prompts/r1-full.txt</p><button class="copy" data-copy>Copy prompt</button></div><pre>A FULL-BODY character concept of one character, straight-on FRONT view, the whole figure visible from helmet crest to feet with a small margin all around.
+
+THE POSE — a commanding mid-stride advance, one natural walking instant: he strides calmly toward the camera, torso tall and vertical, chin level, dome eyes forward. One open palm is extended toward the camera at shoulder height in a calm halt gesture — that extended palm is on the VIEWER&#x27;S RIGHT. His other arm hangs relaxed at his side, its hand open and clearly EMPTY. Both hands are big webbed four-digit frog hands, digits connected by webbing and ending in rounded pads — no claws, no talons, no nails. His leading foot — the one on the VIEWER&#x27;S LEFT — is pressed flat along its full length into the ground; the trailing foot sits naturally behind in the same walking instant; BOTH bare webbed feet are at ground level. No jump, no lifted foot, no tiptoe.
+
+THE LOWER BODY AND SWORDS: knee-length hakama-style trousers cut for his long folded frog legs, gathered below the knee; bare moss-green webbed feet and lower legs visible below them — no boots, no greaves, no footwear. A broad obi sash wraps the waist. His sheathed DAISHŌ — a katana and a shorter wakizashi, each fully inside its saya (scabbard) — is tucked through the obi at ONE hip only: in this FRONT view both saya ride on the VIEWER&#x27;S RIGHT, flush against his hip and thigh, tips pinned close to the leg, and the extended arm stays clear of them so both saya remain fully visible. The VIEWER&#x27;S LEFT hip is clean — NO sword there, and exactly two sheathed swords in total. Nothing is held in either hand; no drawn blade anywhere.
+
+THE CHARACTER — DAIMYO, the frog samurai captain:
+An anthropomorphic FROG samurai — a frog playing straight samurai, cool and dignified, never comedic, never cartoon-turtle. Tall, athletic-heavy martial-artist frame, roughly five to five-and-a-half heads, torso vertical: broad shoulders and a deep chest under the armor — powerfully built, but an athlete. Unmistakable frog head: two large hemispherical DOME EYES on top of the skull, a wide lipless frog mouth, a short thick neck, smooth moss-green skin with a lighter throat. NO human ears, NO nose, NO hair, NO warts. His expression is calm authority.
+
+THE CRITICAL CONSTRUCTION — the kabuto forged around the dome eyes:
+He wears a samurai KABUTO (helmet) FORGED AROUND his frog anatomy. The helmet bowl is shaped to accommodate his two large dome eyes: the eyes remain fully visible and clearly readable as frog eyes, integrated into the helmet&#x27;s engineered design — molded eye housings, shaped brim cutouts, or a bowl profile that rises over each eye. Both dome eyes are fully visible — neither eye is occluded by the helmet. It must look like armor a master armorer built FOR a frog. It is NOT a human-proportioned kabuto perched on top of the head, NOT a helmet with eye slits, and the dome eyes are NEVER hidden inside the bowl. His face below the brim is bare — NO menpō, NO face mask of any kind.
+The kabuto carries a MAEDATE front crest: one bold FLAT sunburst-fan shape — a single solid flat fan of thick geometric rays. No thin spikes, no wires, no antlers, no horns.
+
+THE ARMOR:
+Ornate lamellar DO-MARU body armor in a deep matte tone, wrapped high on his squat frog torso; PAIRED SODE shoulder plates, one on each shoulder; a short JINBAORI over-vest worn open over the armor, giving the upper body extra mass. Armor lames and plates are chunky, bold and geometric; every edge is thick; nothing floats off the body. The do-maru, sode and jinbaori plates are CLEAN — no heraldic emblem, no mon, no lettering anywhere on the body armor; the kabuto&#x27;s maedate crest above is the one deliberate crest.
+
+MATERIALS AND RENDER:
+High-detail photorealistic character concept render. Every surface is solid and opaque with a matte finish — no gloss, no lacquer sheen, no mirror polish, no translucency, no glow (lacquer is a paint-stage effect; render everything matte). Plain light neutral studio background. No text, no labels, no logos, no display base, no other figures.
+</pre></details>
+</section>
+</section>
+<section class="s" id="judged"><h2><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg>How the round is judged</h2><div class="md"><p>Subjective machine image judgements are ADVISORY evidence for the human eye-call, which is the source of truth (standing policy, Dimitri 2026-08-22).</p>
+<ul>
+<li><strong>FAST:</strong> deterministic decode/aspect screens, then a fresh-context crop audit per artifact as it lands — mandatory 2x-upscale crops of the helmet and eye-dome region, plus (Arm B) hands, feet/ground contact, and the daishō side read as relations per the skill&#x27;s chirality protocol. Once all ten fast results are logged, the provisional panel is shared.</li>
+<li><strong>SLOW:</strong> one <code>blind_detect_round.py</code> manifest over all ten artifacts (two Batch waves; run id recorded in <code>rounds.md</code>; recovery only via <code>--resume-run</code>). Any INCOMPLETE (provider-truncated) record satisfies completeness but carries no verdict and must be named in reconciliation; a mattering artifact gets a fresh sync <code>blind_detect.py</code> re-check appended as an additional record. Every crop-vs-blind disagreement is a mandatory human look.</li>
+<li><strong>Human gate:</strong> Dimitri (Jawaknight welcome) picks the winning kabuto construction. The primary criterion is the helmet-to-eye-dome geometry: readable frog eyes integrated into an engineered helmet, printable bold forms, flat-fan maedate, no human-helmet-perched-on-head read. Secondary, for Arm B only: whether the winning roll is also usable as the concept lineage base (pose, proportions, daishō placement — check specifically that the extended halt-arm does not occlude the saya, which share its viewer side). Two named trade-offs for the reviewer: Arm A&#x27;s front three-quarter camera may drift toward profile (the measured profile-pull attractor) and occlude the far dome eye — an Arm A winner must show both eye housings readably — and an Arm A winner&#x27;s ~30° camera will not match the straight-on front camera of later full-figure work (an img2img reference holds best for its own camera), acceptable for a construction exemplar but worth weighing against a clean Arm B roll. Reject-all with fresh direction is a fully valid outcome.</li>
+</ul>
+<p>The provisional artifact starts eye-review but cannot close the round, promote a keeper, or authorize downstream work or spend. No waiver of the slow lane is proposed.</p></div></section>
+<section class="s" id="ask"><h2><svg class="ico" aria-hidden="true"><use href="#i-hand"/></svg>What we need from you</h2><div class="md cta"><p>Sign-off on this plan (models, two arms, cap). After execution: the winning kabuto construction — from either arm — or reject-all with direction. If an Arm B roll wins cleanly, say whether it is also the concept base.</p></div></section>
+<section class="s" id="cost"><h2><svg class="ico" aria-hidden="true"><use href="#i-coin"/></svg>Cost</h2><div class="md"><p>Generation, one roll per cell: 2 × flash31 Batch (~$0.07 each), 2 × gptimage2 pinned portrait ($0.165 each), 6 × OpenRouter 2K (seedream45/grokq ~$0.07, riverflow25 ~$0.15 each) — approximately <strong>$1.05</strong> total. SLOW evaluation: blind-detect reserve at ≥$0.05/roll × 10 = <strong>$0.50</strong>. FAST evaluation is local/free. Round total ≈ <strong>$1.55</strong> under a <strong>$2.50 cap</strong>. Live wrapper preflights remain authoritative over these catalog-based estimates.</p></div><div class="costgrid"><div class="costrow"><span class="n">images</span><span class="t" style="width:100%"></span><span class="a">$1.05</span></div><div class="costrow"><span class="n">blind detect</span><span class="t" style="width:47.62%"></span><span class="a">$0.50</span></div><div class="costrow total"><span class="n">planned</span><span></span><span class="a">$1.55</span></div></div></section>
+<section class="s" id="facts"><h2><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg>Round facts</h2><dl class="facts"><dt>Round type</dt><dd>concept sweep — kabuto head-construction exemplar, two arms</dd><dt>Owner</dt><dd>Claude (local) → Dimitri review</dd><dt>Date opened</dt><dd>2026-08-31</dd><dt>Inputs</dt><dd>text only; no image inputs (the Tiger anthro-athlete anatomy contract is inherited textually via <code>../spec.md</code>)</dd><dt>Produces</dt><dd><code>daimyo-r1-bust-&lt;model&gt;-1</code> × 5 and <code>daimyo-r1-full-&lt;model&gt;-1</code> × 5 (models: flash31, gptimage2, seedream45, grokq, riverflow25)</dd><dt>Branch</dt><dd><code>claude/daimyo-open-r1</code></dd><dt>Gemini mode</dt><dd>batch (the two flash31 cells, and the SLOW blind-detect lane&#x27;s two Batch waves; a job may queue minutes–hours — submit all independent cells up front and audit each as it lands)</dd><dt>Evaluation lanes</dt><dd>FAST — decode/aspect screens + fresh-context crop audit per artifact as it lands; SLOW — one round-level two-wave Batch blind detector over all ten artifacts + mandatory crop/blind reconciliation</dd><dt>Next</dt><dd>r2 — Daimyo concept/turnaround work conditioned on the selected kabuto exemplar</dd><dt>Models</dt><dd>flash31 · gptimage2 · seedream45 · grokq · riverflow25</dd><dt>Spend</dt><dd>images $1.05 · blind detect $0.50 · cap $2.50</dd></dl></section>
+<section class="s" id="tech"><h2><svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>Technical plan</h2>
+<p class="intro">models, prompts, commands (pipeline detail)</p>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-list"/></svg><span>What changed going in (spec / prompt / process deltas)</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><ul>
+<li>New character: <code>projects/martial-frogs/daimyo/spec.md</code> v1 (this PR) — ground truth from team-brief §6&#x27;s Daimyo block; inherits Tiger&#x27;s selected anthro-athlete anatomy contract; declares the kabuto-over-eye-domes feature prior-less + structural per the skill&#x27;s triage, making this exemplar round the required first step (brief §9).</li>
+<li>Two new prompts ship in this PR: <code>prompts/r1-bust.txt</code> and <code>prompts/r1-full.txt</code>. Their character/kabuto/armor/materials block is byte-identical (held constant); the arms differ only in their leading framing/pose section. Both are text-only and attach no images. Arm B pins the pose per the attractor rules: straight-on front view, one coherent walk instant, exactly three viewer-frame anchors (extended palm VIEWER&#x27;S RIGHT, leading foot VIEWER&#x27;S LEFT, both saya VIEWER&#x27;S RIGHT — the spec&#x27;s character-left hip; the relaxed arm&#x27;s side is implied, not separately anchored), one explicit negative for the single asymmetry (no sword on the viewer-left hip) and for the excluded iconic variant (no menpō); the extended arm is told to stay clear of the saya. Mon/number areas stay clean per the deferred-asset rule.</li>
+<li>Process: this is the first round on this character; the coordinator manifest (<code>r1-generation.json</code>, this PR) covers all ten cells with one planned <code>-1</code> roll each.</li>
+</ul></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-scale"/></svg><span>Experiment matrix</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><div class="tablewrap"><table><thead><tr><th>#</th><th>Source / base (input)</th><th>Variant axes</th><th>Prompt</th><th>Out stem (output)</th></tr></thead><tbody><tr><td>1</td><td>text only</td><td>bust × flash31 (compare, Batch)</td><td><code>r1-bust.txt</code></td><td><code>daimyo-r1-bust-flash31</code></td></tr><tr><td>2</td><td>text only</td><td>bust × gptimage2 (bounded direct OpenAI, 1024×1536)</td><td><code>r1-bust.txt</code></td><td><code>daimyo-r1-bust-gptimage2</code></td></tr><tr><td>3</td><td>text only</td><td>bust × seedream45 (OpenRouter, 2K, 3:4)</td><td><code>r1-bust.txt</code></td><td><code>daimyo-r1-bust-seedream45</code></td></tr><tr><td>4</td><td>text only</td><td>bust × grokq (OpenRouter, 2K, 3:4)</td><td><code>r1-bust.txt</code></td><td><code>daimyo-r1-bust-grokq</code></td></tr><tr><td>5</td><td>text only</td><td>bust × riverflow25 (OpenRouter, 2K, 3:4)</td><td><code>r1-bust.txt</code></td><td><code>daimyo-r1-bust-riverflow25</code></td></tr><tr><td>6</td><td>text only</td><td>full × flash31 (compare, Batch)</td><td><code>r1-full.txt</code></td><td><code>daimyo-r1-full-flash31</code></td></tr><tr><td>7</td><td>text only</td><td>full × gptimage2 (bounded direct OpenAI, 1024×1536)</td><td><code>r1-full.txt</code></td><td><code>daimyo-r1-full-gptimage2</code></td></tr><tr><td>8</td><td>text only</td><td>full × seedream45 (OpenRouter, 2K, 3:4)</td><td><code>r1-full.txt</code></td><td><code>daimyo-r1-full-seedream45</code></td></tr><tr><td>9</td><td>text only</td><td>full × grokq (OpenRouter, 2K, 3:4)</td><td><code>r1-full.txt</code></td><td><code>daimyo-r1-full-grokq</code></td></tr><tr><td>10</td><td>text only</td><td>full × riverflow25 (OpenRouter, 2K, 3:4)</td><td><code>r1-full.txt</code></td><td><code>daimyo-r1-full-riverflow25</code></td></tr></tbody></table></div>
+<p>Model policy: the four ratified fresh-concept defaults plus <code>riverflow25</code> with its named reason (Supported specialist; produced Tiger&#x27;s winning r2 base). No trial arm this round. <code>flash31</code> cells run through the pinned <code>compare</code> variant (2K); <code>gptimage2</code> through the bounded direct-OpenAI wrapper at the pinned portrait size; OpenRouter cells pin <code>2K</code> + <code>3:4</code> explicitly. No cell attaches images. All ten cells are independent — no dependencies.</p></div></details>
+<details class="tech"><summary><svg class="ico" aria-hidden="true"><use href="#i-branch"/></svg><span>Commands</span><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg></summary><div class="inner md"><p>Approval setup: on Dimitri&#x27;s sign-off of the published page, freeze the plan, append the durable greenlight with <code>tools/round_gate.py append --published-html</code> against the clean pushed Pages checkout, commit and push the gate record, and <code>round_gate.py verify</code> — per round-governance. Execution then waits for the applicable merged start transition.</p>
+<p>Generic setup: repository venv; secrets resolve through <code>tools/_secrets.py</code>; no binaries to pull (text-only round).</p>
+<h4>Post-merge start gate</h4>
+<p>After Dimitri approves and the applicable start PR merges, execution begins from exact current canonical <code>main</code> with this exact fail-closed shape:</p>
+<pre class="code"><code>python3 tools/round_start.py gate --project martial-frogs/daimyo --round r1
+
+# Read the exact discord.json route. Missing/null means disabled: do not post.
+# For a separately activated non-null route, dispatch the production worker and
+# run its read-only check/wait with the exact route generation + policy digest,
+# lifecycle standing root + digest, effective pipeline commit, and resolved
+# worker workflow run id. Require canonical durable header_advanced proof
+# before any paid call. Workflow success, a reply/message id, or manual header
+# state is insufficient.</code></pre>
+<p>At authoring time <code>daimyo/discord.json</code> is <code>channel: null</code> (disabled). The planned <code>#daimyo</code> route activation — worker alias-map entry, forward-only route generation, and the pipeline-side flip to <code>&quot;channel&quot;: &quot;daimyo&quot;</code> — is a separate reviewed change per <code>docs/agents/publication.md</code>; whichever state is canonical at start time selects the branch above.</p>
+<h4>Manifest-driven image generation</h4>
+<p><code>runbooks/r1-generation.json</code> (this PR) enumerates all ten cells with one planned <code>-1</code> roll each; its <code>planned_artifact_ids</code> are the exact-set gate.</p>
+<pre class="code"><code>python3 tools/gen_round.py \
+  --manifest projects/martial-frogs/daimyo/runbooks/r1-generation.json
+# Record the printed generation run id in rounds.md immediately.
+
+# After interruption, resume the SAME coordinator run — never submit a new one.
+python3 tools/gen_round.py --resume-run &lt;generation-run-id&gt;</code></pre>
+<p>A missing OpenRouter/OpenAI output after its wrapper starts is a manual reconciliation stop (<code>--retry-ambiguous</code> only after the provider/balance/ ledger check is recorded in <code>rounds.md</code>); an unresolved Gemini create is reconciled via <code>gemini_batch.py list --remote</code> + <code>attach</code>, then the coordinator resume. Surplus <code>-N&gt;1</code> rolls stay in lineage, recorded in <code>rounds.md</code>, outside the planned detector set.</p>
+<p>Run each FAST check as its artifact lands. Once all ten images have landed, submit the SLOW lane:</p>
+<pre class="code"><code>python3 tools/blind_detect_round.py \
+  --manifest projects/martial-frogs/daimyo/notes/r1-blind-manifest.json \
+  --spec-file projects/martial-frogs/daimyo/spec.md \
+  --reviews projects/martial-frogs/daimyo/reviews.jsonl
+# Record its run id in rounds.md; recover only with --resume-run RUN_ID.</code></pre>
+<p>Before the panel may refresh to COMPLETE, two conditions hold together: the detector run&#x27;s own final summary must report a fully finalized run — any PARTIAL finalization (a hard-error comparison appended no record, whatever artifact it names) stops for reconciliation in <code>rounds.md</code> regardless of the set check below — and the run&#x27;s record set must equal the ten planned artifacts exactly:</p>
+<pre class="code"><code>T=projects/martial-frogs/daimyo
+DETECT_RUN=&lt;blind-detect run id recorded in rounds.md&gt;
+python3 - &quot;$T&quot; &quot;$DETECT_RUN&quot; &lt;&lt;&#x27;PY&#x27;
+import json, sys
+t, run = sys.argv[1], sys.argv[2]
+planned = set(json.load(open(f&quot;{t}/runbooks/r1-generation.json&quot;))
+              [&quot;planned_artifact_ids&quot;])
+got = set()
+for line in open(f&quot;{t}/reviews.jsonl&quot;):
+    if not line.strip():
+        continue
+    r = json.loads(line)
+    if r.get(&quot;reviewer&quot;) == &quot;blind-detect&quot; and r.get(&quot;batch_run_id&quot;) == run:
+        got.add(r[&quot;artifact&quot;])
+missing = sorted(planned - got)
+unexpected = sorted(got - planned)
+assert got == planned, (
+    f&quot;blind-detect record set mismatch — missing: {missing}; &quot;
+    f&quot;unexpected: {unexpected}&quot;)
+print(f&quot;blind-detect exact-set OK: {len(planned)} artifacts&quot;)
+PY</code></pre>
+<p>The completeness gate passes over degraded INCOMPLETE records by design, so also surface them — every artifact this prints must appear in the round&#x27;s reconciliation:</p>
+<pre class="code"><code>jq -r --arg run &quot;$DETECT_RUN&quot; \
+  &#x27;select(.reviewer == &quot;blind-detect&quot; and .batch_run_id == $run
+          and (.call | startswith(&quot;INCOMPLETE&quot;))) | .artifact&#x27; \
+  &quot;$T/reviews.jsonl&quot;</code></pre>
+<p>Once FAST is complete, build and share the visibly PROVISIONAL panel (<code>tools/review_page.py --inline</code> → private artifact) without waiting for SLOW; append the SLOW verdicts and reconciliation, rebuild the same config, and share the COMPLETE artifact. Outcomes and verdicts live in <code>rounds.md</code> and the <code>r1-panel</code> review, never in this runbook.</p></div></details>
+</section>
+</main>
+<div id="lb" hidden><button class="lb-nav lb-prev" data-nav="-1" aria-label="Previous image">&#8249;</button><img id="lb-img" alt=""><div class="cap" id="lb-cap"></div><span class="lb-count" id="lb-count"></span><button class="lb-nav lb-next" data-nav="1" aria-label="Next image">&#8250;</button></div>
+<div id="ilb" hidden><div class="panel">
+<button class="x" data-close aria-label="close">&times;</button>
+<div id="ilb-body"></div></div></div>
+
+<script>
+const lb=document.getElementById('lb'),lbImg=document.getElementById('lb-img'),
+      lbCap=document.getElementById('lb-cap'),lbCount=document.getElementById('lb-count'),
+      lbRefRow=document.getElementById('lb-refrow'),lbRef=document.getElementById('lb-ref'),
+      lbCopyId=document.getElementById('lb-copy-id'),lbCopyLink=document.getElementById('lb-copy-link'),
+      lbControl=document.getElementById('lb-control'),
+      lbPrev=lb.querySelector('.lb-prev'),lbNext=lb.querySelector('.lb-next'),
+      ilb=document.getElementById('ilb'),ibody=document.getElementById('ilb-body'),
+      developerMode=document.getElementById('developer-mode');
+let gal=[],idx=-1,showingControl=false;
+const MINS=1,MAXS=8,ZOOM_STEP=2.5;   // zoom bounds; tap toggles fit<->ZOOM_STEP
+let scale=1,tx=0,ty=0;               // current transform: translate(tx,ty) scale(scale)
+const pts=new Map();                 // active pointers, for pan + pinch
+let downX=0,downY=0,moved=false,panX=0,panY=0,pinchDist=0,pinchScale=1;
+function setDeveloperMode(enabled){
+  document.querySelectorAll('[data-developer]').forEach(function(node){node.hidden=!enabled;});
+  document.documentElement.dataset.developer=enabled?'true':'false';
+  if(developerMode)developerMode.setAttribute('aria-checked',enabled?'true':'false');
+}
+if(developerMode){
+  developerMode.addEventListener('change',function(){setDeveloperMode(developerMode.checked);});
+  setDeveloperMode(false);
+}
+// The gallery is scoped to where the opened image lives: reference thumbs
+// inside an inputs panel cycle among themselves, Core inputs form their own
+// small gallery, and review cards form the candidate gallery. Keeping Core
+// inputs out of candidate arrow navigation makes C a true temporary compare.
+function galleryFor(el){
+  const inInputs=el.closest('#ilb');
+  const inCore=el.closest('.coreinputs');
+  let list=Array.prototype.slice.call((inInputs||inCore||document).querySelectorAll('[data-full]'));
+  if(!inInputs&&!inCore) list=list.filter(function(n){
+    return !n.closest('#ilb')&&!n.closest('.coreinputs');
+  });
+  return list;
+}
+function clampPan(){
+  // Keep a magnified image from being dragged off-screen; recenter at fit.
+  const ox=Math.max(0,(lbImg.clientWidth*scale-window.innerWidth)/2);
+  const oy=Math.max(0,(lbImg.clientHeight*scale-window.innerHeight)/2);
+  tx=Math.min(ox,Math.max(-ox,tx));
+  ty=Math.min(oy,Math.max(-oy,ty));
+}
+function applyT(){
+  if(scale<=1){scale=1;tx=0;ty=0;}
+  clampPan();
+  lbImg.style.transform='translate('+tx+'px,'+ty+'px) scale('+scale+')';
+  lbImg.style.cursor=scale>1?'grab':'zoom-in';
+  updateNav();
+}
+function zoomAt(px,py,s2){
+  s2=Math.min(MAXS,Math.max(MINS,s2));
+  if(s2===scale)return;
+  const r=lbImg.getBoundingClientRect();      // includes current transform
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  tx+=(px-cx)*(1-s2/scale);
+  ty+=(py-cy)*(1-s2/scale);
+  scale=s2;
+  applyT();
+}
+function resetZoom(){scale=1;tx=0;ty=0;applyT();}
+function updateNav(){
+  const multi=gal.length>1;
+  lbPrev.style.display=multi?'':'none';
+  lbNext.style.display=multi?'':'none';
+  let t=multi?(idx+1)+' / '+gal.length:'';
+  if(showingControl)t='CONTROL'+(t?'  \u00b7  '+t:'');
+  if(scale>1.01) t=(t?t+'  \u00b7  ':'')+Math.round(scale*100)+'%';
+  lbCount.textContent=t;
+}
+function controlFor(z){
+  return z&&z.dataset.controlRef?document.getElementById(z.dataset.controlRef):null;
+}
+function setCandidateMeta(z){
+  lbCap.textContent=z.dataset.cap||'';
+  const ref=z.dataset.ref||'',anchor=z.dataset.anchor||'';
+  lbRefRow.hidden=!(ref&&anchor);
+  if(ref&&anchor){
+    lbRef.textContent='#'+ref;
+    lbCopyId.dataset.copyId='#'+ref;
+    lbCopyLink.dataset.copy=anchor;
+  }
+}
+function showAt(i){
+  if(i<0||i>=gal.length)return;
+  idx=i;const z=gal[i];
+  showingControl=false;
+  scale=1;tx=0;ty=0;                 // fit each freshly shown image
+  lbImg.src=z.dataset.full;setCandidateMeta(z);
+  lbControl.hidden=!controlFor(z);
+  lbControl.textContent='control [C]';
+  lbControl.setAttribute('aria-pressed','false');
+  applyT();
+}
+function toggleControl(){
+  if(lb.hidden||idx<0)return;
+  const z=gal[idx],control=controlFor(z);
+  if(!control)return;
+  showingControl=!showingControl;
+  if(showingControl){
+    lbImg.src=control.dataset.full;
+    lbCap.textContent='CONTROL \u00b7 '+(control.dataset.cap||'core input');
+    lbRefRow.hidden=true;
+    lbControl.textContent='back to candidate [C]';
+  }else{
+    lbImg.src=z.dataset.full;
+    setCandidateMeta(z);
+    lbControl.textContent='control [C]';
+  }
+  lbControl.setAttribute('aria-pressed',showingControl?'true':'false');
+  // Retain scale/tx/ty: same-framing flicker comparison is the point of this
+  // control. The image load hook reclamps for a different aspect ratio.
+  updateNav();
+}
+function nav(d){
+  if(lb.hidden||gal.length<2)return;
+  showAt((idx+d+gal.length)%gal.length);
+}
+function openFrom(z){
+  gal=galleryFor(z);idx=gal.indexOf(z);
+  lb.hidden=false;showAt(idx<0?0:idx);
+}
+function closeTop(){
+  if(!lb.hidden){lb.hidden=true;lbImg.removeAttribute('src');lbImg.style.transform='';
+                 gal=[];idx=-1;showingControl=false;scale=1;tx=0;ty=0;pts.clear();
+                 lbControl.hidden=true;lbControl.setAttribute('aria-pressed','false');}
+  else if(!ilb.hidden){ilb.hidden=true;ibody.innerHTML='';}
+}
+// Copy a card's short display id, or copy/share its deep link. The URL is this
+// page plus the card's #id anchor, so a recipient lands scrolled to (and
+// highlighting) that image.
+// Clipboard falls back to a hidden-textarea execCommand for sandboxed viewers
+// (e.g. the claude.ai artifact iframe) where navigator.clipboard is blocked.
+function refURL(id){return location.href.split('#')[0]+'#'+id;}
+function flashBtn(btn,msg){
+  const o=btn.textContent;btn.textContent=msg;btn.classList.add('ok');
+  setTimeout(function(){btn.textContent=o;btn.classList.remove('ok');},1200);
+}
+function legacyCopy(text){
+  try{const ta=document.createElement('textarea');ta.value=text;
+      ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);
+      ta.focus();ta.select();const ok=document.execCommand('copy');
+      document.body.removeChild(ta);return ok;}catch(_){return false;}
+}
+function copyText(text,btn){
+  function ok(){if(btn)flashBtn(btn,'copied \u2713');}
+  function fail(){if(btn)flashBtn(btn,'copy failed');}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){legacyCopy(text)?ok():fail();});
+  }else{legacyCopy(text)?ok():fail();}
+}
+document.addEventListener('click',function(e){
+  const ci=e.target.closest('[data-copy-id]');
+  if(ci){copyText(ci.dataset.copyId,ci);e.preventDefault();return;}
+  const cp=e.target.closest('[data-copy]');
+  if(cp){copyText(refURL(cp.dataset.copy),cp);e.preventDefault();return;}
+  if(!lb.hidden){
+    if(e.target.closest('#lb-control')){toggleControl();e.preventDefault();return;}
+    const nb=e.target.closest('[data-nav]');
+    if(nb){nav(parseInt(nb.dataset.nav,10));return;}
+    if(e.target===lbImg)return;   // image taps/pans are handled by pointer events
+    closeTop();return;            // a click on the dark backdrop closes
+  }
+  const sh=e.target.closest('[data-share]');
+  if(sh){const url=refURL(sh.dataset.share);
+    // Web Share API where present, else copy. share() can also REJECT even
+    // when present (iframe permission / security policy / unsupported data —
+    // e.g. inside the claude.ai artifact frame): fall back to copy for those,
+    // but leave a user-cancelled share (AbortError) alone.
+    if(navigator.share){navigator.share({title:sh.dataset.title||document.title,url:url})
+        .catch(function(err){if(!err||err.name!=='AbortError')copyText(url,sh);});}
+    else{copyText(url,sh);}
+    e.preventDefault();return;}
+  const z=e.target.closest('[data-full]');
+  if(z){openFrom(z);return;}
+  const b=e.target.closest('[data-inputs]');
+  if(b){ibody.innerHTML='';
+        ibody.appendChild(document.getElementById(b.dataset.inputs).content.cloneNode(true));
+        ilb.hidden=false;return;}
+  if(e.target.closest('[data-close]')||e.target===ilb){closeTop();}
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){closeTop();return;}
+  if(lb.hidden)return;
+  if(e.key==='ArrowRight'){nav(1);e.preventDefault();}
+  else if(e.key==='ArrowLeft'){nav(-1);e.preventDefault();}
+  else if((e.key==='c'||e.key==='C')&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
+    toggleControl();e.preventDefault();}
+  else if(e.key==='+'||e.key==='='){zoomAt(innerWidth/2,innerHeight/2,scale*1.4);e.preventDefault();}
+  else if(e.key==='-'||e.key==='_'){zoomAt(innerWidth/2,innerHeight/2,scale/1.4);e.preventDefault();}
+  else if(e.key==='0'){resetZoom();e.preventDefault();}
+});
+// Wheel / trackpad zooms toward the cursor.
+lb.addEventListener('wheel',function(e){
+  if(lb.hidden)return;
+  e.preventDefault();
+  zoomAt(e.clientX,e.clientY,scale*Math.exp(-e.deltaY*0.0015));
+},{passive:false});
+// A different control aspect can change the fitted element dimensions. Keep
+// the requested framing and clamp it once the replacement image has loaded.
+lbImg.addEventListener('load',function(){if(!lb.hidden)applyT();});
+// Pointer events unify mouse, touch and pen: one pointer pans (when zoomed)
+// or, if it barely moved, counts as a tap that toggles zoom / swipes; two
+// pointers pinch-zoom.
+function pdist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function pmid(a,b){return {x:(a.x+b.x)/2,y:(a.y+b.y)/2};}
+lbImg.addEventListener('pointerdown',function(e){
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  try{lbImg.setPointerCapture(e.pointerId);}catch(_){}
+  if(pts.size===1){moved=false;downX=e.clientX;downY=e.clientY;panX=e.clientX;panY=e.clientY;}
+  else if(pts.size===2){
+    const a=Array.from(pts.values());pinchDist=pdist(a[0],a[1]);pinchScale=scale;moved=true;
+  }
+});
+lbImg.addEventListener('pointermove',function(e){
+  if(!pts.has(e.pointerId))return;
+  pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const a=Array.from(pts.values());
+  if(a.length>=2){
+    if(pinchDist>0){const m=pmid(a[0],a[1]);zoomAt(m.x,m.y,pinchScale*pdist(a[0],a[1])/pinchDist);}
+    moved=true;return;
+  }
+  if(Math.abs(e.clientX-downX)+Math.abs(e.clientY-downY)>6)moved=true;
+  if(scale>1){tx+=e.clientX-panX;ty+=e.clientY-panY;panX=e.clientX;panY=e.clientY;applyT();}
+});
+function pointerEnd(e){
+  if(!pts.has(e.pointerId))return;
+  pts.delete(e.pointerId);
+  if(pts.size===1){                 // second finger lifted: keep panning smoothly
+    const p=Array.from(pts.values())[0];panX=p.x;panY=p.y;pinchDist=0;return;
+  }
+  if(pts.size>0)return;             // still multi-touch
+  if(!moved){                       // a tap: toggle zoom at that point
+    if(scale>1)resetZoom();else zoomAt(downX,downY,ZOOM_STEP);
+    return;
+  }
+  if(scale===1&&gal.length>1){      // a swipe while at fit cycles the gallery
+    const dx=e.clientX-downX,dy=e.clientY-downY;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3)nav(dx<0?1:-1);
+  }
+}
+lbImg.addEventListener('pointerup',pointerEnd);
+lbImg.addEventListener('pointercancel',pointerEnd);
+lbImg.addEventListener('dragstart',function(e){e.preventDefault();});
+
+document.addEventListener('click', function (e) {
+  var b = e.target.closest('[data-copy]');
+  if (!b) return;
+  var pre = b.closest('details').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(function () {
+    var was = b.textContent;
+    b.textContent = 'Copied'; b.classList.add('done');
+    setTimeout(function () { b.textContent = was; b.classList.remove('done'); }, 1600);
+  });
+});
+</script>
+</body></html>
