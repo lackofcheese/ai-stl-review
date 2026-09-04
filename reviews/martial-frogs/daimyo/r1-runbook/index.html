@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta name="ai-stl-plan-digest" content="4432476a7750088eed29f895cd5f375ecfca2edf679c5b0f99af81a27522d6e2">
+<meta name="ai-stl-plan-digest" content="d83cb74e64b85ce3fc487237b96c54b4467a36ef0f56c7ab1cbf37523e49108c">
 <title>DAIMYO — Round 1 runbook</title>
 <style>
 :root{color-scheme:dark light;--accent:#d5338f;--bg:#101014;--card:#17171c;--line:#26262e;--ink:#e8e6ea;--dim:#98939f;--ok:#3fa46a;--bad:#d4484f;--warn:#c98a2d;--pre:#0d0d11;--well:#0a0a0c}
@@ -473,6 +473,116 @@ details.rb-prompt pre { white-space:pre-wrap; overflow-wrap:anywhere; background
 <section class="rb-inputs" id="inputs">
 <h2><svg class="ico" aria-hidden="true"><use href="#i-in"/></svg>Inputs — what this round runs on</h2>
 <p class="blurb">Everything that goes in, grouped by the choice it belongs to. Click any image to zoom; open a prompt to read the exact text this round spends against. Crop sets show both the cut overview and every exact output crop.</p>
+<section class="rb-case" id="case-round-wide-coordinator-manifest-both-arms">
+<h3 class="rb-case-h">Round-wide — coordinator manifest (both arms)<span class="rb-case-count">1 prompt</span></h3>
+<p class="rb-case-note">The executable gen_round.py manifest that runs all ten cells: routes, models, resolution/aspect pins, prompt files, and the exact planned artifact set. Named here so the greenlight&#x27;s plan surface pins its bytes (Codex merge-gate finding on PR #575); it is not a prompt.</p>
+<p class="rb-none">Text-only — no image inputs; the prompt below is the whole input.</p>
+<details class="rb-prompt"><summary><svg class="ico chev" aria-hidden="true"><use href="#i-chev"/></svg>Generation manifest — r1-generation.json<span class="rb-size">3 kB · 174 words</span></summary><div class="phead"><p class="path">projects/martial-frogs/daimyo/runbooks/r1-generation.json</p><button class="copy" data-copy>Copy generation manifest</button></div><pre>{
+  &quot;version&quot;: 1,
+  &quot;output_dir&quot;: &quot;../generated&quot;,
+  &quot;lineage&quot;: &quot;../lineage.json&quot;,
+  &quot;log_dir&quot;: &quot;../notes&quot;,
+  &quot;blind_manifest&quot;: &quot;../notes/r1-blind-manifest.json&quot;,
+  &quot;artifact_prefix&quot;: &quot;daimyo-r1-&quot;,
+  &quot;planned_artifact_ids&quot;: [
+    &quot;daimyo-r1-bust-flash31-1&quot;,
+    &quot;daimyo-r1-bust-gptimage2-1&quot;,
+    &quot;daimyo-r1-bust-seedream45-1&quot;,
+    &quot;daimyo-r1-bust-grokq-1&quot;,
+    &quot;daimyo-r1-bust-riverflow25-1&quot;,
+    &quot;daimyo-r1-full-flash31-1&quot;,
+    &quot;daimyo-r1-full-gptimage2-1&quot;,
+    &quot;daimyo-r1-full-seedream45-1&quot;,
+    &quot;daimyo-r1-full-grokq-1&quot;,
+    &quot;daimyo-r1-full-riverflow25-1&quot;
+  ],
+  &quot;cells&quot;: [
+    {
+      &quot;out_stem&quot;: &quot;daimyo-r1-bust-flash31&quot;,
+      &quot;route&quot;: &quot;compare&quot;,
+      &quot;variant&quot;: &quot;flash31&quot;,
+      &quot;prompt_file&quot;: &quot;../prompts/r1-bust.txt&quot;,
+      &quot;images&quot;: []
+    },
+    {
+      &quot;out_stem&quot;: &quot;daimyo-r1-bust-gptimage2&quot;,
+      &quot;route&quot;: &quot;compare&quot;,
+      &quot;variant&quot;: &quot;gptimage2&quot;,
+      &quot;prompt_file&quot;: &quot;../prompts/r1-bust.txt&quot;,
+      &quot;images&quot;: []
+    },
+    {
+      &quot;out_stem&quot;: &quot;daimyo-r1-bust-seedream45&quot;,
+      &quot;route&quot;: &quot;openrouter&quot;,
+      &quot;model&quot;: &quot;bytedance-seed/seedream-4.5&quot;,
+      &quot;prompt_file&quot;: &quot;../prompts/r1-bust.txt&quot;,
+      &quot;images&quot;: [],
+      &quot;resolution&quot;: &quot;2K&quot;,
+      &quot;aspect&quot;: &quot;3:4&quot;
+    },
+    {
+      &quot;out_stem&quot;: &quot;daimyo-r1-bust-grokq&quot;,
+      &quot;route&quot;: &quot;openrouter&quot;,
+      &quot;model&quot;: &quot;x-ai/grok-imagine-image-quality&quot;,
+      &quot;prompt_file&quot;: &quot;../prompts/r1-bust.txt&quot;,
+      &quot;images&quot;: [],
+      &quot;resolution&quot;: &quot;2K&quot;,
+      &quot;aspect&quot;: &quot;3:4&quot;
+    },
+    {
+      &quot;out_stem&quot;: &quot;daimyo-r1-bust-riverflow25&quot;,
+      &quot;route&quot;: &quot;openrouter&quot;,
+      &quot;model&quot;: &quot;sourceful/riverflow-v2.5-pro&quot;,
+      &quot;prompt_file&quot;: &quot;../prompts/r1-bust.txt&quot;,
+      &quot;images&quot;: [],
+      &quot;resolution&quot;: &quot;2K&quot;,
+      &quot;aspect&quot;: &quot;3:4&quot;
+    },
+    {
+      &quot;out_stem&quot;: &quot;daimyo-r1-full-flash31&quot;,
+      &quot;route&quot;: &quot;compare&quot;,
+      &quot;variant&quot;: &quot;flash31&quot;,
+      &quot;prompt_file&quot;: &quot;../prompts/r1-full.txt&quot;,
+      &quot;images&quot;: []
+    },
+    {
+      &quot;out_stem&quot;: &quot;daimyo-r1-full-gptimage2&quot;,
+      &quot;route&quot;: &quot;compare&quot;,
+      &quot;variant&quot;: &quot;gptimage2&quot;,
+      &quot;prompt_file&quot;: &quot;../prompts/r1-full.txt&quot;,
+      &quot;images&quot;: []
+    },
+    {
+      &quot;out_stem&quot;: &quot;daimyo-r1-full-seedream45&quot;,
+      &quot;route&quot;: &quot;openrouter&quot;,
+      &quot;model&quot;: &quot;bytedance-seed/seedream-4.5&quot;,
+      &quot;prompt_file&quot;: &quot;../prompts/r1-full.txt&quot;,
+      &quot;images&quot;: [],
+      &quot;resolution&quot;: &quot;2K&quot;,
+      &quot;aspect&quot;: &quot;3:4&quot;
+    },
+    {
+      &quot;out_stem&quot;: &quot;daimyo-r1-full-grokq&quot;,
+      &quot;route&quot;: &quot;openrouter&quot;,
+      &quot;model&quot;: &quot;x-ai/grok-imagine-image-quality&quot;,
+      &quot;prompt_file&quot;: &quot;../prompts/r1-full.txt&quot;,
+      &quot;images&quot;: [],
+      &quot;resolution&quot;: &quot;2K&quot;,
+      &quot;aspect&quot;: &quot;3:4&quot;
+    },
+    {
+      &quot;out_stem&quot;: &quot;daimyo-r1-full-riverflow25&quot;,
+      &quot;route&quot;: &quot;openrouter&quot;,
+      &quot;model&quot;: &quot;sourceful/riverflow-v2.5-pro&quot;,
+      &quot;prompt_file&quot;: &quot;../prompts/r1-full.txt&quot;,
+      &quot;images&quot;: [],
+      &quot;resolution&quot;: &quot;2K&quot;,
+      &quot;aspect&quot;: &quot;3:4&quot;
+    }
+  ]
+}
+</pre></details>
+</section>
 <section class="rb-case" id="case-a-bust-isolation-5-models-1-roll-each">
 <h3 class="rb-case-h">A — Bust isolation (5 models, 1 roll each)<span class="rb-case-count">1 prompt</span></h3>
 <p class="rb-case-note">Head-and-shoulders bust, front three-quarter view: maximum pixel density on the kabuto-over-eye-domes construction. Text-only; no image inputs.</p>
